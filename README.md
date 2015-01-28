@@ -17,7 +17,7 @@ cd TicText-iOS
 pod install
 ```
 
-2. Open the Xcode workspace at `TicText-iOS/Anypic.xcworkspace`.
+2. Open the Xcode workspace at `TicText-iOS/TicText.xcworkspace`.
 
 3. Create your TicText App on [Parse](https://parse.com/apps).
 
