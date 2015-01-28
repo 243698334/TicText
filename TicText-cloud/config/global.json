@@ -1,0 +1,11 @@
+{
+    "applications": {
+        "TicText": {
+            "applicationId": "otEYQUdVy98OBM9SeUs8Zc1PrMy27EGMvEy80WaL", 
+            "masterKey": "exaaRGhhvDdoid6kJTVFM1O0gm0hEsrnGcE9sY6l"
+        }, 
+        "_default": {
+            "link": "TicText"
+        }
+    }
+}
