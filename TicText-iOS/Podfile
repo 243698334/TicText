@@ -2,10 +2,18 @@
 # platform :ios, '6.0'
 
 target 'TicText' do
-
+  pod 'Parse'
+  pod 'ParseFacebookUtils'
+  pod 'ParseCrashReporting'
+  pod 'ParseUI'
+  pod 'Facebook-iOS-SDK'
 end
 
 target 'TicTextTests' do
-
+  pod 'Parse'
+  pod 'ParseFacebookUtils'
+  pod 'ParseCrashReporting'
+  pod 'ParseUI'
+  pod 'Facebook-iOS-SDK'
 end
 
