@@ -8,6 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+#pragma mark - UIColors
+extern float const kTTUIPurpleColorRed;
+extern float const kTTUIPurpleColorGreen;
+extern float const kTTUIPurpleColorBlue;
+extern float const kTTUIPurpleColorAlpha;
+
+
 #pragma mark - NSUserDefaults
 
 
