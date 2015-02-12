@@ -8,6 +8,14 @@
 
 #import "TTConstants.h"
 
+#pragma mark - UIColors
+// UI Purple color
+float const kTTUIPurpleColorRed = 128.0;
+float const kTTUIPurpleColorGreen = 2.0;
+float const kTTUIPurpleColorBlue = 255.0;
+float const kTTUIPurpleColorAlpha = 255.0;
+
+
 #pragma mark - NSUserDefaults
 
 

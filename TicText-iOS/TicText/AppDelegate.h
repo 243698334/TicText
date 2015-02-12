@@ -7,11 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
+#import <ParseUI/ParseUI.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <ParseCrashReporting/ParseCrashReporting.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+#import "TTConstants.h"
+#import "TTRootViewController.h"
 
-@property (strong, nonatomic) UIWindow *window;
 
+@interface AppDelegate : UIResponder <UIApplicationDelegate, NSURLConnectionDataDelegate>
+
+@property (nonatomic, strong) UIWindow *window;
+
+@property (nonatomic, strong) UINavigationController *navigationController;
 
 @end
 
