@@ -19,20 +19,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
-    [self parseInitialization];
+
+    [self parseInitializationWithUIApplication:application launchOptions:launchOptions];
+    [self handlePush:launchOptions];
     [self setupColorScheme];
     [self setupNavigationController];
-    
-    // Track app open
-    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
-    
-    if (application.applicationIconBadgeNumber != 0) {
-        application.applicationIconBadgeNumber = 0;
-        [[PFInstallation currentInstallation] saveInBackground];
-    }
-    
-    [self handlePush:launchOptions];
     
     return YES;
 }
@@ -76,17 +67,26 @@
 
 #pragma mark - ()
 
-- (void)parseInitialization {
+- (void)parseInitializationWithUIApplication:(UIApplication *) application launchOptions:(NSDictionary *)launchOptions {
     [Parse setApplicationId:@"otEYQUdVy98OBM9SeUs8Zc1PrMy27EGMvEy80WaL" clientKey:@"qfTOvPp03kY8uSYVu3FkL72UWwW37Tx2B6L6Ppq9"];
     //[ParseCrashReporting enable];
     [PFFacebookUtils initializeFacebook];
+    
+    // Track app open
+    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    
+    if (application.applicationIconBadgeNumber != 0) {
+        application.applicationIconBadgeNumber = 0;
+        [[PFInstallation currentInstallation] saveInBackground];
+    }
+
 }
 
 - (void)setupColorScheme {
     // status bar
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     
-    // navigation bar
+    // TODO: navigation bar
     
 }
 
