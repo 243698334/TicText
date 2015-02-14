@@ -29,7 +29,7 @@ pod install
 
 Finally, select the `TicText` target and go to `Build Phases`. Under `Upload Symbol Files`, update line 3 to point to your Cloud Code folder, if any. If you're not using Cloud Code, feel free to remove the `Upload Symbol Files` section.
 
-#### Configuring Anypic's Facebook integration
+#### Configuring TicText's Facebook integration
 
 1. Set up a Facebook app at http://developers.facebook.com/apps
 
