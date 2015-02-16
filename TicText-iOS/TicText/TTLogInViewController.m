@@ -9,6 +9,8 @@
 #import "TTLogInViewController.h"
 
 @interface TTLogInViewController () {
+    UIImageView *_appIconImageView;
+    UIImageView *_appTitleImageView;
     FBLoginView *_facebookLogInView;
 }
 
@@ -34,6 +36,32 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    // Background
+    self.view.backgroundColor = [UIColor colorWithRed:kTTUIPurpleColorRed/255.0 green:kTTUIPurpleColorGreen/255.0 blue:kTTUIPurpleColorBlue/255.0 alpha:kTTUIPurpleColorAlpha/255.0];
+    
+    // App icon
+    CGFloat appIconImageViewWidth = self.view.bounds.size.width * 0.55;
+    CGFloat appIconImageViewHeight = appIconImageViewWidth;
+    CGFloat appIconImageViewOriginX = (self.view.bounds.size.width - appIconImageViewWidth) / 2;
+    CGFloat appIconImageViewOriginY = self.view.bounds.size.height * 0.15;
+    _appIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(appIconImageViewOriginX, appIconImageViewOriginY, appIconImageViewWidth, appIconImageViewHeight)];
+    _appIconImageView.contentMode = UIViewContentModeScaleAspectFill;
+    _appIconImageView.image = [UIImage imageNamed:@"LaunchIcon"];
+    [self.view addSubview:_appIconImageView];
+    
+    // App Title
+    CGFloat appTitleImageViewWidth = self.view.bounds.size.width * 0.6;
+    CGFloat appTitleImageViewOriginX = (self.view.bounds.size.width - appTitleImageViewWidth) / 2;;
+    CGFloat appTitleImageViewOriginY = appIconImageViewOriginY + appIconImageViewHeight;
+    _appTitleImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"LaunchTitle"]];
+    _appTitleImageView.contentMode = UIViewContentModeScaleAspectFit;
+    CGRect appTitleImageViewFrame = _appTitleImageView.frame;
+    appTitleImageViewFrame.size.width = appTitleImageViewWidth;
+    appTitleImageViewFrame.origin.x = appTitleImageViewOriginX;
+    appTitleImageViewFrame.origin.y = appTitleImageViewOriginY;
+    _appTitleImageView.frame = appTitleImageViewFrame;
+    [self.view addSubview:_appTitleImageView];
+    
     // Facebook Log In View
     CGFloat facebookLogInViewWidth = self.view.bounds.size.width * 0.75;
     CGFloat facebookLogInViewHeight = 44.0;
@@ -44,7 +72,7 @@
     _facebookLogInView.delegate = self;
     _facebookLogInView.tooltipBehavior = FBLoginViewTooltipBehaviorDisable;
     [self.view addSubview:_facebookLogInView];
-
+    
 }
 
 

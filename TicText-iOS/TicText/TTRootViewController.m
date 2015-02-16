@@ -52,6 +52,7 @@
 #pragma mark - TTLoginViewControllerDelegate
 
 - (void)logInViewControllerDidLogUserIn:(TTLogInViewController *)logInViewController {
+    NSLog(@"%@", logInViewController);
     if (_logInViewControllerPresented) {
         _logInViewControllerPresented = NO;
         [self dismissViewControllerAnimated:YES completion:nil];
