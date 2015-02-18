@@ -19,7 +19,7 @@ extern float const kTTUIPurpleColorAlpha;
 
 
 #pragma mark - NSNotification
-
+extern NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification;
 
 #pragma mark - PFUser Class
 // Field keys

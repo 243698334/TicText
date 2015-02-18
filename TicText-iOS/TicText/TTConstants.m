@@ -20,6 +20,7 @@ float const kTTUIPurpleColorAlpha = 255.0;
 
 
 #pragma mark - NSNotification
+NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification = @"com.kevinychen.TicText.appDelegate.applicationDidReceiveRemoteNotification";
 
 
 #pragma mark - PFUser Class

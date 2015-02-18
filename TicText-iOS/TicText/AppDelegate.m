@@ -42,6 +42,27 @@
     return wasHandled;
 }
 
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    // Store the deviceToken in the current installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    currentInstallation.channels = @[ @"global" ];
+    [currentInstallation saveInBackground];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    // Push notification received while the app is active
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTAppDelegateApplicationDidReceiveRemoteNotification object:nil userInfo:userInfo];
+    
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
+        // Track app opens due to a push notification being acknowledged while the app wasn't active.
+        [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
+    }
+    
+    // TODO: handle push notification
+    [PFPush handlePush:userInfo];
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -79,6 +100,12 @@
         application.applicationIconBadgeNumber = 0;
         [[PFInstallation currentInstallation] saveInBackground];
     }
+    
+    // Push Notification
+    UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes categories:nil];
+    [application registerUserNotificationSettings:settings];
+    [application registerForRemoteNotifications];
 
 }
 
