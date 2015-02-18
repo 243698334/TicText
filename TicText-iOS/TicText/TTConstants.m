@@ -29,6 +29,7 @@ NSString * const kTTUserFacebookIDKey = @"facebookId";
 NSString * const kTTUserProfilePictureKey = @"profilePicture";
 NSString * const kTTUserProfilePictureSmallKey = @"profilePictureSmall";
 NSString * const kTTUserTicTextFriendsKey = @"ticTextFriends";
+NSString * const kTTUserHasTicTextProfileKey = @"hasTicTextProfile";
 
 
 #pragma mark - PFObject Tic Class

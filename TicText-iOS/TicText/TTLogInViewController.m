@@ -46,14 +46,14 @@
     CGFloat appIconImageViewOriginY = self.view.bounds.size.height * 0.15;
     _appIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(appIconImageViewOriginX, appIconImageViewOriginY, appIconImageViewWidth, appIconImageViewHeight)];
     _appIconImageView.contentMode = UIViewContentModeScaleAspectFill;
-    _appIconImageView.image = [UIImage imageNamed:@"LaunchIcon"];
+    _appIconImageView.image = [UIImage imageNamed:@"TicTextIconLight"];
     [self.view addSubview:_appIconImageView];
     
     // App Title
     CGFloat appTitleImageViewWidth = self.view.bounds.size.width * 0.6;
     CGFloat appTitleImageViewOriginX = (self.view.bounds.size.width - appTitleImageViewWidth) / 2;;
     CGFloat appTitleImageViewOriginY = appIconImageViewOriginY + appIconImageViewHeight;
-    _appTitleImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"LaunchTitle"]];
+    _appTitleImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"TicTextTitleLight"]];
     _appTitleImageView.contentMode = UIViewContentModeScaleAspectFit;
     CGRect appTitleImageViewFrame = _appTitleImageView.frame;
     appTitleImageViewFrame.size.width = appTitleImageViewWidth;
@@ -120,6 +120,10 @@
 }
 
 # pragma mark - ()
+
+- (void)refreshCurrentUserData {
+    
+}
 
 - (void)handleLogInError:(NSError *)error {
     NSLog(@"Error: %@", [[error userInfo] objectForKey:@"com.facebook.sdk:ErrorLoginFailedReason"]);

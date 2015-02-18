@@ -105,5 +105,9 @@
     
 }
 
+- (void)currentUserLogOut {
+    NSLog(@"Logging out current user");
+}
+
 
 @end

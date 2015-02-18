@@ -28,6 +28,7 @@ extern NSString * const kTTUserFacebookIDKey;
 extern NSString * const kTTUserProfilePictureKey;
 extern NSString * const kTTUserProfilePictureSmallKey;
 extern NSString * const kTTUserTicTextFriendsKey;
+extern NSString * const kTTUserHasTicTextProfileKey;
 
 
 #pragma mark - PFObject Tic Class

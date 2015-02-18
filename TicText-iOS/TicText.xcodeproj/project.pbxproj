@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E00AA2F1A919B6D00EE246D /* TTLogInViewController.m */; };
+		0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E00AA321A91AF2F00EE246D /* TTFindFriendsViewController.m */; };
 		0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0F657D1A8C0645003CB363 /* TTRootViewController.m */; };
 		0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E68055E1A85306F00C013D2 /* TTConstants.m */; };
 		0EC584E81A7864AA00025D71 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC584E71A7864AA00025D71 /* main.m */; };
@@ -32,6 +33,8 @@
 /* Begin PBXFileReference section */
 		0E00AA2E1A919B6D00EE246D /* TTLogInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTLogInViewController.h; sourceTree = "<group>"; };
 		0E00AA2F1A919B6D00EE246D /* TTLogInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTLogInViewController.m; sourceTree = "<group>"; };
+		0E00AA311A91AF2F00EE246D /* TTFindFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTFindFriendsViewController.h; sourceTree = "<group>"; };
+		0E00AA321A91AF2F00EE246D /* TTFindFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTFindFriendsViewController.m; sourceTree = "<group>"; };
 		0E0F657C1A8C0645003CB363 /* TTRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRootViewController.h; sourceTree = "<group>"; };
 		0E0F657D1A8C0645003CB363 /* TTRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRootViewController.m; sourceTree = "<group>"; };
 		0E68055D1A846A0000C013D2 /* TTConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTConstants.h; sourceTree = "<group>"; };
@@ -81,6 +84,8 @@
 				0E0F657D1A8C0645003CB363 /* TTRootViewController.m */,
 				0E00AA2E1A919B6D00EE246D /* TTLogInViewController.h */,
 				0E00AA2F1A919B6D00EE246D /* TTLogInViewController.m */,
+				0E00AA311A91AF2F00EE246D /* TTFindFriendsViewController.h */,
+				0E00AA321A91AF2F00EE246D /* TTFindFriendsViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -334,6 +339,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */,
+				0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */,
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
 				0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */,
 				0EC584EB1A7864AA00025D71 /* AppDelegate.m in Sources */,
@@ -455,7 +461,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = TicText/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -470,7 +476,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = TicText/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

@@ -11,7 +11,7 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchIcon" translatesAutoresizingMaskIntoConstraints="NO" id="xJ1-R4-xVy">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TicTextIconLight" translatesAutoresizingMaskIntoConstraints="NO" id="xJ1-R4-xVy">
                     <rect key="frame" x="120" y="120" width="240" height="240"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="240" id="bS3-eM-j8c"/>
@@ -30,6 +30,6 @@
         </view>
     </objects>
     <resources>
-        <image name="LaunchIcon" width="900" height="900"/>
+        <image name="TicTextIconLight" width="900" height="900"/>
     </resources>
 </document>

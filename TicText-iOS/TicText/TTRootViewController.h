@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import <AFNetworking/AFNetworking.h>
+#import "AppDelegate.h"
 #import "TTLogInViewController.h"
+#import "TTFindFriendsViewController.h"
 
 @interface TTRootViewController : UIViewController <TTLogInViewControllerDelegate>
 

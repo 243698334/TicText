@@ -22,5 +22,7 @@
 
 @property (nonatomic, strong) UINavigationController *navigationController;
 
+- (void)currentUserLogOut;
+
 @end
 
