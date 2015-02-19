@@ -37,21 +37,33 @@ extern NSString * const kTTTicClassKey;
 
 // Field keys
 extern NSString * const kTTTicSenderKey;
+extern NSString * const kTTTicTypeKey;
 extern NSString * const kTTTicRecipientKey;
 extern NSString * const kTTTicTimeLimitKey;
 extern NSString * const kTTTicSendTimestampKey;
 extern NSString * const kTTTicReceiveTimestampKey;
 extern NSString * const kTTTicStatusKey;
+extern NSString * const kTTTicContentTypeKey;
 extern NSString * const kTTTicContentKey;
+
+// Type values
+extern NSString * const kTTTicTypeDefault;
+extern NSString * const kTTTIcTypeAnonymous;
+
+// Status values
+extern NSString * const kTTTicStatusRead;
+extern NSString * const kTTTicStatusUnread;
+extern NSString * const kTTTIcStatusExpired;
+
+// Content Type values
+extern NSString * const kTTTicContentTypeText;
+extern NSString * const kTTTicContentTypeImage;
+extern NSString * const kTTTicContentTypeVoice;
 
 
 #pragma mark - PFObject Activity Class
 // Class key
 extern NSString * const kTTActivityClassKey;
-
-// Type values
-extern NSString * const kTTActivityTypeSend;
-extern NSString * const kTTActivityTypeFetch;
 
 // Field keys
 extern NSString * const kTTActivityTypeKey;
@@ -60,3 +72,20 @@ extern NSString * const kTTActivityToUserKey;
 extern NSString * const kTTActivityContentKey;
 extern NSString * const kTTActivityTicKey;
 
+// Type values
+extern NSString * const kTTActivityTypeSend;
+extern NSString * const kTTActivityTypeFetch;
+
+
+#pragma mark - Push Notification Payload
+// Field keys
+extern NSString * const kTTPushNotificationPayloadTypeKey;
+
+// Type values
+extern NSString * const kTTPushNotificationPayloadTypeNewTic;
+extern NSString * const kTTPushNotificationPayloadTypeNewFriend;
+
+
+#pragma mark - Installation Class
+// Field keys
+extern NSString * const kTTInstallationUserKey;

@@ -88,7 +88,7 @@
 
 #pragma mark - ()
 
-- (void)parseInitializationWithUIApplication:(UIApplication *) application launchOptions:(NSDictionary *)launchOptions {
+- (void)parseInitializationWithUIApplication:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
     [Parse setApplicationId:@"otEYQUdVy98OBM9SeUs8Zc1PrMy27EGMvEy80WaL" clientKey:@"qfTOvPp03kY8uSYVu3FkL72UWwW37Tx2B6L6Ppq9"];
     //[ParseCrashReporting enable];
     [PFFacebookUtils initializeFacebook];
@@ -100,13 +100,6 @@
         application.applicationIconBadgeNumber = 0;
         [[PFInstallation currentInstallation] saveInBackground];
     }
-    
-    // Push Notification
-    UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes categories:nil];
-    [application registerUserNotificationSettings:settings];
-    [application registerForRemoteNotifications];
-
 }
 
 - (void)setupColorScheme {
@@ -134,6 +127,12 @@
 
 - (void)currentUserLogOut {
     NSLog(@"Logging out current user");
+    
+    // Unsubscribe from push notifications by removing the user association from the current installation.
+    [[PFInstallation currentInstallation] removeObjectForKey:kTTInstallationUserKey];
+    [[PFInstallation currentInstallation] saveInBackground];
+
+    [PFUser logOut];
 }
 
 

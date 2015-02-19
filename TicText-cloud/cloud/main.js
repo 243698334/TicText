@@ -1,3 +1,3 @@
+require('cloud/constants.js');
 require('cloud/installation.js');
-require('cloud/activity.js');
-require('cloud/tic.js');
+require('cloud/user.js');

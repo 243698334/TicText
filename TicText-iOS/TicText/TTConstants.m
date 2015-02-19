@@ -26,7 +26,7 @@ NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification = @"com.k
 #pragma mark - PFUser Class
 // Field keys
 NSString * const kTTUserDisplayNameKey = @"displayName";
-NSString * const kTTUserFacebookIDKey = @"facebookId";
+NSString * const kTTUserFacebookIDKey = @"facebookID";
 NSString * const kTTUserProfilePictureKey = @"profilePicture";
 NSString * const kTTUserProfilePictureSmallKey = @"profilePictureSmall";
 NSString * const kTTUserTicTextFriendsKey = @"ticTextFriends";
@@ -39,21 +39,33 @@ NSString * const kTTTicClassKey = @"Tic";
 
 // Field keys
 NSString * const kTTTicSenderKey = @"sender";
+NSString * const kTTTicTypeKey = @"type";
 NSString * const kTTTicRecipientKey = @"recipient";
 NSString * const kTTTicTimeLimitKey = @"timeLimit";
 NSString * const kTTTicSendTimestampKey = @"sendTimestamp";
 NSString * const kTTTicReceiveTimestampKey = @"receiveTimestamp";
 NSString * const kTTTicStatusKey = @"status";
+NSString * const kTTTicContentTypeKey = @"contentType";
 NSString * const kTTTicContentKey = @"content";
+
+// Type values
+NSString * const kTTTicTypeDefault = @"default";
+NSString * const kTTTIcTypeAnonymous = @"anonymous";
+
+// Status values
+NSString * const kTTTicStatusRead = @"read";
+NSString * const kTTTicStatusUnread = @"unread";
+NSString * const kTTTIcStatusExpired = @"expired";
+
+// Content Type values
+NSString * const kTTTicContentTypeText = @"text";
+NSString * const kTTTicContentTypeImage = @"image";
+NSString * const kTTTicContentTypeVoice = @"voice";
 
 
 #pragma mark - PFObject Activity Class
 // Class key
 NSString * const kTTActivityClassKey = @"Activity";
-
-// Type values
-NSString * const kTTActivityTypeSend = @"send";
-NSString * const kTTActivityTypeFetch = @"fetch";
 
 // Field keys
 NSString * const kTTActivityTypeKey = @"type";
@@ -61,3 +73,22 @@ NSString * const kTTActivityFromUserKey = @"fromUser";
 NSString * const kTTActivityToUserKey = @"toUser";
 NSString * const kTTActivityContentKey = @"content";
 NSString * const kTTActivityTicKey = @"tic";
+
+// Type values
+NSString * const kTTActivityTypeSend = @"send";
+NSString * const kTTActivityTypeFetch = @"fetch";
+
+
+#pragma mark - Push Notification Payload
+// intentionally kept short
+// Field keys
+NSString * const kTTPushNotificationPayloadTypeKey = @"t";
+
+// Type values
+NSString * const kTTPushNotificationPayloadTypeNewTic = @"nt";
+NSString * const kTTPushNotificationPayloadTypeNewFriend = @"nf";
+
+
+#pragma mark - Installation Class
+// Field keys
+NSString * const kTTInstallationUserKey = @"user";

@@ -32,10 +32,10 @@
     } else {
         // if logged in, sync user data
         [[PFUser currentUser] fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            [self setupPushNotification];
             [self refreshDataForExistingUser:(PFUser *)object error:error completion:nil];
         }];
     }
-
 }
 
 #pragma mark - TTRootViewController
@@ -55,6 +55,9 @@
 #pragma mark - TTLoginViewControllerDelegate
 
 - (void)logInViewControllerDidLogUserIn:(PFUser *)currentUser {
+    // set up push notification after user logs in
+    [self setupPushNotification];
+    
     if (_logInViewControllerPresented) {
         _logInViewControllerPresented = NO;
         [self dismissViewControllerAnimated:YES completion:nil];
@@ -99,6 +102,7 @@
             FBRequestConnection *facebookRequestConnection = [[FBRequestConnection alloc] init];
             [facebookRequestConnection addRequest:[FBRequest requestWithGraphPath:@"me" parameters:@{@"fields": @"name,friends,picture.height(640).width(640)"} HTTPMethod:@"GET"] completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                 if (error != nil) {
+                    NSLog(@"Error occured in FacebookRequestConnection for fetching the new user's profile. \nDescription: %@", error.description);
                     [self showAlertWithErrorDescription:error.description];
                 } else {
                     // display name
@@ -139,7 +143,7 @@
                     }];
                     [fetchProfilePictureRequestOperation start];
                     
-                    NSLog(@"New User: Display name: %@, Friend list: %@, Profile Picture URL: %@", displayName, facebookFriends, profilePictureURL);
+                    NSLog(@"New User: Display name: %@, Facebook ID: %@, Friend list: %@, Profile Picture URL: %@", displayName, facebookID, facebookFriends, profilePictureURL);
                     
                     if (completion != nil) {
                         completion();
@@ -158,6 +162,7 @@
 - (void)refreshDataForExistingUser:(PFUser *)currentUser error:(NSError *)error completion:(void (^)(void))completion {
     // Error handling
     if (error != nil) {
+        NSLog(@"Error occured when tryting to refreshDataForExistingUser \nDescription: %@", error.description);
         [self showAlertWithErrorDescription:error.description];
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] currentUserLogOut];
         return;
@@ -177,6 +182,7 @@
             FBRequestConnection *facebookRequestConnection = [[FBRequestConnection alloc] init];
             [facebookRequestConnection addRequest:[FBRequest requestForMyFriends] completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                 if (error != nil) {
+                    NSLog(@"Error occured in FacebookRequestConnection for refreshing friend list. \nDescription: %@", error.description);
                     [self showAlertWithErrorDescription:error.description];
                 } else {
                     // TicText friend list is exactly the same as Facebook friend list
@@ -216,6 +222,13 @@
 - (void)showAlertWithErrorDescription:(NSString *)errorDescription {
     UIAlertView *errorMessageAlertView = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:errorDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [errorMessageAlertView show];
+}
+
+- (void)setupPushNotification {
+    UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes categories:nil];
+    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
 }
 
 
