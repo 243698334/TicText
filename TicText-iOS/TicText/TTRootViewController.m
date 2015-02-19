@@ -105,6 +105,10 @@
                     NSString *displayName = result[@"name"];
                     [currentUser setObject:displayName forKey:kTTUserDisplayNameKey];
                     
+                    // Facebook ID
+                    NSString *facebookID = session.accessTokenData.userID;
+                    [currentUser setObject:facebookID forKey:kTTUserFacebookIDKey];
+                    
                     // TicText friend list
                     NSArray *facebookFriendsDataArray = result[@"friends"][@"data"];
                     NSMutableArray *facebookFriends = [[NSMutableArray alloc] initWithCapacity:[facebookFriendsDataArray count]];
