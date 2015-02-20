@@ -13,6 +13,7 @@
 #import <Parse/Parse.h>
 #import "TTHelper.h"
 #import "TTUser.h"
+#import "TTSession.h"
 
 @interface TTUserTests : XCTestCase
 
@@ -28,6 +29,19 @@
 
     self.mockPFUser = OCMClassMock([PFUser class]);
     self.user = [TTUser wrap:self.mockPFUser];
+}
+
+- (void)testCurrentUser {
+    // Arrange
+    PFUser *fakeUser = [TTHelper fakeUser];
+    OCMStub([self.mockPFUser currentUser]).andReturn(fakeUser);
+    
+    // Act
+    TTUser *user1 = [TTUser currentUser];
+    TTUser *user2 = [[TTSession sharedSession] currentUser];
+    
+    // Assert
+    XCTAssertEqualObjects(user1, user2);
 }
 
 - (void)testPFUserInit {

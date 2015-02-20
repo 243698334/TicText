@@ -9,6 +9,8 @@
 #import "TTUser.h"
 #import <Parse/Parse.h>
 
+#import "TTSession.h"
+
 @implementation TTUserFacebookAuthData
 
 @end
@@ -28,6 +30,10 @@
         _friends = user[kTTUserTicTextFriendsKey];
     }
     return self;
+}
+
++ (TTUser *)currentUser {
+    return [[TTSession sharedSession] currentUser];
 }
 
 + (TTUser *)wrap:(PFUser *)user {
