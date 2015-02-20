@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "TTConstants.h"
+#import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <FacebookSDK/FacebookSDK.h>
 
-@interface TTFindFriendsViewController : UIViewController
+@interface TTFindFriendsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 @end
