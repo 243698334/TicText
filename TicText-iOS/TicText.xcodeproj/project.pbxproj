@@ -129,6 +129,7 @@
 		0EC584E41A7864AA00025D71 /* TicText */ = {
 			isa = PBXGroup;
 			children = (
+				CD4D57D41A96E728002B5586 /* Domain */,
 				CD4D57BF1A96A54B002B5586 /* Service */,
 				CD4D57CA1A96B745002B5586 /* Models */,
 				0E923B9B1A87192200040522 /* Controllers */,
@@ -137,8 +138,6 @@
 				0EC584F21A7864AA00025D71 /* Images.xcassets */,
 				0EC584F41A7864AA00025D71 /* LaunchScreen.xib */,
 				0EC584E51A7864AA00025D71 /* Supporting Files */,
-				0E68055D1A846A0000C013D2 /* TTConstants.h */,
-				0E68055E1A85306F00C013D2 /* TTConstants.m */,
 			);
 			path = TicText;
 			sourceTree = "<group>";
@@ -223,6 +222,15 @@
 				CD4D57D21A96C97D002B5586 /* TTHelper.m */,
 			);
 			name = Helpers;
+			sourceTree = "<group>";
+		};
+		CD4D57D41A96E728002B5586 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				0E68055D1A846A0000C013D2 /* TTConstants.h */,
+				0E68055E1A85306F00C013D2 /* TTConstants.m */,
+			);
+			name = Domain;
 			sourceTree = "<group>";
 		};
 		EF6A02DA18A27C3A07C3888B /* Pods */ = {
