@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <FacebookSDK/FacebookSDK.h>
 
 // The view controller the user uses to log in.
-@interface TTLogInViewController : UIViewController
+@interface TTLogInViewController : UIViewController<FBLoginViewDelegate>
 
-@property (strong, nonatomic) IBOutlet UIButton *loginButton;
-- (IBAction)loginAction:(id)sender;
+@property (strong, nonatomic) IBOutlet FBLoginView *facebookLogInView;
+@property (nonatomic) BOOL presentForLogIn;
 
 @end

@@ -18,6 +18,6 @@
 - (void)presentLogInViewControllerIfNeeded;
 
 // Modally presents the login view controller.
-- (void)presentLogInViewController:(BOOL)animated;
+- (void)presentLogInViewControllerForLogIn:(BOOL)logIn animated:(BOOL)animated;
 
 @end

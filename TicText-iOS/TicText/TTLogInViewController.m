@@ -23,12 +23,24 @@
 
 #pragma mark - UIViewController
 
+- (instancetype)init {
+    if (self = [super init]) {
+        self.presentForLogIn = YES;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = kTTUIPurpleColor;
 }
 
-- (IBAction)loginAction:(id)sender {
+- (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView {
+    if (!self.presentForLogIn) {
+        [FBSession.activeSession closeAndClearTokenInformation];
+        return;
+    }
+    
     // Show loading indicator until login is finished
     self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
@@ -87,12 +99,17 @@
                     UIModalTransitionStyleCrossDissolve;
                     
                     [self.presentingViewController presentViewController:findFriendsViewController
-                                                            animated:YES
-                                                          completion:nil];
+                                                                animated:YES
+                                                              completion:nil];
                 }
             }];
         }
     }];
+}
+
+- (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView {
+    NSLog(@"Log out");
+    self.presentForLogIn = YES;
 }
 
 @end

@@ -28,7 +28,7 @@
 
 - (IBAction)logout:(id)sender {
     [TTSession.sharedSession logout:^{
-        [self presentLogInViewController:YES];
+        [self presentLogInViewControllerForLogIn:NO animated:YES];
     }];
 }
 
@@ -36,13 +36,13 @@
 
 - (void)presentLogInViewControllerIfNeeded {
     if (![TTSession.sharedSession isUserLoggedIn]) {
-        [self presentLogInViewController:NO];
+        [self presentLogInViewControllerForLogIn:YES animated:NO];
     }
 }
 
-- (void)presentLogInViewController:(BOOL)animated {
+- (void)presentLogInViewControllerForLogIn:(BOOL)presentForLogIn animated:(BOOL)animated {
     UIViewController *loginViewController = [[TTLogInViewController alloc] init];
-    
+    ((TTLogInViewController *)loginViewController).presentForLogIn = presentForLogIn;
     [self presentViewController:loginViewController animated:animated completion:nil];
 }
 

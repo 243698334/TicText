@@ -10,6 +10,8 @@
 		0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E00AA2F1A919B6D00EE246D /* TTLogInViewController.m */; };
 		0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E00AA321A91AF2F00EE246D /* TTFindFriendsViewController.m */; };
 		0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0F657D1A8C0645003CB363 /* TTRootViewController.m */; };
+		0E42695B1A9743A70046B3F2 /* TTTic.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E42695A1A9743A70046B3F2 /* TTTic.m */; };
+		0E42695E1A97440E0046B3F2 /* TTActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E42695D1A97440E0046B3F2 /* TTActivity.m */; };
 		0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E68055E1A85306F00C013D2 /* TTConstants.m */; };
 		0EC584E81A7864AA00025D71 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC584E71A7864AA00025D71 /* main.m */; };
 		0EC584EB1A7864AA00025D71 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC584EA1A7864AA00025D71 /* AppDelegate.m */; };
@@ -45,6 +47,10 @@
 		0E00AA321A91AF2F00EE246D /* TTFindFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTFindFriendsViewController.m; sourceTree = "<group>"; };
 		0E0F657C1A8C0645003CB363 /* TTRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRootViewController.h; sourceTree = "<group>"; };
 		0E0F657D1A8C0645003CB363 /* TTRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRootViewController.m; sourceTree = "<group>"; };
+		0E4269591A9743A70046B3F2 /* TTTic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTic.h; sourceTree = "<group>"; };
+		0E42695A1A9743A70046B3F2 /* TTTic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTic.m; sourceTree = "<group>"; };
+		0E42695C1A97440E0046B3F2 /* TTActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTActivity.h; sourceTree = "<group>"; };
+		0E42695D1A97440E0046B3F2 /* TTActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTActivity.m; sourceTree = "<group>"; };
 		0E68055D1A846A0000C013D2 /* TTConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTConstants.h; sourceTree = "<group>"; };
 		0E68055E1A85306F00C013D2 /* TTConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTConstants.m; sourceTree = "<group>"; };
 		0EC584E21A7864AA00025D71 /* TicText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TicText.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -212,6 +218,10 @@
 			children = (
 				CD4D57C61A96B740002B5586 /* TTUser.h */,
 				CD4D57C71A96B740002B5586 /* TTUser.m */,
+				0E4269591A9743A70046B3F2 /* TTTic.h */,
+				0E42695A1A9743A70046B3F2 /* TTTic.m */,
+				0E42695C1A97440E0046B3F2 /* TTActivity.h */,
+				0E42695D1A97440E0046B3F2 /* TTActivity.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -430,6 +440,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E42695B1A9743A70046B3F2 /* TTTic.m in Sources */,
 				0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */,
 				0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */,
 				CD4D57C81A96B740002B5586 /* TTUser.m in Sources */,
@@ -437,6 +448,7 @@
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
 				0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */,
 				0EC584EB1A7864AA00025D71 /* AppDelegate.m in Sources */,
+				0E42695E1A97440E0046B3F2 /* TTActivity.m in Sources */,
 				2E402A171A96FE8900C1C7BF /* FindFriendsTableViewCell.m in Sources */,
 				0EC584E81A7864AA00025D71 /* main.m in Sources */,
 			);
@@ -558,6 +570,7 @@
 			baseConfigurationReference = 62D5B3A2D5FD007BC1313C3B /* Pods-TicText.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				GCC_PREFIX_HEADER = "TicText/TicText-Prefix.pch";
@@ -574,6 +587,7 @@
 			baseConfigurationReference = 53758F76DA4076374F5E76FF /* Pods-TicText.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				GCC_PREFIX_HEADER = "TicText/TicText-Prefix.pch";
