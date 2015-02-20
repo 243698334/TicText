@@ -31,6 +31,9 @@
 // Initialize and wrap this instance around |user|.
 - (id)initWithPFUser:(PFUser *)user;
 
+// Get the current user.
++ (id)currentUser;
+
 // Syntactically convenient method to quickly wrap |user|.
 + (TTUser *)wrap:(PFUser *)user;
 
