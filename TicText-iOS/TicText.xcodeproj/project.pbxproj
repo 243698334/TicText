@@ -18,6 +18,13 @@
 		0EC585021A7864AA00025D71 /* TicTextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC585011A7864AA00025D71 /* TicTextTests.m */; };
 		4C0094CD1B6ED14DA0956A8F /* libPods-TicText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E62ADB5018418278F1D7F35F /* libPods-TicText.a */; };
 		9B6B74E026B95CE6BCD5D096 /* libPods-TicTextTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */; };
+		CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C11A96A5A6002B5586 /* TTSession.m */; };
+		CD4D57C31A96A5AC002B5586 /* TTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C11A96A5A6002B5586 /* TTSession.m */; };
+		CD4D57C51A96AED2002B5586 /* TTSessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C41A96AED2002B5586 /* TTSessionTests.m */; };
+		CD4D57C81A96B740002B5586 /* TTUser.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C71A96B740002B5586 /* TTUser.m */; };
+		CD4D57C91A96B740002B5586 /* TTUser.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C71A96B740002B5586 /* TTUser.m */; };
+		CD4D57CC1A96B929002B5586 /* TTUserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57CB1A96B929002B5586 /* TTUserTests.m */; };
+		CD4D57D31A96C97D002B5586 /* TTHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57D21A96C97D002B5586 /* TTHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +61,15 @@
 		62D5B3A2D5FD007BC1313C3B /* Pods-TicText.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicText.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TicText/Pods-TicText.debug.xcconfig"; sourceTree = "<group>"; };
 		65E0D8574E683EDF0172C6F3 /* Pods-TicTextTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicTextTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TicTextTests/Pods-TicTextTests.release.xcconfig"; sourceTree = "<group>"; };
 		69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicTextTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD4D57C01A96A5A6002B5586 /* TTSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSession.h; sourceTree = "<group>"; };
+		CD4D57C11A96A5A6002B5586 /* TTSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSession.m; sourceTree = "<group>"; };
+		CD4D57C41A96AED2002B5586 /* TTSessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSessionTests.m; sourceTree = "<group>"; };
+		CD4D57C61A96B740002B5586 /* TTUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTUser.h; sourceTree = "<group>"; };
+		CD4D57C71A96B740002B5586 /* TTUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUser.m; sourceTree = "<group>"; };
+		CD4D57CB1A96B929002B5586 /* TTUserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUserTests.m; sourceTree = "<group>"; };
+		CD4D57CF1A96BDBB002B5586 /* TicText-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TicText-Prefix.pch"; sourceTree = "<group>"; };
+		CD4D57D11A96C97D002B5586 /* TTHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTHelper.h; sourceTree = "<group>"; };
+		CD4D57D21A96C97D002B5586 /* TTHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTHelper.m; sourceTree = "<group>"; };
 		E62ADB5018418278F1D7F35F /* libPods-TicText.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicText.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -113,6 +129,8 @@
 		0EC584E41A7864AA00025D71 /* TicText */ = {
 			isa = PBXGroup;
 			children = (
+				CD4D57BF1A96A54B002B5586 /* Service */,
+				CD4D57CA1A96B745002B5586 /* Models */,
 				0E923B9B1A87192200040522 /* Controllers */,
 				0EC584E91A7864AA00025D71 /* AppDelegate.h */,
 				0EC584EA1A7864AA00025D71 /* AppDelegate.m */,
@@ -130,6 +148,7 @@
 			children = (
 				0EC584E61A7864AA00025D71 /* Info.plist */,
 				0EC584E71A7864AA00025D71 /* main.m */,
+				CD4D57CF1A96BDBB002B5586 /* TicText-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -137,6 +156,9 @@
 		0EC584FE1A7864AA00025D71 /* TicTextTests */ = {
 			isa = PBXGroup;
 			children = (
+				CD4D57D01A96C956002B5586 /* Helpers */,
+				CD4D57CE1A96B93B002B5586 /* Service */,
+				CD4D57CD1A96B936002B5586 /* Models */,
 				0EC585011A7864AA00025D71 /* TicTextTests.m */,
 				0EC584FF1A7864AA00025D71 /* Supporting Files */,
 			);
@@ -158,6 +180,49 @@
 				69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CD4D57BF1A96A54B002B5586 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				CD4D57C01A96A5A6002B5586 /* TTSession.h */,
+				CD4D57C11A96A5A6002B5586 /* TTSession.m */,
+			);
+			name = Service;
+			sourceTree = "<group>";
+		};
+		CD4D57CA1A96B745002B5586 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CD4D57C61A96B740002B5586 /* TTUser.h */,
+				CD4D57C71A96B740002B5586 /* TTUser.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		CD4D57CD1A96B936002B5586 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CD4D57CB1A96B929002B5586 /* TTUserTests.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		CD4D57CE1A96B93B002B5586 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				CD4D57C41A96AED2002B5586 /* TTSessionTests.m */,
+			);
+			name = Service;
+			sourceTree = "<group>";
+		};
+		CD4D57D01A96C956002B5586 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				CD4D57D11A96C97D002B5586 /* TTHelper.h */,
+				CD4D57D21A96C97D002B5586 /* TTHelper.m */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 		EF6A02DA18A27C3A07C3888B /* Pods */ = {
@@ -340,6 +405,8 @@
 			files = (
 				0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */,
 				0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */,
+				CD4D57C81A96B740002B5586 /* TTUser.m in Sources */,
+				CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */,
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
 				0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */,
 				0EC584EB1A7864AA00025D71 /* AppDelegate.m in Sources */,
@@ -351,7 +418,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD4D57C31A96A5AC002B5586 /* TTSession.m in Sources */,
 				0EC585021A7864AA00025D71 /* TicTextTests.m in Sources */,
+				CD4D57C91A96B740002B5586 /* TTUser.m in Sources */,
+				CD4D57CC1A96B929002B5586 /* TTUserTests.m in Sources */,
+				CD4D57C51A96AED2002B5586 /* TTSessionTests.m in Sources */,
+				CD4D57D31A96C97D002B5586 /* TTHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +534,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
+				GCC_PREFIX_HEADER = "TicText/TicText-Prefix.pch";
 				INFOPLIST_FILE = TicText/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -477,6 +550,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
+				GCC_PREFIX_HEADER = "TicText/TicText-Prefix.pch";
 				INFOPLIST_FILE = TicText/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -494,6 +568,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
+				GCC_PREFIX_HEADER = "TicText/TicText-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -514,6 +589,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
+				GCC_PREFIX_HEADER = "TicText/TicText-Prefix.pch";
 				INFOPLIST_FILE = TicTextTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -14,6 +14,10 @@ extern float const kTTUIPurpleColorGreen;
 extern float const kTTUIPurpleColorBlue;
 extern float const kTTUIPurpleColorAlpha;
 
+#define kTTUIPurpleColor [UIColor colorWithRed:kTTUIPurpleColorRed/255.0 \
+                                         green:kTTUIPurpleColorGreen/255.0 \
+                                          blue:kTTUIPurpleColorBlue/255.0 \
+                                         alpha:kTTUIPurpleColorAlpha/255.0]
 
 #pragma mark - NSUserDefaults
 
