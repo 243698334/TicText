@@ -21,8 +21,6 @@
 
 @implementation TTLogInViewController
 
-#pragma mark - UIViewController
-
 - (instancetype)init {
     if (self = [super init]) {
         self.presentForLogIn = YES;
@@ -30,13 +28,20 @@
     return self;
 }
 
+
+#pragma mark - UIViewController
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = kTTUIPurpleColor;
 }
 
+
+#pragma mark - FBLogInViewDelegate
+
 - (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView {
     if (!self.presentForLogIn) {
+        // Reset the button to the right state (show "Log in with Facebook" instead of "Log out")
         [FBSession.activeSession closeAndClearTokenInformation];
         return;
     }
@@ -108,7 +113,6 @@
 }
 
 - (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView {
-    NSLog(@"Log out");
     self.presentForLogIn = YES;
 }
 
