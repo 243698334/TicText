@@ -16,7 +16,6 @@
     PFUser *user = [[PFUser alloc] init];
     user[kTTUserDisplayNameKey] = @"tkatzenbaer";
     user[kTTUserFacebookIDKey] = @"1234567890";
-    user[kTTUserHasTicTextProfileKey] = @YES;
     user[kTTUserProfilePictureKey] = [NSData data]; // @TODO - replace with actual data
     user[kTTUserProfilePictureSmallKey] = [NSData data]; // @TODO - replace with actual data
     

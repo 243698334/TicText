@@ -32,6 +32,7 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
 						currentPushQuery.equalTo('user', currentFriendUser);
 						var pushNotification = {
 							alert: "One of your Facebook friends just joined TicText! ",
+							sound : "default",
 							t: "nf"
 						};
 						console.log("Push notification content: " + pushNotification);
