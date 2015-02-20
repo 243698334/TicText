@@ -31,33 +31,6 @@
     
 }
 
-- (void)testCurrentUserNil {
-    // Arrange
-    OCMStub([self.mockPFUser currentUser]).andReturn(nil);
-    
-    // Act
-    TTUser *retUser = [[TTSession sharedSession] currentUser];
-    
-    // Assert
-    XCTAssertNil(retUser);
-}
-
-- (void)testCurrentUser {
-    // Arrange
-    OCMStub([self.mockPFUser currentUser]).andReturn(self.fakeUser);
-    
-    // Act
-    TTUser *retUser = [[TTSession sharedSession] currentUser];
-    
-    // Assert
-    XCTAssertNotNil(retUser);
-    XCTAssertTrue([retUser isKindOfClass:[TTUser class]]);
-    
-    XCTAssertEqualObjects(self.fakeUser[kTTUserDisplayNameKey], retUser.displayName);
-    XCTAssertEqualObjects(self.fakeUser[kTTUserProfilePictureKey], retUser.profilePicture);
-    XCTAssertEqualObjects(self.fakeUser[kTTUserTicTextFriendsKey], retUser.friends);
-}
-
 - (void)testIsUserLoggedInTrue {
     XCTAssertTrue(NO); // @stub
 }

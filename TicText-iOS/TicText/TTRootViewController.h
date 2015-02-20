@@ -7,14 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Parse/Parse.h>
-#import <AFNetworking/AFNetworking.h>
 #import "AppDelegate.h"
 #import "TTLogInViewController.h"
 #import "TTFindFriendsViewController.h"
 
-@interface TTRootViewController : UIViewController <TTLogInViewControllerDelegate>
+// The main view controller for this application.
+@interface TTRootViewController : UIViewController
 
-- (void)presentLogInViewControllerAnimated:(BOOL)animated;
+// Modally presents the login view controller, but only if the user is not logged in.
+- (void)presentLogInViewControllerIfNeeded;
+
+// Modally presents the login view controller.
+- (void)presentLogInViewController:(BOOL)animated;
 
 @end

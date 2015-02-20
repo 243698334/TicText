@@ -17,8 +17,7 @@
 
 @interface TTUserTests : XCTestCase
 
-@property (nonatomic, strong) id mockPFUser;
-@property (nonatomic, strong) TTUser *user;
+@property (nonatomic, strong) id user;
 
 @end
 
@@ -26,48 +25,35 @@
 
 - (void)setUp {
     [super setUp];
-
-    self.mockPFUser = OCMClassMock([PFUser class]);
-    self.user = [TTUser wrap:self.mockPFUser];
+    
+    self.user = [[TTUser alloc] init];
 }
 
-- (void)testCurrentUser {
+- (void)testLinkedWithFacebookTrue {
     // Arrange
-    PFUser *fakeUser = [TTHelper fakeUser];
-    OCMStub([self.mockPFUser currentUser]).andReturn(fakeUser);
+    TTUser *fakeUser = [TTHelper fakeUser];
+    fakeUser[kTTUserFacebookIDKey] = @1234567890;
     
     // Act
-    TTUser *user1 = [TTUser currentUser];
-    TTUser *user2 = [[TTSession sharedSession] currentUser];
+    BOOL isLinked = [fakeUser isLinkedWithFacebook];
     
     // Assert
-    XCTAssertEqualObjects(user1, user2);
+    XCTAssertTrue(isLinked);
 }
 
-- (void)testPFUserInit {
+- (void)testLinkedWithFacebookFalse {
     // Arrange
-    PFUser *fakeUser = [TTHelper fakeUser];
+    TTUser *fakeUser = [TTHelper fakeUser];
+    [fakeUser removeObjectForKey:kTTUserFacebookIDKey];
     
     // Act
-    self.user = [TTUser wrap:fakeUser];
+    BOOL isLinked = [fakeUser isLinkedWithFacebook];
     
     // Assert
-    XCTAssertEqualObjects(fakeUser, self.user.pfUser);
+    XCTAssertFalse(isLinked);
 }
 
-- (void)testDisplayNameSetter {
-    // Arrange
-    NSString *displayName = @"foo";
-    OCMExpect([self.mockPFUser setObject:displayName forKey:kTTUserDisplayNameKey]);
-    
-    // Act
-    [self.user setDisplayName:displayName];
-    
-    // Assert
-    OCMVerifyAll(self.mockPFUser);
-}
-
-- (void)testDisplayNameGetter {
+- (void)testDisplayName {
     // Arrange
     NSString *displayName = @"foo";
     
@@ -75,53 +61,30 @@
     [self.user setDisplayName:displayName];
     
     // Assert
-    XCTAssertEqualObjects(displayName, self.user.displayName);
+    XCTAssertEqualObjects(displayName, [self.user displayName]);
 }
 
-- (void)testProfilePictureSetter {
+- (void)testProfilePicture {
     // Arrange
-    NSData *someData = [NSData data];
-    OCMExpect([self.mockPFUser setObject:[OCMArg isNotNil] forKey:kTTUserProfilePictureKey]);
+    NSData *someData = UIImagePNGRepresentation([UIImage imageNamed:@"profile"]);
     
     // Act
     [self.user setProfilePicture:someData];
     
     // Assert
-    OCMVerifyAll(self.mockPFUser);
-}
-
-- (void)testProfilePictureGetter {
-    // Arrange
-    NSData *someData = [NSData data];
-    
-    // Act
-    [self.user setProfilePicture:someData];
-    
-    // Assert
-    XCTAssertEqualObjects(someData, self.user.profilePicture);
+    XCTAssertEqualObjects(someData, [self.user profilePicture]);
 }
 
 - (void)testFriendsSetter {
     // Arrange
     NSArray *friends = @[@"foo", @"bar"];
-    OCMExpect([self.mockPFUser setObject:friends forKey:kTTUserTicTextFriendsKey]);
     
     // Act
     [self.user setFriends:friends];
     
     // Assert
-    OCMVerifyAll(self.mockPFUser);
-}
+    XCTAssertEqualObjects(friends, [self.user friends]);
 
-- (void)testFriendsGetter {
-    // Arrange
-    NSArray *friends = @[@"foo", @"bar"];
-    
-    // Act
-    [self.user setFriends:friends];
-    
-    // Assert
-    XCTAssertEqualObjects(friends, self.user.friends);
 }
 
 @end

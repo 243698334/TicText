@@ -8,15 +8,14 @@
 
 #import "TTHelper.h"
 
-#import <Parse/Parse.h>
+#import "TTUser.h"
 
 @implementation TTHelper
 
-+ (PFUser *)fakeUser {
-    PFUser *user = [[PFUser alloc] init];
++ (TTUser *)fakeUser {
+    TTUser *user = [[TTUser alloc] init];
     user[kTTUserDisplayNameKey] = @"tkatzenbaer";
     user[kTTUserFacebookIDKey] = @"1234567890";
-    user[kTTUserTicTextFriendsKey] = @YES;
     user[kTTUserProfilePictureKey] = [NSData data]; // @TODO - replace with actual data
     user[kTTUserProfilePictureSmallKey] = [NSData data]; // @TODO - replace with actual data
     

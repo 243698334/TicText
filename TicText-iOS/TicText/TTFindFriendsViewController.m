@@ -24,11 +24,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _TTPurpleColor = [UIColor colorWithRed:kTTUIPurpleColorRed/255.0 green:kTTUIPurpleColorGreen/255.0 blue:kTTUIPurpleColorBlue/255.0 alpha:kTTUIPurpleColorAlpha/255.0];
-    // Background
-    self.view.backgroundColor = _TTPurpleColor;
-    
-    
+
+    self.view.backgroundColor = kTTUIPurpleColor;
     
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.delegate = self;
@@ -43,13 +40,7 @@
     headerView.backgroundColor = _TTPurpleColor;
     self.tableView.tableHeaderView = headerView;
     
-    UIView *statusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, [UIApplication sharedApplication].statusBarFrame.size.height)];
-    
-    statusView.backgroundColor = _TTPurpleColor;
-    [self.view addSubview:statusView];
-    
 }
-
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.width * 0.6)];

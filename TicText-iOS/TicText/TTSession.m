@@ -13,8 +13,6 @@
 
 @implementation TTSession
 
-@synthesize currentUser = _currentUser;
-
 + (TTSession *)sharedSession {
     static TTSession *_sharedInstance;
     
@@ -26,45 +24,126 @@
     return _sharedInstance;
 }
 
-- (TTUser *)currentUser {
-    if ([_currentUser pfUser] != [PFUser currentUser]) {
-        _currentUser = [TTUser wrap:[PFUser currentUser]];
-    }
-    return _currentUser;
-}
-
 - (BOOL)isUserLoggedIn {
-    return [self currentUser] != nil;
+    return [TTUser currentUser] != nil;
 }
 
-- (BOOL)fblogInWithId:(NSString *)userId
-          accessToken:(NSString *)token
-       expirationDate:(NSDate *)expirationDate {
-    return NO; // @stub
+- (void)login:(void (^)(BOOL isNewUser, NSError *error))completion {
+    NSArray *permissions = @[@"public_profile", @"user_friends", @"email", @"user_photos"];
+    
+    // Login PFUser using Facebook
+    [PFFacebookUtils logInWithPermissions:permissions block:^(PFUser *user, NSError *error) {
+        if (!user) {
+            if (completion) {
+                completion(NO, error);
+            }
+        } else {
+            if (completion) {
+                completion(user.isNew, error);
+            }
+        }
+    }];
 }
 
-- (BOOL)logout {
-    return NO; // @stub
-}
-
-- (BOOL)syncFriends {
-    return NO; // @stub
-}
-
-- (BOOL)syncProfilePicture {
-    return NO; // @stub
-}
-
-- (BOOL)syncUserData {
-    NSError *error;
-    [[PFUser currentUser] fetch:&error];
-    if (error) {
-        NSLog(@"ERROR: Unable to fetch currentUser from server.");
+- (void)logout:(void (^)(void))completion {
+    [TTUser logOut];
+    
+    if (completion) {
+        completion();
     }
-/*    [[PFUser currentUser] fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        [self refreshDataForExistingUser:(PFUser *)object error:error completion:nil];
-    }];*/
-    return NO; // @stub
+}
+
+#pragma mark - FBSync
+
+- (void)syncProfileData:(void (^)(NSError *error))completion {
+    FBRequest *request = [FBRequest requestForMe];
+    [request startWithCompletionHandler:^(FBRequestConnection *conn, id result, NSError *error) {
+        if (!error) {
+            // result is a dictionary with the user's Facebook data
+            NSDictionary *userData = (NSDictionary *)result;
+            
+            NSDictionary *dataMap = @{
+                                      kTTUserDisplayNameKey :   @"name",
+                                      kTTUserFacebookIDKey :    @"id"
+                                      };
+            
+            TTUser *user = [TTUser currentUser];
+            [dataMap enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
+                user[key] = userData[obj];
+            }];
+            
+            [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (completion) {
+                    completion(error);
+                }
+            }];
+        }
+        if (completion) {
+            completion(error);
+        }
+    }];
+}
+
+- (void)syncFriends:(void (^)(NSError *))completion {
+    FBRequest *request = [FBRequest requestForMyFriends];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            NSMutableArray *friendIds = [NSMutableArray array];
+            
+            NSArray *friends = [result objectForKey:@"data"];
+            for (NSDictionary *friend in friends) {
+                [friendIds addObject:friend[@"id"]];
+            }
+            
+            TTUser *user = [TTUser currentUser];
+            [user setFriends:[NSArray arrayWithArray:friendIds]];
+            [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (completion) {
+                    completion(error);
+                }
+            }];
+        }
+        if (completion) {
+            completion(error);
+        }
+    }];
+}
+
+- (void)syncProfilePicture:(void (^)(NSError *))completion {
+    TTUser *user = [TTUser currentUser];
+    
+    void (^fetchProfilePicture)(NSString *) = ^(NSString *facebookId){
+        NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookId]];
+        
+        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+        
+        // Run network request asynchronously
+        [NSURLConnection sendAsynchronousRequest:urlRequest
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:
+         ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+             if (connectionError == nil && data != nil) {
+                 [user setProfilePicture:data];
+                 [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                     if (completion) {
+                         completion(error);
+                     }
+                 }];
+             }
+         }];
+    };
+    
+    if ([user facebookId]) {
+        fetchProfilePicture([user facebookId]);
+    } else {
+        [self syncProfileData:^(NSError *error) {
+            if (!error) {
+                fetchProfilePicture([user facebookId]);
+            } else if (completion) {
+                completion(error);
+            }
+        }];
+    }
 }
 
 @end
