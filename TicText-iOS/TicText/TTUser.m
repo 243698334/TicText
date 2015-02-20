@@ -11,64 +11,43 @@
 
 #import "TTSession.h"
 
-@implementation TTUserFacebookAuthData
-
-@end
-
 @implementation TTUser
 
-@synthesize displayName = _displayName;
-@synthesize profilePicture = _profilePicture;
-@synthesize friends = _friends;
-
-- (id)initWithPFUser:(PFUser *)user {
-    if (self = [super init]) {
-        _pfUser = user;
-        
-        _displayName = user[kTTUserDisplayNameKey];
-        _profilePicture = user[kTTUserProfilePictureKey];
-        _friends = user[kTTUserTicTextFriendsKey];
-    }
-    return self;
+- (BOOL)isLinkedWithFacebook {
+    return self[kTTUserFacebookIDKey] != nil;
 }
 
-+ (TTUser *)currentUser {
-    return [[TTSession sharedSession] currentUser];
+- (void)setFacebookId:(NSString *)facebookId {
+    self[kTTUserFacebookIDKey] = facebookId;
 }
 
-+ (TTUser *)wrap:(PFUser *)user {
-    return [[TTUser alloc] initWithPFUser:user];
+- (NSString *)facebookId {
+    return self[kTTUserFacebookIDKey];
 }
 
 - (void)setDisplayName:(NSString *)displayName {
-    _displayName = displayName;
-    
-    [self.pfUser setObject:displayName forKey:kTTUserDisplayNameKey];
+    self[kTTUserDisplayNameKey] = displayName;
 }
 
 - (NSString *)displayName {
-    return _displayName;
+    return [self objectForKey:kTTUserDisplayNameKey];
 }
 
 - (void)setProfilePicture:(NSData *)data {
-    _profilePicture = data;
-    
     PFFile *file = [PFFile fileWithData:data];
-    [self.pfUser setObject:file forKey:kTTUserProfilePictureKey];
+    self[kTTUserProfilePictureKey] = file;
 }
 
 - (NSData *)profilePicture {
-    return _profilePicture;
+    return [(PFFile *)[self objectForKey:kTTUserProfilePictureKey] getData];
 }
 
 - (void)setFriends:(NSArray *)friends {
-    _friends = friends;
-    
-    [self.pfUser setObject:friends forKey:kTTUserTicTextFriendsKey];
+    self[kTTUserTicTextFriendsKey] = friends;
 }
 
 - (NSArray *)friends {
-    return _friends;
+    return [self objectForKey:kTTUserTicTextFriendsKey];
 }
 
 @end

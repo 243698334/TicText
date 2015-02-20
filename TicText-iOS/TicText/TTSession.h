@@ -15,30 +15,29 @@
 // A utility class to handle the management of the User's session.
 @interface TTSession : NSObject
 
-// Returns the currently logged in user, or nil if not logged in.
-@property (nonatomic, strong, readonly) TTUser *currentUser;
-
 // Getter for the singleton instance of this class.
 + (TTSession *)sharedSession;
 
 // Returns whether the User is logged in.
 - (BOOL)isUserLoggedIn;
 
-// Attempts to log the user in with their Facebook credentials and returns whether it succeeded.
-- (BOOL)fblogInWithId:(NSString *)userId
-          accessToken:(NSString *)token
-       expirationDate:(NSDate *)expirationDate;
+// Prompts the user to authenticate through Facebook, then
+- (void)login:(void (^)(BOOL isNewUser, NSError *error))completion;
 
 // Logs the user out.
-- (BOOL)logout;
+- (void)logout:(void (^)(void))completion;
+
+@end
+
+@interface TTSession (FBSync)
+
+// Syncs the User's profile data to that on Facebook.
+- (void)syncProfileData:(void (^)(NSError *error))completion;
 
 // Syncs the User's friends list to that on Facebook.
-- (BOOL)syncFriends;
+- (void)syncFriends:(void (^)(NSError *error))completion;
 
 // Syncs the User's profile picture to that on Facebook.
-- (BOOL)syncProfilePicture;
-
-// Syncs multiple data to that on Facebook.
-- (BOOL)syncUserData;
+- (void)syncProfilePicture:(void (^)(NSError *error))completion;
 
 @end

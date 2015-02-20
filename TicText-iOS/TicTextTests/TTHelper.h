@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@class PFUser;
+@class TTUser;
 
 @interface TTHelper : NSObject
 
-+ (PFUser *)fakeUser;
++ (TTUser *)fakeUser;
 
 @end

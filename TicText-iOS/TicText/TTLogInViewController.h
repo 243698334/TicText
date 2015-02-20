@@ -7,22 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Parse/Parse.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
-#import <FacebookSDK/FacebookSDK.h>
-#import <MBProgressHUD/MBProgressHUD.h>
-#import "TTConstants.h"
 
-@protocol TTLogInViewControllerDelegate;
+// The view controller the user uses to log in.
+@interface TTLogInViewController : UIViewController
 
-@interface TTLogInViewController : UIViewController <FBLoginViewDelegate>
-
-@property (nonatomic, assign) id<TTLogInViewControllerDelegate> delegate;
-
-@end
-
-@protocol TTLogInViewControllerDelegate <NSObject>
-
-- (void)logInViewControllerDidLogUserIn:(TTLogInViewController *)logInViewController;
+@property (strong, nonatomic) IBOutlet UIButton *loginButton;
+- (IBAction)loginAction:(id)sender;
 
 @end
