@@ -62,12 +62,11 @@
         _logInViewControllerPresented = NO;
         [self dismissViewControllerAnimated:YES completion:nil];
         
-        if ([currentUser objectForKey:kTTUserHasTicTextProfileKey]) {
+        if (currentUser.isNew) {
             // user already has TicText profile
             [self refreshDataForExistingUser:currentUser error:nil completion:nil];
         } else {
             // new user
-            [currentUser setObject:@YES forKey:kTTUserHasTicTextProfileKey];
             [self fetchDataForNewUser:currentUser error:nil completion:^{
                 // Present TTFindFriendsViewController if new user
                 TTFindFriendsViewController *findFriendsViewController = [[TTFindFriendsViewController alloc] init];
