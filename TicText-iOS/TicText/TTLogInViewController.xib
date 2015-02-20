@@ -49,12 +49,16 @@
                         <constraint firstAttribute="width" secondItem="LAt-aG-3hz" secondAttribute="height" multiplier="1:1" id="m9a-F5-Q6z"/>
                     </constraints>
                 </imageView>
-                <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oms-Gi-bDK" userLabel="Facebook Login View" customClass="FBLoginView">
-                    <rect key="frame" x="147" y="546" width="120" height="43"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oms-Gi-bDK" userLabel="Facebook Login View" customClass="FBLoginView">
+                    <rect key="frame" x="41.5" y="589" width="331" height="51"/>
                     <color key="backgroundColor" red="0.23137254901960785" green="0.34901960784313724" blue="0.59607843137254901" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <accessibility key="accessibilityConfiguration">
                         <accessibilityTraits key="traits" none="YES" image="YES"/>
                     </accessibility>
+                    <constraints>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="T1l-e5-7Rm"/>
+                        <constraint firstAttribute="width" secondItem="Oms-Gi-bDK" secondAttribute="height" multiplier="278:43" priority="750" id="TDf-m1-pn8"/>
+                    </constraints>
                     <connections>
                         <outlet property="delegate" destination="-1" id="YXs-ro-jdn"/>
                     </connections>
@@ -68,9 +72,11 @@
                 <constraint firstItem="no3-nF-anr" firstAttribute="height" secondItem="X3o-er-CEw" secondAttribute="height" multiplier="0.8" id="FgK-2W-Zta"/>
                 <constraint firstItem="LAt-aG-3hz" firstAttribute="top" secondItem="Wgq-49-Sdt" secondAttribute="bottom" id="G8c-Mf-pZ1"/>
                 <constraint firstAttribute="centerX" secondItem="WG3-tQ-I4G" secondAttribute="centerX" id="HQ7-mZ-QC7"/>
+                <constraint firstItem="Oms-Gi-bDK" firstAttribute="width" secondItem="X3o-er-CEw" secondAttribute="width" multiplier="0.8" id="Jf6-Ac-3Gf"/>
                 <constraint firstItem="no3-nF-anr" firstAttribute="top" secondItem="X3o-er-CEw" secondAttribute="top" id="Jip-wc-5mK"/>
                 <constraint firstItem="LAt-aG-3hz" firstAttribute="width" secondItem="X3o-er-CEw" secondAttribute="width" multiplier="0.55" id="KIq-hL-gwi"/>
                 <constraint firstItem="WG3-tQ-I4G" firstAttribute="width" secondItem="X3o-er-CEw" secondAttribute="width" multiplier="0.6" id="THS-Qz-lo4"/>
+                <constraint firstItem="Oms-Gi-bDK" firstAttribute="top" secondItem="no3-nF-anr" secondAttribute="bottom" id="Wri-KX-imE"/>
                 <constraint firstAttribute="centerX" secondItem="LAt-aG-3hz" secondAttribute="centerX" id="iKu-4Q-cfS"/>
                 <constraint firstItem="WG3-tQ-I4G" firstAttribute="top" secondItem="LAt-aG-3hz" secondAttribute="bottom" constant="20" id="jsJ-pc-tm4"/>
                 <constraint firstAttribute="centerX" secondItem="Oms-Gi-bDK" secondAttribute="centerX" id="ltY-le-YRB"/>
