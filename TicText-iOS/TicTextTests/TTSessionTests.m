@@ -10,14 +10,14 @@
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
 
-#import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+
 #import "TTHelper.h"
 #import "TTSession.h"
 
 @interface TTSessionTests : XCTestCase
 
-@property (nonatomic, strong) id mockPFUser;
-@property (nonatomic, strong) PFUser *fakeUser;
+@property (nonatomic, strong) id mockUser;
 
 @end
 
@@ -26,57 +26,40 @@
 - (void)setUp {
     [super setUp];
     
-    self.mockPFUser = OCMClassMock([PFUser class]);
-    self.fakeUser = [TTHelper fakeUser];
-    
+    self.mockUser = OCMClassMock([TTUser class]);
 }
 
 - (void)testIsUserLoggedInTrue {
-    XCTAssertTrue(NO); // @stub
+    // Arrange
+    OCMStub([self.mockUser currentUser]).andReturn([TTHelper fakeUser]);
+    
+    // Act
+    BOOL isUserLoggedIn = [[[TTSession alloc] init] isUserLoggedIn];
+    
+    // Assert
+    XCTAssertTrue(isUserLoggedIn);
 }
 
 - (void)testIsUserLoggedInFalse {
-    XCTAssertTrue(NO); // @stub
+    // Arrange
+    OCMStub([self.mockUser currentUser]).andReturn(nil);
+    
+    // Act
+    BOOL isUserLoggedIn = [[[TTSession alloc] init] isUserLoggedIn];
+    
+    // Assert
+    XCTAssertFalse(isUserLoggedIn);
 }
 
-- (void)testFacebookLoginSuccess {
-    XCTAssertTrue(NO); // @stub
-}
-
-- (void)testFacebookLoginFailure {
-    XCTAssertTrue(NO); // @stub
-}
-
-- (void)testFacebookLogoutSuccess {
-    XCTAssertTrue(NO); // @stub
-}
-
-- (void)testFacebookLogoutFailure {
-    XCTAssertTrue(NO); // @stub
-}
-
-- (void)testSyncFriendsSuccess {
-    XCTAssertTrue(NO); // @stub
-}
-
-- (void)testSyncFriendsFailure {
-    XCTAssertTrue(NO); // @stub
-}
-
-- (void)testSyncProfilePictureSuccess {
-    XCTAssertTrue(NO); // @stub
-}
-
-- (void)testSyncProfilePictureFailure {
-    XCTAssertTrue(NO); // @stub
-}
-
-- (void)testSyncUserDataSuccess {
-    XCTAssertTrue(NO); // @stub
-}
-
-- (void)testSyncUserDataFailure {
-    XCTAssertTrue(NO); // @stub
+- (void)testLogout {
+    // Arrange
+    OCMExpect([self.mockUser logOut]);
+    
+    // Act
+    [[[TTSession alloc] init] logout:nil];
+    
+    // Assert
+    OCMVerifyAll(self.mockUser);
 }
 
 @end
