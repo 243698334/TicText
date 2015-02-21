@@ -30,6 +30,7 @@
 		CD4D57D61A96E9EE002B5586 /* TTLogInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD4D57D51A96E9EE002B5586 /* TTLogInViewController.xib */; };
 		CD935B681A98E9FA0017325C /* TTUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B671A98E9FA0017325C /* TTUtility.m */; };
 		CD935B6A1A98EA9A0017325C /* TTUtilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B691A98EA9A0017325C /* TTUtilityTests.m */; };
+		CD935B6D1A98ED6F0017325C /* TTRootViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B6C1A98ED6F0017325C /* TTRootViewControllerTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,7 @@
 		CD935B661A98E9FA0017325C /* TTUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTUtility.h; sourceTree = "<group>"; };
 		CD935B671A98E9FA0017325C /* TTUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUtility.m; sourceTree = "<group>"; };
 		CD935B691A98EA9A0017325C /* TTUtilityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUtilityTests.m; sourceTree = "<group>"; };
+		CD935B6C1A98ED6F0017325C /* TTRootViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRootViewControllerTests.m; sourceTree = "<group>"; };
 		E62ADB5018418278F1D7F35F /* libPods-TicText.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicText.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -177,6 +179,7 @@
 				CD4D57D01A96C956002B5586 /* Helpers */,
 				CD4D57CE1A96B93B002B5586 /* Service */,
 				CD4D57CD1A96B936002B5586 /* Models */,
+				CD935B6B1A98ED5E0017325C /* Controllers */,
 				0EC585011A7864AA00025D71 /* TicTextTests.m */,
 				0EC584FF1A7864AA00025D71 /* Supporting Files */,
 			);
@@ -266,6 +269,14 @@
 				0E68055E1A85306F00C013D2 /* TTConstants.m */,
 			);
 			name = Domain;
+			sourceTree = "<group>";
+		};
+		CD935B6B1A98ED5E0017325C /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				CD935B6C1A98ED6F0017325C /* TTRootViewControllerTests.m */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 		EF6A02DA18A27C3A07C3888B /* Pods */ = {
@@ -469,6 +480,7 @@
 			files = (
 				CD935B6A1A98EA9A0017325C /* TTUtilityTests.m in Sources */,
 				0EC585021A7864AA00025D71 /* TicTextTests.m in Sources */,
+				CD935B6D1A98ED6F0017325C /* TTRootViewControllerTests.m in Sources */,
 				CD4D57CC1A96B929002B5586 /* TTUserTests.m in Sources */,
 				CD4D57C51A96AED2002B5586 /* TTSessionTests.m in Sources */,
 				CD4D57D31A96C97D002B5586 /* TTHelper.m in Sources */,

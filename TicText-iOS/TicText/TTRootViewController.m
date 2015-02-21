@@ -43,6 +43,7 @@
     }
 }
 
+// @remark - why do we need the presentForLogIn flag?
 - (void)presentLogInViewControllerForLogIn:(BOOL)presentForLogIn animated:(BOOL)animated {
     UIViewController *loginViewController = [[TTLogInViewController alloc] init];
     ((TTLogInViewController *)loginViewController).presentForLogIn = presentForLogIn;
