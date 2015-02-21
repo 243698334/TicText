@@ -29,10 +29,8 @@
 }
 
 - (void)login:(void (^)(BOOL isNewUser, NSError *error))completion {
-    NSArray *permissions = @[@"public_profile", @"user_friends", @"email", @"user_photos"];
-    
     // Login PFUser using Facebook
-    [PFFacebookUtils logInWithPermissions:permissions block:^(PFUser *user, NSError *error) {
+    [PFFacebookUtils logInWithPermissions:kTTFacebookPermissions block:^(PFUser *user, NSError *error) {
         if (!user) {
             if (completion) {
                 completion(NO, error);

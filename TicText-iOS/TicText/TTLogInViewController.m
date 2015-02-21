@@ -34,8 +34,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = kTTUIPurpleColor;
+    
+    self.facebookLogInView.readPermissions = kTTFacebookPermissions;
 }
-
 
 #pragma mark - FBLogInViewDelegate
 

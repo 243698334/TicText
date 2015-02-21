@@ -92,3 +92,6 @@ extern NSString * const kTTPushNotificationPayloadTypeNewFriend;
 #pragma mark - Installation Class
 // Field keys
 extern NSString * const kTTInstallationUserKey;
+
+#pragma mark - Miscellaneous
+#define kTTFacebookPermissions @[@"public_profile", @"user_friends", @"email", @"user_photos"]
