@@ -31,7 +31,7 @@
 
 - (IBAction)logout:(id)sender {
     [TTSession.sharedSession logout:^{
-        [self presentLogInViewControllerForLogIn:NO animated:YES];
+        [self presentLogInViewControllerAnimated:YES];
     }];
 }
 
@@ -39,14 +39,13 @@
 
 - (void)presentLogInViewControllerIfNeeded {
     if (![TTSession.sharedSession isUserLoggedIn]) {
-        [self presentLogInViewControllerForLogIn:YES animated:NO];
+        [self presentLogInViewControllerAnimated:NO];
     }
 }
 
 // @remark - why do we need the presentForLogIn flag?
-- (void)presentLogInViewControllerForLogIn:(BOOL)presentForLogIn animated:(BOOL)animated {
+- (void)presentLogInViewControllerAnimated:(BOOL)animated {
     UIViewController *loginViewController = [[TTLogInViewController alloc] init];
-    ((TTLogInViewController *)loginViewController).presentForLogIn = presentForLogIn;
     [self presentViewController:loginViewController animated:animated completion:nil];
 }
 

@@ -14,6 +14,5 @@
 
 // FBLogInView is only used for the UI. FBsession is not used for the login process. 
 @property (strong, nonatomic) IBOutlet FBLoginView *facebookLogInView;
-@property (nonatomic) BOOL presentForLogIn;
 
 @end

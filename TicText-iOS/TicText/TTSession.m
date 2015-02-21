@@ -45,6 +45,7 @@
 
 - (void)logout:(void (^)(void))completion {
     [TTUser logOut];
+    [FBSession.activeSession closeAndClearTokenInformation];
     
     if (completion) {
         completion();

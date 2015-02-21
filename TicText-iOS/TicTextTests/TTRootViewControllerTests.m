@@ -43,11 +43,10 @@
 
 - (void)testPresentLogInViewController {
     // Arrange
-    BOOL presentForLogIn = YES;
     BOOL animated = NO;
     
     // Act
-    [self.mockVC presentLogInViewControllerForLogIn:presentForLogIn animated:animated];
+    [self.mockVC presentLogInViewControllerAnimated:animated];
     
     // Assert
     OCMVerify([self.mockVC presentViewController:[OCMArg isKindOfClass:[TTLogInViewController class]] animated:animated completion:[OCMArg any]]);
