@@ -28,6 +28,8 @@
 		CD4D57CC1A96B929002B5586 /* TTUserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57CB1A96B929002B5586 /* TTUserTests.m */; };
 		CD4D57D31A96C97D002B5586 /* TTHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57D21A96C97D002B5586 /* TTHelper.m */; };
 		CD4D57D61A96E9EE002B5586 /* TTLogInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD4D57D51A96E9EE002B5586 /* TTLogInViewController.xib */; };
+		CD935B681A98E9FA0017325C /* TTUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B671A98E9FA0017325C /* TTUtility.m */; };
+		CD935B6A1A98EA9A0017325C /* TTUtilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B691A98EA9A0017325C /* TTUtilityTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +83,9 @@
 		CD4D57D11A96C97D002B5586 /* TTHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTHelper.h; sourceTree = "<group>"; };
 		CD4D57D21A96C97D002B5586 /* TTHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTHelper.m; sourceTree = "<group>"; };
 		CD4D57D51A96E9EE002B5586 /* TTLogInViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TTLogInViewController.xib; sourceTree = "<group>"; };
+		CD935B661A98E9FA0017325C /* TTUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTUtility.h; sourceTree = "<group>"; };
+		CD935B671A98E9FA0017325C /* TTUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUtility.m; sourceTree = "<group>"; };
+		CD935B691A98EA9A0017325C /* TTUtilityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUtilityTests.m; sourceTree = "<group>"; };
 		E62ADB5018418278F1D7F35F /* libPods-TicText.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicText.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -209,6 +214,8 @@
 			children = (
 				CD4D57C01A96A5A6002B5586 /* TTSession.h */,
 				CD4D57C11A96A5A6002B5586 /* TTSession.m */,
+				CD935B661A98E9FA0017325C /* TTUtility.h */,
+				CD935B671A98E9FA0017325C /* TTUtility.m */,
 			);
 			name = Service;
 			sourceTree = "<group>";
@@ -238,6 +245,7 @@
 			isa = PBXGroup;
 			children = (
 				CD4D57C41A96AED2002B5586 /* TTSessionTests.m */,
+				CD935B691A98EA9A0017325C /* TTUtilityTests.m */,
 			);
 			name = Service;
 			sourceTree = "<group>";
@@ -446,6 +454,7 @@
 				CD4D57C81A96B740002B5586 /* TTUser.m in Sources */,
 				CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */,
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
+				CD935B681A98E9FA0017325C /* TTUtility.m in Sources */,
 				0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */,
 				0EC584EB1A7864AA00025D71 /* AppDelegate.m in Sources */,
 				0E42695E1A97440E0046B3F2 /* TTActivity.m in Sources */,
@@ -458,6 +467,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD935B6A1A98EA9A0017325C /* TTUtilityTests.m in Sources */,
 				0EC585021A7864AA00025D71 /* TicTextTests.m in Sources */,
 				CD4D57CC1A96B929002B5586 /* TTUserTests.m in Sources */,
 				CD4D57C51A96AED2002B5586 /* TTSessionTests.m in Sources */,

@@ -7,9 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AppDelegate.h"
-#import "TTLogInViewController.h"
-#import "TTFindFriendsViewController.h"
 
 // The main view controller for this application.
 @interface TTRootViewController : UIViewController

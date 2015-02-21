@@ -8,6 +8,9 @@
 
 #import "TTRootViewController.h"
 
+#import "TTLogInViewController.h"
+#import "TTFindFriendsViewController.h"
+
 #import "TTSession.h"
 
 @implementation TTRootViewController
@@ -45,13 +48,5 @@
     ((TTLogInViewController *)loginViewController).presentForLogIn = presentForLogIn;
     [self presentViewController:loginViewController animated:animated completion:nil];
 }
-
-- (void)setupPushNotification {
-    UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes categories:nil];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
-}
-
 
 @end

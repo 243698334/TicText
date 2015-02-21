@@ -11,6 +11,7 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 
 #import "TTSession.h"
+#import "TTUtility.h"
 #import "TTFindFriendsViewController.h"
 
 @interface TTLogInViewController ()
@@ -69,6 +70,8 @@
                                                   otherButtonTitles:@"Dismiss", nil];
             [alert show];
         } else {
+            [TTUtility setupPushNotifications];
+            
             BOOL showFindFriends = isNewUser || ![[TTUser currentUser] isLinkedWithFacebook];
             
             if (showFindFriends) {
