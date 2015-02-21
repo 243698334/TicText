@@ -8,7 +8,6 @@ target 'TicText' do
   pod 'ParseUI'
   pod 'Facebook-iOS-SDK'
   pod 'MBProgressHUD'
-  pod 'AFNetworking'
 end
 
 target 'TicTextTests' do
@@ -18,7 +17,6 @@ target 'TicTextTests' do
   pod 'ParseUI'
   pod 'Facebook-iOS-SDK'
   pod 'MBProgressHUD'
-  pod 'AFNetworking'
   pod 'OCMock', '~> 3.1'
 end
 
