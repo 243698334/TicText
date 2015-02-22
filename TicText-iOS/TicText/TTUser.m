@@ -7,11 +7,11 @@
 //
 
 #import "TTUser.h"
-#import <Parse/Parse.h>
-
-#import "TTSession.h"
+#import <Parse/PFObject+Subclass.h>
 
 @implementation TTUser
+
+@dynamic displayName, facebookId, friends, profilePicture;
 
 - (BOOL)isLinkedWithFacebook {
     return self[kTTUserFacebookIDKey] != nil;

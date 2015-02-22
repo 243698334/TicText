@@ -17,11 +17,16 @@ float const kTTUIPurpleColorAlpha = 255.0;
 
 
 #pragma mark - NSUserDefaults
+NSString * const kTTParseSessionIsValidLastCheckedKey = @"TTParseSessionIsValidLastCheckedKey";
+NSString * const kTTFacebookSessionIsValidLastCheckedKey = @"TTFacebookSessionIsValidLastCheckedKey";
 
 
 #pragma mark - NSNotification
-NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification = @"com.kevinychen.TicText.appDelegate.applicationDidReceiveRemoteNotification";
-
+NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification = @"AppDelegateDidReceiveRemoteNotification";
+NSString * const kTTLogInViewControllerDidFinishLogInNotification = @"TTLogInViewControllerDidFinishLogInNotification";
+NSString * const kTTLogInViewControllerDidFinishSignUpNotification = @"TTLogInViewControllerDidFinishLogInNewUserNotification";
+NSString * const kTTFacebookSessionDidBecomeInvalidNotification = @"TTFacebookSessionDidBecomeInvalidNotification";
+NSString * const kTTParseSessionDidBecomeInvalidNotification = @"TTParseSessionDidBecomeInvalidNotification";
 
 #pragma mark - PFUser Class
 // Field keys

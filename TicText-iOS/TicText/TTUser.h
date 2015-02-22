@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-
 #import <Parse/Parse.h>
+
+#import "TTSession.h"
 
 @interface TTUser : PFUser<PFSubclassing>
 

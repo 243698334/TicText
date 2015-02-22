@@ -7,6 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
+#import <MBProgressHUD/MBProgressHUD.h>
+
+#import "TTConstants.h"
+#import "TTSession.h"
+#import "TTUtility.h"
+#import "TTLogInViewController.h"
+#import "TTFindFriendsViewController.h"
+#import "TTConversationsViewController.h"
+#import "TTContactsViewController.h"
+#import "TTProfileViewController.h"
+#import "TTSettingsViewController.h"
 
 // The main view controller for this application.
 @interface TTRootViewController : UIViewController
@@ -18,6 +30,6 @@
 - (void)presentLogInViewControllerForLogIn:(BOOL)logIn animated:(BOOL)animated;
 
 // Logs the user out.
-- (IBAction)logout:(id)sender;
+- (IBAction)logOutForTesting:(id)sender;
 
 @end

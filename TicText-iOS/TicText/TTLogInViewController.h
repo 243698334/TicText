@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
+#import <MBProgressHUD/MBProgressHUD.h>
+
+#import "TTConstants.h"
+#import "TTUtility.h"
+#import "TTSession.h"
+#import "TTFindFriendsViewController.h"
 
 // The view controller the user uses to log in.
 @interface TTLogInViewController : UIViewController<FBLoginViewDelegate>

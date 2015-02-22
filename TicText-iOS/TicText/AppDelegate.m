@@ -8,8 +8,6 @@
 
 #import "AppDelegate.h"
 
-#import "TTUser.h"
-
 @interface AppDelegate ()
 
 @property (nonatomic, strong) TTRootViewController *rootViewController;
@@ -130,7 +128,7 @@
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.rootViewController];
     self.navigationController.navigationBarHidden = YES;
     
-    // set as root view controller of window
+    // Set as root view controller of window
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
 }

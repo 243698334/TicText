@@ -13,6 +13,8 @@
 #import <ParseCrashReporting/ParseCrashReporting.h>
 
 #import "TTConstants.h"
+#import "TTSession.h"
+#import "TTUser.h"
 #import "TTRootViewController.h"
 
 

@@ -10,9 +10,13 @@
 		0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E00AA2F1A919B6D00EE246D /* TTLogInViewController.m */; };
 		0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E00AA321A91AF2F00EE246D /* TTFindFriendsViewController.m */; };
 		0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0F657D1A8C0645003CB363 /* TTRootViewController.m */; };
-		0E42695B1A9743A70046B3F2 /* TTTic.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E42695A1A9743A70046B3F2 /* TTTic.m */; };
-		0E42695E1A97440E0046B3F2 /* TTActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E42695D1A97440E0046B3F2 /* TTActivity.m */; };
 		0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E68055E1A85306F00C013D2 /* TTConstants.m */; };
+		0EACA86A1A97CDC100B93AAA /* TTConversationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA8691A97CDC100B93AAA /* TTConversationsViewController.m */; };
+		0EACA86D1A97CDDD00B93AAA /* TTContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA86C1A97CDDD00B93AAA /* TTContactsViewController.m */; };
+		0EACA8701A97CDEE00B93AAA /* TTProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA86F1A97CDEE00B93AAA /* TTProfileViewController.m */; };
+		0EACA8731A97CE0D00B93AAA /* TTSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA8721A97CE0D00B93AAA /* TTSettingsViewController.m */; };
+		0EACA8781A99CB8800B93AAA /* TTActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA8751A99CB8800B93AAA /* TTActivity.m */; };
+		0EACA8791A99CB8800B93AAA /* TTTic.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA8771A99CB8800B93AAA /* TTTic.m */; };
 		0EC584E81A7864AA00025D71 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC584E71A7864AA00025D71 /* main.m */; };
 		0EC584EB1A7864AA00025D71 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC584EA1A7864AA00025D71 /* AppDelegate.m */; };
 		0EC584F31A7864AA00025D71 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0EC584F21A7864AA00025D71 /* Images.xcassets */; };
@@ -50,12 +54,20 @@
 		0E00AA321A91AF2F00EE246D /* TTFindFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTFindFriendsViewController.m; sourceTree = "<group>"; };
 		0E0F657C1A8C0645003CB363 /* TTRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRootViewController.h; sourceTree = "<group>"; };
 		0E0F657D1A8C0645003CB363 /* TTRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRootViewController.m; sourceTree = "<group>"; };
-		0E4269591A9743A70046B3F2 /* TTTic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTic.h; sourceTree = "<group>"; };
-		0E42695A1A9743A70046B3F2 /* TTTic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTic.m; sourceTree = "<group>"; };
-		0E42695C1A97440E0046B3F2 /* TTActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTActivity.h; sourceTree = "<group>"; };
-		0E42695D1A97440E0046B3F2 /* TTActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTActivity.m; sourceTree = "<group>"; };
 		0E68055D1A846A0000C013D2 /* TTConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTConstants.h; sourceTree = "<group>"; };
 		0E68055E1A85306F00C013D2 /* TTConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTConstants.m; sourceTree = "<group>"; };
+		0EACA8681A97CDC100B93AAA /* TTConversationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTConversationsViewController.h; sourceTree = "<group>"; };
+		0EACA8691A97CDC100B93AAA /* TTConversationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTConversationsViewController.m; sourceTree = "<group>"; };
+		0EACA86B1A97CDDD00B93AAA /* TTContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTContactsViewController.h; sourceTree = "<group>"; };
+		0EACA86C1A97CDDD00B93AAA /* TTContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTContactsViewController.m; sourceTree = "<group>"; };
+		0EACA86E1A97CDEE00B93AAA /* TTProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTProfileViewController.h; sourceTree = "<group>"; };
+		0EACA86F1A97CDEE00B93AAA /* TTProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTProfileViewController.m; sourceTree = "<group>"; };
+		0EACA8711A97CE0D00B93AAA /* TTSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSettingsViewController.h; sourceTree = "<group>"; };
+		0EACA8721A97CE0D00B93AAA /* TTSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSettingsViewController.m; sourceTree = "<group>"; };
+		0EACA8741A99CB8800B93AAA /* TTActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTActivity.h; sourceTree = "<group>"; };
+		0EACA8751A99CB8800B93AAA /* TTActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTActivity.m; sourceTree = "<group>"; };
+		0EACA8761A99CB8800B93AAA /* TTTic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTic.h; sourceTree = "<group>"; };
+		0EACA8771A99CB8800B93AAA /* TTTic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTic.m; sourceTree = "<group>"; };
 		0EC584E21A7864AA00025D71 /* TicText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TicText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC584E61A7864AA00025D71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0EC584E71A7864AA00025D71 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -122,6 +134,14 @@
 				0E00AA311A91AF2F00EE246D /* TTFindFriendsViewController.h */,
 				0E00AA321A91AF2F00EE246D /* TTFindFriendsViewController.m */,
 				CD28A08E1A97042600603929 /* TTRootViewController.xib */,
+				0EACA8681A97CDC100B93AAA /* TTConversationsViewController.h */,
+				0EACA8691A97CDC100B93AAA /* TTConversationsViewController.m */,
+				0EACA86B1A97CDDD00B93AAA /* TTContactsViewController.h */,
+				0EACA86C1A97CDDD00B93AAA /* TTContactsViewController.m */,
+				0EACA86E1A97CDEE00B93AAA /* TTProfileViewController.h */,
+				0EACA86F1A97CDEE00B93AAA /* TTProfileViewController.m */,
+				0EACA8711A97CE0D00B93AAA /* TTSettingsViewController.h */,
+				0EACA8721A97CE0D00B93AAA /* TTSettingsViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -226,12 +246,12 @@
 		CD4D57CA1A96B745002B5586 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				0EACA8741A99CB8800B93AAA /* TTActivity.h */,
+				0EACA8751A99CB8800B93AAA /* TTActivity.m */,
+				0EACA8761A99CB8800B93AAA /* TTTic.h */,
+				0EACA8771A99CB8800B93AAA /* TTTic.m */,
 				CD4D57C61A96B740002B5586 /* TTUser.h */,
 				CD4D57C71A96B740002B5586 /* TTUser.m */,
-				0E4269591A9743A70046B3F2 /* TTTic.h */,
-				0E42695A1A9743A70046B3F2 /* TTTic.m */,
-				0E42695C1A97440E0046B3F2 /* TTActivity.h */,
-				0E42695D1A97440E0046B3F2 /* TTActivity.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -459,17 +479,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0E42695B1A9743A70046B3F2 /* TTTic.m in Sources */,
 				0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */,
+				0EACA8731A97CE0D00B93AAA /* TTSettingsViewController.m in Sources */,
+				0EACA8701A97CDEE00B93AAA /* TTProfileViewController.m in Sources */,
+				0EACA86D1A97CDDD00B93AAA /* TTContactsViewController.m in Sources */,
 				0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */,
+				0EACA86A1A97CDC100B93AAA /* TTConversationsViewController.m in Sources */,
 				CD4D57C81A96B740002B5586 /* TTUser.m in Sources */,
 				CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */,
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
 				CD935B681A98E9FA0017325C /* TTUtility.m in Sources */,
+				0EACA8791A99CB8800B93AAA /* TTTic.m in Sources */,
 				0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */,
 				0EC584EB1A7864AA00025D71 /* AppDelegate.m in Sources */,
-				0E42695E1A97440E0046B3F2 /* TTActivity.m in Sources */,
 				2E402A171A96FE8900C1C7BF /* FindFriendsTableViewCell.m in Sources */,
+				0EACA8781A99CB8800B93AAA /* TTActivity.m in Sources */,
 				0EC584E81A7864AA00025D71 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -626,6 +650,7 @@
 			baseConfigurationReference = 579798160077DEF631AAECA1 /* Pods-TicTextTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -647,6 +672,7 @@
 			baseConfigurationReference = 65E0D8574E683EDF0172C6F3 /* Pods-TicTextTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

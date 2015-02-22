@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TTLogInViewController">
             <connections>
+                <outlet property="facebookLogInView" destination="Oms-Gi-bDK" id="hjR-VJ-8qb"/>
                 <outlet property="view" destination="X3o-er-CEw" id="jQA-dv-rAC"/>
             </connections>
         </placeholder>
@@ -43,26 +44,23 @@
                         <constraint firstAttribute="width" constant="32" id="W27-bm-gon"/>
                     </constraints>
                 </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oms-Gi-bDK" userLabel="Facebook Login View" customClass="FBLoginView">
+                    <rect key="frame" x="42" y="589" width="331" height="51"/>
+                    <color key="backgroundColor" red="0.23137254901960785" green="0.34901960784313724" blue="0.59607843137254901" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="T1l-e5-7Rm"/>
+                        <constraint firstAttribute="width" secondItem="Oms-Gi-bDK" secondAttribute="height" multiplier="278:43" priority="750" id="TDf-m1-pn8"/>
+                    </constraints>
+                    <connections>
+                        <outlet property="delegate" destination="-1" id="V9h-oL-oyG"/>
+                    </connections>
+                </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TicTextIconLight" translatesAutoresizingMaskIntoConstraints="NO" id="LAt-aG-3hz">
                     <rect key="frame" x="93" y="110" width="228" height="228"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="LAt-aG-3hz" secondAttribute="height" multiplier="1:1" id="m9a-F5-Q6z"/>
                     </constraints>
                 </imageView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oms-Gi-bDK" userLabel="Facebook Login View" customClass="FBLoginView">
-                    <rect key="frame" x="41.5" y="589" width="331" height="51"/>
-                    <color key="backgroundColor" red="0.23137254901960785" green="0.34901960784313724" blue="0.59607843137254901" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <accessibility key="accessibilityConfiguration">
-                        <accessibilityTraits key="traits" none="YES" image="YES"/>
-                    </accessibility>
-                    <constraints>
-                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="T1l-e5-7Rm"/>
-                        <constraint firstAttribute="width" secondItem="Oms-Gi-bDK" secondAttribute="height" multiplier="278:43" priority="750" id="TDf-m1-pn8"/>
-                    </constraints>
-                    <connections>
-                        <outlet property="delegate" destination="-1" id="YXs-ro-jdn"/>
-                    </connections>
-                </view>
             </subviews>
             <color key="backgroundColor" red="0.50980392159999999" green="0.3921568627" blue="0.7843137255" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>

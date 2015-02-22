@@ -20,10 +20,16 @@ extern float const kTTUIPurpleColorAlpha;
                                          alpha:kTTUIPurpleColorAlpha/255.0]
 
 #pragma mark - NSUserDefaults
+extern NSString * const kTTParseSessionIsValidLastCheckedKey;
+extern NSString * const kTTFacebookSessionIsValidLastCheckedKey;
 
 
 #pragma mark - NSNotification
 extern NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification;
+extern NSString * const kTTLogInViewControllerDidFinishLogInNotification;
+extern NSString * const kTTLogInViewControllerDidFinishSignUpNotification;
+extern NSString * const kTTFacebookSessionDidBecomeInvalidNotification;
+extern NSString * const kTTParseSessionDidBecomeInvalidNotification;
 
 #pragma mark - PFUser Class
 // Field keys
@@ -94,4 +100,4 @@ extern NSString * const kTTPushNotificationPayloadTypeNewFriend;
 extern NSString * const kTTInstallationUserKey;
 
 #pragma mark - Miscellaneous
-#define kTTFacebookPermissions @[@"public_profile", @"user_friends", @"email", @"user_photos"]
+#define kTTFacebookPermissions @[@"public_profile", @"user_friends"]

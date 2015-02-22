@@ -6,7 +6,8 @@
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
 
 #import "TTUser.h"
 
@@ -18,18 +19,27 @@
 // Getter for the singleton instance of this class.
 + (TTSession *)sharedSession;
 
-// Returns whether the User is logged in.
-- (BOOL)isUserLoggedIn;
+// The result of the latest session validation, cached in NSUserDefaults
+- (BOOL)isValidLastChecked;
+
+// Asynchronously validates the current session. Post Parse/Facebook SessionDidBecomeInvalid notification if invalid.
+- (void)validateSessionInBackground;
+
+// Validates the current session with completion block
+- (void)validateSessionWithCompletionHandler:(void (^)(BOOL isValid, NSError *error))completionHandler;
 
 // Prompts the user to authenticate through Facebook, then
-- (void)login:(void (^)(BOOL isNewUser, NSError *error))completion;
+- (void)logIn:(void (^)(BOOL isNewUser, NSError *error))completion;
 
 // Logs the user out.
-- (void)logout:(void (^)(void))completion;
+- (void)logOut:(void (^)(void))completion;
 
 @end
 
 @interface TTSession (FBSync)
+
+// Syncs the User's profile, friend list, and profile picture with a single save call.
+- (void)syncFacebookProfileForNewUser:(void (^)(NSError *error))completion;
 
 // Syncs the User's profile data to that on Facebook.
 - (void)syncProfileData:(void (^)(NSError *error))completion;
