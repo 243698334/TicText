@@ -46,7 +46,7 @@
 - (IBAction)logOutForTesting:(id)sender {
     [[TTSession sharedSession] logOut:^{
         [self.navigationController popToRootViewControllerAnimated:YES];
-        [self presentLogInViewControllerForLogIn:NO animated:YES];
+        [self presentLogInViewControllerAnimated:YES];
     }];
 }
 
@@ -60,23 +60,22 @@
     }
     [[TTSession sharedSession] logOut:^{
         [self.navigationController popToRootViewControllerAnimated:YES];
-        [self presentLogInViewControllerForLogIn:NO animated:YES];
+        [self presentLogInViewControllerAnimated:YES];
     }];
 }
 
 - (void)presentLogInViewControllerIfNeeded {
     if (![[TTSession sharedSession] isValidLastChecked]) {
-        [self presentLogInViewControllerForLogIn:NO animated:YES];
+        [self presentLogInViewControllerAnimated:YES];
     }
 }
 
-- (void)presentLogInViewControllerForLogIn:(BOOL)presentForLogIn animated:(BOOL)animated {
+- (void)presentLogInViewControllerAnimated:(BOOL)animated {
     if (self.logInViewController.isViewLoaded && self.logInViewController.view.window) {
-        // If the LogInViewController is already displayed on the screen do nothing.
+        // If the LogInViewController is already displayed on the screen then do nothing.
         return;
     }
     self.logInViewController = [[TTLogInViewController alloc] init];
-    self.logInViewController.presentForLogIn = presentForLogIn;
     [self presentViewController:self.logInViewController animated:animated completion:nil];
 }
 

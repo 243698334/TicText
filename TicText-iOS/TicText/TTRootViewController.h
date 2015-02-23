@@ -27,7 +27,7 @@
 - (void)presentLogInViewControllerIfNeeded;
 
 // Modally presents the login view controller.
-- (void)presentLogInViewControllerForLogIn:(BOOL)logIn animated:(BOOL)animated;
+- (void)presentLogInViewControllerAnimated:(BOOL)animated;
 
 // Logs the user out.
 - (IBAction)logOutForTesting:(id)sender;

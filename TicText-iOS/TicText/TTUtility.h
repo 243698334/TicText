@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 // An assortment of miscellaneous tools that are not big enough to merit their own class.
 @interface TTUtility : NSObject

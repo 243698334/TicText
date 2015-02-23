@@ -8,17 +8,14 @@
 
 #import "TTUtility.h"
 
-#import <UIKit/UIKit.h>
-
 @implementation TTUtility
 
 + (void)setupPushNotifications {
     UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
                                                     UIUserNotificationTypeBadge |
                                                     UIUserNotificationTypeSound);
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings
-                                            settingsForTypes:userNotificationTypes
-                                            categories:nil];
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
+                                                                             categories:nil];
     [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
     [[UIApplication sharedApplication] registerForRemoteNotifications];
 }

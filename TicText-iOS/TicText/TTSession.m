@@ -120,7 +120,7 @@
         } else {
             if (completion) {
                 NSLog(@"Logged in with permissions: %@", kTTFacebookPermissions);
-                NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@]", [(TTUser *)user displayName], [(TTUser *)user displayName], [(TTUser *)user displayName]);
+                NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@]", [(TTUser *)user displayName], [(TTUser *)user facebookId], [(TTUser *)user friends]);
                 completion(user.isNew, error);
             }
         }
@@ -129,8 +129,10 @@
 
 - (void)logOut:(void (^)(void))completion {
     NSLog(@"TTSession: Logging out. ");
+    
     [TTUser logOut];
     [[PFFacebookUtils session] closeAndClearTokenInformation];
+    [FBSession.activeSession closeAndClearTokenInformation];
     
     if (completion) {
         completion();

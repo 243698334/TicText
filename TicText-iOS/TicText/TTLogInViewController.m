@@ -8,23 +8,13 @@
 
 #import "TTLogInViewController.h"
 
-@interface TTLogInViewController () {
-    FBLoginView *_facebookLogInView;
-}
+@interface TTLogInViewController ()
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
 
 @end
 
 @implementation TTLogInViewController
-
-- (instancetype)init {
-    if (self = [super init]) {
-        self.presentForLogIn = YES;
-    }
-    return self;
-}
-
 
 #pragma mark - UIViewController
 
@@ -38,12 +28,6 @@
 #pragma mark - FBLogInViewDelegate
 
 - (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView {
-    if (!self.presentForLogIn) {
-        // Reset the button to the right state (show "Log in with Facebook" instead of "Log out")
-        [FBSession.activeSession closeAndClearTokenInformation];
-        return;
-    }
-    
     // Show loading indicator until login is finished
     self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [[TTSession sharedSession] logIn:^(BOOL isNewUser, NSError *error) {
@@ -82,11 +66,6 @@
             }
         }
     }];
-}
-
-- (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView {
-    [FBSession.activeSession closeAndClearTokenInformation];
-    self.presentForLogIn = YES;
 }
 
 @end
