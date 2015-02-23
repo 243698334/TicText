@@ -17,8 +17,8 @@ float const kTTUIPurpleColorAlpha = 255.0;
 
 
 #pragma mark - NSUserDefaults
-NSString * const kTTParseSessionIsValidLastCheckedKey = @"TTParseSessionIsValidLastCheckedKey";
-NSString * const kTTFacebookSessionIsValidLastCheckedKey = @"TTFacebookSessionIsValidLastCheckedKey";
+NSString * const kTTParseSessionIsValidLastCheckedKey = @"ParseSessionIsValidLastCheckedKey";
+NSString * const kTTFacebookSessionIsValidLastCheckedKey = @"FacebookSessionIsValidLastCheckedKey";
 
 
 #pragma mark - NSNotification
@@ -27,6 +27,13 @@ NSString * const kTTLogInViewControllerDidFinishLogInNotification = @"TTLogInVie
 NSString * const kTTLogInViewControllerDidFinishSignUpNotification = @"TTLogInViewControllerDidFinishLogInNewUserNotification";
 NSString * const kTTFacebookSessionDidBecomeInvalidNotification = @"TTFacebookSessionDidBecomeInvalidNotification";
 NSString * const kTTParseSessionDidBecomeInvalidNotification = @"TTParseSessionDidBecomeInvalidNotification";
+
+
+#pragma mark - NSError
+NSString * const kTTErrorUserInfoKey = @"error";
+NSString * const kTTSessionErrorDomain = @"SessionError";
+NSUInteger const kTTSessionErrorParseSessionInvalidCode = 0;
+
 
 #pragma mark - PFUser Class
 // Field keys

@@ -61,7 +61,10 @@
 #pragma mark - TTRootViewController
 
 - (void)sessionDidBecomeInvalid:(NSNotification *)notification {
-    [self handleError:[[notification userInfo] objectForKey:@"error"]];
+    NSError *error = [[notification userInfo] objectForKey:kTTErrorUserInfoKey];
+    if (error) {
+        [self handleError:error];
+    }
     [[TTSession sharedSession] logOut:^{
         [self.navigationController popToRootViewControllerAnimated:YES];
         [self presentLogInViewControllerAnimated:YES];
@@ -97,9 +100,6 @@
 }
 
 - (void)handleError:(NSError *)error {
-    if (error == nil) {
-        [self showAlertViewWithErrorTitle:@"Invalid session" errorMessage:@"You have been logged out. "];
-    }
     if ([FBErrorUtility shouldNotifyUserForError:error]) {
         [self showAlertViewWithErrorTitle:@"Something went wrong" errorMessage:[FBErrorUtility userMessageForError:error]];
     } else {
@@ -113,7 +113,7 @@
             [self showAlertViewWithErrorTitle:@"Session Error" errorMessage:@"Your current session is no longer valid. Please log in agian. "];
         } else {
             NSLog(@"Other error: %@", error);
-            [self showAlertViewWithErrorTitle:@"Something went wrong" errorMessage:@"Please retry"];
+            [self showAlertViewWithErrorTitle:@"Invalid session" errorMessage:@"You have been logged out. "];
         }
     }
 }

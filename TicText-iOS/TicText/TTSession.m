@@ -32,7 +32,7 @@
 - (void)validateSessionInBackground {
     // Validate Parse session
     if (![TTUser currentUser]) {
-        NSLog(@"TTSession: Parse local session INVALID. ");
+        NSLog(@"TTSession: Parse local session INVALID (user logged out). ");
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil];
         return;
@@ -42,8 +42,9 @@
         [validateParseSessionQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
             if (number != 1 || error) {
                 NSLog(@"TTSession: Parse remote session INVALID. ");
+                NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionInvalidCode userInfo:nil];
                 [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-                [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
                 return;
             } else {
                 NSLog(@"TTSession: Parse remote session VALID. ");
@@ -57,7 +58,7 @@
         if (error) {
             NSLog(@"TTSession: Facebook session INVALID. ");
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTFacebookSessionIsValidLastCheckedKey];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:@"error"]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
             return;
         } else {
             NSLog(@"TTSession: Facebook session VALID. ");
@@ -149,7 +150,11 @@
         if (error == nil) {
             NSString *displayName = result[@"name"];
             NSString *facebookID = result[@"id"];
-            NSArray *friends = result[@"friends"][@"data"] == nil ? [NSArray arrayWithObjects:nil] : result[@"friends"][@"data"];
+            NSArray *facebookFriendsDataArray = result[@"friends"][@"data"];
+            NSMutableArray *friends = [[NSMutableArray alloc] initWithCapacity:[facebookFriendsDataArray count]];
+            for (NSDictionary *currentFacebookFriendEntry in facebookFriendsDataArray) {
+                [friends addObject:[currentFacebookFriendEntry objectForKey:@"id"]];
+            }
             NSURL *profilePictureURL = [NSURL URLWithString:result[@"picture"][@"data"][@"url"]];
             NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@], Profile picture URL: [%@]", displayName, facebookID, friends, profilePictureURL);
             

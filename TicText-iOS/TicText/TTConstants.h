@@ -31,6 +31,13 @@ extern NSString * const kTTLogInViewControllerDidFinishSignUpNotification;
 extern NSString * const kTTFacebookSessionDidBecomeInvalidNotification;
 extern NSString * const kTTParseSessionDidBecomeInvalidNotification;
 
+
+#pragma mark - NSError
+extern NSString * const kTTErrorUserInfoKey;
+extern NSString * const kTTSessionErrorDomain;
+extern NSUInteger const kTTSessionErrorParseSessionInvalidCode;
+
+
 #pragma mark - PFUser Class
 // Field keys
 extern NSString * const kTTUserDisplayNameKey;
