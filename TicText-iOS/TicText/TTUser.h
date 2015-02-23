@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
-#import "TTSession.h"
-
 @interface TTUser : PFUser<PFSubclassing>
 
 @property (nonatomic, readonly) BOOL isLinkedWithFacebook;

@@ -8,6 +8,8 @@
 
 #import "TTUtility.h"
 
+#import <UIKit/UIKit.h>
+
 @implementation TTUtility
 
 + (void)setupPushNotifications {

@@ -7,6 +7,8 @@
 //
 
 #import "TTUser.h"
+
+#import "TTSession.h"
 #import <Parse/PFObject+Subclass.h>
 
 @implementation TTUser

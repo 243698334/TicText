@@ -139,29 +139,6 @@
     }
 }
 
-- (void)handleAuthenticationError:(NSError *)error {
-    if ([FBErrorUtility shouldNotifyUserForError:error]) {
-        [self showAlertViewWithErrorTitle:@"Something went wrong" errorMessage:[FBErrorUtility userMessageForError:error]];
-    } else {
-        if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
-            // log in cancelled
-            NSLog(@"Log in cancelled error: %@", error);
-            [self showAlertViewWithErrorTitle:@"Login cancelled" errorMessage:@"Please log back in with Facebook. "];
-        } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryAuthenticationReopenSession) {
-            // invalid session
-            NSLog(@"Invalid session error: %@", error);
-            [self showAlertViewWithErrorTitle:@"Session Error" errorMessage:@"Your current session is no longer valid. Please log in agian. "];
-        } else {
-            NSLog(@"Other error: %@", error);
-            [self showAlertViewWithErrorTitle:@"Something went wrong" errorMessage:@"Please retry"];
-        }
-    }
-}
-
-- (void)showAlertViewWithErrorTitle:(NSString *)title errorMessage:(NSString *)message {
-    [[[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-}
-
 
 #pragma mark - FBSync
 
@@ -222,7 +199,6 @@
                 user[key] = userData[obj];
             }];
             
-            // @TODO: saveInBackgroundWithBlock should run asynchronously with completion block
             [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (completion) {
                     completion(error);

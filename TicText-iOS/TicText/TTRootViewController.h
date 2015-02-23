@@ -13,12 +13,6 @@
 #import "TTConstants.h"
 #import "TTSession.h"
 #import "TTUtility.h"
-#import "TTLogInViewController.h"
-#import "TTFindFriendsViewController.h"
-#import "TTConversationsViewController.h"
-#import "TTContactsViewController.h"
-#import "TTProfileViewController.h"
-#import "TTSettingsViewController.h"
 
 // The main view controller for this application.
 @interface TTRootViewController : UIViewController

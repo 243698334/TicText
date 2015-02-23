@@ -8,6 +8,13 @@
 
 #import "TTRootViewController.h"
 
+#import "TTLogInViewController.h"
+#import "TTFindFriendsViewController.h"
+#import "TTConversationsViewController.h"
+#import "TTContactsViewController.h"
+#import "TTProfileViewController.h"
+#import "TTSettingsViewController.h"
+
 @interface TTRootViewController ()
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
