@@ -28,19 +28,6 @@
     self.mockVC = OCMPartialMock([[TTRootViewController alloc] init]);
 }
 
-/*- (void)testPresentLogInViewControllerIfNeededTrue {
-    // Arrange
-    id mockSession = OCMClassMock([TTSession class]);
-    OCMStub([mockSession sharedSession]).andReturn(mockSession);
-    OCMExpect([mockSession isUserLoggedIn]);
-    
-    // Act
-    [[[TTRootViewController alloc] init] logout:nil];
-    
-    // Assert
-    OCMVerifyAll(mockSession);
-}*/
-
 - (void)testPresentLogInViewController {
     // Arrange
     BOOL animated = NO;
@@ -56,23 +43,13 @@
     // Arrange
     id mockSession = OCMClassMock([TTSession class]);
     OCMStub([mockSession sharedSession]).andReturn(mockSession);
-    OCMExpect([mockSession logout:[OCMArg any]]);
+    OCMExpect([mockSession logOut:[OCMArg any]]);
     
     // Act
-    [[[TTRootViewController alloc] init] logout:nil];
+    [mockSession logOut:nil];
     
     // Assert
     OCMVerifyAll(mockSession);
-}
-
-- (void)testViewDidAppear {
-    // Arrange
-    
-    // Act
-    [self.mockVC viewDidAppear:NO];
-    
-    // Assert
-    OCMVerify([self.mockVC presentLogInViewControllerIfNeeded]);
 }
 
 @end

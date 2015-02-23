@@ -29,34 +29,12 @@
     self.mockUser = OCMClassMock([TTUser class]);
 }
 
-- (void)testIsUserLoggedInTrue {
-    // Arrange
-    OCMStub([self.mockUser currentUser]).andReturn([TTHelper fakeUser]);
-    
-    // Act
-    BOOL isUserLoggedIn = [[[TTSession alloc] init] isUserLoggedIn];
-    
-    // Assert
-    XCTAssertTrue(isUserLoggedIn);
-}
-
-- (void)testIsUserLoggedInFalse {
-    // Arrange
-    OCMStub([self.mockUser currentUser]).andReturn(nil);
-    
-    // Act
-    BOOL isUserLoggedIn = [[[TTSession alloc] init] isUserLoggedIn];
-    
-    // Assert
-    XCTAssertFalse(isUserLoggedIn);
-}
-
 - (void)testLogout {
     // Arrange
     OCMExpect([self.mockUser logOut]);
     
     // Act
-    [[[TTSession alloc] init] logout:nil];
+    [[[TTSession alloc] init] logOut:nil];
     
     // Assert
     OCMVerifyAll(self.mockUser);
