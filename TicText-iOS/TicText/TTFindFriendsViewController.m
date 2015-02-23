@@ -44,7 +44,7 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.width * 0.6)];
-    header.backgroundColor = [UIColor clearColor];
+    header.backgroundColor = kTTUIPurpleColor;
     CGFloat appIconImageViewWidth = self.view.bounds.size.width * 0.8;
     CGFloat appIconImageViewHeight = self.view.bounds.size.width * 0.6;
     CGFloat appIconImageViewOriginX = (self.view.bounds.size.width - appIconImageViewWidth) / 2;
