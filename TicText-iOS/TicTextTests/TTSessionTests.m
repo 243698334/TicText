@@ -10,14 +10,12 @@
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
 
-#import <ParseFacebookUtils/PFFacebookUtils.h>
-
 #import "TTHelper.h"
 #import "TTSession.h"
 
 @interface TTSessionTests : XCTestCase
 
-@property (nonatomic, strong) id mockUser;
+@property (nonatomic, strong) id mockSession;
 
 @end
 
@@ -25,19 +23,67 @@
 
 - (void)setUp {
     [super setUp];
-    
-    self.mockUser = OCMClassMock([TTUser class]);
+    self.mockSession = OCMClassMock([TTSession class]);
 }
 
-- (void)testLogout {
+- (void)testIsValidLastChecked {
     // Arrange
-    OCMExpect([self.mockUser logOut]);
+    id mockUserDefaults = OCMClassMock([NSUserDefaults class]);
+    OCMStub([mockUserDefaults boolForKey:kTTParseSessionIsValidLastCheckedKey]).andReturn(YES);
+    OCMStub([mockUserDefaults boolForKey:kTTFacebookSessionIsValidLastCheckedKey]).andReturn(NO);
+    OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
+    OCMExpect([self.mockSession isValidLastChecked]);
     
     // Act
-    [[[TTSession alloc] init] logOut:nil];
+    BOOL result = [[TTSession sharedSession] isValidLastChecked];
     
     // Assert
-    OCMVerifyAll(self.mockUser);
+    OCMVerifyAll(mockUserDefaults);
+    XCTAssertFalse(result);
+}
+
+- (void)testValidateSessionInBackground {
+    // Arrange
+    id mockUser = OCMClassMock([TTUser class]);
+    id mockNotificationCenter = OCMClassMock([NSNotificationCenter class]);
+    id mockUserDefaults = OCMClassMock([NSUserDefaults class]);
+    OCMStub([mockNotificationCenter defaultCenter]).andReturn(mockNotificationCenter);
+    OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
+    // Parse local session INVALID
+    OCMStub([mockUser currentUser]).andReturn(nil);
+    OCMExpect([mockNotificationCenter postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil]);
+    OCMExpect([mockUserDefaults setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey]);
+    
+    // Act
+    [[TTSession sharedSession] validateSessionInBackground];
+    
+    // Assert
+    OCMVerifyAll(mockNotificationCenter);
+    OCMVerifyAll(mockUserDefaults);
+}
+
+- (void)testLogIn {
+    // Arrange
+    OCMExpect([self.mockSession logIn:[OCMArg any]]);
+    OCMStub([self.mockSession sharedSession]).andReturn(self.mockSession);
+    
+    // Act
+    [[TTSession sharedSession] logIn:nil];
+    
+    // Assert
+    OCMVerifyAll(self.mockSession);
+}
+
+- (void)testLogOut {
+    // Arrange
+    OCMExpect([self.mockSession logOut:[OCMArg any]]);
+    OCMStub([self.mockSession sharedSession]).andReturn(self.mockSession);
+    
+    // Act
+    [[TTSession sharedSession] logOut:nil];
+    
+    // Assert
+    OCMVerifyAll(self.mockSession);
 }
 
 @end
