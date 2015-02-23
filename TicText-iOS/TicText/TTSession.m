@@ -149,11 +149,7 @@
         if (error == nil) {
             NSString *displayName = result[@"name"];
             NSString *facebookID = result[@"id"];
-            NSArray *facebookFriendsDataArray = result[@"friends"][@"data"];
-            NSMutableArray *friends = [[NSMutableArray alloc] initWithCapacity:[facebookFriendsDataArray count]];
-            for (NSDictionary *currentFacebookFriendEntry in facebookFriendsDataArray) {
-                [friends addObject:[currentFacebookFriendEntry objectForKey:@"id"]];
-            }
+            NSArray *friends = result[@"friends"][@"data"] == nil ? [NSArray arrayWithObjects:nil] : result[@"friends"][@"data"];
             NSURL *profilePictureURL = [NSURL URLWithString:result[@"picture"][@"data"][@"url"]];
             NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@], Profile picture URL: [%@]", displayName, facebookID, friends, profilePictureURL);
             
