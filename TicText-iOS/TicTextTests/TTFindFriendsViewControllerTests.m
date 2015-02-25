@@ -13,7 +13,7 @@
 #import "FindFriendsTableViewCell.h"
 
 @interface FindFriendsViewControllerTests : XCTestCase
-@property (nonatomic, strong) TTFindFriendsViewController *mockVC;
+@property (nonatomic, strong) TTFindFriendsViewController *viewController;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) FindFriendsTableViewCell *firstCell;
 @property (nonatomic, strong) FindFriendsTableViewCell *secondCell;
@@ -23,63 +23,57 @@
 
 - (void)setUp {
     [super setUp];
-    self.mockVC = OCMPartialMock([[TTFindFriendsViewController alloc] init]);
+    self.viewController = [[TTFindFriendsViewController alloc] init];
+    [self.viewController viewDidLoad];
+    
+    NSArray *subviews = [self.viewController.view subviews];
+    self.tableView = subviews[0];
+    self.firstCell = (FindFriendsTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    self.secondCell = (FindFriendsTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:1 inSection:0]];
 }
 
 -(void)testTableViewLoadedOnScreen {
-    OCMVerify([self.mockVC isKindOfClass:[TTFindFriendsViewController class]]);
-    NSArray *subviews = [self.mockVC.view subviews];
-    
-    OCMVerify(subviews.count > 0); //make sure there is something on the view controller
-    
-    self.tableView = subviews[0];
-
-    OCMVerify(self.tableView != nil); //make sure the tableview is on the view controller
+    XCTAssertTrue([self.viewController isKindOfClass:[TTFindFriendsViewController class]]);
+    XCTAssertTrue(self.tableView != nil); //make sure the tableview is on the view controller
 }
 
 -(void)testTableViewAttributes {
+    XCTAssertTrue([self.tableView numberOfSections] == 1); //make sure one section
+    XCTAssertTrue([self.tableView numberOfRowsInSection:0] == 25); //make sure 25 rows
     
-    OCMVerify(self.tableView.numberOfSections == 1); //make sure one section
-    OCMVerify([self.tableView numberOfRowsInSection:0] == 25); //make sure 25 rows
-    
-    UIView *view = [self.tableView headerViewForSection:0];
-    OCMVerify(view != nil); //verify has a header
+    UIView *view = [self.viewController tableView:self.tableView viewForHeaderInSection:0];
+    XCTAssertTrue(view != nil); //verify has a header
     NSArray *subviews = [view subviews];
     UIImageView *iv = nil;
     
     for(UIView *view in subviews) {
         UIView *v = OCMPartialMock(view);
         if([v isKindOfClass:[UIImageView class]]) {
-            iv = v;
+            iv = (UIImageView *)v;
         }
     }
     
-    OCMVerify(iv != nil); //make sure there's an image on the section header
+    XCTAssertTrue(iv != nil); //make sure there's an image on the section header
     
-    for(int i = 0; i<25; i++) {
-        OCMVerify([[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] class] == [FindFriendsTableViewCell class]); //make sure all cells are of FindFriendsTableViewCell
+    for(NSIndexPath *index in [self.tableView indexPathsForVisibleRows]) {
+        NSInteger i = index.row;
+        XCTAssertTrue([[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] class] == [FindFriendsTableViewCell class]); //make sure all cells are of FindFriendsTableViewCell
     }
-    
-    self.firstCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-    self.secondCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:1 inSection:0]];
 }
 
 -(void)testFirstCell {
     NSArray *subviews = [self.firstCell subviews];
-    OCMVerify(subviews.count == 3); //make sure only 3 cells show up
-    
-    for(UIView *view in subviews) {
-        UIView *v = OCMPartialMock(view);
-        OCMVerify([v isKindOfClass:[UIImageView class]]); //make sure only images are shown on cell
+    for(int i = 1; i < subviews.count; i++) {
+        UIView *view = subviews[i];
+        XCTAssertTrue([view isKindOfClass:[UIImageView class]]); //make sure only images are shown on cell
     }
 }
 
 -(void)testSecondCell {
     NSArray *subviews = [self.secondCell subviews];
-    OCMVerify(subviews.count == 2); //make sure only 2 pictures show up
-    for(UIView *view in subviews) {
-        UIView *v = OCMPartialMock(view);
-        OCMVerify([v isKindOfClass:[UIImageView class]]); //make sure only images are shown on cell
+    for(int i = 1; i < subviews.count; i++) {
+        UIView *view = subviews[i];
+        XCTAssertTrue([view isKindOfClass:[UIImageView class]]); //make sure only images are shown on cell
     }
 
 }
