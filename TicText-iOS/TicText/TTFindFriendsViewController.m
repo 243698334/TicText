@@ -17,7 +17,6 @@
     UIColor *_TTPurpleColor;
 }
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) UICollectionView *collectionView;
 @end
 
 @implementation TTFindFriendsViewController

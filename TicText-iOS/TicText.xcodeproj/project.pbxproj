@@ -23,6 +23,7 @@
 		0EC584F61A7864AA00025D71 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0EC584F41A7864AA00025D71 /* LaunchScreen.xib */; };
 		0EC585021A7864AA00025D71 /* TicTextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC585011A7864AA00025D71 /* TicTextTests.m */; };
 		2E402A171A96FE8900C1C7BF /* FindFriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E402A161A96FE8900C1C7BF /* FindFriendsTableViewCell.m */; };
+		2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED84A9B1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m */; };
 		4C0094CD1B6ED14DA0956A8F /* libPods-TicText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E62ADB5018418278F1D7F35F /* libPods-TicText.a */; };
 		9B6B74E026B95CE6BCD5D096 /* libPods-TicTextTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */; };
 		CD28A08F1A97042600603929 /* TTRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD28A08E1A97042600603929 /* TTRootViewController.xib */; };
@@ -80,6 +81,7 @@
 		0EC585011A7864AA00025D71 /* TicTextTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TicTextTests.m; sourceTree = "<group>"; };
 		2E402A151A96FE8900C1C7BF /* FindFriendsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindFriendsTableViewCell.h; sourceTree = "<group>"; };
 		2E402A161A96FE8900C1C7BF /* FindFriendsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindFriendsTableViewCell.m; sourceTree = "<group>"; };
+		2ED84A9B1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTFindFriendsViewControllerTests.m; sourceTree = "<group>"; };
 		53758F76DA4076374F5E76FF /* Pods-TicText.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicText.release.xcconfig"; path = "Pods/Target Support Files/Pods-TicText/Pods-TicText.release.xcconfig"; sourceTree = "<group>"; };
 		579798160077DEF631AAECA1 /* Pods-TicTextTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicTextTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TicTextTests/Pods-TicTextTests.debug.xcconfig"; sourceTree = "<group>"; };
 		62D5B3A2D5FD007BC1313C3B /* Pods-TicText.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicText.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TicText/Pods-TicText.debug.xcconfig"; sourceTree = "<group>"; };
@@ -295,6 +297,7 @@
 			isa = PBXGroup;
 			children = (
 				CD935B6C1A98ED6F0017325C /* TTRootViewControllerTests.m */,
+				2ED84A9B1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -507,6 +510,7 @@
 				CD935B6D1A98ED6F0017325C /* TTRootViewControllerTests.m in Sources */,
 				CD4D57CC1A96B929002B5586 /* TTUserTests.m in Sources */,
 				CD4D57C51A96AED2002B5586 /* TTSessionTests.m in Sources */,
+				2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */,
 				CD4D57D31A96C97D002B5586 /* TTHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
