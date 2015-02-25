@@ -130,22 +130,12 @@
     
     // Set as root view controller of window
     self.window.rootViewController = self.navigationController;
+    [self.window setTintColor:kTTUIPurpleColor];
     [self.window makeKeyAndVisible];
 }
 
 - (void)handlePush:(NSDictionary *)launchOptions {
     
 }
-
-- (void)currentUserLogOut {
-    NSLog(@"Logging out current user");
-    
-    // Unsubscribe from push notifications by removing the user association from the current installation.
-    [[PFInstallation currentInstallation] removeObjectForKey:kTTInstallationUserKey];
-    [[PFInstallation currentInstallation] saveInBackground];
-
-    [PFUser logOut];
-}
-
 
 @end

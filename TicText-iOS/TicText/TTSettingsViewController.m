@@ -29,6 +29,7 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"Settings";
+    self.tableView.scrollEnabled = NO;
     
     self.receiveNewTicNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
     self.receiveExpireSoonNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
@@ -36,6 +37,9 @@
     self.receiveNewTicNotificationSwitch.on = YES;
     self.receiveExpireSoonNotificationSwitch.on = NO;
     self.receiveReadByRecipientNotificationSwitch.on = NO;
+    [self.receiveNewTicNotificationSwitch setOnTintColor:kTTUIPurpleColor];
+    [self.receiveExpireSoonNotificationSwitch setOnTintColor:kTTUIPurpleColor];
+    [self.receiveReadByRecipientNotificationSwitch setOnTintColor:kTTUIPurpleColor];
     
     __unsafe_unretained __block TTSettingsViewController *safeSelf = self;
     
@@ -76,12 +80,10 @@
             [safeSelf.tableView deselectRowAtIndexPath:indexPath animated:YES];
         }];
         
-        section.footerTitle = @"We recommend you to turn on push notification so you won't miss your Tics. ";
+        section.footerTitle = @"Turn on push notification so you won't miss your Tics. ";
     }];
     
     [self addSection:^(JMStaticContentTableViewSection *section, NSUInteger sectionIndex) {
-        section.headerTitle = @"Social";
-        
         [section addCell:^(JMStaticContentTableViewCell *staticContentCell, UITableViewCell *cell, NSIndexPath *indexPath) {
             staticContentCell.cellStyle = UITableViewCellSelectionStyleNone;
             cell.textLabel.text = @"Like us on Facebook";
