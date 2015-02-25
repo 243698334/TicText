@@ -39,7 +39,10 @@
 @interface TTSession (FBSync)
 
 // Syncs the User's profile, friend list, and profile picture with a single save call.
-- (void)syncFacebookProfileForNewUser:(void (^)(NSError *error))completion;
+- (void)syncForNewUser:(void (^)(NSError *error))completion;
+
+// Syncs the User's friend list and upload the current active device's identifier
+- (void)syncForExistingUser:(void (^)(NSError *error))completion;
 
 // Syncs the User's profile data to that on Facebook.
 - (void)syncProfileData:(void (^)(NSError *error))completion;
@@ -49,5 +52,8 @@
 
 // Syncs the User's profile picture to that on Facebook.
 - (void)syncProfilePicture:(void (^)(NSError *error))completion;
+
+// Syncs the User's current active device's identifier
+- (void)syncActiveDeviceIdentifier:(void (^)(NSError *))completion;
 
 @end

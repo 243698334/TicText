@@ -40,10 +40,9 @@
             }
             [[[UIAlertView alloc] initWithTitle:@"Log In Error" message:errorMessage delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil] show];
         } else {
-            [TTUtility setupPushNotifications];
             if (isNewUser || ![[TTUser currentUser] isLinkedWithFacebook]) {
                 // New user sign up
-                [[TTSession sharedSession] syncFacebookProfileForNewUser:^(NSError *error) {
+                [[TTSession sharedSession] syncForNewUser:^(NSError *error) {
                     if (error != nil) {
                         NSString *errorMessage = @"Uh oh. Unable to create your account. Please try again later.";
                         [[[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:errorMessage delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil] show];
@@ -53,8 +52,8 @@
                     [self.progressHUD removeFromSuperview];
                 }];
             } else {
-                // Existing user log in
-                [[TTSession sharedSession] syncFriends:^(NSError *error) {
+                // Existing user log in                 
+                [[TTSession sharedSession] syncForExistingUser:^(NSError *error) {
                     if (error != nil) {
                         NSString *errorMessage = @"Uh oh. Unable to refresh your profile. Please try again later.";
                         [[[UIAlertView alloc] initWithTitle:@"Log In Error" message:errorMessage delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil] show];

@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TTRootViewController">
@@ -15,28 +14,7 @@
         <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <subviews>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fbj-ba-CA7">
-                    <rect key="frame" x="146" y="675" width="122" height="53"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="122" id="6k6-pV-FzK"/>
-                        <constraint firstAttribute="height" constant="53" id="9qc-Ax-6gz"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="26"/>
-                    <state key="normal" title="Log out">
-                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <connections>
-                        <action selector="logOutForTesting:" destination="-1" eventType="touchUpInside" id="Wbe-x3-bdO"/>
-                    </connections>
-                </button>
-            </subviews>
             <color key="backgroundColor" red="0.50980392159999999" green="0.3921568627" blue="0.7843137255" alpha="1" colorSpace="calibratedRGB"/>
-            <constraints>
-                <constraint firstItem="Fbj-ba-CA7" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottomMargin" id="3L8-dF-xN2"/>
-                <constraint firstItem="Fbj-ba-CA7" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="jCF-dH-rNy"/>
-            </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
         </view>
     </objects>

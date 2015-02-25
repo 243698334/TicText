@@ -13,7 +13,7 @@
 
 @implementation TTUser
 
-@dynamic displayName, facebookId, friends, profilePicture;
+@dynamic displayName, facebookId, friends, profilePicture, activeDeviceIdentifier;
 
 - (BOOL)isLinkedWithFacebook {
     return self[kTTUserFacebookIDKey] != nil;
@@ -50,6 +50,14 @@
 
 - (NSArray *)friends {
     return [self objectForKey:kTTUserTicTextFriendsKey];
+}
+
+- (void)setActiveDeviceIdentifier:(NSString *)activeDeviceIdentifier {
+    self[kTTUserActiveDeviceIdentifier] = activeDeviceIdentifier;
+}
+
+- (NSArray *)activeDeviceIdentifier {
+    return [self objectForKey:kTTUserActiveDeviceIdentifier];
 }
 
 @end

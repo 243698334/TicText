@@ -7,6 +7,7 @@ target 'TicText' do
   pod 'ParseCrashReporting'
   pod 'Facebook-iOS-SDK'
   pod 'MBProgressHUD'
+  pod 'JMStaticContentTableViewController'
 end
 
 target 'TicTextTests' do

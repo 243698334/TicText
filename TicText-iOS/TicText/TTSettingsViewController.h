@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <JMStaticContentTableViewController/JMStaticContentTableViewController.h>
 
-@interface TTSettingsViewController : UIViewController
+#import "TTSession.h"
+
+@interface TTSettingsViewController : JMStaticContentTableViewController
 
 @end

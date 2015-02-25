@@ -25,8 +25,9 @@ NSString * const kTTFacebookSessionIsValidLastCheckedKey = @"FacebookSessionIsVa
 NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification = @"AppDelegateDidReceiveRemoteNotification";
 NSString * const kTTLogInViewControllerDidFinishLogInNotification = @"TTLogInViewControllerDidFinishLogInNotification";
 NSString * const kTTLogInViewControllerDidFinishSignUpNotification = @"TTLogInViewControllerDidFinishLogInNewUserNotification";
-NSString * const kTTFacebookSessionDidBecomeInvalidNotification = @"TTFacebookSessionDidBecomeInvalidNotification";
-NSString * const kTTParseSessionDidBecomeInvalidNotification = @"TTParseSessionDidBecomeInvalidNotification";
+NSString * const kTTFacebookSessionDidBecomeInvalidNotification = @"FacebookSessionDidBecomeInvalidNotification";
+NSString * const kTTParseSessionDidBecomeInvalidNotification = @"ParseSessionDidBecomeInvalidNotification";
+NSString * const kTTUserDidLogOutNotification = @"UserDidLogOut";
 
 
 #pragma mark - NSError
@@ -42,6 +43,7 @@ NSString * const kTTUserFacebookIDKey = @"facebookID";
 NSString * const kTTUserProfilePictureKey = @"profilePicture";
 NSString * const kTTUserProfilePictureSmallKey = @"profilePictureSmall";
 NSString * const kTTUserTicTextFriendsKey = @"ticTextFriends";
+NSString * const kTTUserActiveDeviceIdentifier = @"activeDeviceIdentifier";
 
 
 #pragma mark - PFObject Tic Class

@@ -30,6 +30,7 @@ extern NSString * const kTTLogInViewControllerDidFinishLogInNotification;
 extern NSString * const kTTLogInViewControllerDidFinishSignUpNotification;
 extern NSString * const kTTFacebookSessionDidBecomeInvalidNotification;
 extern NSString * const kTTParseSessionDidBecomeInvalidNotification;
+extern NSString * const kTTUserDidLogOutNotification;
 
 
 #pragma mark - NSError
@@ -45,6 +46,7 @@ extern NSString * const kTTUserFacebookIDKey;
 extern NSString * const kTTUserProfilePictureKey;
 extern NSString * const kTTUserProfilePictureSmallKey;
 extern NSString * const kTTUserTicTextFriendsKey;
+extern NSString * const kTTUserActiveDeviceIdentifier;
 
 
 #pragma mark - PFObject Tic Class

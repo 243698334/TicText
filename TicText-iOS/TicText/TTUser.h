@@ -17,5 +17,6 @@
 @property (nonatomic, strong) NSString *displayName;
 @property (nonatomic, strong) NSData *profilePicture;
 @property (nonatomic, strong) NSArray *friends;
+@property (nonatomic, strong) NSString *activeDeviceIdentifier;
 
 @end

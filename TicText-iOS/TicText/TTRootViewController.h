@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 
+#import "AppDelegate.h"
 #import "TTConstants.h"
 #import "TTSession.h"
 #import "TTUtility.h"
@@ -22,8 +23,5 @@
 
 // Modally presents the login view controller.
 - (void)presentLogInViewControllerAnimated:(BOOL)animated;
-
-// Logs the user out.
-- (IBAction)logOutForTesting:(id)sender;
 
 @end
