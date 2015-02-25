@@ -45,8 +45,19 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
             return;
         } else {
-            NSLog(@"TTSession: Parse remote session VALID. ");
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTParseSessionIsValidLastCheckedKey];
+            if ([[[TTUser currentUser] activeDeviceIdentifier] isEqualToString:[UIDevice currentDevice].identifierForVendor.UUIDString]) {
+                NSLog(@"TTSession: Parse remote session VALID. ");
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTParseSessionIsValidLastCheckedKey];
+            } else {
+                NSLog(@"TTSession: Parse remote session INVALID. ");
+                NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid Session",
+                                           NSLocalizedFailureReasonErrorKey: @"Your account has been logged in with another device. ",
+                                           NSLocalizedRecoverySuggestionErrorKey: @"Consider turn on 2-step verification or TicText password. "};
+                NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionInvalidCode userInfo:userInfo];
+                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
+                return;
+            }
         }
     }];
     
