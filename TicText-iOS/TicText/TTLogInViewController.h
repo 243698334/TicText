@@ -7,22 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Parse/Parse.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import <MBProgressHUD/MBProgressHUD.h>
+
 #import "TTConstants.h"
+#import "TTUtility.h"
+#import "TTSession.h"
+#import "TTFindFriendsViewController.h"
 
-@protocol TTLogInViewControllerDelegate;
+// The view controller the user uses to log in.
+@interface TTLogInViewController : UIViewController<FBLoginViewDelegate>
 
-@interface TTLogInViewController : UIViewController <FBLoginViewDelegate>
-
-@property (nonatomic, assign) id<TTLogInViewControllerDelegate> delegate;
-
-@end
-
-@protocol TTLogInViewControllerDelegate <NSObject>
-
-- (void)logInViewControllerDidLogUserIn:(TTLogInViewController *)logInViewController;
+// FBLogInView is only used for the UI. FBsession is not used for the login process. 
+@property (strong, nonatomic) IBOutlet FBLoginView *facebookLogInView;
 
 @end

@@ -14,11 +14,28 @@ extern float const kTTUIPurpleColorGreen;
 extern float const kTTUIPurpleColorBlue;
 extern float const kTTUIPurpleColorAlpha;
 
+#define kTTUIPurpleColor [UIColor colorWithRed:kTTUIPurpleColorRed/255.0 \
+                                         green:kTTUIPurpleColorGreen/255.0 \
+                                          blue:kTTUIPurpleColorBlue/255.0 \
+                                         alpha:kTTUIPurpleColorAlpha/255.0]
 
 #pragma mark - NSUserDefaults
+extern NSString * const kTTParseSessionIsValidLastCheckedKey;
+extern NSString * const kTTFacebookSessionIsValidLastCheckedKey;
 
 
 #pragma mark - NSNotification
+extern NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification;
+extern NSString * const kTTLogInViewControllerDidFinishLogInNotification;
+extern NSString * const kTTLogInViewControllerDidFinishSignUpNotification;
+extern NSString * const kTTFacebookSessionDidBecomeInvalidNotification;
+extern NSString * const kTTParseSessionDidBecomeInvalidNotification;
+
+
+#pragma mark - NSError
+extern NSString * const kTTErrorUserInfoKey;
+extern NSString * const kTTSessionErrorDomain;
+extern NSUInteger const kTTSessionErrorParseSessionInvalidCode;
 
 
 #pragma mark - PFUser Class
@@ -36,21 +53,33 @@ extern NSString * const kTTTicClassKey;
 
 // Field keys
 extern NSString * const kTTTicSenderKey;
+extern NSString * const kTTTicTypeKey;
 extern NSString * const kTTTicRecipientKey;
 extern NSString * const kTTTicTimeLimitKey;
 extern NSString * const kTTTicSendTimestampKey;
 extern NSString * const kTTTicReceiveTimestampKey;
 extern NSString * const kTTTicStatusKey;
+extern NSString * const kTTTicContentTypeKey;
 extern NSString * const kTTTicContentKey;
+
+// Type values
+extern NSString * const kTTTicTypeDefault;
+extern NSString * const kTTTIcTypeAnonymous;
+
+// Status values
+extern NSString * const kTTTicStatusRead;
+extern NSString * const kTTTicStatusUnread;
+extern NSString * const kTTTIcStatusExpired;
+
+// Content Type values
+extern NSString * const kTTTicContentTypeText;
+extern NSString * const kTTTicContentTypeImage;
+extern NSString * const kTTTicContentTypeVoice;
 
 
 #pragma mark - PFObject Activity Class
 // Class key
 extern NSString * const kTTActivityClassKey;
-
-// Type values
-extern NSString * const kTTActivityTypeSend;
-extern NSString * const kTTActivityTypeFetch;
 
 // Field keys
 extern NSString * const kTTActivityTypeKey;
@@ -59,3 +88,23 @@ extern NSString * const kTTActivityToUserKey;
 extern NSString * const kTTActivityContentKey;
 extern NSString * const kTTActivityTicKey;
 
+// Type values
+extern NSString * const kTTActivityTypeSend;
+extern NSString * const kTTActivityTypeFetch;
+
+
+#pragma mark - Push Notification Payload
+// Field keys
+extern NSString * const kTTPushNotificationPayloadTypeKey;
+
+// Type values
+extern NSString * const kTTPushNotificationPayloadTypeNewTic;
+extern NSString * const kTTPushNotificationPayloadTypeNewFriend;
+
+
+#pragma mark - Installation Class
+// Field keys
+extern NSString * const kTTInstallationUserKey;
+
+#pragma mark - Miscellaneous
+#define kTTFacebookPermissions @[@"public_profile", @"user_friends"]

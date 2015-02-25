@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
-#import <ParseUI/ParseUI.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <ParseCrashReporting/ParseCrashReporting.h>
 
 #import "TTConstants.h"
+#import "TTSession.h"
+#import "TTUser.h"
 #import "TTRootViewController.h"
 
 
@@ -21,6 +22,9 @@
 @property (nonatomic, strong) UIWindow *window;
 
 @property (nonatomic, strong) UINavigationController *navigationController;
+
+- (void)currentUserLogOut;
+
 
 @end
 

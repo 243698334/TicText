@@ -17,7 +17,9 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application:(UIApplication *)application
+        didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     [self parseInitializationWithUIApplication:application launchOptions:launchOptions];
@@ -28,18 +30,42 @@
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    BOOL wasHandled = false;
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
     
-    if ([PFFacebookUtils session]) {
-        wasHandled |= [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[PFFacebookUtils session]];
-    } else {
-        wasHandled |= [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+    return [FBAppCall handleOpenURL:url
+                  sourceApplication:sourceApplication
+                        withSession:[PFFacebookUtils session]];
+}
+
+- (void)application:(UIApplication *)application
+        didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    
+    // Store the deviceToken in the current installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    currentInstallation.channels = @[ @"global" ];
+    [currentInstallation saveInBackground];
+}
+
+- (void)application:(UIApplication *)application
+        didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    
+    // Push notification received while the app is active
+    [[NSNotificationCenter defaultCenter]
+        postNotificationName:kTTAppDelegateApplicationDidReceiveRemoteNotification
+                      object:nil
+                    userInfo:userInfo];
+    
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
+        // Track app opens due to a push notification being acknowledged while the app wasn't active.
+        [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
     }
     
-    //wasHandled |= [self handleActionURL:url];
-    
-    return wasHandled;
+    // TODO: handle push notification
+    [PFPush handlePush:userInfo];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -58,17 +84,24 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [[PFFacebookUtils session] close];
 }
 
 
 #pragma mark - ()
 
-- (void)parseInitializationWithUIApplication:(UIApplication *) application launchOptions:(NSDictionary *)launchOptions {
-    [Parse setApplicationId:@"otEYQUdVy98OBM9SeUs8Zc1PrMy27EGMvEy80WaL" clientKey:@"qfTOvPp03kY8uSYVu3FkL72UWwW37Tx2B6L6Ppq9"];
+- (void)parseInitializationWithUIApplication:(UIApplication *)application
+                               launchOptions:(NSDictionary *)launchOptions {
+    
+    [TTUser registerSubclass];
+    [Parse setApplicationId:@"otEYQUdVy98OBM9SeUs8Zc1PrMy27EGMvEy80WaL"
+                  clientKey:@"qfTOvPp03kY8uSYVu3FkL72UWwW37Tx2B6L6Ppq9"];
+    
     //[ParseCrashReporting enable];
     [PFFacebookUtils initializeFacebook];
     
@@ -79,7 +112,6 @@
         application.applicationIconBadgeNumber = 0;
         [[PFInstallation currentInstallation] saveInBackground];
     }
-
 }
 
 - (void)setupColorScheme {
@@ -96,13 +128,23 @@
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.rootViewController];
     self.navigationController.navigationBarHidden = YES;
     
-    // set as root view controller of window
+    // Set as root view controller of window
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
 }
 
 - (void)handlePush:(NSDictionary *)launchOptions {
     
+}
+
+- (void)currentUserLogOut {
+    NSLog(@"Logging out current user");
+    
+    // Unsubscribe from push notifications by removing the user association from the current installation.
+    [[PFInstallation currentInstallation] removeObjectForKey:kTTInstallationUserKey];
+    [[PFInstallation currentInstallation] saveInBackground];
+
+    [PFUser logOut];
 }
 
 

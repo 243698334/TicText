@@ -8,10 +8,22 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
-#import "TTLogInViewController.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 
-@interface TTRootViewController : UIViewController <TTLogInViewControllerDelegate>
+#import "TTConstants.h"
+#import "TTSession.h"
+#import "TTUtility.h"
 
+// The main view controller for this application.
+@interface TTRootViewController : UIViewController
+
+// Modally presents the login view controller, but only if the user is not logged in.
+- (void)presentLogInViewControllerIfNeeded;
+
+// Modally presents the login view controller.
 - (void)presentLogInViewControllerAnimated:(BOOL)animated;
+
+// Logs the user out.
+- (IBAction)logOutForTesting:(id)sender;
 
 @end
