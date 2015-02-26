@@ -10,7 +10,6 @@
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <ParseCrashReporting/ParseCrashReporting.h>
-
 #import "TTConstants.h"
 #import "TTSession.h"
 #import "TTUser.h"

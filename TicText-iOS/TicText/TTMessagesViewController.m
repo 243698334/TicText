@@ -1,22 +1,28 @@
 //
-//  TTDialogViewController.m
+//  TTMessagesViewController.m
 //  TicText
 //
-//  Created by Kevin Yufei Chen on 2/24/15.
+//  Created by Kevin Yufei Chen on 2/25/15.
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import "TTDialogViewController.h"
+#import "TTMessagesViewController.h"
 
-@interface TTDialogViewController ()
+#import "TTUser.h"
+
+@interface TTMessagesViewController ()
 
 @end
 
-@implementation TTDialogViewController
+@implementation TTMessagesViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    self.senderId = @"fake_sender_id";
+    self.senderDisplayName = [[TTUser currentUser] displayName];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

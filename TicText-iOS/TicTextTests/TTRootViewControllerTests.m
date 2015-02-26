@@ -16,7 +16,7 @@
 
 @interface TTRootViewControllerTests : XCTestCase
 
-@property (nonatomic, strong) TTRootViewController *mockVC;
+@property (nonatomic, strong) TTRootViewController *mockRootViewController;
 
 @end
 
@@ -25,7 +25,7 @@
 - (void)setUp {
     [super setUp];
     
-    self.mockVC = OCMPartialMock([[TTRootViewController alloc] init]);
+    self.mockRootViewController = OCMPartialMock([[TTRootViewController alloc] init]);
 }
 
 - (void)testPresentLogInViewController {
@@ -33,23 +33,12 @@
     BOOL animated = NO;
     
     // Act
-    [self.mockVC presentLogInViewControllerAnimated:animated];
+    [self.mockRootViewController presentLogInViewControllerAnimated:animated];
     
     // Assert
-    OCMVerify([self.mockVC presentViewController:[OCMArg isKindOfClass:[TTLogInViewController class]] animated:animated completion:[OCMArg any]]);
+    OCMVerify([self.mockRootViewController presentViewController:[OCMArg isKindOfClass:[TTLogInViewController class]] animated:animated completion:[OCMArg any]]);
 }
 
-- (void)testLogout {
-    // Arrange
-    id mockSession = OCMClassMock([TTSession class]);
-    OCMStub([mockSession sharedSession]).andReturn(mockSession);
-    OCMExpect([mockSession logOut:[OCMArg any]]);
-    
-    // Act
-    [mockSession logOut:nil];
-    
-    // Assert
-    OCMVerifyAll(mockSession);
-}
+
 
 @end

@@ -36,7 +36,8 @@ extern NSString * const kTTUserDidLogOutNotification;
 #pragma mark - NSError
 extern NSString * const kTTErrorUserInfoKey;
 extern NSString * const kTTSessionErrorDomain;
-extern NSUInteger const kTTSessionErrorParseSessionInvalidCode;
+extern NSUInteger const kTTSessionErrorParseSessionFetchFailureCode;
+extern NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode;
 
 
 #pragma mark - PFUser Class

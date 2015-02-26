@@ -8,7 +8,7 @@
 
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
-
+#import "Reachability.h"
 #import "TTUser.h"
 
 @class TTUser;

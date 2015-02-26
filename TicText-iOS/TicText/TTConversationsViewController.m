@@ -7,7 +7,7 @@
 //
 
 #import "TTConversationsViewController.h"
-#import "TTDialogViewController.h"
+#import "TTMessagesViewController.h"
 
 @interface TTConversationsViewController ()
 
@@ -24,7 +24,7 @@
 }
 
 - (void)presentTestViewController {
-    UIViewController *testViewController = [[TTDialogViewController alloc] init];
+    UIViewController *testViewController = [TTMessagesViewController messagesViewController];
     testViewController.view.backgroundColor = [UIColor grayColor];
     testViewController.navigationItem.title = @"Some Dialog";
     testViewController.hidesBottomBarWhenPushed = YES;

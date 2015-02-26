@@ -33,7 +33,8 @@ NSString * const kTTUserDidLogOutNotification = @"UserDidLogOut";
 #pragma mark - NSError
 NSString * const kTTErrorUserInfoKey = @"error";
 NSString * const kTTSessionErrorDomain = @"SessionError";
-NSUInteger const kTTSessionErrorParseSessionInvalidCode = 0;
+NSUInteger const kTTSessionErrorParseSessionFetchFailureCode = 0;
+NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode = 1;
 
 
 #pragma mark - PFUser Class
