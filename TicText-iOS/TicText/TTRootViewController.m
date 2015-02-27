@@ -95,7 +95,6 @@
     self.profileNavigationController = [[UINavigationController alloc] initWithRootViewController:self.profileViewController];
     self.settingsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.settingsViewController];
     
-    // @TODO: tab bar icons
     UITabBarItem *conversationsTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Tics"
                                                                           image:[UIImage imageNamed:@"TicsTabBarIcon"]
                                                                   selectedImage:[UIImage imageNamed:@"TicsTabBarIconSelected"]];
