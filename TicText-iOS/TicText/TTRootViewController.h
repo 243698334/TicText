@@ -18,10 +18,4 @@
 // The main view controller for this application.
 @interface TTRootViewController : UIViewController
 
-// Modally presents the login view controller, but only if the user is not logged in.
-- (void)presentLogInViewControllerIfNeeded;
-
-// Modally presents the login view controller.
-- (void)presentLogInViewControllerAnimated:(BOOL)animated;
-
 @end
