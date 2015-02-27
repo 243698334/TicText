@@ -11,6 +11,7 @@
 @interface AppDelegate ()
 
 @property (nonatomic, strong) TTRootViewController *rootViewController;
+@property (nonatomic, strong) UINavigationController *navigationController;
 
 @end
 

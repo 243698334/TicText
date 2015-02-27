@@ -47,7 +47,9 @@
         [invocation getArgument:&logOutBlock atIndex:2];
         logOutBlock();
     });
-    OCMExpect([self.mockRootViewController presentLogInViewControllerAnimated:[OCMArg any]]);
+    id mockNavigationController = OCMClassMock([UINavigationController class]);
+    OCMStub([self.mockRootViewController navigationController]).andReturn(mockNavigationController);
+    OCMExpect([mockNavigationController popToRootViewControllerAnimated:[OCMArg any]]);
     
     // Act
     [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil];
