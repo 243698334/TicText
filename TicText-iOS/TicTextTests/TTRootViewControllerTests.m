@@ -14,6 +14,12 @@
 #import "TTLogInViewController.h"
 #import "TTSession.h"
 
+@interface TTRootViewController (Test)
+
+- (void) presentLogInViewControllerAnimated:(BOOL)animated;
+
+@end
+
 @interface TTRootViewControllerTests : XCTestCase
 
 @property (nonatomic, strong) id mockRootViewController;
@@ -28,29 +34,29 @@
     self.mockRootViewController = OCMPartialMock([[TTRootViewController alloc] init]);
 }
 
-//- (void)testSessionDidBecomeInvalid {
-//    // Arrange
-//    id mockSession = OCMPartialMock([TTSession sharedSession]);
-//    OCMStub([mockSession sharedSession]).andReturn(mockSession);
-//    OCMExpect([mockSession logOut:[OCMArg isKindOfClass:NSClassFromString(@"NSBlock")]]);
-//    id mockNavigationController = OCMClassMock([UINavigationController class]);
-//    //OCMExpect([mockNavigationController popToRootViewControllerAnimated:[OCMArg any]]);
-//    OCMStub(((TTRootViewController *)self.mockRootViewController).navigationController).andReturn(mockNavigationController);
-//    OCMStub([self.mockRootViewController navigationController]).andReturn(mockNavigationController);
-//    OCMStub([mockSession logOut:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
-//        void (^logOutBlock)() = nil;
-//        [invocation getArgument:&logOutBlock atIndex:2];
-//        logOutBlock();
-//    });
-//    
-//    // Act
-//    [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil];
-//    
-//    // Assert
-//    OCMVerifyAll(mockSession);
-//    OCMVerify(((TTRootViewController *)self.mockRootViewController).logIn);
-//    //OCMVerifyAll(mockNavigationController);
-//}
+- (void)testSessionDidBecomeInvalid {
+    // Arrange
+    id mockSession = OCMPartialMock([TTSession sharedSession]);
+    OCMStub([mockSession sharedSession]).andReturn(mockSession);
+    
+    // keep or comment
+    OCMExpect([mockSession logOut:[OCMArg isKindOfClass:NSClassFromString(@"NSBlock")]]);
+    OCMStub([mockSession logOut:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
+        void (^logOutBlock)() = nil;
+        [invocation getArgument:&logOutBlock atIndex:2];
+        logOutBlock();
+    });
+    
+    // Goal
+    OCMExpect([self.mockRootViewController presentLogInViewControllerAnimated:[OCMArg any]]);
+    
+    // Act
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil];
+    
+    // Assert
+    OCMVerifyAll(mockSession);
+    OCMVerifyAll(self.mockRootViewController);
+}
 
 
 @end
