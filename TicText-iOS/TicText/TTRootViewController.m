@@ -53,8 +53,10 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[TTSession sharedSession] validateSessionInBackground];
-    if ([TTUser currentUser]) {
+    if ([[TTSession sharedSession] isValidLastChecked]) {
         [self presentMainUserInterface];
+    } else {
+        [self presentLogInViewControllerAnimated:YES];
     }
 }
 
@@ -67,14 +69,11 @@
     }
     [[TTSession sharedSession] logOut:^{
         [self.navigationController popToRootViewControllerAnimated:YES];
-        [self presentLogInViewControllerAnimated:YES];
+        self.conversationsViewController = nil;
+        self.contactsViewController = nil;
+        self.profileViewController = nil;
+        self.settingsViewController = nil;
     }];
-}
-
-- (void)presentLogInViewControllerIfNeeded {
-    if (![[TTSession sharedSession] isValidLastChecked]) {
-        [self presentLogInViewControllerAnimated:YES];
-    }
 }
 
 - (void)presentLogInViewControllerAnimated:(BOOL)animated {
@@ -141,7 +140,6 @@
 - (void)userDidLogOut {
     self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [[TTSession sharedSession] logOut:^{
-        [self.tabBarController.navigationController popToRootViewControllerAnimated:NO];
         [self.navigationController popToRootViewControllerAnimated:YES];
         self.conversationsViewController = nil;
         self.contactsViewController = nil;
