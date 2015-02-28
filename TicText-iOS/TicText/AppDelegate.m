@@ -107,14 +107,17 @@
 - (void)parseInitializationWithUIApplication:(UIApplication *)application
                                launchOptions:(NSDictionary *)launchOptions {
     
+    [ParseCrashReporting enable];
+    
     [TTUser registerSubclass];
     [TTTic registerSubclass];
     [TTActivity registerSubclass];
     
+    [Parse enableLocalDatastore];
+    
     [Parse setApplicationId:@"otEYQUdVy98OBM9SeUs8Zc1PrMy27EGMvEy80WaL"
                   clientKey:@"qfTOvPp03kY8uSYVu3FkL72UWwW37Tx2B6L6Ppq9"];
     
-    //[ParseCrashReporting enable];
     [PFFacebookUtils initializeFacebook];
     
     // Track app open
