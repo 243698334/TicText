@@ -10,6 +10,8 @@
 
 @implementation TTTic
 
+@dynamic status, type, timeLimit, senderUserID, recipientUserID, sendTimestamp, receiveTimestamp;
+
 + (NSString *)parseClassName {
     return kTTTicClassKey;
 }

@@ -25,12 +25,17 @@ extern NSString * const kTTFacebookSessionIsValidLastCheckedKey;
 
 
 #pragma mark - NSNotification
-extern NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification;
+// Log in, Sign up, Log out
 extern NSString * const kTTLogInViewControllerDidFinishLogInNotification;
 extern NSString * const kTTLogInViewControllerDidFinishSignUpNotification;
+extern NSString * const kTTUserDidLogOutNotification;
+
+// Invalid session
 extern NSString * const kTTFacebookSessionDidBecomeInvalidNotification;
 extern NSString * const kTTParseSessionDidBecomeInvalidNotification;
-extern NSString * const kTTUserDidLogOutNotification;
+
+// Push notification
+extern NSString * const kTTApplicationDidReceiveNewTicWhileActiveNotification;
 
 
 #pragma mark - NSError

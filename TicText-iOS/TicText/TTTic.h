@@ -10,4 +10,12 @@
 
 @interface TTTic : PFObject<PFSubclassing>
 
+@property (nonatomic) NSTimeInterval timeLimit;
+@property (nonatomic, strong) NSString *status;
+@property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) NSString *senderUserID;
+@property (nonatomic, strong) NSString *recipientUserID;
+@property (nonatomic, strong) NSDate *sendTimestamp;
+@property (nonatomic, strong) NSDate *receiveTimestamp;
+
 @end
