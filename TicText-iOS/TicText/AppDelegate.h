@@ -13,6 +13,8 @@
 #import "TTConstants.h"
 #import "TTSession.h"
 #import "TTUser.h"
+#import "TTTic.h"
+#import "TTActivity.h"
 #import "TTRootViewController.h"
 
 
