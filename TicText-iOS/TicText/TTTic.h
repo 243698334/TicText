@@ -13,8 +13,8 @@
 @property (nonatomic) NSTimeInterval timeLimit;
 @property (nonatomic, strong) NSString *status;
 @property (nonatomic, strong) NSString *type;
-@property (nonatomic, strong) NSString *senderUserID;
-@property (nonatomic, strong) NSString *recipientUserID;
+@property (nonatomic, strong) NSString *senderUserId;
+@property (nonatomic, strong) NSString *recipientUserId;
 @property (nonatomic, strong) NSString *contentType;
 @property (nonatomic, strong) NSData *content;
 @property (nonatomic, strong) NSDate *sendTimestamp;
