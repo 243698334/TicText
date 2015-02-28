@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <JSQMessagesViewController/JSQMessages.h>
 
-@interface TTMessagesViewController : JSQMessagesViewController
+@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate>
 
 @end
