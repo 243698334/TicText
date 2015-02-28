@@ -59,18 +59,15 @@
                       otherButtonTitles:nil] show];
 }
 
-- (void)application:(UIApplication *)application
-        didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    
-    // Push notification received while the app is active
-    [[NSNotificationCenter defaultCenter]
-        postNotificationName:kTTAppDelegateApplicationDidReceiveRemoteNotification
-                      object:nil
-                    userInfo:userInfo];
-    
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
         // Track app opens due to a push notification being acknowledged while the app wasn't active.
         [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
+    }
+    
+    // Push notification received while the app is active
+    if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
     }
     
     // TODO: handle push notification
