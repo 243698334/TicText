@@ -11,7 +11,9 @@
 #import "TTTic.h"
 #import "TTActivity.h"
 
-#define HCK @"4ynJPt9u9w"
+#define HCK @"9vre9oQlWh"
+#define HCK_DEV @"YlnkEyAQyF"
+#define KEVIN @"4ynJPt9u9w"
 #define KEVIN_DEV @"F8ekXoLCGN"
 
 @interface TTMessagesViewController ()
@@ -45,9 +47,13 @@
     self.jsqMessages = [[NSMutableArray alloc] init];
     self.senderUserId = [TTUser currentUser].objectId;
     if ([self.senderId isEqualToString:HCK]) {
+        self.recipientUserId = HCK_DEV;
+    } else if ([self.senderId isEqualToString:HCK_DEV]) {
+        self.recipientUserId = HCK;
+    } else if ([self.senderId isEqualToString:KEVIN]) {
         self.recipientUserId = KEVIN_DEV;
     } else {
-        self.recipientUserId = HCK;
+        self.recipientUserId = KEVIN;
     }
     
     self.bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
@@ -90,7 +96,7 @@
     [self sendTic:newTic];
 }
 
-- (void)sendTic:(TTTic *)tic {    
+- (void)sendTic:(TTTic *)tic {
     [tic saveEventually:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             TTActivity *sendTicActivity = [TTActivity activityWithType:kTTActivityTypeSendTic tic:tic];
@@ -286,6 +292,19 @@
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapMessageBubbleAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"Tapped message bubble!");
+    TTTic *tic = [self.tics objectAtIndex:indexPath.item];
+    if ([tic.senderUserId isEqualToString:self.senderUserId]) {
+        NSLog(@"No need to fetch self tic");
+    } else {
+        TTActivity *fetchTicActivity = [TTActivity activityWithType:kTTActivityTypeFetchTic tic:tic];
+        [fetchTicActivity saveEventually:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                NSLog(@"Fetch Tic successfully");
+            } else {
+                NSLog(@"Failed to fetch Tic, error: %@", error);
+            }
+        }];
+    }
 }
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapCellAtIndexPath:(NSIndexPath *)indexPath touchLocation:(CGPoint)touchLocation {
