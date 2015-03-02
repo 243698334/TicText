@@ -16,7 +16,7 @@
 @property (nonatomic, strong) NSString *facebookID;
 @property (nonatomic, strong) NSString *displayName;
 @property (nonatomic, strong) NSData *profilePicture;
-@property (nonatomic, strong) NSArray *ticTextFriends;
+@property (nonatomic, strong) NSArray *facebookFriends;
 @property (nonatomic, strong) NSString *activeDeviceIdentifier;
 
 @end

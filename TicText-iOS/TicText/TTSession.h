@@ -10,6 +10,7 @@
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import "Reachability.h"
 #import "TTUser.h"
+#import "TTActivity.h"
 
 @class TTUser;
 

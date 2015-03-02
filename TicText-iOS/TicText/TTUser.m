@@ -13,7 +13,7 @@
 
 @implementation TTUser
 
-@dynamic displayName, facebookID, ticTextFriends, activeDeviceIdentifier;
+@dynamic displayName, facebookID, facebookFriends, activeDeviceIdentifier;
 
 - (BOOL)isLinkedWithFacebook {
     return self[kTTUserFacebookIDKey] != nil;

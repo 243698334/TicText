@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <JSQMessagesViewController/JSQMessages.h>
+#import "TTMessagesBubbleImage.h"
 
 @interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate>
 

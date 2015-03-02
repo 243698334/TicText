@@ -140,7 +140,7 @@
         } else {
             if (completion) {
                 NSLog(@"Logged in with permissions: %@", kTTFacebookPermissions);
-                NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@]", [(TTUser *)user displayName], [(TTUser *)user facebookID], [(TTUser *)user ticTextFriends]);
+                NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@]", [(TTUser *)user displayName], [(TTUser *)user facebookID], [(TTUser *)user facebookFriends]);
                 completion(user.isNew, error);
             }
         }
@@ -188,13 +188,18 @@
             
             [TTUser currentUser].displayName = displayName;
             [TTUser currentUser].facebookID = facebookID;
-            [TTUser currentUser].ticTextFriends = friends;
+            [TTUser currentUser].facebookFriends = friends;
             [TTUser currentUser].activeDeviceIdentifier = [UIDevice currentDevice].identifierForVendor.UUIDString;
             NSURLRequest *profilePictureURLRequest = [NSURLRequest requestWithURL:profilePictureURL];
             [NSURLConnection sendAsynchronousRequest:profilePictureURLRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                  if (connectionError == nil && data != nil) {
                      [[TTUser currentUser] setProfilePicture:data];
                      [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                         if (succeeded) {
+                             [[TTActivity activityWithType:kTTActivityTypeNewUserJoin] saveInBackground];
+                         } else {
+                             [self logOut:nil];
+                         }
                          if (completion) {
                              completion(error);
                          }
@@ -230,7 +235,7 @@
                 [friendIds addObject:friend[@"id"]];
             }
             
-            [TTUser currentUser].ticTextFriends = [NSArray arrayWithArray:friendIds];
+            [TTUser currentUser].facebookFriends = [NSArray arrayWithArray:friendIds];
             [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (completion) {
                     completion(error);
@@ -241,100 +246,6 @@
             completion(error);
         }
     }];
-}
-
-- (void)syncProfileData:(void (^)(NSError *error))completion {
-    NSLog(@"Sync profile data");
-    FBRequest *request = [FBRequest requestForMe];
-    [request startWithCompletionHandler:^(FBRequestConnection *conn, id result, NSError *error) {
-        if (!error) {
-            // result is a dictionary with the user's Facebook data
-            NSDictionary *userData = (NSDictionary *)result;
-            
-            NSDictionary *dataMap = @{
-                                      kTTUserDisplayNameKey :   @"name",
-                                      kTTUserFacebookIDKey :    @"id"
-                                      };
-            
-            TTUser *user = [TTUser currentUser];
-            [dataMap enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-                user[key] = userData[obj];
-            }];
-            
-            [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (completion) {
-                    completion(error);
-                }
-            }];
-        }
-        if (completion) {
-            completion(error);
-        }
-    }];
-}
-
-- (void)syncFriends:(void (^)(NSError *))completion {
-    NSLog(@"Sync friends. ");
-    FBRequest *request = [FBRequest requestForMyFriends];
-    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        if (!error) {
-            NSMutableArray *friendIds = [NSMutableArray array];
-            
-            NSArray *friends = [result objectForKey:@"data"];
-            for (NSDictionary *friend in friends) {
-                [friendIds addObject:friend[@"id"]];
-            }
-            
-            TTUser *user = [TTUser currentUser];
-            [user setTicTextFriends:[NSArray arrayWithArray:friendIds]];
-            [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (completion) {
-                    completion(error);
-                }
-            }];
-        }
-        if (completion) {
-            completion(error);
-        }
-    }];
-}
-
-- (void)syncProfilePicture:(void (^)(NSError *))completion {
-    NSLog(@"Sync profile picture. ");
-    TTUser *user = [TTUser currentUser];
-    
-    void (^fetchProfilePicture)(NSString *) = ^(NSString *facebookId){
-        NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookId]];
-        
-        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
-        
-        // Run network request asynchronously
-        [NSURLConnection sendAsynchronousRequest:urlRequest
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:
-         ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-             if (connectionError == nil && data != nil) {
-                 [user setProfilePicture:data];
-                 [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                     if (completion) {
-                         completion(error);
-                     }
-                 }];
-             }
-         }];
-    };
-    
-    if ([user facebookID]) {
-        fetchProfilePicture([user facebookID]);
-    } else {
-        [self syncProfileData:^(NSError *error) {
-            if (!error) {
-                fetchProfilePicture([user facebookID]);
-            } else if (completion) {
-                completion(error);
-            }
-        }];
-    }
 }
 
 - (void)syncActiveDeviceIdentifier:(void (^)(NSError *))completion {

@@ -97,8 +97,9 @@ extern NSString * const kTTActivityContentKey;
 extern NSString * const kTTActivityTicKey;
 
 // Type values
-extern NSString * const kTTActivityTypeSend;
-extern NSString * const kTTActivityTypeFetch;
+extern NSString * const kTTActivityTypeSendTic;
+extern NSString * const kTTActivityTypeFetchTic;
+extern NSString * const kTTActivityTypeNewUserJoin;
 
 
 #pragma mark - Push Notification Payload
@@ -107,6 +108,7 @@ extern NSString * const kTTPushNotificationPayloadTypeKey;
 
 // Type values
 extern NSString * const kTTPushNotificationPayloadTypeNewTic;
+extern NSString * const kTTPushNotificationPayloadTypeReadTic;
 extern NSString * const kTTPushNotificationPayloadTypeNewFriend;
 
 

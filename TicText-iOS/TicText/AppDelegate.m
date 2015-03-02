@@ -71,7 +71,6 @@
     }
     
     // TODO: handle push notification
-    [PFPush handlePush:userInfo];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

@@ -94,8 +94,9 @@ NSString * const kTTActivityContentKey = @"content";
 NSString * const kTTActivityTicKey = @"tic";
 
 // Type values
-NSString * const kTTActivityTypeSend = @"send";
-NSString * const kTTActivityTypeFetch = @"fetch";
+NSString * const kTTActivityTypeSendTic = @"send";
+NSString * const kTTActivityTypeFetchTic = @"fetch";
+NSString * const kTTActivityTypeNewUserJoin = @"join";
 
 
 #pragma mark - Push Notification Payload
@@ -105,6 +106,7 @@ NSString * const kTTPushNotificationPayloadTypeKey = @"t";
 
 // Type values
 NSString * const kTTPushNotificationPayloadTypeNewTic = @"nt";
+NSString * const kTTPushNotificationPayloadTypeReadTic = @"rt";
 NSString * const kTTPushNotificationPayloadTypeNewFriend = @"nf";
 
 

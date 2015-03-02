@@ -7,24 +7,28 @@
 //
 
 #import "TTMessagesViewController.h"
-#import "MBProgressHUD.h"
 #import "TTUser.h"
 #import "TTTic.h"
+#import "TTActivity.h"
 
-@interface TTMessagesViewController () {
-    
-    BOOL isLoading;
-    
-    NSMutableArray *users;
-    NSMutableArray *messages;
-    NSMutableDictionary *avatars;
-    
-    JSQMessagesBubbleImage *outgoingBubbleImageData;
-    JSQMessagesBubbleImage *incomingBubbleImageData;
-    
-//    JSQMessagesAvatarImage *defaultAvatarImageData;
-    
-}
+#define HCK @"4ynJPt9u9w"
+#define KEVIN_DEV @"F8ekXoLCGN"
+
+@interface TTMessagesViewController ()
+
+@property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic) BOOL isLoading;
+
+@property (nonatomic, strong) NSMutableArray *tics;
+@property (nonatomic, strong) NSMutableArray *jsqMessages;
+@property (nonatomic, strong) NSString *senderUserId;
+@property (nonatomic, strong) NSString *recipientUserId;
+
+// @TODO: need customization
+@property (nonatomic, strong) JSQMessagesBubbleImage *outgoingBubbleImageData;
+@property (nonatomic, strong) JSQMessagesBubbleImage *incomingBubbleImageData;
+@property (nonatomic, strong) JSQMessagesBubbleImageFactory *bubbleFactory;
+
 @end
 
 @implementation TTMessagesViewController
@@ -32,177 +36,162 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadTics) name:@"kTTAppDelegateDidReceiveNewTicWhileAppActiveNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadTics) name:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
     
-    users = [[NSMutableArray alloc] init];
-    messages = [[NSMutableArray alloc] init];
-    avatars = [[NSMutableDictionary alloc] init];
-
+    self.senderId = [[TTUser currentUser].objectId copy];
+    self.senderDisplayName = [[TTUser currentUser].displayName copy];
     
-    self.senderId = [TTUser currentUser].objectId;
-    self.senderDisplayName = [TTUser currentUser].displayName;
+    self.tics = [[NSMutableArray alloc] init];
+    self.jsqMessages = [[NSMutableArray alloc] init];
+    self.senderUserId = [TTUser currentUser].objectId;
+    if ([self.senderId isEqualToString:HCK]) {
+        self.recipientUserId = KEVIN_DEV;
+    } else {
+        self.recipientUserId = HCK;
+    }
     
-    JSQMessagesBubbleImageFactory *bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
-    outgoingBubbleImageData = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
-    incomingBubbleImageData = [bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
+    self.bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
+    self.outgoingBubbleImageData = [self.bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    self.incomingBubbleImageData = [self.bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
     
-    // TODO: look at dis
-//    defaultAvatarImageData = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageWithData:[TTUser currentUser].profilePicture] diameter:64.0];
-    
-    isLoading = NO;
+    self.isLoading = NO;
     [self loadTics];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(loadTics) userInfo:nil repeats:YES];
+    self.collectionView.collectionViewLayout.springinessEnabled = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.timer invalidate];
+}
+
+#pragma mark - JSQMessagesViewController method overrides
+
+- (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
+    // Play sound
+    [JSQSystemSoundPlayer jsq_playMessageSentSound];
+    
+    // New JSQMessage
+    JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:date text:text];
+    
+    // New Tic
+    TTTic *newTic = [self ticWithType:kTTTicTypeDefault senderUserId:self.senderUserId recipientUserId:self.recipientUserId timeLimit:10 message:newJSQMessage];
+    [newTic pinInBackground];
+    
+    // Add to local array
+    [self.tics addObject:newTic];
+    [self.jsqMessages addObject:newJSQMessage];
+    
+    [self finishSendingMessageAnimated:YES];
+    [self sendTic:newTic];
+}
+
+- (void)sendTic:(TTTic *)tic {    
+    [tic saveEventually:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            TTActivity *sendTicActivity = [TTActivity activityWithType:kTTActivityTypeSendTic tic:tic];
+            [sendTicActivity saveEventually:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    NSLog(@"Activity saved. ");
+                } else {
+                    NSLog(@"Failed to save Activity, error: %@", error);
+                }
+            }];
+        } else {
+            NSLog(@"Failed to save Tic, error: %@", error);
+        }
+    }];
+}
+
 - (void)loadTics {
-
-    if (isLoading == NO) {
-
-        isLoading = YES;
-        JSQMessage *message_last = [messages lastObject];
-
+    if (self.isLoading == NO) {
+        self.isLoading = YES;
+        JSQMessage *mostRecentJSQMessage = [self.jsqMessages lastObject];
         
         PFQuery *query = [TTTic query];
-//        [query fromLocalDatastore];
-//        [query whereKey:@"senderUserId" equalTo:[TTUser currentUser].objectId];
-        [query whereKey:@"recipientUserId" equalTo:[TTUser currentUser].objectId];
-        if (message_last != nil) [query whereKey:kTTTicSendTimestampKey greaterThan:message_last.date];
+        if (mostRecentJSQMessage != nil) {
+            [query whereKey:kTTTicSendTimestampKey greaterThan:mostRecentJSQMessage.date];
+        }
+        [query includeKey:kTTTicSenderKey];
         [query orderByDescending:kTTTicSendTimestampKey];
         [query setLimit:50];
         [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-
+            
             if (error == nil) {
-                NSLog(@"Query for tics succeed with %ld tics", [objects count]);
                 for (TTTic *tic in [objects reverseObjectEnumerator]) {
+                    TTUser *sender = [tic objectForKey:kTTTicSenderKey];
                     
-                    [self addMessage:tic];
-
+                    // New JSQMessage
+                    JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:sender.objectId senderDisplayName:sender.displayName date:tic.sendTimestamp text:[NSString stringWithUTF8String:[tic.content bytes]]];
+                    
+                    // Add to local array
+                    [self.tics addObject:tic];
+                    [self.jsqMessages addObject:newJSQMessage];
                 }
-
-                if ([objects count] != 0) [self finishReceivingMessage];
-
+                if ([objects count] != 0) {
+                    [self finishReceivingMessage];
+                }
             } else {
-                // TODO: handle failed loading
+                NSLog(@"Network error");
             }
-
-            isLoading = NO;
-
+            self.isLoading = NO;
         }];
-
     }
-
-}
-
-- (void)addMessage:(TTTic *)tic {
-    // add correpsonding user for a message
-    TTUser *user = [tic objectForKey:@"sender"];
-    [users addObject:user];
-    
-    JSQMessage *message = [[JSQMessage alloc] initWithSenderId:user.objectId
-                                             senderDisplayName:user.displayName
-                                                          date:[NSDate date]
-                                                          text:[NSString stringWithUTF8String:[tic.content bytes]]];
-
-    [messages addObject:message];
 }
 
 - (void)didPressAccessoryButton:(UIButton *)sender {
-    
-    UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:@"Some stuff"
-                                                        delegate:self
-                                               cancelButtonTitle:@"Cancel"
-                                          destructiveButtonTitle:nil
-                                               otherButtonTitles:@"A stuff", @"Another stuff", nil];
-    [action showInView:self.view];
+    NSLog(@"didPressAccessoryButton");
 }
 
-
-- (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
-    
-    [self sendMessage:text Picture:nil];
-}
-
-- (void)sendMessage:(NSString *)text Picture:(UIImage *)picture {
-    
-    TTTic *tic = [TTTic object];
-    [tic pinInBackground];
-    tic.type = kTTTicTypeDefault;
-    tic.contentType = kTTTicContentTypeText;
-    tic.status = kTTTicStatusUnread;
-    tic.senderUserId = [TTUser currentUser].objectId;
-    tic.recipientUserId = @"GDg1z1J0TN"; // kevindev's objectId
-    tic.sendTimestamp = [NSDate date];
-    tic.content = [text dataUsingEncoding:NSUTF8StringEncoding];
-    
-    [tic saveEventually:^(BOOL succeeded, NSError *error) {
-        if (error == nil) {
-            [JSQSystemSoundPlayer jsq_playMessageSentSound];
-            [self loadTics];
-        } else {
-            // TODO: handle failed sending
-        }
-    }];
-
-    [self finishSendingMessage];
-    
-}
 
 #pragma mark - JSQMessages CollectionView DataSource
 
 - (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return [messages objectAtIndex:indexPath.item];
+    return [self.jsqMessages objectAtIndex:indexPath.item];
 }
 
-// Bubble
 - (id<JSQMessageBubbleImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView messageBubbleImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
+    JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
     
-    JSQMessage *message = [messages objectAtIndex:indexPath.item];
     if ([message.senderId isEqualToString:self.senderId]) {
-        return outgoingBubbleImageData;
+        return self.outgoingBubbleImageData;
+    } else {
+        return self.incomingBubbleImageData;
     }
-    return incomingBubbleImageData;
 }
 
-// Avatar
 - (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
-    // TODO: should allow customized avatar image.
-    // use facebook profile picture for now
-    TTUser *user = users[indexPath.item];
-    if (avatars[user.objectId] == nil) {
-//        avatars[user.objectId] = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageWithData:[user objectForKey:@"profilePicture"]] diameter:64.0];
-//        [self.collectionView reloadData];
-        PFFile *fileThumbnail = [user objectForKey:@"profilePicture"];
-        [fileThumbnail getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-            
-            if (error == nil) {
-                
-                avatars[user.objectId] = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageWithData:imageData] diameter:64.0];
-                [self.collectionView reloadData];
-                
-            }
-        }];
+    JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
+    if ([message.senderId isEqualToString:self.senderId]) {
+        //
     }
-    return avatars[user.objectId];
+    else {
+        //
+    }
+    
+    JSQMessagesAvatarImage *testAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"profile"] diameter:kJSQMessagesCollectionViewAvatarSizeDefault];
+    return testAvatar;
 }
 
-// Show a timestamp for every X messages
 - (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
-//    if (indexPath.item % 3 == 0) {
-//        JSQMessage *message = [messages objectAtIndex:indexPath.item];
-//        return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.date];
-//    }
-    return nil;
+    // Show timestamp for each Tic
+    JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
+    return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.date];
 }
 
 - (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForMessageBubbleTopLabelAtIndexPath:(NSIndexPath *)indexPath {
-    JSQMessage *message = [messages objectAtIndex:indexPath.item];
+    JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
     if ([message.senderId isEqualToString:self.senderId]) {
         return nil;
     }
     
     if (indexPath.item - 1 > 0) {
-        JSQMessage *previousMessage = [messages objectAtIndex:indexPath.item - 1];
-        if ([previousMessage.senderId isEqualToString:message.senderId]) {
+        JSQMessage *previousMessage = [self.jsqMessages objectAtIndex:indexPath.item - 1];
+        if ([[previousMessage senderId] isEqualToString:message.senderId]) {
             return nil;
         }
     }
@@ -213,23 +202,23 @@
     return nil;
 }
 
+
 #pragma mark - UICollectionView DataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [messages count];
+    return [self.jsqMessages count];
 }
 
 - (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    /**
-     *  Override point for customizing cells
-     */
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
+    JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
     
-    JSQMessage *message = [messages objectAtIndex:indexPath.item];
     if (!message.isMediaMessage) {
+        
         if ([message.senderId isEqualToString:self.senderId]) {
             cell.textView.textColor = [UIColor blackColor];
-        } else {
+        }
+        else {
             cell.textView.textColor = [UIColor whiteColor];
         }
         cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
@@ -238,30 +227,43 @@
     return cell;
 }
 
+
 #pragma mark - JSQMessages collection view flow layout delegate
 
 #pragma mark - Adjusting cell label heights
 
 - (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
                    layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.item % 3 == 0) {
-        return kJSQMessagesCollectionViewCellLabelHeightDefault;
-    }
-    return 0.0f;
+    /**
+     *  Each label in a cell has a `height` delegate method that corresponds to its text dataSource method
+     */
+    
+    /**
+     *  This logic should be consistent with what you return from `attributedTextForCellTopLabelAtIndexPath:`
+     *  The other label height delegate methods should follow similarly
+     *
+     *  Show a timestamp for every 3rd message
+     */
+    return kJSQMessagesCollectionViewCellLabelHeightDefault;
 }
 
 - (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
                    layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForMessageBubbleTopLabelAtIndexPath:(NSIndexPath *)indexPath {
-    JSQMessage *message = messages[indexPath.item];
-    if ([message.senderId isEqualToString:self.senderId]) {
+    /**
+     *  iOS7-style sender name labels
+     */
+    JSQMessage *currentMessage = [self.jsqMessages objectAtIndex:indexPath.item];
+    if ([[currentMessage senderId] isEqualToString:self.senderId]) {
         return 0.0f;
     }
+    
     if (indexPath.item - 1 > 0) {
-        JSQMessage *previousMessage = [messages objectAtIndex:indexPath.item-1];
-        if ([previousMessage.senderId isEqualToString:message.senderId]) {
+        JSQMessage *previousMessage = [self.jsqMessages objectAtIndex:indexPath.item - 1];
+        if ([[previousMessage senderId] isEqualToString:[currentMessage senderId]]) {
             return 0.0f;
         }
     }
+    
     return kJSQMessagesCollectionViewCellLabelHeightDefault;
 }
 
@@ -270,43 +272,52 @@
     return 0.0f;
 }
 
+
+#pragma mark - Responding to collection view tap events
+
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView
                 header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender {
     NSLog(@"Load earlier messages!");
 }
 
-- (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapAvatarImageView:(UIImageView *)avatarImageView
-           atIndexPath:(NSIndexPath *)indexPath {
+- (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapAvatarImageView:(UIImageView *)avatarImageView atIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"Tapped avatar!");
 }
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapMessageBubbleAtIndexPath:(NSIndexPath *)indexPath {
-    // TODO: tap bubble to see the content
     NSLog(@"Tapped message bubble!");
 }
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapCellAtIndexPath:(NSIndexPath *)indexPath touchLocation:(CGPoint)touchLocation {
-    NSLog(@"didTapCellAtIndexPath %@", NSStringFromCGPoint(touchLocation));
+    NSLog(@"Tapped cell at %@!", NSStringFromCGPoint(touchLocation));
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex != actionSheet.cancelButtonIndex)
-    {
-        //        if (buttonIndex == 0)	ShouldStartCamera(self, YES);
-        //        if (buttonIndex == 1)	ShouldStartPhotoLibrary(self, YES);
-        NSLog(@"clickedButtonAtIndex");
+#pragma mark - TTMessagesViewController
+
+- (TTTic *)ticWithType:(NSString *)type senderUserId:(NSString *)senderUserId recipientUserId:(NSString *)recipientUserId timeLimit:(NSTimeInterval)timeLimit message:(JSQMessage *)message {
+    TTTic *newTic = [TTTic object];
+    newTic.type = type;
+    newTic.senderUserId = senderUserId;
+    newTic.recipientUserId = recipientUserId;
+    newTic.timeLimit = timeLimit;
+    newTic.sendTimestamp = message.date;
+    newTic.receiveTimestamp = nil;
+    newTic.status = kTTTicStatusUnread;
+    if (message.isMediaMessage) {
+        // @TODO: determine media type?
+        newTic.contentType = nil;
+        newTic.content = nil;
+    } else {
+        newTic.contentType = kTTTicContentTypeText;
+        newTic.content = [message.text dataUsingEncoding:NSUTF8StringEncoding];
     }
+    return newTic;
 }
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImage *picture = info[UIImagePickerControllerEditedImage];
-    [self sendMessage:@"[Picture message]" Picture:picture];
-    [picker dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (JSQMessage *)messageWithTic:(TTTic *)tic {
+    // @TODO: change this to query
+    TTUser *sender = [tic objectForKey:kTTTicSenderKey];
+    return [[JSQMessage alloc] initWithSenderId:tic.senderUserId senderDisplayName:sender.displayName date:tic.sendTimestamp text:[NSString stringWithUTF8String:[tic.content bytes]]];
 }
 
 @end

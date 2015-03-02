@@ -29,7 +29,6 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"Settings";
-    self.tableView.scrollEnabled = NO;
     
     self.receiveNewTicNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
     self.receiveExpireSoonNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
