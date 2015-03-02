@@ -43,7 +43,7 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
         case ACTIVITY_TYPE_SEND:
             activity.get(ACTIVITY_TIC).fetch({
                 success: function(object) {
-                    var recipient = objectget(TIC_RECIPIENT);
+                    var recipient = object.get(TIC_RECIPIENT);
                     installationQuery.equalTo(INSTALLATION_USER, recipient);
                     Parse.Push.send({
                         where: installationQuery,
