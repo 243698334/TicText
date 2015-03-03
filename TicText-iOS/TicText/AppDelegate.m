@@ -67,7 +67,11 @@
     
     // Push notification received while the app is active
     if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
+        NSString *ticId = [userInfo objectForKey:kTTPushNotificationPayloadTicIdKey];
+        NSString *senderUserId = [userInfo objectForKey:kTTPushNotificationPayloadSenderUserId];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification
+                                                            object:nil
+                                                          userInfo:@{kTTNotificationUserInfoTicIdKey : ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId}];
     }
     
     // TODO: handle push notification

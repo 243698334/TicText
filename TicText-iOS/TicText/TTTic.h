@@ -20,4 +20,8 @@
 @property (nonatomic, strong) NSDate *sendTimestamp;
 @property (nonatomic, strong) NSDate *receiveTimestamp;
 
++ (instancetype)unreadTicWithId:(NSString*)objectId;
+
++ (void)fetchTicInBackgroundWithId:(NSString *)ticId timestamp:(NSDate *)fetchTimestamp completion:(void (^)(TTTic *fetchedTic, NSError *error))completion;
+
 @end

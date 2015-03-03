@@ -51,7 +51,7 @@
             NSLog(@"TTSession: Parse remote session INVALID. ");
             NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionFetchFailureCode userInfo:nil];
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
             return;
         } else {
             if ([[[TTUser currentUser] activeDeviceIdentifier] isEqualToString:[UIDevice currentDevice].identifierForVendor.UUIDString]) {
@@ -66,7 +66,7 @@
                                            NSLocalizedRecoverySuggestionErrorKey: @"Consider turn on 2-step verification or TicText password. "};
                 NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionInvalidUUIDCode userInfo:userInfo];
                 [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-                [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
                 return;
             }
         }
@@ -77,7 +77,7 @@
         if (error) {
             NSLog(@"TTSession: Facebook session INVALID. ");
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTFacebookSessionIsValidLastCheckedKey];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
             return;
         } else {
             NSLog(@"TTSession: Facebook session VALID. ");

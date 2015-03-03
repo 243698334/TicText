@@ -13,6 +13,7 @@
 		0E0565231A9DEAD500242137 /* TTMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0565221A9DEAD500242137 /* TTMessagesViewController.m */; };
 		0E0565261A9E841B00242137 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0565251A9E841B00242137 /* Reachability.m */; };
 		0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0F657D1A8C0645003CB363 /* TTRootViewController.m */; };
+		0E61D46B1AA5B08D00EF5826 /* TTInAppNotificationDesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */; };
 		0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E68055E1A85306F00C013D2 /* TTConstants.m */; };
 		0EA9482D1AA3CF0E00476D4E /* TTMessagesBubbleImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EA9482C1AA3CF0E00476D4E /* TTMessagesBubbleImage.m */; };
 		0EACA86A1A97CDC100B93AAA /* TTConversationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA8691A97CDC100B93AAA /* TTConversationsViewController.m */; };
@@ -63,6 +64,7 @@
 		0E0565251A9E841B00242137 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		0E0F657C1A8C0645003CB363 /* TTRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRootViewController.h; sourceTree = "<group>"; };
 		0E0F657D1A8C0645003CB363 /* TTRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRootViewController.m; sourceTree = "<group>"; };
+		0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TTInAppNotificationDesign.json; sourceTree = "<group>"; };
 		0E68055D1A846A0000C013D2 /* TTConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTConstants.h; sourceTree = "<group>"; };
 		0E68055E1A85306F00C013D2 /* TTConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTConstants.m; sourceTree = "<group>"; };
 		0EA9482B1AA3CF0E00476D4E /* TTMessagesBubbleImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMessagesBubbleImage.h; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 		2E402A181A96FE8D00C1C7BF /* Custom UI */ = {
 			isa = PBXGroup;
 			children = (
+				0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */,
 				2E402A151A96FE8900C1C7BF /* TTFindFriendsTableViewCell.h */,
 				2E402A161A96FE8900C1C7BF /* TTFindFriendsTableViewCell.m */,
 				0EA9482B1AA3CF0E00476D4E /* TTMessagesBubbleImage.h */,
@@ -413,6 +416,7 @@
 			files = (
 				0EC584F61A7864AA00025D71 /* LaunchScreen.xib in Resources */,
 				0EC584F31A7864AA00025D71 /* Images.xcassets in Resources */,
+				0E61D46B1AA5B08D00EF5826 /* TTInAppNotificationDesign.json in Resources */,
 				CD4D57D61A96E9EE002B5586 /* TTLogInViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

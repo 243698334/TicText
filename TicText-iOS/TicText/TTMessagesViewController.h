@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <JSQMessagesViewController/JSQMessages.h>
+#import <TSMessages/TSMessageView.h>
 #import "TTMessagesBubbleImage.h"
 
-@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate>
+@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, TSMessageViewProtocol>
 
 @end

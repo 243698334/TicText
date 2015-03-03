@@ -25,6 +25,7 @@
 @property (nonatomic, strong) NSMutableArray *jsqMessages;
 @property (nonatomic, strong) NSString *senderUserId;
 @property (nonatomic, strong) NSString *recipientUserId;
+@property (nonatomic, strong) NSString *recipientDisplayName;
 
 // @TODO: need customization
 @property (nonatomic, strong) JSQMessagesBubbleImage *outgoingBubbleImageData;
@@ -38,14 +39,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadTics) name:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
+    [TSMessage setDelegate:self];
+    [TSMessage addCustomDesignFromFileWithName:@"TTInAppNotificationDesign.json"];
     
     self.senderId = [[TTUser currentUser].objectId copy];
-    self.senderDisplayName = [[TTUser currentUser].displayName copy];
-    
-    self.tics = [[NSMutableArray alloc] init];
-    self.jsqMessages = [[NSMutableArray alloc] init];
     self.senderUserId = [TTUser currentUser].objectId;
+    self.senderDisplayName = [[TTUser currentUser].displayName copy];
+    self.recipientUserId = @"";
+    self.recipientDisplayName = @"KevinDev Chen";
+    
     if ([self.senderId isEqualToString:HCK]) {
         self.recipientUserId = HCK_DEV;
     } else if ([self.senderId isEqualToString:HCK_DEV]) {
@@ -56,45 +58,64 @@
         self.recipientUserId = KEVIN;
     }
     
+    self.tics = [[NSMutableArray alloc] init];
+    self.jsqMessages = [[NSMutableArray alloc] init];
+    
+    
     self.bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
     self.outgoingBubbleImageData = [self.bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
     self.incomingBubbleImageData = [self.bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
     
     self.isLoading = NO;
-    [self loadTics];
+    //[self loadTics];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNewTic:) name:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(loadTics) userInfo:nil repeats:YES];
-    self.collectionView.collectionViewLayout.springinessEnabled = YES;
+    //self.timer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(loadTics) userInfo:nil repeats:YES];
+    self.collectionView.collectionViewLayout.springinessEnabled = NO;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.timer invalidate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - JSQMessagesViewController method overrides
-
-- (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
-    // Play sound
-    [JSQSystemSoundPlayer jsq_playMessageSentSound];
-    
-    // New JSQMessage
-    JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:date text:text];
-    
-    // New Tic
-    TTTic *newTic = [self ticWithType:kTTTicTypeDefault senderUserId:self.senderUserId recipientUserId:self.recipientUserId timeLimit:10 message:newJSQMessage];
-    [newTic pinInBackground];
-    
-    // Add to local array
-    [self.tics addObject:newTic];
-    [self.jsqMessages addObject:newJSQMessage];
-    
-    [self finishSendingMessageAnimated:YES];
-    [self sendTic:newTic];
+- (void)didReceiveNewTic:(NSNotification *)notification {
+    NSString *ticId = [notification.userInfo objectForKey:kTTNotificationUserInfoTicIdKey];
+    NSString *senderUserId = [notification.userInfo objectForKey:kTTNotificationUserInfoSenderUserIdKey];
+    if ([senderUserId isEqualToString:self.recipientUserId]) {
+        // Same sender, new empty bubble
+        JSQMessage *unreadJSQMessage = [[JSQMessage alloc] initWithSenderId:senderUserId senderDisplayName:self.recipientDisplayName date:[NSDate date] text:@"Tap to read this Tic"];
+        TTTic *unreadTic = [TTTic unreadTicWithId:ticId];
+        [self.jsqMessages addObject:unreadJSQMessage];
+        [self.tics addObject:unreadTic];
+        [self finishReceivingMessageAnimated:YES];
+    } else {
+        // In-app notification
+        [TSMessage showNotificationInViewController:self.navigationController
+                                              title:@"You have got a new Tic from someone else. "
+                                           subtitle:@"Tap to see your unread Tics. "
+                                              image:[UIImage imageNamed:@"TicInAppNotificationIcon"]
+                                               type:TSMessageNotificationTypeMessage
+                                           duration:TSMessageNotificationDurationAutomatic
+                                           callback:^(void) {
+                                               [self.navigationController popViewControllerAnimated:YES];
+                                           }
+                                        buttonTitle:nil
+                                     buttonCallback:nil
+                                         atPosition:TSMessageNotificationPositionNavBarOverlay
+                               canBeDismissedByUser:YES];
+    }
 }
+
+
 
 - (void)sendTic:(TTTic *)tic {
     [tic saveEventually:^(BOOL succeeded, NSError *error) {
@@ -153,6 +174,26 @@
     NSLog(@"didPressAccessoryButton");
 }
 
+#pragma mark - JSQMessagesViewController method overrides
+
+- (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
+    // Play sound
+    [JSQSystemSoundPlayer jsq_playMessageSentSound];
+    
+    // New JSQMessage
+    JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:date text:text];
+    
+    // New Tic
+    TTTic *newTic = [self ticWithType:kTTTicTypeDefault senderUserId:self.senderUserId recipientUserId:self.recipientUserId timeLimit:10 message:newJSQMessage];
+    [newTic pinInBackground];
+    
+    // Add to local array
+    [self.tics addObject:newTic];
+    [self.jsqMessages addObject:newJSQMessage];
+    
+    [self finishSendingMessageAnimated:YES];
+    [self sendTic:newTic];
+}
 
 #pragma mark - JSQMessages CollectionView DataSource
 
@@ -281,8 +322,7 @@
 
 #pragma mark - Responding to collection view tap events
 
-- (void)collectionView:(JSQMessagesCollectionView *)collectionView
-                header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender {
+- (void)collectionView:(JSQMessagesCollectionView *)collectionView header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender {
     NSLog(@"Load earlier messages!");
 }
 
@@ -291,20 +331,18 @@
 }
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapMessageBubbleAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"Tapped message bubble!");
-    TTTic *tic = [self.tics objectAtIndex:indexPath.item];
-    if ([tic.senderUserId isEqualToString:self.senderUserId]) {
-        NSLog(@"No need to fetch self tic");
-    } else {
-        TTActivity *fetchTicActivity = [TTActivity activityWithType:kTTActivityTypeFetchTic tic:tic];
-        [fetchTicActivity saveEventually:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                NSLog(@"Fetch Tic successfully");
-            } else {
-                NSLog(@"Failed to fetch Tic, error: %@", error);
-            }
-        }];
-    }
+    NSLog(@"Tapped message bubble! at IndexPath: %@", indexPath);
+    TTTic *unreadTic = [self.tics objectAtIndex:indexPath.item];
+    [TTTic fetchTicInBackgroundWithId:unreadTic.objectId timestamp:[NSDate date] completion:^(TTTic *fetchedTic, NSError *error) {
+        if (fetchedTic) {
+            JSQMessage *fetchedJSQMessage = [[JSQMessage alloc] initWithSenderId:fetchedTic.senderUserId senderDisplayName:self.recipientDisplayName date:fetchedTic.receiveTimestamp text:[NSString stringWithUTF8String:[fetchedTic.content bytes]]];
+            [self.tics replaceObjectAtIndex:indexPath.item withObject:fetchedTic];
+            [self.jsqMessages replaceObjectAtIndex:indexPath.item withObject:fetchedJSQMessage];
+            [self finishReceivingMessageAnimated:YES];
+        } else {
+            [[[UIAlertView alloc] initWithTitle:@"Fetch Error" message:error.localizedDescription delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        }
+    }];
 }
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapCellAtIndexPath:(NSIndexPath *)indexPath touchLocation:(CGPoint)touchLocation {
@@ -337,6 +375,12 @@
     // @TODO: change this to query
     TTUser *sender = [tic objectForKey:kTTTicSenderKey];
     return [[JSQMessage alloc] initWithSenderId:tic.senderUserId senderDisplayName:sender.displayName date:tic.sendTimestamp text:[NSString stringWithUTF8String:[tic.content bytes]]];
+}
+
+#pragma mark - TSMessageView
+
+- (void)customizeMessageView:(TSMessageView *)messageView {
+    messageView.alpha = 0.95;
 }
 
 @end

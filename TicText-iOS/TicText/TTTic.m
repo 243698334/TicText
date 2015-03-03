@@ -16,4 +16,23 @@
     return kTTTicClassKey;
 }
 
++ (instancetype)unreadTicWithId:(NSString*)objectId {
+    return [super objectWithoutDataWithClassName:kTTTicClassKey objectId:objectId];
+}
+
++ (void)fetchTicInBackgroundWithId:(NSString *)ticId timestamp:(NSDate *)fetchTimestamp completion:(void (^)(TTTic *fetchedTic, NSError *error))completion {
+    [PFCloud callFunctionInBackground:kTTTicFetchTicFunction withParameters:@{@"ticId" : ticId, @"fetchTimestamp" : fetchTimestamp} block:^(id object, NSError *error) {
+        if (error) {
+            if (completion) {
+                completion(nil, error);
+            }
+        } else {
+            if (completion) {
+                completion(object, nil);
+            }
+        }
+    }];
+}
+
+
 @end

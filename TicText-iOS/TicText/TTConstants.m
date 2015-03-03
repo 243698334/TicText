@@ -23,8 +23,8 @@ NSString * const kTTFacebookSessionIsValidLastCheckedKey = @"FacebookSessionIsVa
 
 #pragma mark - NSNotification
 // Log in, Sign up, Log out
-NSString * const kTTLogInViewControllerDidFinishLogInNotification = @"TTLogInViewControllerDidFinishLogInNotification";
-NSString * const kTTLogInViewControllerDidFinishSignUpNotification = @"TTLogInViewControllerDidFinishLogInNewUserNotification";
+NSString * const kTTLogInViewControllerDidFinishLogInNotification = @"LogInViewControllerDidFinishLogInNotification";
+NSString * const kTTLogInViewControllerDidFinishSignUpNotification = @"LogInViewControllerDidFinishLogInNewUserNotification";
 NSString * const kTTUserDidLogOutNotification = @"UserDidLogOut";
 
 // Invalid session
@@ -32,11 +32,17 @@ NSString * const kTTFacebookSessionDidBecomeInvalidNotification = @"FacebookSess
 NSString * const kTTParseSessionDidBecomeInvalidNotification = @"ParseSessionDidBecomeInvalidNotification";
 
 // Push notification
-NSString * const kTTApplicationDidReceiveNewTicWhileActiveNotification = @"TTApplicationDidReceiveNewTicWhileActiveNotification";
+NSString * const kTTApplicationDidReceiveNewTicWhileActiveNotification = @"ApplicationDidReceiveNewTicWhileActiveNotification";
+NSString * const kTTApplicationDidReceiveReadTicWhileActiveNotification = @"ApplicationDidReceiveReadTicWhileActiveNotification";
+NSString * const kTTApplicationDidReceiveNewUserJoinWhileActiveNotification = @"ApplicationDidReceiveNewUserJoinWhileActiveNotification";
+
+// UserInfo keys
+NSString * const kTTNotificationUserInfoErrorKey = @"error";
+NSString * const kTTNotificationUserInfoTicIdKey = @"ticId";
+NSString * const kTTNotificationUserInfoSenderUserIdKey = @"senderUserId";
 
 
 #pragma mark - NSError
-NSString * const kTTErrorUserInfoKey = @"error";
 NSString * const kTTSessionErrorDomain = @"SessionError";
 NSUInteger const kTTSessionErrorParseSessionFetchFailureCode = 0;
 NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode = 1;
@@ -55,6 +61,9 @@ NSString * const kTTUserActiveDeviceIdentifier = @"activeDeviceIdentifier";
 #pragma mark - PFObject Tic Class
 // Class key
 NSString * const kTTTicClassKey = @"Tic";
+
+// Cloud function names
+NSString * const kTTTicFetchTicFunction = @"fetchTic";
 
 // Field keys
 NSString * const kTTTicSenderKey = @"sender";
@@ -95,7 +104,7 @@ NSString * const kTTActivityTicKey = @"tic";
 
 // Type values
 NSString * const kTTActivityTypeSendTic = @"send";
-NSString * const kTTActivityTypeFetchTic = @"fetch";
+NSString * const kTTActivityTypeReadTic = @"read";
 NSString * const kTTActivityTypeNewUserJoin = @"join";
 
 
@@ -103,6 +112,8 @@ NSString * const kTTActivityTypeNewUserJoin = @"join";
 // intentionally kept short
 // Field keys
 NSString * const kTTPushNotificationPayloadTypeKey = @"t";
+NSString * const kTTPushNotificationPayloadTicIdKey = @"tid";
+NSString * const kTTPushNotificationPayloadSenderUserId = @"sid";
 
 // Type values
 NSString * const kTTPushNotificationPayloadTypeNewTic = @"nt";
