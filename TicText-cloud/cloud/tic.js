@@ -50,12 +50,52 @@ Parse.Cloud.afterSave("Tic", function(request) {
         newACL.setPublicReadAccess(false);
         newACL.setPublicWriteAccess(false);
         newACL.setReadAccess(senderUserId, true);
-        newACL.setReadAccess(recipientUserId, true);
         newACL.setWriteAccess(senderUserId, true);
-        newACL.setWriteAccess(recipientUserId, true);
         tic.setACL(newACL);
         tic.save("updatedACL", true);
     } else {
         console.log("Existing Tic. Do nothing. ");
     }
 });
+
+Parse.Cloud.define("fetchTic", function(request, response) {
+    Parse.Cloud.useMasterKey();
+    var recipient = request.user;
+    var fetchTimestamp = request.params.fetchTimestamp;
+    var ticId = request.params.ticId;
+    var ticQuery = new Parse.Query("Tic");
+    ticQuery.get(ticId, {
+        success: function(object) {
+            var tic = object;
+            var sendTimestamp = tic.get("sendTimestamp");
+            console.log("Tic's sendTimestamp: ");
+            console.log(sendTimestamp);
+            var timeLimit = tic.get("timeLimit");
+            console.log("Tic's timeLimit: ");
+            console.log(timeLimit);
+            var expireTimestamp = new Date();
+            expireTimestamp.setSeconds(sendTimestamp.getSeconds() + timeLimit);
+            console.log("Tic's expireTimestamp: ");
+            console.log(expireTimestamp);
+            if (fetchTimestamp < expireTimestamp) {
+                var senderUserId = tic.get("senderUserId")
+                var recipientUserId = tic.get("recipientUserId");
+                var newACL = new Parse.ACL();
+                newACL.setPublicReadAccess(false);
+                newACL.setPublicWriteAccess(false);
+                newACL.setReadAccess(senderUserId, true);
+                newACL.setReadAccess(recipientUserId, true);
+                tic.setACL(newACL);
+                tic.save("receiveTimestamp", fetchTimestamp);
+                tic.save("status", "read")
+                response.success(tic);
+            } else {
+                tic.set("status") = "expired";
+                response.error("Tic expired");
+            }
+        }, 
+        error: function(error) {
+            response.error(error);
+        }
+    });
+})

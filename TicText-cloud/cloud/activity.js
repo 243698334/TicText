@@ -2,7 +2,7 @@
 var ACTIVITY_CLASS_NAME = 'Activity';
 var ACTIVITY_TYPE = 'type';
 var ACTIVITY_TYPE_SEND = 'send';
-var ACTIVITY_TYPE_FETCH = 'fetch';
+var ACTIVITY_TYPE_READ = 'read';
 var ACTIVITY_TYPE_NEW_USER_JOIN = 'join';
 var ACTIVITY_TIC = 'tic';
 // Tic constants
@@ -21,7 +21,7 @@ Parse.Cloud.beforeSave(ACTIVITY_CLASS_NAME, function(request, response) {
         case ACTIVITY_TYPE_SEND:
             response.success();
             break;
-        case ACTIVITY_TYPE_FETCH:
+        case ACTIVITY_TYPE_READ:
             response.success();
             break;
         case ACTIVITY_TYPE_NEW_USER_JOIN:
@@ -45,6 +45,10 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
                 success: function(object) {
                     var recipient = object.get(TIC_RECIPIENT);
                     installationQuery.equalTo(INSTALLATION_USER, recipient);
+                    payload.tid = object.id;
+                    payload.sid = request.user.id;
+                    console.log("Current push notification payload: ");
+                    console.log(payload);
                     Parse.Push.send({
                         where: installationQuery,
                         data: payload
@@ -63,7 +67,7 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
                 }
             });
             break;
-        case ACTIVITY_TYPE_FETCH:
+        case ACTIVITY_TYPE_READ:
             activity.get(ACTIVITY_TIC).fetch({
                 success: function(object) {
                     var sender = object.get(TIC_SENDER);
@@ -113,9 +117,9 @@ var pushNotificationPayload = function(request) {
                 alert: "Someone just sent you a Tic. ", 
                 badge: "Increment", 
                 sound: "default", 
-                t: "nt" 
+                t: "nt"
             }; 
-        case ACTIVITY_TYPE_FETCH:
+        case ACTIVITY_TYPE_READ:
             return {
                 alert: currentUserDisplayName + "just read the your Tic. ",
                 sound: "default", 
