@@ -29,13 +29,15 @@
     [super viewDidLoad];
     [self setupRowArray];
     
+    UIImageView *ss = [[UIImageView alloc] initWithImage:self.screenshot];
+    [self.view addSubview:ss];
 
     self.view.backgroundColor = kTTUIPurpleColor;
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[FindFriendsTableViewCell class] forCellReuseIdentifier:kTableViewCell];
-    self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.backgroundColor = kTTUIPurpleColor;
     self.tableView.showsVerticalScrollIndicator = NO;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.tableView];
@@ -44,11 +46,20 @@
     headerView.backgroundColor = _TTPurpleColor;
     self.tableView.tableHeaderView = headerView;
     
+    //gesture recognizer code
+    UISwipeGestureRecognizer *swipeRecognizerLeft = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(showGestureForSwipeRecognizer:)];
+    swipeRecognizerLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.view addGestureRecognizer:swipeRecognizerLeft];
+    
+    UISwipeGestureRecognizer *swipeRecognizerRight = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(showGestureForSwipeRecognizer:)];
+    swipeRecognizerRight .direction = UISwipeGestureRecognizerDirectionRight;
+    [self.view addGestureRecognizer:swipeRecognizerRight ];
+    
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.width * 0.6)];
-    header.backgroundColor = kTTUIPurpleColor;
+    header.backgroundColor = [UIColor clearColor];
     CGFloat appIconImageViewWidth = self.view.bounds.size.width * 0.8;
     CGFloat appIconImageViewHeight = self.view.bounds.size.width * 0.6;
     CGFloat appIconImageViewOriginX = (self.view.bounds.size.width - appIconImageViewWidth) / 2;
@@ -110,7 +121,8 @@
 }
 
 -(void)hideView {
-    [self dismissViewControllerAnimated:TRUE completion:nil];
+    NSLog(@"hiding the view");
+    [self dismissViewControllerAnimated:FALSE completion:nil];
 }
 
 -(void)setupRowArray {
@@ -148,5 +160,27 @@
     [_friends removeObjectAtIndex:0];
     return user;
 }
+
+// Respond to a swipe gesture
+- (IBAction)showGestureForSwipeRecognizer:(UISwipeGestureRecognizer *)recognizer {
+    int shift = 0;
+    
+    if (recognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
+        shift = -30;
+    } else {
+        shift = 30;
+    }
+    self.view.backgroundColor = [UIColor redColor];
+    self.modalPresentationStyle = UIModalPresentationCurrentContext;
+    
+    [UIView animateKeyframesWithDuration:0.2 delay:0 options:0 animations:^{
+        //self.view.alpha = 0.0;
+        self.tableView.alpha = 0;
+        self.tableView.transform = CGAffineTransformMakeTranslation(shift, 0);
+    } completion:^(BOOL finished){
+       [self hideView];
+    }];
+}
+
 
 @end

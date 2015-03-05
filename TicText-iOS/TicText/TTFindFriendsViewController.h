@@ -14,4 +14,6 @@
 
 @interface TTFindFriendsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
+@property(nonatomic,strong) UIImage *screenshot;
+
 @end

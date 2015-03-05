@@ -30,7 +30,7 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"Settings";
-    self.tableView.scrollEnabled = NO;
+    self.tableView.scrollEnabled = YES;
     
     self.receiveNewTicNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
     self.receiveExpireSoonNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
@@ -94,6 +94,11 @@
         } whenSelected:^(NSIndexPath *indexPath) {
             [safeSelf.tableView deselectRowAtIndexPath:indexPath animated:YES];
             TTFindFriendsViewController *ffvc = [[TTFindFriendsViewController alloc] init];
+            UIGraphicsBeginImageContextWithOptions(safeSelf.view.bounds.size, NO, [UIScreen mainScreen].scale);
+            [((UIWindow *)[UIApplication sharedApplication].windows.firstObject).layer renderInContext:UIGraphicsGetCurrentContext()];
+            UIImage *ss = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            ffvc.screenshot = ss;
             [safeSelf presentViewController:ffvc animated:YES completion:nil];
         }];
     }];
