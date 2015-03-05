@@ -44,36 +44,7 @@
     // Configure the view for the selected state
 }
 
--(void)setNumberOfFriendsInRow:(NSInteger)num {
-    width = self.bounds.size.width;
-    height = self.bounds.size.height;
-    self.numPictures = num;
-    if(num == 0) {
-        return;
-    }
-    
-    else if(num == 1) {
-        [self setupOneFriend];
-        [self.pictures[0] setHidden:NO];
-        [self.pictures[1] setHidden:YES];
-        [self.pictures[2] setHidden:YES];
-    }
-    
-    else if(num == 2) {
-        [self setupTwoFriends];
-        [self.pictures[0] setHidden:NO];
-        [self.pictures[1] setHidden:NO];
-        [self.pictures[2] setHidden:YES];
-    }
-    else if(num == 3) {
-        [self setupThreeFriends];
-        [self.pictures[0] setHidden:NO];
-        [self.pictures[1] setHidden:NO];
-        [self.pictures[2] setHidden:NO];
-    }
-
-}
-
+#pragma mark - load friend images
 -(void)setFriends:(NSMutableArray *)friends {
     if(friends.count <= 0) {
         return;
@@ -108,28 +79,40 @@
 
 }
 
--(void)setupOneFriend {
-    CGFloat xFirstOrigin = width/2 - height/2;
-    [self addImage:self.pictures[0] image:[UIImage imageNamed:kStockProfileImage] offset:xFirstOrigin];
+#pragma mark - view creators
+-(void)setNumberOfFriendsInRow:(NSInteger)num {
+    width = self.bounds.size.width;
+    height = self.bounds.size.height;
+    self.numPictures = num;
+    if(num == 0) {
+        return;
+    }
+    
+    [self setupFriends];
 }
 
--(void)setupTwoFriends {
+-(void)setupFriends {
+    for(int i = 0; i<self.pictures.count; i++) {
+        [self.pictures[i] setHidden:YES]; //initialize
+    }
+    NSMutableArray *offsets = [[NSMutableArray alloc] init];
+    if(self.numPictures == 1) {
+        [offsets addObject:[NSNumber numberWithFloat:width/2 - height/2]];
+    }
+    else if(self.numPictures == 2) {
+        [offsets addObject:[NSNumber numberWithFloat:width/3 - height/2]];
+        [offsets addObject:[NSNumber numberWithFloat:2*width/3 - height/2]];
+    }
+    else if(self.numPictures == 3) {
+        [offsets addObject:[NSNumber numberWithFloat:width/6 - height/2]];
+        [offsets addObject:[NSNumber numberWithFloat:width/2 - height/2]];
+        [offsets addObject:[NSNumber numberWithFloat:5*width/6 - height/2]];
+    }
     
-    CGFloat xFirstOrigin = width/3 - height/2;
-    CGFloat xSecondOrigin = 2*width/3 - height/2;
-    
-    [self addImage:self.pictures[0] image:[UIImage imageNamed:kStockProfileImage] offset:xFirstOrigin];
-    [self addImage:self.pictures[1] image:[UIImage imageNamed:kStockProfileImage] offset:xSecondOrigin];
-}
-
--(void)setupThreeFriends {
-    CGFloat xFirstOrigin = width/6 - height/2;
-    CGFloat xSecondOrigin = width/2 - height/2;
-    CGFloat xThirdOrigin = 5*width/6 - height/2;
-    
-    [self addImage:self.pictures[0] image:[UIImage imageNamed:kStockProfileImage] offset:xFirstOrigin];
-    [self addImage:self.pictures[1] image:[UIImage imageNamed:kStockProfileImage] offset:xSecondOrigin];
-    [self addImage:self.pictures[2] image:[UIImage imageNamed:kStockProfileImage] offset:xThirdOrigin];
+    for (int i = 0; i<offsets.count; i++) {
+        [self addImage:self.pictures[i] image:[UIImage imageNamed:kStockProfileImage] offset:[offsets[i] floatValue]];
+        [self.pictures[i] setHidden:NO];
+    }
 }
 
 -(void)addImage:(UIImageView *)iv image:(UIImage *)image offset:(CGFloat)xOff {
