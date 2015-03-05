@@ -59,7 +59,7 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.width * 0.6)];
-    header.backgroundColor = [UIColor clearColor];
+    header.backgroundColor = kTTUIPurpleColor;
     CGFloat appIconImageViewWidth = self.view.bounds.size.width * 0.8;
     CGFloat appIconImageViewHeight = self.view.bounds.size.width * 0.6;
     CGFloat appIconImageViewOriginX = (self.view.bounds.size.width - appIconImageViewWidth) / 2;
@@ -69,7 +69,7 @@
     _appIconImageView.image = [UIImage imageNamed:@"FindFriendsTitle"];
     
     UIView *imageBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,self.view.bounds.size.width , self.view.bounds.size.width * 0.5)];
-    imageBackgroundView.backgroundColor = _TTPurpleColor;
+    imageBackgroundView.backgroundColor = [UIColor clearColor];
     [header addSubview:imageBackgroundView];
     [header addSubview:_appIconImageView];
     
@@ -183,11 +183,13 @@
     } else {
         shift = 30;
     }
-    self.view.backgroundColor = [UIColor redColor];
+    //self.view.backgroundColor = [UIColor redColor];
     self.modalPresentationStyle = UIModalPresentationCurrentContext;
     
     [UIView animateKeyframesWithDuration:0.2 delay:0 options:0 animations:^{
         //self.view.alpha = 0.0;
+        UIView *view = [self tableView:self.tableView viewForHeaderInSection:0];
+        view.alpha = 0;
         self.tableView.alpha = 0;
         self.tableView.transform = CGAffineTransformMakeTranslation(shift, 0);
     } completion:^(BOOL finished){
