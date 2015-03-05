@@ -97,14 +97,16 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     FindFriendsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kTableViewCell forIndexPath:indexPath];
     
-    if(indexPath.row % 2 == 1) {
-        [cell setFriends:@[[UIImage imageNamed:@"profile"], [UIImage imageNamed:@"profile"]]];
-    }
+//    if(indexPath.row % 2 == 1) {
+//        [cell setFriends:@[[UIImage imageNamed:@"profile"], [UIImage imageNamed:@"profile"]]];
+//    }
+//    
+//    else if(indexPath.row %2 == 0){
+//        [cell setFriends:@[[UIImage imageNamed:@"profile"], [UIImage imageNamed:@"profile"], [UIImage imageNamed:@"profile"]]];
+//    }
     
-    else if(indexPath.row %2 == 0){
-        [cell setFriends:@[[UIImage imageNamed:@"profile"], [UIImage imageNamed:@"profile"], [UIImage imageNamed:@"profile"]]];
-    }
-    
+    [cell setNumberOfFriendsInRow:((NSArray *)self.rowArray[indexPath.row]).count];
+    [cell setFriends:[self.rowArray[indexPath.row] mutableCopy]];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
@@ -122,6 +124,12 @@
     }
     
     _friends = [[NSMutableArray alloc] initWithArray:[_user friends]];
+    //stuff just for testing
+    [_friends addObjectsFromArray:[_user friends]];
+    [_friends addObjectsFromArray:[_user friends]];
+    [_friends addObjectsFromArray:[_user friends]];
+    [_friends addObjectsFromArray:[_user friends]];
+    [_friends addObjectsFromArray:[_user friends]];
     if(!_friends) {
         NSLog(@"no friends on tictext :(");
     }
@@ -135,7 +143,12 @@
             }
         }
         [self.rowArray addObject:arr];
-        next = 2;
+        if(next == 3) {
+            next = 2;
+        }
+        else {
+            next = 3;
+        }
     }
 }
 

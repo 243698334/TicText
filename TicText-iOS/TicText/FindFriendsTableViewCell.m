@@ -7,16 +7,15 @@
 //
 
 #import "FindFriendsTableViewCell.h"
+#define kStockProfileImage @"profile"
 
 @interface FindFriendsTableViewCell () {
     CGFloat height;
     CGFloat width;
 }
 
-@property (nonatomic, strong) UIImageView *firstImageView;
-@property (nonatomic, strong) UIImageView *secondImageView;
-@property (nonatomic, strong) UIImageView *thirdImageView;
-
+@property (nonatomic, strong)   NSMutableArray *pictures;
+@property (nonatomic)           NSInteger numPictures;
 
 @end
 
@@ -28,14 +27,12 @@
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
-        self.backgroundColor = [UIColor clearColor];
-        self.firstImageView = [[UIImageView alloc] init];
-        self.secondImageView = [[UIImageView alloc] init];
-        self.thirdImageView = [[UIImageView alloc] init];
+        self.pictures = [[NSMutableArray alloc] initWithObjects:[[UIImageView alloc] init], [[UIImageView alloc] init], [[UIImageView alloc] init], nil];
         
-        [self addSubview: self.firstImageView];
-        [self addSubview:self.secondImageView];
-        [self addSubview:self.thirdImageView];
+        self.backgroundColor = [UIColor clearColor];
+        [self addSubview: self.pictures[0]];
+        [self addSubview:self.pictures[1]];
+        [self addSubview:self.pictures[2]];
     }
     return self;
 }
@@ -47,63 +44,92 @@
     // Configure the view for the selected state
 }
 
--(void)setFriends:(NSArray *)friends {
+-(void)setNumberOfFriendsInRow:(NSInteger)num {
     width = self.bounds.size.width;
     height = self.bounds.size.height;
-    if(friends.count == 0) {
+    self.numPictures = num;
+    if(num == 0) {
         return;
     }
     
-    else if(friends.count == 1) {
-        [self setupOneFriend:friends];
-        [self.firstImageView setHidden:NO];
-        [self.secondImageView setHidden:YES];
-        [self.thirdImageView setHidden:YES];
+    else if(num == 1) {
+        [self setupOneFriend];
+        [self.pictures[0] setHidden:NO];
+        [self.pictures[1] setHidden:YES];
+        [self.pictures[2] setHidden:YES];
     }
     
-    else if(friends.count == 2) {
-        [self setupTwoFriends:friends];
-        [self.firstImageView setHidden:NO];
-        [self.secondImageView setHidden:NO];
-        [self.thirdImageView setHidden:YES];
+    else if(num == 2) {
+        [self setupTwoFriends];
+        [self.pictures[0] setHidden:NO];
+        [self.pictures[1] setHidden:NO];
+        [self.pictures[2] setHidden:YES];
     }
-    else if(friends.count == 3) {
-        [self setupThreeFriends:friends];
-        [self.firstImageView setHidden:NO];
-        [self.secondImageView setHidden:NO];
-        [self.thirdImageView setHidden:NO];
+    else if(num == 3) {
+        [self setupThreeFriends];
+        [self.pictures[0] setHidden:NO];
+        [self.pictures[1] setHidden:NO];
+        [self.pictures[2] setHidden:NO];
     }
+
 }
 
--(void)setupOneFriend:(NSArray *)friends {
-    UIImage *_firstImage = friends[0];
+-(void)setFriends:(NSMutableArray *)friends {
+    if(friends.count <= 0) {
+        return;
+    }
+
+    [self setFriends:friends index:0];
+    
+}
+
+-(void)setFriends:(NSMutableArray *)friends index:(NSInteger)index {
+    if(friends.count <= 0) {
+        return;
+    }
+    
+    TTUser *friend = [friends objectAtIndex:0];
+    [friend fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *err) {
+        if(!err) {
+            TTUser *user = (TTUser *)object;
+            __block NSData *data;
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
+            dispatch_async(queue, ^{
+                data = [user profilePicture];
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                     ((UIImageView *)self.pictures[index]).image = [UIImage imageWithData:data];
+                });
+            });
+            
+            [friends removeObjectAtIndex:0];
+            [self setFriends:friends index:index+1];
+        }
+    }];
+
+}
+
+-(void)setupOneFriend {
     CGFloat xFirstOrigin = width/2 - height/2;
-    [self addImage:self.firstImageView image:_firstImage offset:xFirstOrigin];
+    [self addImage:self.pictures[0] image:[UIImage imageNamed:kStockProfileImage] offset:xFirstOrigin];
 }
 
--(void)setupTwoFriends:(NSArray *)friends {
-    UIImage *_firstImage = friends[0];
-    UIImage *_secondImage = friends[1];
+-(void)setupTwoFriends {
     
     CGFloat xFirstOrigin = width/3 - height/2;
     CGFloat xSecondOrigin = 2*width/3 - height/2;
     
-    [self addImage:self.firstImageView image:_firstImage offset:xFirstOrigin];
-    [self addImage:self.secondImageView image:_secondImage offset:xSecondOrigin];
+    [self addImage:self.pictures[0] image:[UIImage imageNamed:kStockProfileImage] offset:xFirstOrigin];
+    [self addImage:self.pictures[1] image:[UIImage imageNamed:kStockProfileImage] offset:xSecondOrigin];
 }
 
--(void)setupThreeFriends:(NSArray *)friends {
-    UIImage *_firstImage = friends[0];
-    UIImage *_secondImage = friends[1];
-    UIImage *_thirdImage = friends[2];
-    
+-(void)setupThreeFriends {
     CGFloat xFirstOrigin = width/6 - height/2;
     CGFloat xSecondOrigin = width/2 - height/2;
     CGFloat xThirdOrigin = 5*width/6 - height/2;
     
-    [self addImage:self.firstImageView image:_firstImage offset:xFirstOrigin];
-    [self addImage:self.secondImageView image:_secondImage offset:xSecondOrigin];
-    [self addImage:self.thirdImageView image:_thirdImage offset:xThirdOrigin];
+    [self addImage:self.pictures[0] image:[UIImage imageNamed:kStockProfileImage] offset:xFirstOrigin];
+    [self addImage:self.pictures[1] image:[UIImage imageNamed:kStockProfileImage] offset:xSecondOrigin];
+    [self addImage:self.pictures[2] image:[UIImage imageNamed:kStockProfileImage] offset:xThirdOrigin];
 }
 
 -(void)addImage:(UIImageView *)iv image:(UIImage *)image offset:(CGFloat)xOff {
