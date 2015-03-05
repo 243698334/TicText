@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTUser.h"
 
 @interface FindFriendsTableViewCell : UITableViewCell
 
 
 //Function to set the view for the cell by adding the profile pictures of each
 //of the user's friends who are also on facebook
--(void)setFriends:(NSArray *)friends;
-
+-(void)setFriends:(NSMutableArray *)friends;
+-(void)setNumberOfFriendsInRow:(NSInteger)num;
 @end
