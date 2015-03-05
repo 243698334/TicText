@@ -122,7 +122,6 @@
     }
     
     _friends = [[NSMutableArray alloc] initWithArray:[_user friends]];
-    NSLog(@"%li", (long)_friends.count);
     if(!_friends) {
         NSLog(@"no friends on tictext :(");
     }
@@ -138,8 +137,6 @@
         [self.rowArray addObject:arr];
         next = 2;
     }
-    
-    NSLog(@"%@", self.rowArray);
 }
 
 -(BOOL)canPop {
