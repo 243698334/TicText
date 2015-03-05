@@ -8,6 +8,7 @@
 
 #import "TTFindFriendsViewController.h"
 #import "FindFriendsTableViewCell.h"
+#import "TTUser.h"
 
 #define kTableViewCell @"cell"
 #define kSections 1
@@ -15,17 +16,21 @@
 @interface TTFindFriendsViewController () {
     UIImageView *_appIconImageView;
     UIColor *_TTPurpleColor;
+    NSMutableArray *_friends;
 }
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSDictionary *cache;
+@property (nonatomic, strong) NSMutableArray *rowArray;
 @end
 
 @implementation TTFindFriendsViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setupRowArray];
+    
 
     self.view.backgroundColor = kTTUIPurpleColor;
-    
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
@@ -74,7 +79,7 @@
 
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 25;
+    return self.rowArray.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -92,5 +97,44 @@
     return cell;
 }
 
+
+-(void)setupRowArray {
+    TTUser *_user = [TTUser currentUser];
+    self.rowArray = [[NSMutableArray alloc] init];
+    if(!_user) {
+        NSLog(@"no active user");
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+    
+    _friends = [[NSMutableArray alloc] initWithArray:[_user friends]];
+    NSLog(@"%li", (long)_friends.count);
+    if(!_friends) {
+        NSLog(@"no friends on tictext :(");
+    }
+    
+    NSInteger next = 3;
+    while (_friends.count > 0) {
+        NSMutableArray *arr = [[NSMutableArray alloc] init];
+        for(int i = 0; i < next; i++) {
+            if ([self canPop]) {
+                [arr addObject:[self pop]];
+            }
+        }
+        [self.rowArray addObject:arr];
+        next = 2;
+    }
+    
+    NSLog(@"%@", self.rowArray);
+}
+
+-(BOOL)canPop {
+    return (_friends.count > 0);
+}
+
+-(TTUser *)pop {
+    TTUser *user = [_friends objectAtIndex:0];
+    [_friends removeObjectAtIndex:0];
+    return user;
+}
 
 @end

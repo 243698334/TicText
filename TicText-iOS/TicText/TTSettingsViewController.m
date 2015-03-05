@@ -75,10 +75,12 @@
     [self addSection:^(JMStaticContentTableViewSection *section, NSUInteger sectionIndex) {
         [section addCell:^(JMStaticContentTableViewCell *staticContentCell, UITableViewCell *cell, NSIndexPath *indexPath) {
             staticContentCell.cellStyle = UITableViewCellStyleSubtitle;
-            cell.textLabel.text = @"In-App Notification";
-            cell.detailTextLabel.text = @"Banners, Sounds, Vibrate";
+            cell.textLabel.text = @"In-App Notifications";
+            cell.detailTextLabel.text = @"Tapping this takes you to the settings app";
         } whenSelected:^(NSIndexPath *indexPath) {
             [safeSelf.tableView deselectRowAtIndexPath:indexPath animated:YES];
+            NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+            [[UIApplication sharedApplication] openURL:url];
         }];
         
         section.footerTitle = @"Turn on push notification so you won't miss your Tics. ";
