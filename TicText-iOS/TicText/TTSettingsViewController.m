@@ -104,6 +104,14 @@
             staticContentCell.cellStyle = UITableViewCellSelectionStyleNone;
             cell.textLabel.text = @"Like us on Facebook";
         } whenSelected:^(NSIndexPath *indexPath) {
+            NSString *urlString = @"https://www.facebook.com/pages/TicText/587674271368005";
+            NSURL *url = [NSURL URLWithString:urlString];
+            if([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fb://profile/587674271368005"]]){
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"fb://profile/587674271368005"]];
+            }
+            else {
+                [[UIApplication sharedApplication] openURL:url];
+            }
             [safeSelf.tableView deselectRowAtIndexPath:indexPath animated:YES];
         }];
         
@@ -118,6 +126,14 @@
             staticContentCell.cellStyle = UITableViewCellSelectionStyleNone;
             cell.textLabel.text = @"About";
         } whenSelected:^(NSIndexPath *indexPath) {
+            NSString *urlString = @"https://www.facebook.com/pages/TicText/587674271368005";
+            NSURL *url = [NSURL URLWithString:urlString];
+            if([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fb://profile/587674271368005"]]){
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"fb://profile/587674271368005"]];
+            }
+            else {
+                [[UIApplication sharedApplication] openURL:url];
+            }
             [safeSelf.tableView deselectRowAtIndexPath:indexPath animated:YES];
         }];
     }];
