@@ -7,6 +7,7 @@
 //
 
 #import "TTSettingsViewController.h"
+#import "TTFindFriendsViewController.h"
 
 @interface TTSettingsViewController ()
 
@@ -82,6 +83,19 @@
         
         section.footerTitle = @"Turn on push notification so you won't miss your Tics. ";
     }];
+    
+    [self addSection:^(JMStaticContentTableViewSection *section, NSUInteger sectionIndex) {
+        [section addCell:^(JMStaticContentTableViewCell *staticContentCell, UITableViewCell *cell, NSIndexPath *indexPath) {
+            staticContentCell.cellStyle = UITableViewCellStyleSubtitle;
+            cell.textLabel.text = @"See which friends are on TicText";
+            cell.detailTextLabel.text = @"Click to view";
+        } whenSelected:^(NSIndexPath *indexPath) {
+            [safeSelf.tableView deselectRowAtIndexPath:indexPath animated:YES];
+            TTFindFriendsViewController *ffvc = [[TTFindFriendsViewController alloc] init];
+            [safeSelf presentViewController:ffvc animated:YES completion:nil];
+        }];
+    }];
+
     
     [self addSection:^(JMStaticContentTableViewSection *section, NSUInteger sectionIndex) {
         [section addCell:^(JMStaticContentTableViewCell *staticContentCell, UITableViewCell *cell, NSIndexPath *indexPath) {
