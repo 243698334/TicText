@@ -61,7 +61,19 @@
     imageBackgroundView.backgroundColor = _TTPurpleColor;
     [header addSubview:imageBackgroundView];
     [header addSubview:_appIconImageView];
-
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [button setTitle:@"Continue" forState:UIControlStateNormal];
+    [button sizeToFit];
+    button.frame = CGRectMake(header.bounds.size.width/2, 200, 80, 30);
+    button.center = CGPointMake(header.bounds.size.width/2, 200);
+    button.layer.borderWidth = 2.0f;
+    button.layer.borderColor = [UIColor whiteColor].CGColor;
+    button.layer.cornerRadius = 10;
+    button.clipsToBounds = YES;
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [header addSubview:button];
+    [button addTarget:self action:@selector(hideView) forControlEvents: UIControlEventTouchUpInside];
     return header;
 }
 
@@ -97,6 +109,9 @@
     return cell;
 }
 
+-(void)hideView {
+    [self dismissViewControllerAnimated:TRUE completion:nil];
+}
 
 -(void)setupRowArray {
     TTUser *_user = [TTUser currentUser];
