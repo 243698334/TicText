@@ -13,10 +13,13 @@
 
 @property (nonatomic, readonly) BOOL isLinkedWithFacebook;
 
-@property (nonatomic, strong) NSString *facebookID;
 @property (nonatomic, strong) NSString *displayName;
 @property (nonatomic, strong) NSData *profilePicture;
-@property (nonatomic, strong) NSArray *ticTextFriends;
+
+// below are the attributes should be in the UserPrivateData table
+@property (nonatomic, strong) NSArray *friends;
 @property (nonatomic, strong) NSString *activeDeviceIdentifier;
+@property (nonatomic, strong) NSString *facebookID;
+@property (nonatomic, strong) NSArray *facebookFriends;
 
 @end
