@@ -68,7 +68,9 @@
             dispatch_async(queue, ^{
                 data = [user profilePicture];
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                     ((UIImageView *)self.pictures[index]).image = [UIImage imageWithData:data];
+                    if(data){
+                        ((UIImageView *)self.pictures[index]).image = [UIImage imageWithData:data];
+                    }
                 });
             });
             
@@ -93,10 +95,10 @@
 
 -(void)setupFriends {
     for(int i = 0; i<self.pictures.count; i++) {
-        [self.pictures[i] setHidden:YES]; //initialize
+        [self.pictures[i] setHidden:YES]; //initialize images to hidden
     }
     NSMutableArray *offsets = [[NSMutableArray alloc] init];
-    if(self.numPictures == 1) {
+    if(self.numPictures == 1) { //add constraints
         [offsets addObject:[NSNumber numberWithFloat:width/2 - height/2]];
     }
     else if(self.numPictures == 2) {

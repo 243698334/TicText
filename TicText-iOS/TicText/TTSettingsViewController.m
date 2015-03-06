@@ -8,12 +8,14 @@
 
 #import "TTSettingsViewController.h"
 #import "TTFindFriendsViewController.h"
+#import "TTSettings.h"
 
 @interface TTSettingsViewController ()
 
 @property (nonatomic, strong) UISwitch *receiveNewTicNotificationSwitch;
 @property (nonatomic, strong) UISwitch *receiveExpireSoonNotificationSwitch;
 @property (nonatomic, strong) UISwitch *receiveReadByRecipientNotificationSwitch;
+@property (nonatomic, strong) MFMailComposeViewController *mc;
 
 @end
 
@@ -28,21 +30,27 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.mc = [[MFMailComposeViewController alloc] init];
+    self.mc.mailComposeDelegate = self;
     self.navigationItem.title = @"Settings";
     self.tableView.scrollEnabled = YES;
     
     self.receiveNewTicNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
     self.receiveExpireSoonNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
     self.receiveReadByRecipientNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-    self.receiveNewTicNotificationSwitch.on = YES;
-    self.receiveExpireSoonNotificationSwitch.on = NO;
-    self.receiveReadByRecipientNotificationSwitch.on = NO;
+    self.receiveNewTicNotificationSwitch.on = [TTSettings getNewTicNotificationPreference];
+    self.receiveExpireSoonNotificationSwitch.on = [TTSettings getExpireSoonNotificationPreference];
+    self.receiveReadByRecipientNotificationSwitch.on = [TTSettings getReadNotificationPreference];
     [self.receiveNewTicNotificationSwitch setOnTintColor:kTTUIPurpleColor];
     [self.receiveExpireSoonNotificationSwitch setOnTintColor:kTTUIPurpleColor];
     [self.receiveReadByRecipientNotificationSwitch setOnTintColor:kTTUIPurpleColor];
     
+    [self.receiveNewTicNotificationSwitch addTarget:self action:@selector(changeNotificationPreferences) forControlEvents:UIControlEventValueChanged];
+    [self.receiveExpireSoonNotificationSwitch addTarget:self action:@selector(changeNotificationPreferences) forControlEvents:UIControlEventValueChanged];
+    [self.receiveReadByRecipientNotificationSwitch addTarget:self action:@selector(changeNotificationPreferences) forControlEvents:UIControlEventValueChanged];
+    
     __unsafe_unretained __block TTSettingsViewController *safeSelf = self;
+    
     
     [self addSection:^(JMStaticContentTableViewSection *section, NSUInteger sectionIndex) {
         section.headerTitle = @"Notification";
@@ -125,6 +133,10 @@
             cell.textLabel.text = @"Technical Support";
         } whenSelected:^(NSIndexPath *indexPath) {
             [safeSelf.tableView deselectRowAtIndexPath:indexPath animated:YES];
+            safeSelf.mc.navigationBar.tintColor = kTTUIPurpleColor;
+            [safeSelf.mc setSubject:@"TicText Technical Support"];
+            [safeSelf.mc setToRecipients:@[@"jack.arendt93@gmail.com"]];
+            [safeSelf presentViewController:safeSelf.mc animated:YES completion:nil];
         }];
         
         [section addCell:^(JMStaticContentTableViewCell *staticContentCell, UITableViewCell *cell, NSIndexPath *indexPath) {
@@ -155,9 +167,18 @@
             [safeSelf.tableView deselectRowAtIndexPath:indexPath animated:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:kTTUserDidLogOutNotification object:nil];
         }];
-
     }];
     
 }
+
+-(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    NSLog(@"HEY");
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)changeNotificationPreferences {
+    [TTSettings changeNotificationPreferences:self.receiveNewTicNotificationSwitch.on expireSoon:self.receiveExpireSoonNotificationSwitch.on read:self.receiveReadByRecipientNotificationSwitch.on];
+}
+
 
 @end

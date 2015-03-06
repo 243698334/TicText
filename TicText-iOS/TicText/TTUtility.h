@@ -14,4 +14,5 @@
 // Prompts the user to register their device for push notifications.
 + (void)setupPushNotifications;
 
+
 @end

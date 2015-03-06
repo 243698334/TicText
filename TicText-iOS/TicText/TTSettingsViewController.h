@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <JMStaticContentTableViewController/JMStaticContentTableViewController.h>
+#import <MessageUI/MessageUI.h>
 
 #import "TTSession.h"
 
-@interface TTSettingsViewController : JMStaticContentTableViewController
+@interface TTSettingsViewController : JMStaticContentTableViewController <MFMailComposeViewControllerDelegate, UINavigationControllerDelegate>
 
 @end

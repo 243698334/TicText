@@ -8,6 +8,7 @@
 
 #import "TTUtility.h"
 
+
 #import <UIKit/UIKit.h>
 
 @implementation TTUtility
@@ -21,5 +22,7 @@
     [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
     [[UIApplication sharedApplication] registerForRemoteNotifications];
 }
+
+
 
 @end
