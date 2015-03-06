@@ -8,6 +8,7 @@
 
 #import "TTConversationsViewController.h"
 #import "TTMessagesViewController.h"
+#import "TTNewMessageViewController.h"
 
 @interface TTConversationsViewController ()
 
@@ -20,7 +21,14 @@
     
     self.navigationItem.title = @"TicText";
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"➕" style:UIBarButtonItemStyleDone target:self action:@selector(presentTestViewController)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                                           target:self
+                                                                                           action:@selector(newTic)];
+}
+
+- (void)newTic {
+    TTNewMessageViewController *newMessageViewController = [TTNewMessageViewController messagesViewController];
+    [self.navigationController pushViewController:newMessageViewController animated:YES];
 }
 
 - (void)presentTestViewController {

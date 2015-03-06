@@ -1,38 +1,28 @@
 //
-//  TTMessagesViewController.m
+//  TTNewMessageViewController.m
 //  TicText
 //
-//  Created by Kevin Yufei Chen on 2/25/15.
+//  Created by Terrence K on 3/6/15.
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import "TTMessagesViewController.h"
+#import "TTNewMessageViewController.h"
 
-#import "TTUser.h"
-
-@interface TTMessagesViewController ()
+@interface TTNewMessageViewController ()
 
 @end
 
-@implementation TTMessagesViewController
+@implementation TTNewMessageViewController
 
 + (instancetype)messagesViewController {
-    TTMessagesViewController *viewController = [super messagesViewController];
-    
-    viewController.view.backgroundColor = [UIColor grayColor];
-    viewController.navigationItem.title = @"Some Dialog";
-    viewController.hidesBottomBarWhenPushed = YES;
-    
+    TTNewMessageViewController *viewController = [super messagesViewController];
+    viewController.navigationItem.title = @"New Message";
     return viewController;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    self.senderId = @"fake_sender_id";
-    self.senderDisplayName = [[TTUser currentUser] displayName];
-    
-    
+    // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning {

@@ -10,4 +10,7 @@
 
 @interface TTConversationsViewController : UIViewController
 
+// Presents a new |TTNewMessageViewController|.
+- (void)newTic;
+
 @end
