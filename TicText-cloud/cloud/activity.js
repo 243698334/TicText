@@ -35,7 +35,6 @@ Parse.Cloud.beforeSave(ACTIVITY_CLASS_NAME, function(request, response) {
 Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
     Parse.Cloud.useMasterKey();
     var activity = request.object;
-    
     var installationQuery = new Parse.Query(Parse.Installation);
     var payload = pushNotificationPayload(request);
     var activityType = activity.get(ACTIVITY_TYPE);
