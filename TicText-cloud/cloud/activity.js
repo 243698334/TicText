@@ -38,7 +38,7 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
     
     var installationQuery = new Parse.Query(Parse.Installation);
     var payload = pushNotificationPayload(request);
-    var activityType = request.object.get(ACTIVITY_TYPE);
+    var activityType = activity.get(ACTIVITY_TYPE);
     switch (activityType) {
         case ACTIVITY_TYPE_SEND:
             activity.get(ACTIVITY_TIC).fetch({
