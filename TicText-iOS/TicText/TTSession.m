@@ -140,7 +140,8 @@
         } else {
             if (completion) {
                 NSLog(@"Logged in with permissions: %@", kTTFacebookPermissions);
-                NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@]", [(TTUser *)user displayName], [(TTUser *)user facebookID], [(TTUser *)user ticTextFriends]);
+                TTUser *_user = (TTUser *)user;
+                NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@]", [_user displayName], [_user facebookID], [_user friends]);
                 completion(user.isNew, error);
             }
         }
@@ -188,7 +189,7 @@
             
             [TTUser currentUser].displayName = displayName;
             [TTUser currentUser].facebookID = facebookID;
-            [TTUser currentUser].ticTextFriends = friends;
+            [TTUser currentUser].facebookFriends = friends;
             [TTUser currentUser].activeDeviceIdentifier = [UIDevice currentDevice].identifierForVendor.UUIDString;
             NSURLRequest *profilePictureURLRequest = [NSURLRequest requestWithURL:profilePictureURL];
             [NSURLConnection sendAsynchronousRequest:profilePictureURLRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
@@ -230,7 +231,7 @@
                 [friendIds addObject:friend[@"id"]];
             }
             
-            [TTUser currentUser].ticTextFriends = [NSArray arrayWithArray:friendIds];
+            [TTUser currentUser].facebookFriends = [NSArray arrayWithArray:friendIds];
             [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (completion) {
                     completion(error);
@@ -286,7 +287,7 @@
             }
             
             TTUser *user = [TTUser currentUser];
-            [user setTicTextFriends:[NSArray arrayWithArray:friendIds]];
+            [user setFacebookFriends:[NSArray arrayWithArray:friendIds]];
             [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (completion) {
                     completion(error);
