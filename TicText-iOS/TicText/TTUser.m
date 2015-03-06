@@ -13,26 +13,10 @@
 
 @implementation TTUser
 
-@dynamic displayName, facebookId, friends, profilePicture;
+@dynamic displayName, friends, facebookID, facebookFriends, activeDeviceIdentifier;
 
 - (BOOL)isLinkedWithFacebook {
     return self[kTTUserFacebookIDKey] != nil;
-}
-
-- (void)setFacebookId:(NSString *)facebookId {
-    self[kTTUserFacebookIDKey] = facebookId;
-}
-
-- (NSString *)facebookId {
-    return self[kTTUserFacebookIDKey];
-}
-
-- (void)setDisplayName:(NSString *)displayName {
-    self[kTTUserDisplayNameKey] = displayName;
-}
-
-- (NSString *)displayName {
-    return [self objectForKey:kTTUserDisplayNameKey];
 }
 
 - (void)setProfilePicture:(NSData *)data {
@@ -42,14 +26,6 @@
 
 - (NSData *)profilePicture {
     return [(PFFile *)[self objectForKey:kTTUserProfilePictureKey] getData];
-}
-
-- (void)setFriends:(NSArray *)friends {
-    self[kTTUserTicTextFriendsKey] = friends;
-}
-
-- (NSArray *)friends {
-    return [self objectForKey:kTTUserTicTextFriendsKey];
 }
 
 @end

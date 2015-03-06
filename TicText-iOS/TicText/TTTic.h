@@ -7,7 +7,18 @@
 //
 
 #import <Parse/Parse.h>
+#import "TTUser.h"
 
 @interface TTTic : PFObject<PFSubclassing>
+
+@property (nonatomic) NSTimeInterval timeLimit;
+@property (nonatomic, strong) NSString *status;
+@property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) NSString *contentType;
+@property (nonatomic, strong) NSData *content;
+@property (nonatomic, strong) NSDate *sendTimestamp;
+@property (nonatomic, strong) NSDate *receiveTimestamp;
+@property (nonatomic, strong) TTUser *sender;
+@property (nonatomic, strong) TTUser *recipient;
 
 @end

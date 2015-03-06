@@ -22,17 +22,24 @@ NSString * const kTTFacebookSessionIsValidLastCheckedKey = @"FacebookSessionIsVa
 
 
 #pragma mark - NSNotification
-NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification = @"AppDelegateDidReceiveRemoteNotification";
+// Log in, Sign up, Log out
 NSString * const kTTLogInViewControllerDidFinishLogInNotification = @"TTLogInViewControllerDidFinishLogInNotification";
 NSString * const kTTLogInViewControllerDidFinishSignUpNotification = @"TTLogInViewControllerDidFinishLogInNewUserNotification";
-NSString * const kTTFacebookSessionDidBecomeInvalidNotification = @"TTFacebookSessionDidBecomeInvalidNotification";
-NSString * const kTTParseSessionDidBecomeInvalidNotification = @"TTParseSessionDidBecomeInvalidNotification";
+NSString * const kTTUserDidLogOutNotification = @"UserDidLogOut";
+
+// Invalid session
+NSString * const kTTFacebookSessionDidBecomeInvalidNotification = @"FacebookSessionDidBecomeInvalidNotification";
+NSString * const kTTParseSessionDidBecomeInvalidNotification = @"ParseSessionDidBecomeInvalidNotification";
+
+// Push notification
+NSString * const kTTApplicationDidReceiveNewTicWhileActiveNotification = @"TTApplicationDidReceiveNewTicWhileActiveNotification";
 
 
 #pragma mark - NSError
 NSString * const kTTErrorUserInfoKey = @"error";
 NSString * const kTTSessionErrorDomain = @"SessionError";
-NSUInteger const kTTSessionErrorParseSessionInvalidCode = 0;
+NSUInteger const kTTSessionErrorParseSessionFetchFailureCode = 0;
+NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode = 1;
 
 
 #pragma mark - PFUser Class
@@ -42,6 +49,7 @@ NSString * const kTTUserFacebookIDKey = @"facebookID";
 NSString * const kTTUserProfilePictureKey = @"profilePicture";
 NSString * const kTTUserProfilePictureSmallKey = @"profilePictureSmall";
 NSString * const kTTUserTicTextFriendsKey = @"ticTextFriends";
+NSString * const kTTUserActiveDeviceIdentifier = @"activeDeviceIdentifier";
 
 
 #pragma mark - PFObject Tic Class

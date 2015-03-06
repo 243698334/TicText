@@ -10,6 +10,8 @@
 
 @implementation TTActivity
 
+@dynamic type, fromUserId, toUserId, ticId;
+
 + (NSString *)parseClassName {
     return kTTActivityClassKey;
 }

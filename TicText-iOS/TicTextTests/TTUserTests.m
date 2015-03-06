@@ -80,10 +80,10 @@
     NSArray *friends = @[@"foo", @"bar"];
     
     // Act
-    [self.user setFriends:friends];
+    [self.user setFacebookFriends:friends];
     
     // Assert
-    XCTAssertEqualObjects(friends, [self.user friends]);
+    XCTAssertEqualObjects(friends, [self.user facebookFriends]);
 
 }
 

@@ -8,6 +8,7 @@ target 'TicText' do
   pod 'Facebook-iOS-SDK'
   pod 'MBProgressHUD'
   pod 'JSQMessagesViewController'
+  pod 'JMStaticContentTableViewController'
 end
 
 target 'TicTextTests' do

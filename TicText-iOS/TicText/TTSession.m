@@ -30,28 +30,47 @@
 }
 
 - (void)validateSessionInBackground {
-    // Validate Parse session
+//    // Skip validate when no Internet connection
+//    Reachability *internetReachability = [Reachability reachabilityForInternetConnection];
+//    if ([internetReachability currentReachabilityStatus] == NotReachable) {
+//        NSLog(@"TTSession: No Internet connection. Skip validation. ");
+//        return;
+//    }
+    
+    // Validate Parse local session
     if (![TTUser currentUser]) {
         NSLog(@"TTSession: Parse local session INVALID (user logged out). ");
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil];
         return;
-    } else {
-        PFQuery *validateParseSessionQuery = [TTUser query];
-        [validateParseSessionQuery whereKey:@"facebookID" equalTo:[[TTUser currentUser] facebookId]];
-        [validateParseSessionQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-            if (number != 1 || error) {
-                NSLog(@"TTSession: Parse remote session INVALID. ");
-                NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionInvalidCode userInfo:nil];
+    }
+    
+    // Validate Parse remote session
+    [[TTUser currentUser] fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        if (error) {
+            NSLog(@"TTSession: Parse remote session INVALID. ");
+            NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionFetchFailureCode userInfo:nil];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
+            return;
+        } else {
+            if ([[[TTUser currentUser] activeDeviceIdentifier] isEqualToString:[UIDevice currentDevice].identifierForVendor.UUIDString]) {
+                NSLog(@"TTSession: Parse remote session VALID. ");
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTParseSessionIsValidLastCheckedKey];
+            } else {
+                NSLog(@"TTSession: Parse remote session INVALID. (invalid UUID)");
+                NSLog(@"Remote UUID: [%@]", [[TTUser currentUser] activeDeviceIdentifier]);
+                NSLog(@"Local UUID: [%@]", [UIDevice currentDevice].identifierForVendor.UUIDString);
+                NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid Session",
+                                           NSLocalizedFailureReasonErrorKey: @"Your account has been logged in with another device. ",
+                                           NSLocalizedRecoverySuggestionErrorKey: @"Consider turn on 2-step verification or TicText password. "};
+                NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionInvalidUUIDCode userInfo:userInfo];
                 [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
                 return;
-            } else {
-                NSLog(@"TTSession: Parse remote session VALID. ");
-                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTParseSessionIsValidLastCheckedKey];
             }
-        }];
-    }
+        }
+    }];
     
     // Validate Facebook session
     [[PFFacebookUtils session] refreshPermissionsWithCompletionHandler:^(FBSession *session, NSError *error) {
@@ -68,7 +87,7 @@
 }
 
 - (void)validateSessionWithCompletionHandler:(void (^)(BOOL isValid, NSError *error))completionHandler {
-    if (![TTUser currentUser] || ![[TTUser currentUser] facebookId]) {
+    if (![TTUser currentUser] || ![[TTUser currentUser] facebookID]) {
         // Check for Parse login status locally first
         NSLog(@"TTSession: Parse session INVALID. Skip Facebook session validaton. ");
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
@@ -79,7 +98,7 @@
     } else {
         // Check if current user still in cloud datastore
         PFQuery *queryForSessionValidation = [TTUser query];
-        [queryForSessionValidation whereKey:@"facebookID" equalTo:[[TTUser currentUser] facebookId]];
+        [queryForSessionValidation whereKey:@"facebookID" equalTo:[[TTUser currentUser] facebookID]];
         if ([queryForSessionValidation countObjects] > 0) {
             NSLog(@"TTSession: Parse session VALID. Proceed to Facebook session validation. ");
         } else {
@@ -121,7 +140,8 @@
         } else {
             if (completion) {
                 NSLog(@"Logged in with permissions: %@", kTTFacebookPermissions);
-                NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@]", [(TTUser *)user displayName], [(TTUser *)user facebookId], [(TTUser *)user friends]);
+                TTUser *_user = (TTUser *)user;
+                NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@]", [_user displayName], [_user facebookID], [_user friends]);
                 completion(user.isNew, error);
             }
         }
@@ -134,6 +154,15 @@
     [TTUser logOut];
     [[PFFacebookUtils session] closeAndClearTokenInformation];
     [FBSession.activeSession closeAndClearTokenInformation];
+    [FBSession.activeSession close];
+    [FBSession setActiveSession:nil];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTFacebookSessionIsValidLastCheckedKey];
+    
+    [[PFInstallation currentInstallation] removeObjectForKey:kTTInstallationUserKey];
+    [[PFInstallation currentInstallation] saveInBackground];
+    [PFQuery clearAllCachedResults];
     
     if (completion) {
         completion();
@@ -143,8 +172,8 @@
 
 #pragma mark - FBSync
 
-- (void)syncFacebookProfileForNewUser:(void (^)(NSError *error))completion {
-    NSLog(@"Sync Facebook profile for new user. ");
+- (void)syncForNewUser:(void (^)(NSError *error))completion {
+    NSLog(@"Sync for new user. ");
     FBRequestConnection *facebookRequestConnection = [[FBRequestConnection alloc] init];
     [facebookRequestConnection addRequest:[FBRequest requestWithGraphPath:@"me" parameters:@{@"fields": @"name,id,friends,picture.height(640).width(640)"} HTTPMethod:@"GET"] completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error == nil) {
@@ -158,9 +187,10 @@
             NSURL *profilePictureURL = [NSURL URLWithString:result[@"picture"][@"data"][@"url"]];
             NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@], Profile picture URL: [%@]", displayName, facebookID, friends, profilePictureURL);
             
-            [[TTUser currentUser] setDisplayName:displayName];
-            [[TTUser currentUser] setFacebookId:facebookID];
-            [[TTUser currentUser] setFriends:friends];
+            [TTUser currentUser].displayName = displayName;
+            [TTUser currentUser].facebookID = facebookID;
+            [TTUser currentUser].facebookFriends = friends;
+            [TTUser currentUser].activeDeviceIdentifier = [UIDevice currentDevice].identifierForVendor.UUIDString;
             NSURLRequest *profilePictureURLRequest = [NSURLRequest requestWithURL:profilePictureURL];
             [NSURLConnection sendAsynchronousRequest:profilePictureURLRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                  if (connectionError == nil && data != nil) {
@@ -185,6 +215,34 @@
     [facebookRequestConnection start];
 }
 
+- (void)syncForExistingUser:(void (^)(NSError *error))completion {
+    NSLog(@"Sync for existing user. ");
+    // Active device identifier
+    [[TTUser currentUser] setActiveDeviceIdentifier:[UIDevice currentDevice].identifierForVendor.UUIDString];
+    
+    // Friend list
+    FBRequest *request = [FBRequest requestForMyFriends];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            NSMutableArray *friendIds = [NSMutableArray array];
+            
+            NSArray *friends = [result objectForKey:@"data"];
+            for (NSDictionary *friend in friends) {
+                [friendIds addObject:friend[@"id"]];
+            }
+            
+            [TTUser currentUser].facebookFriends = [NSArray arrayWithArray:friendIds];
+            [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (completion) {
+                    completion(error);
+                }
+            }];
+        }
+        if (completion) {
+            completion(error);
+        }
+    }];
+}
 
 - (void)syncProfileData:(void (^)(NSError *error))completion {
     NSLog(@"Sync profile data");
@@ -229,9 +287,7 @@
             }
             
             TTUser *user = [TTUser currentUser];
-            [user setFriends:[NSArray arrayWithArray:friendIds]];
-            
-            // @TODO: saveInBackgroundWithBlock should run asynchronously with completion block
+            [user setFacebookFriends:[NSArray arrayWithArray:friendIds]];
             [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (completion) {
                     completion(error);
@@ -269,17 +325,26 @@
          }];
     };
     
-    if ([user facebookId]) {
-        fetchProfilePicture([user facebookId]);
+    if ([user facebookID]) {
+        fetchProfilePicture([user facebookID]);
     } else {
         [self syncProfileData:^(NSError *error) {
             if (!error) {
-                fetchProfilePicture([user facebookId]);
+                fetchProfilePicture([user facebookID]);
             } else if (completion) {
                 completion(error);
             }
         }];
     }
+}
+
+- (void)syncActiveDeviceIdentifier:(void (^)(NSError *))completion {
+    [[TTUser currentUser] setActiveDeviceIdentifier:[UIDevice currentDevice].identifierForVendor.UUIDString];
+    [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (completion) {
+            completion(error);
+        }
+    }];
 }
 
 @end

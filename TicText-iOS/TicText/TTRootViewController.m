@@ -26,6 +26,11 @@
 @property (nonatomic, strong) TTContactsViewController *contactsViewController;
 @property (nonatomic, strong) TTProfileViewController *profileViewController;
 @property (nonatomic, strong) TTSettingsViewController *settingsViewController;
+@property (nonatomic, strong) UINavigationController *conversationsNavigationController;
+@property (nonatomic, strong) UINavigationController *contactsNavigationController;
+@property (nonatomic, strong) UINavigationController *profileNavigationController;
+@property (nonatomic, strong) UINavigationController *settingsNavigationController;
+@property (nonatomic, strong) UITabBarController *tabBarController;
 
 @end
 
@@ -42,21 +47,18 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionDidBecomeInvalid:) name:kTTFacebookSessionDidBecomeInvalidNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInViewControllerDidFinishLogIn) name:kTTLogInViewControllerDidFinishLogInNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInViewControllerDidFinishSignUp) name:kTTLogInViewControllerDidFinishSignUpNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogOut) name:kTTUserDidLogOutNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[TTSession sharedSession] validateSessionInBackground];
-}
-
-// Temporary IBAction method
-- (IBAction)logOutForTesting:(id)sender {
-    [[TTSession sharedSession] logOut:^{
-        [self.navigationController popToRootViewControllerAnimated:YES];
+    if ([[TTSession sharedSession] isValidLastChecked]) {
+        [self presentMainUserInterface];
+    } else {
         [self presentLogInViewControllerAnimated:YES];
-    }];
+    }
 }
-
 
 #pragma mark - TTRootViewController
 
@@ -67,14 +69,11 @@
     }
     [[TTSession sharedSession] logOut:^{
         [self.navigationController popToRootViewControllerAnimated:YES];
-        [self presentLogInViewControllerAnimated:YES];
+        self.conversationsViewController = nil;
+        self.contactsViewController = nil;
+        self.profileViewController = nil;
+        self.settingsViewController = nil;
     }];
-}
-
-- (void)presentLogInViewControllerIfNeeded {
-    if (![[TTSession sharedSession] isValidLastChecked]) {
-        [self presentLogInViewControllerAnimated:YES];
-    }
 }
 
 - (void)presentLogInViewControllerAnimated:(BOOL)animated {
@@ -86,9 +85,47 @@
     [self presentViewController:self.logInViewController animated:animated completion:nil];
 }
 
+- (void)presentMainUserInterface {
+    self.conversationsViewController = [[TTConversationsViewController alloc] init];
+    self.contactsViewController = [[TTContactsViewController alloc] init];
+    self.profileViewController = [[TTProfileViewController alloc] init];
+    self.settingsViewController = [[TTSettingsViewController alloc] init];
+    self.conversationsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.conversationsViewController];
+    self.contactsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.contactsViewController];
+    self.profileNavigationController = [[UINavigationController alloc] initWithRootViewController:self.profileViewController];
+    self.settingsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.settingsViewController];
+    
+    UITabBarItem *conversationsTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Tics"
+                                                                          image:[UIImage imageNamed:@"TicsTabBarIcon"]
+                                                                  selectedImage:[UIImage imageNamed:@"TicsTabBarIconSelected"]];
+    UITabBarItem *contactsTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Contacts"
+                                                                     image:[UIImage imageNamed:@"ContactsTabBarIcon"]
+                                                             selectedImage:[UIImage imageNamed:@"ContactsTabBarIconSelected"]];
+    UITabBarItem *profileTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Me"
+                                                                    image:[UIImage imageNamed:@"MeTabBarIcon"]
+                                                            selectedImage:[UIImage imageNamed:@"MeTabBarIconSelected"]];
+    UITabBarItem *settingsTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings"
+                                                                     image:[UIImage imageNamed:@"SettingsTabBarIcon"]
+                                                             selectedImage:[UIImage imageNamed:@"SettingsTabBarIconSelected"]];
+    [self.conversationsNavigationController setTabBarItem:conversationsTabBarItem];
+    [self.contactsNavigationController setTabBarItem:contactsTabBarItem];
+    [self.profileNavigationController setTabBarItem:profileTabBarItem];
+    [self.settingsNavigationController setTabBarItem:settingsTabBarItem];
+    
+    self.tabBarController = [[UITabBarController alloc] init];
+    [self.tabBarController setViewControllers:@[self.conversationsNavigationController,
+                                                self.contactsNavigationController,
+                                                self.profileNavigationController,
+                                                self.settingsNavigationController]];
+    [[UITabBar appearance] setSelectedImageTintColor:kTTUIPurpleColor];
+    [[UITabBar appearance] setAlpha:1.0];
+    [self.navigationController setViewControllers:@[self, self.tabBarController] animated:NO];
+}
+
 
 - (void)logInViewControllerDidFinishLogIn {
     [self.logInViewController dismissViewControllerAnimated:YES completion:nil];
+    [self presentMainUserInterface];
     [TTUtility setupPushNotifications];
 }
 
@@ -97,6 +134,18 @@
     self.findFriendsViewController = [[TTFindFriendsViewController alloc] init];
     self.findFriendsViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [self presentViewController:self.findFriendsViewController animated:YES completion:nil];
+}
+
+- (void)userDidLogOut {
+    self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [[TTSession sharedSession] logOut:^{
+        [self.navigationController popToRootViewControllerAnimated:YES];
+        self.conversationsViewController = nil;
+        self.contactsViewController = nil;
+        self.profileViewController = nil;
+        self.settingsViewController = nil;
+        [self.progressHUD removeFromSuperview];
+    }];
 }
 
 - (void)handleError:(NSError *)error {

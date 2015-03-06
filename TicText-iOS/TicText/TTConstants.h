@@ -25,17 +25,24 @@ extern NSString * const kTTFacebookSessionIsValidLastCheckedKey;
 
 
 #pragma mark - NSNotification
-extern NSString * const kTTAppDelegateApplicationDidReceiveRemoteNotification;
+// Log in, Sign up, Log out
 extern NSString * const kTTLogInViewControllerDidFinishLogInNotification;
 extern NSString * const kTTLogInViewControllerDidFinishSignUpNotification;
+extern NSString * const kTTUserDidLogOutNotification;
+
+// Invalid session
 extern NSString * const kTTFacebookSessionDidBecomeInvalidNotification;
 extern NSString * const kTTParseSessionDidBecomeInvalidNotification;
+
+// Push notification
+extern NSString * const kTTApplicationDidReceiveNewTicWhileActiveNotification;
 
 
 #pragma mark - NSError
 extern NSString * const kTTErrorUserInfoKey;
 extern NSString * const kTTSessionErrorDomain;
-extern NSUInteger const kTTSessionErrorParseSessionInvalidCode;
+extern NSUInteger const kTTSessionErrorParseSessionFetchFailureCode;
+extern NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode;
 
 
 #pragma mark - PFUser Class
@@ -45,6 +52,7 @@ extern NSString * const kTTUserFacebookIDKey;
 extern NSString * const kTTUserProfilePictureKey;
 extern NSString * const kTTUserProfilePictureSmallKey;
 extern NSString * const kTTUserTicTextFriendsKey;
+extern NSString * const kTTUserActiveDeviceIdentifier;
 
 
 #pragma mark - PFObject Tic Class

@@ -11,6 +11,7 @@
 @interface AppDelegate ()
 
 @property (nonatomic, strong) TTRootViewController *rootViewController;
+@property (nonatomic, strong) UINavigationController *navigationController;
 
 @end
 
@@ -50,18 +51,23 @@
     [currentInstallation saveInBackground];
 }
 
-- (void)application:(UIApplication *)application
-        didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    
-    // Push notification received while the app is active
-    [[NSNotificationCenter defaultCenter]
-        postNotificationName:kTTAppDelegateApplicationDidReceiveRemoteNotification
-                      object:nil
-                    userInfo:userInfo];
-    
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    [[[UIAlertView alloc] initWithTitle:@"Push Notification Error"
+                                message:error.localizedDescription
+                               delegate:nil
+                      cancelButtonTitle:@"OK"
+                      otherButtonTitles:nil] show];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
         // Track app opens due to a push notification being acknowledged while the app wasn't active.
         [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
+    }
+    
+    // Push notification received while the app is active
+    if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
     }
     
     // TODO: handle push notification
@@ -84,6 +90,9 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    if ([TTUser currentUser]) {
+        [[TTSession sharedSession] validateSessionInBackground];
+    }
     [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
 }
 
@@ -99,6 +108,9 @@
                                launchOptions:(NSDictionary *)launchOptions {
     
     [TTUser registerSubclass];
+    [TTTic registerSubclass];
+    [TTActivity registerSubclass];
+    
     [Parse setApplicationId:@"otEYQUdVy98OBM9SeUs8Zc1PrMy27EGMvEy80WaL"
                   clientKey:@"qfTOvPp03kY8uSYVu3FkL72UWwW37Tx2B6L6Ppq9"];
     
@@ -130,22 +142,12 @@
     
     // Set as root view controller of window
     self.window.rootViewController = self.navigationController;
+    [self.window setTintColor:kTTUIPurpleColor];
     [self.window makeKeyAndVisible];
 }
 
 - (void)handlePush:(NSDictionary *)launchOptions {
     
 }
-
-- (void)currentUserLogOut {
-    NSLog(@"Logging out current user");
-    
-    // Unsubscribe from push notifications by removing the user association from the current installation.
-    [[PFInstallation currentInstallation] removeObjectForKey:kTTInstallationUserKey];
-    [[PFInstallation currentInstallation] saveInBackground];
-
-    [PFUser logOut];
-}
-
 
 @end

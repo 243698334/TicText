@@ -10,4 +10,9 @@
 
 @interface TTActivity : PFObject<PFSubclassing>
 
+@property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) NSString *fromUserId;
+@property (nonatomic, strong) NSString *toUserId;
+@property (nonatomic, strong) NSString *ticId;
+
 @end

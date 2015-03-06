@@ -14,9 +14,18 @@
 #import "TTLogInViewController.h"
 #import "TTSession.h"
 
+@interface TTRootViewController (Test)
+
+- (void)presentLogInViewControllerAnimated:(BOOL)animated;
+
+- (void)presentMainUserInterface;
+
+@end
+
+
 @interface TTRootViewControllerTests : XCTestCase
 
-@property (nonatomic, strong) TTRootViewController *mockVC;
+@property (nonatomic, strong) id mockRootViewController;
 
 @end
 
@@ -24,32 +33,94 @@
 
 - (void)setUp {
     [super setUp];
-    
-    self.mockVC = OCMPartialMock([[TTRootViewController alloc] init]);
+    self.mockRootViewController = OCMPartialMock([[TTRootViewController alloc] init]);
+    [self.mockRootViewController viewDidLoad];
 }
 
-- (void)testPresentLogInViewController {
+- (void)testSessionDidBecomeInvalid {
     // Arrange
-    BOOL animated = NO;
-    
-    // Act
-    [self.mockVC presentLogInViewControllerAnimated:animated];
-    
-    // Assert
-    OCMVerify([self.mockVC presentViewController:[OCMArg isKindOfClass:[TTLogInViewController class]] animated:animated completion:[OCMArg any]]);
-}
-
-- (void)testLogout {
-    // Arrange
-    id mockSession = OCMClassMock([TTSession class]);
+    id mockSession = OCMPartialMock([TTSession sharedSession]);
     OCMStub([mockSession sharedSession]).andReturn(mockSession);
-    OCMExpect([mockSession logOut:[OCMArg any]]);
+    OCMExpect([mockSession logOut:[OCMArg isKindOfClass:NSClassFromString(@"NSBlock")]]);
+    OCMStub([mockSession logOut:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
+        void (^logOutBlock)() = nil;
+        [invocation getArgument:&logOutBlock atIndex:2];
+        logOutBlock();
+    });
+    id mockNavigationController = OCMClassMock([UINavigationController class]);
+    OCMStub([self.mockRootViewController navigationController]).andReturn(mockNavigationController);
+    OCMExpect([mockNavigationController popToRootViewControllerAnimated:[OCMArg any]]);
     
     // Act
-    [mockSession logOut:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil];
     
     // Assert
     OCMVerifyAll(mockSession);
+    OCMVerifyAll(self.mockRootViewController);
+}
+
+- (void)testLogInViewControllerDidFinishLogIn {
+    // Arrange
+    id mockUtility = OCMClassMock([TTUtility class]);
+    OCMExpect([mockUtility setupPushNotifications]);
+    OCMExpect([self.mockRootViewController presentMainUserInterface]);
+    
+    // Act
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTLogInViewControllerDidFinishLogInNotification object:nil];
+    
+    // Assert
+    OCMVerifyAll(self.mockRootViewController);
+}
+
+- (void)testLogInViewControllerDidFinishSignUp {
+    // Arrange
+    id mockUtility = OCMClassMock([TTUtility class]);
+    OCMExpect([mockUtility setupPushNotifications]);
+    OCMExpect([self.mockRootViewController presentMainUserInterface]);
+    OCMExpect([self.mockRootViewController presentViewController:[OCMArg isKindOfClass:[TTFindFriendsViewController class]] animated:[OCMArg any] completion:[OCMArg any]]);
+    
+    // Act
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTLogInViewControllerDidFinishSignUpNotification object:nil];
+    
+    // Assert
+    OCMVerifyAll(self.mockRootViewController);
+}
+
+
+- (void)testPresentMainUserInterface {
+    // Arrange
+    id mockTabBarController = OCMClassMock([UITabBarController class]);
+    OCMStub([self.mockRootViewController tabBarController]).andReturn(mockTabBarController);
+    OCMExpect([mockTabBarController setViewControllers:[OCMArg any]]);
+    
+    // Act
+    [self.mockRootViewController presentMainUserInterface];
+    
+    // Assert
+    OCMVerifyAll(mockTabBarController);
+}
+
+- (void)testUserDidLogOut {
+    // Arrange
+    id mockSession = OCMPartialMock([TTSession sharedSession]);
+    OCMStub([mockSession sharedSession]).andReturn(mockSession);
+    OCMExpect([mockSession logOut:[OCMArg isKindOfClass:NSClassFromString(@"NSBlock")]]);
+    OCMStub([mockSession logOut:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
+        void (^logOutBlock)() = nil;
+        [invocation getArgument:&logOutBlock atIndex:2];
+        logOutBlock();
+    });
+    id mockNavigationController = OCMClassMock([UINavigationController class]);
+    OCMStub([self.mockRootViewController navigationController]).andReturn(mockNavigationController);
+    OCMExpect([mockNavigationController popToRootViewControllerAnimated:[OCMArg any]]);
+    
+    // Act
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTUserDidLogOutNotification object:nil];
+    
+    
+    // Assert
+    OCMVerifyAll(mockSession);
+    OCMVerifyAll(mockNavigationController);
 }
 
 @end
