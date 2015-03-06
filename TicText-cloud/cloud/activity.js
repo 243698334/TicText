@@ -42,10 +42,10 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
     switch (activityType) {
         case ACTIVITY_TYPE_SEND:
             activity.get(ACTIVITY_TIC).fetch({
-                success: function(object) {
-                    var recipient = object.get(TIC_RECIPIENT);
+                success: function(tic) {
+                    var recipient = tic.get(TIC_RECIPIENT);
                     installationQuery.equalTo(INSTALLATION_USER, recipient);
-                    payload.tid = object.id;
+                    payload.tid = tic.id;
                     payload.sid = request.user.id;
                     console.log("Current push notification payload: ");
                     console.log(payload);
@@ -54,10 +54,10 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
                         data: payload
                     }).then(function() {
                         // Push succeed
-                        console.log("Push Notification succeed. ");
+                        console.log("Push Notification for new Tic successfully sent.");
                     }, function(error) {
                         // Push failed
-                        console.log("Push Notification failed. ");
+                        console.log("Push Notification for new Tic failed to sent.");
                         console.log(error);
                     });
                 },
@@ -69,18 +69,18 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
             break;
         case ACTIVITY_TYPE_READ:
             activity.get(ACTIVITY_TIC).fetch({
-                success: function(object) {
-                    var sender = object.get(TIC_SENDER);
-                    installationQuery.equalTo('user', sender);
+                success: function(tic) {
+                    var sender = tic.get(TIC_SENDER);
+                    installationQuery.equalTo(INSTALLATION_USER, sender);
                     Parse.Push.send({
                         where: installationQuery,
                         data: payload
                     }).then(function() {
                         // Push succeed
-                        console.log("Push Notification succeed. ");
+                        console.log("Push Notification for read Tic successfully sent.");
                     }, function(error) {
                         // Push failed
-                        console.log("Push Notification failed. ");
+                        console.log("Push Notification for read Tic failed to sent.");
                         console.log(error);
                     });
                 },
@@ -98,10 +98,10 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
                 data: payload
             }).then(function() {
                 // Push succeed
-                console.log("Push Notification succeed. ");
+                console.log("Push Notification for new user join successfully sent.");
             }, function(error) {
                 // Push failed
-                console.log("Push Notification failed. ");
+                console.log("Push Notification for new user join failed to sent.");
                 console.log(error);
             });
             break;
