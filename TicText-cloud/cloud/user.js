@@ -1,4 +1,3 @@
-// User constants
 USER_FACEBOOK_ID = 'facebookID';
 USER_FRIENDS = 'friends';
 USER_FACEBOOK_FRIENDS = 'facebookFriends';
