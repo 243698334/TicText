@@ -10,6 +10,9 @@
 #import "TTFindFriendsViewController.h"
 #import "TTSettings.h"
 
+#define kFacebookURL @"https://www.facebook.com/pages/TicText/587674271368005"
+#define kFacebookAppURL @"fb://profile/587674271368005"
+
 @interface TTSettingsViewController ()
 
 @property (nonatomic, strong) UISwitch *receiveNewTicNotificationSwitch;
@@ -38,9 +41,9 @@
     self.receiveNewTicNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
     self.receiveExpireSoonNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
     self.receiveReadByRecipientNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-    self.receiveNewTicNotificationSwitch.on = [TTSettings getNewTicNotificationPreference];
-    self.receiveExpireSoonNotificationSwitch.on = [TTSettings getExpireSoonNotificationPreference];
-    self.receiveReadByRecipientNotificationSwitch.on = [TTSettings getReadNotificationPreference];
+    self.receiveNewTicNotificationSwitch.on = [TTSettings newTicNotificationPreference];
+    self.receiveExpireSoonNotificationSwitch.on = [TTSettings expireSoonNotificationPreference];
+    self.receiveReadByRecipientNotificationSwitch.on = [TTSettings readNotificationPreference];
     [self.receiveNewTicNotificationSwitch setOnTintColor:kTTUIPurpleColor];
     [self.receiveExpireSoonNotificationSwitch setOnTintColor:kTTUIPurpleColor];
     [self.receiveReadByRecipientNotificationSwitch setOnTintColor:kTTUIPurpleColor];
@@ -117,10 +120,10 @@
             staticContentCell.cellStyle = UITableViewCellSelectionStyleNone;
             cell.textLabel.text = @"Like us on Facebook";
         } whenSelected:^(NSIndexPath *indexPath) {
-            NSString *urlString = @"https://www.facebook.com/pages/TicText/587674271368005";
+            NSString *urlString = kFacebookURL;
             NSURL *url = [NSURL URLWithString:urlString];
-            if([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fb://profile/587674271368005"]]){
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"fb://profile/587674271368005"]];
+            if([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:kFacebookAppURL]]){
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kFacebookAppURL]];
             }
             else {
                 [[UIApplication sharedApplication] openURL:url];
@@ -143,10 +146,10 @@
             staticContentCell.cellStyle = UITableViewCellSelectionStyleNone;
             cell.textLabel.text = @"About";
         } whenSelected:^(NSIndexPath *indexPath) {
-            NSString *urlString = @"https://www.facebook.com/pages/TicText/587674271368005";
+            NSString *urlString = kFacebookURL;
             NSURL *url = [NSURL URLWithString:urlString];
-            if([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fb://profile/587674271368005"]]){
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"fb://profile/587674271368005"]];
+            if([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:kFacebookAppURL]]){
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:kFacebookAppURL]];
             }
             else {
                 [[UIApplication sharedApplication] openURL:url];

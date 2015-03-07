@@ -8,6 +8,8 @@
 
 #import "FindFriendsTableViewCell.h"
 #define kStockProfileImage @"profile"
+#define kCellWidth self.bounds.size.width
+#define kCellHeight self.bounds.size.height
 
 @interface FindFriendsTableViewCell () {
     CGFloat height;
@@ -46,21 +48,15 @@
 
 #pragma mark - load friend images
 -(void)setFriends:(NSMutableArray *)friends {
-    if(friends.count <= 0) {
-        return;
-    }
-
-    [self setFriends:friends index:0];
-    
+    [self setFriends:friends imageIndex:0];
 }
 
--(void)setFriends:(NSMutableArray *)friends index:(NSInteger)index {
+-(void)setFriends:(NSMutableArray *)friends imageIndex:(NSInteger)imageIndex {
     if(friends.count <= 0) {
         return;
     }
     
-    TTUser *friend = [friends objectAtIndex:0];
-    [friend fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *err) {
+    [[friends objectAtIndex:0] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *err) {
         if(!err) {
             TTUser *user = (TTUser *)object;
             __block NSData *data;
@@ -69,13 +65,13 @@
                 data = [user profilePicture];
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     if(data){
-                        ((UIImageView *)self.pictures[index]).image = [UIImage imageWithData:data];
+                        ((UIImageView *)self.pictures[imageIndex]).image = [UIImage imageWithData:data];
                     }
                 });
             });
             
             [friends removeObjectAtIndex:0];
-            [self setFriends:friends index:index+1];
+            [self setFriends:friends imageIndex:imageIndex+1];
         }
     }];
 
@@ -83,8 +79,6 @@
 
 #pragma mark - view creators
 -(void)setNumberOfFriendsInRow:(NSInteger)num {
-    width = self.bounds.size.width;
-    height = self.bounds.size.height;
     self.numPictures = num;
     if(num == 0) {
         return;
@@ -99,16 +93,16 @@
     }
     NSMutableArray *offsets = [[NSMutableArray alloc] init];
     if(self.numPictures == 1) { //add constraints
-        [offsets addObject:[NSNumber numberWithFloat:width/2 - height/2]];
+        [offsets addObject:[NSNumber numberWithFloat:kCellWidth/2 - kCellHeight/2]];
     }
     else if(self.numPictures == 2) {
-        [offsets addObject:[NSNumber numberWithFloat:width/3 - height/2]];
-        [offsets addObject:[NSNumber numberWithFloat:2*width/3 - height/2]];
+        [offsets addObject:[NSNumber numberWithFloat:kCellWidth/3 - kCellHeight/2]];
+        [offsets addObject:[NSNumber numberWithFloat:2*kCellWidth/3 - kCellHeight/2]];
     }
     else if(self.numPictures == 3) {
-        [offsets addObject:[NSNumber numberWithFloat:width/6 - height/2]];
-        [offsets addObject:[NSNumber numberWithFloat:width/2 - height/2]];
-        [offsets addObject:[NSNumber numberWithFloat:5*width/6 - height/2]];
+        [offsets addObject:[NSNumber numberWithFloat:kCellWidth/6 - kCellHeight/2]];
+        [offsets addObject:[NSNumber numberWithFloat:kCellWidth/2 - kCellHeight/2]];
+        [offsets addObject:[NSNumber numberWithFloat:5*kCellWidth/6 - kCellHeight/2]];
     }
     
     for (int i = 0; i<offsets.count; i++) {
@@ -119,9 +113,9 @@
 
 -(void)addImage:(UIImageView *)iv image:(UIImage *)image offset:(CGFloat)xOff {
     iv.clipsToBounds = YES;
-    iv.layer.cornerRadius = height/2;
+    iv.layer.cornerRadius = kCellHeight/2;
     iv.image = image;
-    iv.frame = CGRectMake(xOff, 0, height, height);
+    iv.frame = CGRectMake(xOff, 0, kCellHeight, kCellHeight);
 }
 
 @end

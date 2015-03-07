@@ -23,15 +23,15 @@
     [userDefaults synchronize];
 }
 
-+ (BOOL)getNewTicNotificationPreference {
++ (BOOL)newTicNotificationPreference {
     return [[NSUserDefaults standardUserDefaults] boolForKey:kNewTic];
 }
 
-+ (BOOL)getExpireSoonNotificationPreference {
++ (BOOL)expireSoonNotificationPreference {
     return [[NSUserDefaults standardUserDefaults] boolForKey:kExpireSoon];
 }
 
-+ (BOOL)getReadNotificationPreference {
++ (BOOL)readNotificationPreference {
     return [[NSUserDefaults standardUserDefaults] boolForKey:kRead];
 }
 

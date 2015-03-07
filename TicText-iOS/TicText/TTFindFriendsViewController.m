@@ -19,7 +19,6 @@
     NSMutableArray *_friends;
 }
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) NSDictionary *cache;
 @property (nonatomic, strong) NSMutableArray *rowArray;
 @end
 
@@ -84,7 +83,7 @@
     button.clipsToBounds = YES;
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [header addSubview:button];
-    [button addTarget:self action:@selector(hideView) forControlEvents: UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(fadeView) forControlEvents: UIControlEventTouchUpInside];
     return header;
 }
 
@@ -108,14 +107,6 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     FindFriendsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kTableViewCell forIndexPath:indexPath];
     
-//    if(indexPath.row % 2 == 1) {
-//        [cell setFriends:@[[UIImage imageNamed:@"profile"], [UIImage imageNamed:@"profile"]]];
-//    }
-//    
-//    else if(indexPath.row %2 == 0){
-//        [cell setFriends:@[[UIImage imageNamed:@"profile"], [UIImage imageNamed:@"profile"], [UIImage imageNamed:@"profile"]]];
-//    }
-    
     [cell setNumberOfFriendsInRow:((NSArray *)self.rowArray[indexPath.row]).count];
     [cell setFriends:[self.rowArray[indexPath.row] mutableCopy]];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -129,6 +120,8 @@
 
 -(void)setupRowArray {
     TTUser *_user = [TTUser currentUser];
+    //each entry in the row array corresponds to a row in the tableview.
+    //each entry in the row array has an array containing user objects
     self.rowArray = [[NSMutableArray alloc] init];
     if(!_user) {
         NSLog(@"no active user");
@@ -142,25 +135,23 @@
     [_friends addObjectsFromArray:[_user friends]];
     [_friends addObjectsFromArray:[_user friends]];
     [_friends addObjectsFromArray:[_user friends]];
-    if(!_friends) {
+    if(_friends.count == 0) {
         NSLog(@"no friends on tictext :(");
+        [self dismissViewControllerAnimated:YES completion:nil];
+        return;
     }
     
-    NSInteger next = 3;
+    NSInteger counter = 0;
     while (_friends.count > 0) {
+        NSInteger next = 3 - counter % 2;
         NSMutableArray *arr = [[NSMutableArray alloc] init];
         for(int i = 0; i < next; i++) {
             if ([self canPop]) {
                 [arr addObject:[self pop]];
             }
         }
+        counter++;
         [self.rowArray addObject:arr];
-        if(next == 3) {
-            next = 2;
-        }
-        else {
-            next = 3;
-        }
     }
 }
 
@@ -174,8 +165,9 @@
     return user;
 }
 
+#pragma mark - swipe gesture selector
 // Respond to a swipe gesture
-- (IBAction)showGestureForSwipeRecognizer:(UISwipeGestureRecognizer *)recognizer {
+- (void)showGestureForSwipeRecognizer:(UISwipeGestureRecognizer *)recognizer {
     int shift = 0;
     
     if (recognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
@@ -183,11 +175,9 @@
     } else {
         shift = 30;
     }
-    //self.view.backgroundColor = [UIColor redColor];
     self.modalPresentationStyle = UIModalPresentationCurrentContext;
     
     [UIView animateKeyframesWithDuration:0.2 delay:0 options:0 animations:^{
-        //self.view.alpha = 0.0;
         UIView *view = [self tableView:self.tableView viewForHeaderInSection:0];
         view.alpha = 0;
         self.tableView.alpha = 0;
@@ -197,5 +187,14 @@
     }];
 }
 
+-(void)fadeView {
+    [UIView animateKeyframesWithDuration:0.2 delay:0 options:0 animations:^{
+        UIView *view = [self tableView:self.tableView viewForHeaderInSection:0];
+        view.alpha = 0;
+        self.tableView.alpha = 0;
+    } completion:^(BOOL finished){
+        [self hideView];
+    }];
+}
 
 @end

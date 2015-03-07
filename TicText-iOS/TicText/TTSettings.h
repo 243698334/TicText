@@ -10,7 +10,7 @@
 
 @interface TTSettings : NSObject
 + (void)changeNotificationPreferences:(BOOL)newTic expireSoon:(BOOL)expire read:(BOOL)read;
-+ (BOOL)getNewTicNotificationPreference;
-+ (BOOL)getExpireSoonNotificationPreference;
-+ (BOOL)getReadNotificationPreference;
++ (BOOL)newTicNotificationPreference;
++ (BOOL)expireSoonNotificationPreference;
++ (BOOL)readNotificationPreference;
 @end
