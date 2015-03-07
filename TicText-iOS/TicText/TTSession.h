@@ -26,9 +26,6 @@
 // Asynchronously validates the current session. Post Parse/Facebook SessionDidBecomeInvalid notification if invalid.
 - (void)validateSessionInBackground;
 
-// Validates the current session with completion block
-- (void)validateSessionWithCompletionHandler:(void (^)(BOOL isValid, NSError *error))completionHandler;
-
 // Prompts the user to authenticate through Facebook, then
 - (void)logIn:(void (^)(BOOL isNewUser, NSError *error))completion;
 

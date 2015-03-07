@@ -10,14 +10,16 @@
 
 @implementation TTTic
 
-@dynamic status, type, timeLimit, senderUserId, recipientUserId, contentType, content, sendTimestamp, receiveTimestamp;
+@dynamic status, type, timeLimit, contentType, content, sendTimestamp, receiveTimestamp, sender, recipient;
 
 + (NSString *)parseClassName {
     return kTTTicClassKey;
 }
 
 + (instancetype)unreadTicWithId:(NSString*)objectId {
-    return [super objectWithoutDataWithClassName:kTTTicClassKey objectId:objectId];
+    TTTic *unreadTic = [TTTic objectWithoutDataWithClassName:kTTTicClassKey objectId:objectId];
+    unreadTic.status = kTTTicStatusUnread;
+    return unreadTic;
 }
 
 + (void)fetchTicInBackgroundWithId:(NSString *)ticId timestamp:(NSDate *)fetchTimestamp completion:(void (^)(TTTic *fetchedTic, NSError *error))completion {

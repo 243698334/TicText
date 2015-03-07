@@ -86,49 +86,6 @@
     }];
 }
 
-- (void)validateSessionWithCompletionHandler:(void (^)(BOOL isValid, NSError *error))completionHandler {
-    if (![TTUser currentUser] || ![[TTUser currentUser] facebookID]) {
-        // Check for Parse login status locally first
-        NSLog(@"TTSession: Parse session INVALID. Skip Facebook session validaton. ");
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-        if (completionHandler) {
-            completionHandler(NO, nil);
-            return;
-        }
-    } else {
-        // Check if current user still in cloud datastore
-        PFQuery *queryForSessionValidation = [TTUser query];
-        [queryForSessionValidation whereKey:@"facebookID" equalTo:[[TTUser currentUser] facebookID]];
-        if ([queryForSessionValidation countObjects] > 0) {
-            NSLog(@"TTSession: Parse session VALID. Proceed to Facebook session validation. ");
-        } else {
-            NSLog(@"TTSession: Parse session INVALID. Skip Facebook session validaton. ");
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-            if (completionHandler) {
-                completionHandler(NO, nil);
-                return;
-            }
-        }
-    }
-    // Facebook validation
-    [[PFFacebookUtils session] refreshPermissionsWithCompletionHandler:^(FBSession *session, NSError *error) {
-        if (error) {
-            NSLog(@"TTSession: Facebook session INVALID. ");
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTFacebookSessionIsValidLastCheckedKey];
-            if (completionHandler) {
-                completionHandler(NO, error);
-            }
-        } else {
-            NSLog(@"TTSession: Facebook session VALID. ");
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTFacebookSessionIsValidLastCheckedKey];
-            if (completionHandler) {
-                completionHandler(YES, error);
-            }
-        }
-    }];
-}
-
-
 - (void)logIn:(void (^)(BOOL isNewUser, NSError *error))completion {
     // Login PFUser using Facebook
     NSLog(@"TTSession: Logging in. ");

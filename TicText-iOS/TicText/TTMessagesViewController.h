@@ -11,7 +11,10 @@
 #import <JSQMessagesViewController/JSQMessages.h>
 #import <TSMessages/TSMessageView.h>
 #import "TTMessagesBubbleImage.h"
+#import "TTUser.h"
 
 @interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, TSMessageViewProtocol>
+
++ (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;
 
 @end
