@@ -68,7 +68,6 @@
                 [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
                 return;
-                
             }
         }
     }];
@@ -141,7 +140,8 @@
         } else {
             if (completion) {
                 NSLog(@"Logged in with permissions: %@", kTTFacebookPermissions);
-                NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@]", [(TTUser *)user displayName], [(TTUser *)user facebookID], [(TTUser *)user facebookFriends]);
+                TTUser *_user = (TTUser *)user;
+                NSLog(@"Name: [%@], FacebookID: [%@], Friends: [%@]", [_user displayName], [_user facebookID], [_user friends]);
                 completion(user.isNew, error);
             }
         }
