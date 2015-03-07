@@ -27,9 +27,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupRowArray];
-    
-    UIImageView *ss = [[UIImageView alloc] initWithImage:self.screenshot];
-    [self.view addSubview:ss];
 
     self.view.backgroundColor = kTTUIPurpleColor;
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
@@ -54,6 +51,21 @@
     swipeRecognizerRight .direction = UISwipeGestureRecognizerDirectionRight;
     [self.view addGestureRecognizer:swipeRecognizerRight ];
     
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    UIGraphicsBeginImageContextWithOptions([self presentingViewController].view.bounds.size, NO, [UIScreen mainScreen].scale);
+    [((UIWindow *)[UIApplication sharedApplication].windows.firstObject).layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *ss = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    self.screenshot = ss;
+    
+    UIImageView *iv = [[UIImageView alloc] initWithFrame:self.presentingViewController.view.frame];
+    iv.image = self.screenshot;
+    [self.view addSubview: iv];
+    [self.view sendSubviewToBack:iv];
+
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
