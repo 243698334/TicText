@@ -11,7 +11,7 @@
 #import <OCMock/OCMock.h>
 
 #import <Parse/Parse.h>
-#import "TTHelper.h"
+#import "TTTestHelper.h"
 #import "TTUser.h"
 #import "TTSession.h"
 
@@ -31,7 +31,7 @@
 
 - (void)testLinkedWithFacebookTrue {
     // Arrange
-    TTUser *fakeUser = [TTHelper fakeUser];
+    TTUser *fakeUser = [TTTestHelper fakeUser];
     fakeUser[kTTUserFacebookIDKey] = @1234567890;
     
     // Act
@@ -43,7 +43,7 @@
 
 - (void)testLinkedWithFacebookFalse {
     // Arrange
-    TTUser *fakeUser = [TTHelper fakeUser];
+    TTUser *fakeUser = [TTTestHelper fakeUser];
     [fakeUser removeObjectForKey:kTTUserFacebookIDKey];
     
     // Act

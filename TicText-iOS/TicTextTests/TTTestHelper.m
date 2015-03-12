@@ -6,14 +6,15 @@
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import "TTHelper.h"
+#import "TTTestHelper.h"
 
 #import "TTUser.h"
 
-@implementation TTHelper
+@implementation TTTestHelper
 
 + (TTUser *)fakeUser {
     TTUser *user = [[TTUser alloc] init];
+    user.objectId = @"fakeUserId";
     user[kTTUserDisplayNameKey] = @"tkatzenbaer";
     user[kTTUserFacebookIDKey] = @"1234567890";
     user[kTTUserProfilePictureKey] = [NSData data]; // @TODO - replace with actual data

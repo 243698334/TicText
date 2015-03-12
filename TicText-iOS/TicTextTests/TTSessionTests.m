@@ -10,7 +10,7 @@
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
 
-#import "TTHelper.h"
+#import "TTTestHelper.h"
 #import "TTSession.h"
 
 @interface TTSessionTests : XCTestCase
