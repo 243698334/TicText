@@ -16,6 +16,7 @@
 @interface TTMessagesViewController ()
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
+@property (nonatomic) BOOL isFetchingTic;
 
 @property (nonatomic, strong) TTUser *recipient;
 
@@ -53,6 +54,7 @@
     self.tics = [[NSMutableArray alloc] init];
     self.jsqMessages = [[NSMutableArray alloc] init];
     
+    self.isFetchingTic = NO;
     self.bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
     self.outgoingBubbleImageData = [self.bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
     self.incomingBubbleImageData = [self.bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
@@ -356,6 +358,11 @@
 }
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapMessageBubbleAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.isFetchingTic) {
+        return;
+    }
+    
+    self.isFetchingTic = YES;
     TTTic *unreadTic = [self.tics objectAtIndex:indexPath.item];
     if (![unreadTic.status isEqualToString:kTTTicStatusUnread]) {
         return;
@@ -385,6 +392,7 @@
         [progressHUD removeFromSuperview];
         [tappedCell.textView setHidden:NO];
         [self finishReceivingMessageAnimated:YES];
+        self.isFetchingTic = NO;
     }];
 }
 
