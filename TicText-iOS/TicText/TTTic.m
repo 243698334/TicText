@@ -23,7 +23,7 @@
 }
 
 + (void)fetchTicInBackgroundWithId:(NSString *)ticId timestamp:(NSDate *)fetchTimestamp completion:(void (^)(TTTic *fetchedTic, NSError *error))completion {
-    [PFCloud callFunctionInBackground:kTTTicFetchTicFunction withParameters:@{@"ticId" : ticId, @"fetchTimestamp" : fetchTimestamp} block:^(id object, NSError *error) {
+    [PFCloud callFunctionInBackground:kTTTicFetchTicFunction withParameters:@{kTTTicFetchTicFunctionTicIdParameter : ticId, kTTTicFetchTicFunctionFetchTimestampParameter : fetchTimestamp} block:^(id object, NSError *error) {
         if (error) {
             if (completion) {
                 completion(nil, error);

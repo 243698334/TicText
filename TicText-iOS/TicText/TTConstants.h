@@ -67,6 +67,8 @@ extern NSString * const kTTTicClassKey;
 
 // Cloud function names
 extern NSString * const kTTTicFetchTicFunction;
+extern NSString * const kTTTicFetchTicFunctionTicIdParameter;
+extern NSString * const kTTTicFetchTicFunctionFetchTimestampParameter;
 
 // Field keys
 extern NSString * const kTTTicSenderKey;

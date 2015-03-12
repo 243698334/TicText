@@ -64,6 +64,8 @@ NSString * const kTTTicClassKey = @"Tic";
 
 // Cloud function names
 NSString * const kTTTicFetchTicFunction = @"fetchTic";
+NSString * const kTTTicFetchTicFunctionTicIdParameter = @"ticId";
+NSString * const kTTTicFetchTicFunctionFetchTimestampParameter = @"fetchTimestamp";
 
 // Field keys
 NSString * const kTTTicSenderKey = @"sender";
