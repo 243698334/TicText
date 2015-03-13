@@ -7,8 +7,8 @@
 //
 
 #import "TTMessagesViewController.h"
-
 #import "TTUser.h"
+#import "TTExpirationTimer.h"
 
 @interface TTMessagesViewController ()
 
@@ -23,6 +23,9 @@
     viewController.navigationItem.title = @"Some Dialog";
     viewController.hidesBottomBarWhenPushed = YES;
     
+    UIButton *expirationTimerButton = [TTExpirationTimer buttonWithDelegate:viewController];
+    viewController.inputToolbar.contentView.leftBarButtonItem = expirationTimerButton;
+    
     return viewController;
 }
 
@@ -31,13 +34,16 @@
 
     self.senderId = @"fake_sender_id";
     self.senderDisplayName = [[TTUser currentUser] displayName];
-    
-    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - TTExpirationTimerDelegate
+- (void)expirationTimerDesiresNewTime:(TTExpirationTimer *)expirationTimer {
+    
 }
 
 /*

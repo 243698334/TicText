@@ -8,7 +8,6 @@
 
 #import "TTConversationsViewController.h"
 #import "TTMessagesViewController.h"
-#import "TTNewMessageViewController.h"
 
 @interface TTConversationsViewController ()
 
@@ -27,7 +26,7 @@
 }
 
 - (void)newTic {
-    TTNewMessageViewController *newMessageViewController = [TTNewMessageViewController messagesViewController];
+    TTMessagesViewController *newMessageViewController = [TTMessagesViewController messagesViewController];
     [self.navigationController pushViewController:newMessageViewController animated:YES];
 }
 

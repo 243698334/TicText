@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <JSQMessagesViewController/JSQMessages.h>
 
-@interface TTMessagesViewController : JSQMessagesViewController
+#import "TTExpirationTimer.h"
+@interface TTMessagesViewController : JSQMessagesViewController <TTExpirationTimerDelegate>
 
 @end
