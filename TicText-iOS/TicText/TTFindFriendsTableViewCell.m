@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import "FindFriendsTableViewCell.h"
+#import "TTFindFriendsTableViewCell.h"
 
-@interface FindFriendsTableViewCell () {
+@interface TTFindFriendsTableViewCell () {
     CGFloat height;
     CGFloat width;
 }
@@ -20,7 +20,7 @@
 
 @end
 
-@implementation FindFriendsTableViewCell
+@implementation TTFindFriendsTableViewCell
 
 - (void)awakeFromNib {
 }

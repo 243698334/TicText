@@ -10,7 +10,18 @@
 
 @implementation TTActivity
 
-@dynamic type, fromUserId, toUserId, ticId;
+@dynamic type, tic;
+
++ (instancetype)activityWithType:(NSString *)type {
+    return [self activityWithType:type tic:nil];
+}
+
++ (instancetype)activityWithType:(NSString *)type tic:(TTTic *)tic {
+    TTActivity *activity = [self object];
+    activity.type = type;
+    activity.tic = tic;
+    return activity;
+}
 
 + (NSString *)parseClassName {
     return kTTActivityClassKey;

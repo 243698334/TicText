@@ -36,10 +36,16 @@ extern NSString * const kTTParseSessionDidBecomeInvalidNotification;
 
 // Push notification
 extern NSString * const kTTApplicationDidReceiveNewTicWhileActiveNotification;
+extern NSString * const kTTApplicationDidReceiveReadTicWhileActiveNotification;
+extern NSString * const kTTApplicationDidReceiveNewUserJoinWhileActiveNotification;
+
+// UserInfo keys
+extern NSString * const kTTNotificationUserInfoErrorKey;
+extern NSString * const kTTNotificationUserInfoTicIdKey;
+extern NSString * const kTTNotificationUserInfoSenderUserIdKey;
 
 
 #pragma mark - NSError
-extern NSString * const kTTErrorUserInfoKey;
 extern NSString * const kTTSessionErrorDomain;
 extern NSUInteger const kTTSessionErrorParseSessionFetchFailureCode;
 extern NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode;
@@ -58,6 +64,11 @@ extern NSString * const kTTUserActiveDeviceIdentifier;
 #pragma mark - PFObject Tic Class
 // Class key
 extern NSString * const kTTTicClassKey;
+
+// Cloud function names
+extern NSString * const kTTTicFetchTicFunction;
+extern NSString * const kTTTicFetchTicFunctionTicIdParameter;
+extern NSString * const kTTTicFetchTicFunctionFetchTimestampParameter;
 
 // Field keys
 extern NSString * const kTTTicSenderKey;
@@ -97,16 +108,20 @@ extern NSString * const kTTActivityContentKey;
 extern NSString * const kTTActivityTicKey;
 
 // Type values
-extern NSString * const kTTActivityTypeSend;
-extern NSString * const kTTActivityTypeFetch;
+extern NSString * const kTTActivityTypeSendTic;
+extern NSString * const kTTActivityTypeReadTic;
+extern NSString * const kTTActivityTypeNewUserJoin;
 
 
 #pragma mark - Push Notification Payload
 // Field keys
 extern NSString * const kTTPushNotificationPayloadTypeKey;
+extern NSString * const kTTPushNotificationPayloadTicIdKey;
+extern NSString * const kTTPushNotificationPayloadSenderUserId;
 
 // Type values
 extern NSString * const kTTPushNotificationPayloadTypeNewTic;
+extern NSString * const kTTPushNotificationPayloadTypeReadTic;
 extern NSString * const kTTPushNotificationPayloadTypeNewFriend;
 
 
