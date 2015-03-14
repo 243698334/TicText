@@ -133,4 +133,4 @@ var pushNotificationPayload = function(request) {
         default: 
             return null;
     }
-}
+};

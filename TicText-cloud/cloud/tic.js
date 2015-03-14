@@ -56,4 +56,4 @@ Parse.Cloud.define("fetchTic", function(request, response) {
             response.error(error);
         }
     });
-})
+});
