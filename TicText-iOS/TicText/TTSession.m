@@ -10,6 +10,7 @@
 
 @interface TTSession ()
 
+@property (nonatomic) BOOL isValidating;
 @property (nonatomic, strong) Reachability *internetReachability;
 
 @end
@@ -30,6 +31,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityDidChange:) name:kReachabilityChangedNotification object:nil];
+        self.isValidating = NO;
         self.internetReachability = [Reachability reachabilityForInternetConnection];
         [self.internetReachability startNotifier];
     }
@@ -37,11 +39,7 @@
 }
 
 - (void)reachabilityDidChange:(NSNotification *)notification {
-    Reachability *internetReachability = [notification object];
-    NetworkStatus networkStatus = [internetReachability currentReachabilityStatus];
-    if (networkStatus != NotReachable && ![internetReachability connectionRequired]) {
-        [self validateSessionInBackground];
-    }
+    [self validateSessionInBackground];
 }
 
 - (BOOL)isValidLastChecked {
@@ -55,25 +53,33 @@
 - (BOOL)isParseServerReachable {
     Reachability *parseReachability = [Reachability reachabilityWithHostName:@"api.parse.com"];
     NetworkStatus parseNetworkStatus = [parseReachability currentReachabilityStatus];
-    return parseNetworkStatus == NotReachable;
+    return parseNetworkStatus == ReachableViaWiFi || parseNetworkStatus == ReachableViaWWAN || [parseReachability connectionRequired];
 }
 
 - (void)validateSessionInBackground {
+    // Skip validate when 
+    if (self.isValidating) {
+        return;
+    }
+    
     // Skip validate when Parse server is not reachable
-    if ([self isParseServerReachable]) {
+    if (self.internetReachability.currentReachabilityStatus == NotReachable) {
         return;
     }
     
     // Validate Parse local session
+    self.isValidating = YES;
     if (![TTUser currentUser]) {
         NSLog(@"TTSession: Parse local session INVALID (user logged out). ");
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil];
+        self.isValidating = NO;
         return;
     }
     
     // Validate Parse remote session
     [[TTUser currentUser].privateData fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        self.isValidating = NO;
         if (error) {
             NSLog(@"TTSession: Parse remote session INVALID. ");
             NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionFetchFailureCode userInfo:nil];
@@ -88,8 +94,6 @@
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTParseSessionIsValidLastCheckedKey];
             } else {
                 NSLog(@"TTSession: Parse remote session INVALID. (invalid UUID)");
-                NSLog(@"Remote UUID: [%@]", [TTUser currentUser].privateData.activeDeviceIdentifier);
-                NSLog(@"Local UUID: [%@]", [UIDevice currentDevice].identifierForVendor.UUIDString);
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid Session",
                                            NSLocalizedFailureReasonErrorKey: @"Your account has been logged in with another device. ",
                                            NSLocalizedRecoverySuggestionErrorKey: @"Consider turn on 2-step verification or TicText password. "};
@@ -102,26 +106,15 @@
             }
         }
     }];
-    
-    // Validate Facebook session
-    [[PFFacebookUtils session] refreshPermissionsWithCompletionHandler:^(FBSession *session, NSError *error) {
-        if (error) {
-            NSLog(@"TTSession: Facebook session INVALID. ");
-            if ([self isParseServerReachable]) {
-                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTFacebookSessionIsValidLastCheckedKey];
-                [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
-            }
-            return;
-        } else {
-            NSLog(@"TTSession: Facebook session VALID. ");
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTFacebookSessionIsValidLastCheckedKey];
-        }
-    }];
 }
 
 - (void)logIn:(void (^)(BOOL isNewUser, NSError *error))completion {
-    // Login PFUser using Facebook
-    NSLog(@"TTSession: Logging in. ");
+    // When network unreachable, continue to main UI.
+    if (![self isParseServerReachable]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTTLogInViewControllerDidFinishLogInNotification object:nil];
+        return;
+    }
+    
     [PFFacebookUtils logInWithPermissions:kTTFacebookPermissions block:^(PFUser *user, NSError *error) {
         if (!user) {
             if (completion) {
