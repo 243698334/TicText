@@ -27,7 +27,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupRowArray];
-
+    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    
     self.view.backgroundColor = kTTUIPurpleColor;
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.delegate = self;
@@ -48,7 +49,7 @@
     [self.view addGestureRecognizer:swipeRecognizerLeft];
     
     UISwipeGestureRecognizer *swipeRecognizerRight = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(showGestureForSwipeRecognizer:)];
-    swipeRecognizerRight .direction = UISwipeGestureRecognizerDirectionRight;
+    swipeRecognizerRight.direction = UISwipeGestureRecognizerDirectionRight;
     [self.view addGestureRecognizer:swipeRecognizerRight ];
     
 }
