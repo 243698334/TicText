@@ -21,4 +21,8 @@
 @property (nonatomic, strong) TTUser *sender;
 @property (nonatomic, strong) TTUser *recipient;
 
++ (instancetype)unreadTicWithId:(NSString*)objectId;
+
++ (void)fetchTicInBackgroundWithId:(NSString *)ticId timestamp:(NSDate *)fetchTimestamp completion:(void (^)(TTTic *fetchedTic, NSError *error))completion;
+
 @end

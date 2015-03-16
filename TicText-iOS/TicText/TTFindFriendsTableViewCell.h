@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FindFriendsTableViewCell : UITableViewCell
+@interface TTFindFriendsTableViewCell : UITableViewCell
 
 
 //Function to set the view for the cell by adding the profile pictures of each

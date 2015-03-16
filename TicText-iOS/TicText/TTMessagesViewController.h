@@ -7,11 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <JSQMessagesViewController/JSQMessages.h>
+#import <TSMessages/TSMessageView.h>
+#import "TTMessagesBubbleImage.h"
+#import "TTUser.h"
 
 #import "TTExpirationTimer.h"
-@interface TTMessagesViewController : JSQMessagesViewController <TTExpirationTimerDelegate>
+@interface TTMessagesViewController : JSQMessagesViewController <TTExpirationTimerDelegate, UIActionSheetDelegate, TSMessageViewProtocol>
 
 @property (nonatomic, strong) UIView *expirationToolbar;
+
++ (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;
 
 @end

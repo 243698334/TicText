@@ -7,7 +7,7 @@
 //
 
 #import "TTFindFriendsViewController.h"
-#import "FindFriendsTableViewCell.h"
+#import "TTFindFriendsTableViewCell.h"
 
 #define kTableViewCell @"cell"
 #define kSections 1
@@ -29,7 +29,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    [self.tableView registerClass:[FindFriendsTableViewCell class] forCellReuseIdentifier:kTableViewCell];
+    [self.tableView registerClass:[TTFindFriendsTableViewCell class] forCellReuseIdentifier:kTableViewCell];
     self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.showsVerticalScrollIndicator = NO;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -78,7 +78,7 @@
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    FindFriendsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kTableViewCell forIndexPath:indexPath];
+    TTFindFriendsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kTableViewCell forIndexPath:indexPath];
     
     if(indexPath.row % 2 == 1) {
         [cell setFriends:@[[UIImage imageNamed:@"profile"], [UIImage imageNamed:@"profile"]]];

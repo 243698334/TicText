@@ -7,12 +7,14 @@
 //
 
 #import <Parse/Parse.h>
+#import "TTTic.h"
 
 @interface TTActivity : PFObject<PFSubclassing>
 
 @property (nonatomic, strong) NSString *type;
-@property (nonatomic, strong) NSString *fromUserId;
-@property (nonatomic, strong) NSString *toUserId;
-@property (nonatomic, strong) NSString *ticId;
+@property (nonatomic, strong) TTTic *tic;
+
++ (instancetype)activityWithType:(NSString *)type;
++ (instancetype)activityWithType:(NSString *)type tic:(TTTic *)tic;
 
 @end

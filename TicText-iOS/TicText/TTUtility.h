@@ -14,4 +14,13 @@
 // Prompts the user to register their device for push notifications.
 + (void)setupPushNotifications;
 
+// Fetch all friend and pin them to local datastore as cache.
++ (void)fetchAndPinAllFriends;
+
+// Refresh all friend's public data (display name, profile picture).
++ (void)refreshAllFriends;
+
+// Remove all friends from local datastore.
++ (void)unpinAllFriends;
+
 @end
