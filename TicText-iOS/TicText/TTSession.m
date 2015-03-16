@@ -47,7 +47,7 @@
     BOOL isFacebookSessionValid = [[NSUserDefaults standardUserDefaults] boolForKey:kTTFacebookSessionIsValidLastCheckedKey];
     NSLog(@"TTSession: Parse session %@ last checked", isParseSessionValid ? @"VALID" : @"INVALID");
     NSLog(@"TTSession: Facebook session %@ last checked", isFacebookSessionValid ? @"VALID" : @"INVALID");
-    return isParseSessionValid && isFacebookSessionValid;
+    return isParseSessionValid;
 }
 
 - (BOOL)isParseServerReachable {
