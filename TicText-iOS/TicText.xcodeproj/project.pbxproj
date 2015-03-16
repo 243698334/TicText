@@ -29,6 +29,7 @@
 		4C0094CD1B6ED14DA0956A8F /* libPods-TicText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E62ADB5018418278F1D7F35F /* libPods-TicText.a */; };
 		9B6B74E026B95CE6BCD5D096 /* libPods-TicTextTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */; };
 		CD1C09C11AAAD0CD00AFD23E /* TTExpirationTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = CD1C09C01AAAD0CD00AFD23E /* TTExpirationTimer.m */; };
+		CD2CD4FF1AB634D300CFC89F /* TTExpirationPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */; };
 		CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C11A96A5A6002B5586 /* TTSession.m */; };
 		CD4D57C51A96AED2002B5586 /* TTSessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C41A96AED2002B5586 /* TTSessionTests.m */; };
 		CD4D57C81A96B740002B5586 /* TTUser.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C71A96B740002B5586 /* TTUser.m */; };
@@ -96,6 +97,8 @@
 		69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicTextTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD1C09BF1AAAD0CD00AFD23E /* TTExpirationTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTExpirationTimer.h; sourceTree = "<group>"; };
 		CD1C09C01AAAD0CD00AFD23E /* TTExpirationTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTExpirationTimer.m; sourceTree = "<group>"; };
+		CD2CD4FD1AB634D300CFC89F /* TTExpirationPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTExpirationPickerController.h; sourceTree = "<group>"; };
+		CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTExpirationPickerController.m; sourceTree = "<group>"; };
 		CD4D57C01A96A5A6002B5586 /* TTSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSession.h; sourceTree = "<group>"; };
 		CD4D57C11A96A5A6002B5586 /* TTSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSession.m; sourceTree = "<group>"; };
 		CD4D57C41A96AED2002B5586 /* TTSessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSessionTests.m; sourceTree = "<group>"; };
@@ -246,6 +249,8 @@
 		CD1C09BE1AAAD08200AFD23E /* ExpirationTimer */ = {
 			isa = PBXGroup;
 			children = (
+				CD2CD4FD1AB634D300CFC89F /* TTExpirationPickerController.h */,
+				CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */,
 				CD1C09BF1AAAD0CD00AFD23E /* TTExpirationTimer.h */,
 				CD1C09C01AAAD0CD00AFD23E /* TTExpirationTimer.m */,
 			);
@@ -503,6 +508,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */,
+				CD2CD4FF1AB634D300CFC89F /* TTExpirationPickerController.m in Sources */,
 				0EACA8731A97CE0D00B93AAA /* TTSettingsViewController.m in Sources */,
 				0EACA8701A97CDEE00B93AAA /* TTProfileViewController.m in Sources */,
 				0EACA86D1A97CDDD00B93AAA /* TTContactsViewController.m in Sources */,

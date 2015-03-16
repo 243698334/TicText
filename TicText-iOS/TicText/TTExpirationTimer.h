@@ -8,23 +8,24 @@
 
 #import <UIKit/UIKit.h>
 
+#import "TTExpirationPickerController.h"
 
 @class TTExpirationTimer;
 @protocol TTExpirationTimerDelegate <NSObject>
 
-- (void)expirationTimerDesiresNewTime:(TTExpirationTimer *)expirationTimer;
+- (void)expirationTimer:(TTExpirationTimer *)expirationTimer dismissedPickerWithExpiration:(NSTimeInterval)expiration;
 
 @end
 
-@interface TTExpirationTimer : UIButton
+@interface TTExpirationTimer : UIButton <UIPickerViewDataSource, UIPickerViewDelegate, TTExpirationPickerControllerDelegate>
 
-@property (nonatomic, strong) id<TTExpirationTimerDelegate> delegate;
+@property (nonatomic, weak) id<TTExpirationTimerDelegate> delegate;
 @property (nonatomic) NSTimeInterval expirationTime;
 
 // Use this method to create an instance of TTExpirationTimer.
 + (id)buttonWithDelegate:(id<TTExpirationTimerDelegate>)delegate;
 
 + (id)buttonWithDelegate:(id<TTExpirationTimerDelegate>)delegate
-                 Default:(NSTimeInterval)defaultTime;
+                 default:(NSTimeInterval)defaultTime;
 
 @end

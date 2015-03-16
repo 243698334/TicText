@@ -12,4 +12,6 @@
 #import "TTExpirationTimer.h"
 @interface TTMessagesViewController : JSQMessagesViewController <TTExpirationTimerDelegate>
 
+@property (nonatomic, strong) UIView *expirationToolbar;
+
 @end
