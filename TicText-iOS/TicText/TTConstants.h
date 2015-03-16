@@ -22,6 +22,7 @@ extern float const kTTUIPurpleColorAlpha;
 #pragma mark - NSUserDefaults
 extern NSString * const kTTParseSessionIsValidLastCheckedKey;
 extern NSString * const kTTFacebookSessionIsValidLastCheckedKey;
+extern NSString * const kTTReachabilityIsReachableLastCheckedKey;
 
 
 #pragma mark - NSNotification
@@ -54,11 +55,17 @@ extern NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode;
 #pragma mark - PFUser Class
 // Field keys
 extern NSString * const kTTUserDisplayNameKey;
+extern NSString * const kTTUserPrivateDataKey;
 extern NSString * const kTTUserFacebookIDKey;
 extern NSString * const kTTUserProfilePictureKey;
 extern NSString * const kTTUserProfilePictureSmallKey;
 extern NSString * const kTTUserTicTextFriendsKey;
 extern NSString * const kTTUserActiveDeviceIdentifier;
+
+
+#pragma mark - PFObject UserPrivateData Class
+// Class key
+extern NSString * const kTTUserPrivateDataClassKey;
 
 
 #pragma mark - PFObject Tic Class

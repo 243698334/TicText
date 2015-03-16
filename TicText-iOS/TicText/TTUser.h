@@ -8,18 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
+#import "TTUserPrivateData.h"
 
 @interface TTUser : PFUser<PFSubclassing>
 
-@property (nonatomic, readonly) BOOL isLinkedWithFacebook;
-
 @property (nonatomic, strong) NSString *displayName;
+@property (nonatomic, strong) NSString *facebookId;
 @property (nonatomic, strong) NSData *profilePicture;
-
-// below are the attributes should be in the UserPrivateData table
-@property (nonatomic, strong) NSArray *friends;
-@property (nonatomic, strong) NSString *activeDeviceIdentifier;
-@property (nonatomic, strong) NSString *facebookID;
-@property (nonatomic, strong) NSArray *facebookFriends;
+@property (nonatomic, strong) TTUserPrivateData *privateData;
 
 @end

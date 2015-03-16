@@ -29,30 +29,6 @@
     self.user = [[TTUser alloc] init];
 }
 
-- (void)testLinkedWithFacebookTrue {
-    // Arrange
-    TTUser *fakeUser = [TTTestHelper fakeUser];
-    fakeUser[kTTUserFacebookIDKey] = @1234567890;
-    
-    // Act
-    BOOL isLinked = [fakeUser isLinkedWithFacebook];
-    
-    // Assert
-    XCTAssertTrue(isLinked);
-}
-
-- (void)testLinkedWithFacebookFalse {
-    // Arrange
-    TTUser *fakeUser = [TTTestHelper fakeUser];
-    [fakeUser removeObjectForKey:kTTUserFacebookIDKey];
-    
-    // Act
-    BOOL isLinked = [fakeUser isLinkedWithFacebook];
-    
-    // Assert
-    XCTAssertFalse(isLinked);
-}
-
 - (void)testDisplayName {
     // Arrange
     NSString *displayName = @"foo";
