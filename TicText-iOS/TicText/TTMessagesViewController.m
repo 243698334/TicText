@@ -288,7 +288,7 @@
     JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:date text:text];
     
     // New Tic
-    TTTic *newTic = [self ticWithType:kTTTicTypeDefault sender:[TTUser currentUser] recipient:self.recipient timeLimit:10 message:newJSQMessage];
+    TTTic *newTic = [self ticWithType:kTTTicTypeDefault sender:[TTUser currentUser] recipient:self.recipient timeLimit:self.expirationTime message:newJSQMessage];
     [newTic pinInBackground];
     
     // Add to local array
