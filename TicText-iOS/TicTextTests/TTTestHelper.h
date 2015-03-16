@@ -10,7 +10,7 @@
 
 @class TTUser;
 
-@interface TTHelper : NSObject
+@interface TTTestHelper : NSObject
 
 + (TTUser *)fakeUser;
 

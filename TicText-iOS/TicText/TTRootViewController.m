@@ -63,7 +63,7 @@
 #pragma mark - TTRootViewController
 
 - (void)sessionDidBecomeInvalid:(NSNotification *)notification {
-    NSError *error = [[notification userInfo] objectForKey:kTTErrorUserInfoKey];
+    NSError *error = [[notification userInfo] objectForKey:kTTNotificationUserInfoErrorKey];
     if (error) {
         [self handleError:error];
     }

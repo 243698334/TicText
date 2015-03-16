@@ -6,12 +6,12 @@
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import "FindFriendsTableViewCell.h"
+#import "TTFindFriendsTableViewCell.h"
 #define kStockProfileImage @"profile"
 #define kCellWidth self.bounds.size.width
 #define kCellHeight self.bounds.size.height
 
-@interface FindFriendsTableViewCell () {
+@interface TTFindFriendsTableViewCell () {
     CGFloat height;
     CGFloat width;
 }
@@ -21,7 +21,7 @@
 
 @end
 
-@implementation FindFriendsTableViewCell
+@implementation TTFindFriendsTableViewCell
 
 - (void)awakeFromNib {
 }

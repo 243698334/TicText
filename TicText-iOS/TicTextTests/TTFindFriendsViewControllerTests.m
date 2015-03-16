@@ -10,13 +10,13 @@
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
 #import "TTFindFriendsViewController.h"
-#import "FindFriendsTableViewCell.h"
+#import "TTFindFriendsTableViewCell.h"
 
 @interface FindFriendsViewControllerTests : XCTestCase
 @property (nonatomic, strong) TTFindFriendsViewController *viewController;
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) FindFriendsTableViewCell *firstCell;
-@property (nonatomic, strong) FindFriendsTableViewCell *secondCell;
+@property (nonatomic, strong) TTFindFriendsTableViewCell *firstCell;
+@property (nonatomic, strong) TTFindFriendsTableViewCell *secondCell;
 @end
 
 @implementation FindFriendsViewControllerTests
@@ -28,8 +28,8 @@
     
     NSArray *subviews = [self.viewController.view subviews];
     self.tableView = subviews[0];
-    self.firstCell = (FindFriendsTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-    self.secondCell = (FindFriendsTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:1 inSection:0]];
+    self.firstCell = (TTFindFriendsTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    self.secondCell = (TTFindFriendsTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:1 inSection:0]];
 }
 
 -(void)testTableViewLoadedOnScreen {
@@ -57,7 +57,7 @@
     
     for(NSIndexPath *index in [self.tableView indexPathsForVisibleRows]) {
         NSInteger i = index.row;
-        XCTAssertTrue([[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] class] == [FindFriendsTableViewCell class]); //make sure all cells are of FindFriendsTableViewCell
+        XCTAssertTrue([[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] class] == [TTFindFriendsTableViewCell class]); //make sure all cells are of FindFriendsTableViewCell
     }
 }
 

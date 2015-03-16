@@ -10,7 +10,7 @@
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
 
-#import "TTHelper.h"
+#import "TTTestHelper.h"
 #import "TTSession.h"
 
 @interface TTSessionTests : XCTestCase
@@ -72,7 +72,7 @@
     OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
     OCMExpect([mockNotificationCenter postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:[OCMArg any] userInfo:[OCMArg checkWithBlock:^BOOL(id obj) {
         NSDictionary *userInfo = (NSDictionary *)obj;
-        NSError *error = [userInfo objectForKey:kTTErrorUserInfoKey];
+        NSError *error = [userInfo objectForKey:kTTNotificationUserInfoErrorKey];
         return [error.domain isEqualToString:kTTSessionErrorDomain] && error.code == kTTSessionErrorParseSessionFetchFailureCode;
     }]]);
     OCMExpect([mockUserDefaults setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey]);
@@ -106,7 +106,7 @@
     OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
     OCMExpect([mockNotificationCenter postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:[OCMArg any] userInfo:[OCMArg checkWithBlock:^BOOL(id obj) {
         NSDictionary *userInfo = (NSDictionary *)obj;
-        NSError *error = [userInfo objectForKey:kTTErrorUserInfoKey];
+        NSError *error = [userInfo objectForKey:kTTNotificationUserInfoErrorKey];
         return [error.domain isEqualToString:kTTSessionErrorDomain] && error.code == kTTSessionErrorParseSessionInvalidUUIDCode;
     }]]);
     OCMExpect([mockUserDefaults setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey]);

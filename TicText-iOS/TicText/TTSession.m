@@ -51,7 +51,7 @@
             NSLog(@"TTSession: Parse remote session INVALID. ");
             NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionFetchFailureCode userInfo:nil];
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
             return;
         } else {
             if ([[[TTUser currentUser] activeDeviceIdentifier] isEqualToString:[UIDevice currentDevice].identifierForVendor.UUIDString]) {
@@ -66,7 +66,7 @@
                                            NSLocalizedRecoverySuggestionErrorKey: @"Consider turn on 2-step verification or TicText password. "};
                 NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionInvalidUUIDCode userInfo:userInfo];
                 [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-                [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
                 return;
             }
         }
@@ -77,7 +77,7 @@
         if (error) {
             NSLog(@"TTSession: Facebook session INVALID. ");
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTFacebookSessionIsValidLastCheckedKey];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTErrorUserInfoKey]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
             return;
         } else {
             NSLog(@"TTSession: Facebook session VALID. ");
@@ -85,49 +85,6 @@
         }
     }];
 }
-
-- (void)validateSessionWithCompletionHandler:(void (^)(BOOL isValid, NSError *error))completionHandler {
-    if (![TTUser currentUser] || ![[TTUser currentUser] facebookID]) {
-        // Check for Parse login status locally first
-        NSLog(@"TTSession: Parse session INVALID. Skip Facebook session validaton. ");
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-        if (completionHandler) {
-            completionHandler(NO, nil);
-            return;
-        }
-    } else {
-        // Check if current user still in cloud datastore
-        PFQuery *queryForSessionValidation = [TTUser query];
-        [queryForSessionValidation whereKey:@"facebookID" equalTo:[[TTUser currentUser] facebookID]];
-        if ([queryForSessionValidation countObjects] > 0) {
-            NSLog(@"TTSession: Parse session VALID. Proceed to Facebook session validation. ");
-        } else {
-            NSLog(@"TTSession: Parse session INVALID. Skip Facebook session validaton. ");
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-            if (completionHandler) {
-                completionHandler(NO, nil);
-                return;
-            }
-        }
-    }
-    // Facebook validation
-    [[PFFacebookUtils session] refreshPermissionsWithCompletionHandler:^(FBSession *session, NSError *error) {
-        if (error) {
-            NSLog(@"TTSession: Facebook session INVALID. ");
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTFacebookSessionIsValidLastCheckedKey];
-            if (completionHandler) {
-                completionHandler(NO, error);
-            }
-        } else {
-            NSLog(@"TTSession: Facebook session VALID. ");
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTFacebookSessionIsValidLastCheckedKey];
-            if (completionHandler) {
-                completionHandler(YES, error);
-            }
-        }
-    }];
-}
-
 
 - (void)logIn:(void (^)(BOOL isNewUser, NSError *error))completion {
     // Login PFUser using Facebook
@@ -196,6 +153,11 @@
                  if (connectionError == nil && data != nil) {
                      [[TTUser currentUser] setProfilePicture:data];
                      [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                         if (succeeded) {
+                             [[TTActivity activityWithType:kTTActivityTypeNewUserJoin] saveInBackground];
+                         } else {
+                             [self logOut:nil];
+                         }
                          if (completion) {
                              completion(error);
                          }

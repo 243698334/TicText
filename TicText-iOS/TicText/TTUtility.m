@@ -10,6 +10,7 @@
 
 
 #import <UIKit/UIKit.h>
+#import "TTUser.h"
 
 @implementation TTUtility
 
@@ -24,5 +25,16 @@
 }
 
 
++ (void)fetchAndPinAllFriends {
+    // TODO
+}
+
++ (void)refreshAllFriends {
+    // TODO
+}
+
++ (void)unpinAllFriends {
+    // TODO
+}
 
 @end

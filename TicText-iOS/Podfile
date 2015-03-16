@@ -9,6 +9,7 @@ target 'TicText' do
   pod 'MBProgressHUD'
   pod 'JSQMessagesViewController'
   pod 'JMStaticContentTableViewController'
+  pod 'TSMessages'
 end
 
 target 'TicTextTests' do

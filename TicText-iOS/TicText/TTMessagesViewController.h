@@ -7,8 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <JSQMessagesViewController/JSQMessages.h>
+#import <TSMessages/TSMessageView.h>
+#import "TTMessagesBubbleImage.h"
+#import "TTUser.h"
 
-@interface TTMessagesViewController : JSQMessagesViewController
+@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, TSMessageViewProtocol>
+
++ (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;
 
 @end

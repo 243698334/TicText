@@ -67,11 +67,14 @@
     
     // Push notification received while the app is active
     if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
+        NSString *ticId = [userInfo objectForKey:kTTPushNotificationPayloadTicIdKey];
+        NSString *senderUserId = [userInfo objectForKey:kTTPushNotificationPayloadSenderUserId];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification
+                                                            object:nil
+                                                          userInfo:@{kTTNotificationUserInfoTicIdKey : ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId}];
     }
     
     // TODO: handle push notification
-    [PFPush handlePush:userInfo];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -107,14 +110,17 @@
 - (void)parseInitializationWithUIApplication:(UIApplication *)application
                                launchOptions:(NSDictionary *)launchOptions {
     
+    [ParseCrashReporting enable];
+    
     [TTUser registerSubclass];
     [TTTic registerSubclass];
     [TTActivity registerSubclass];
     
+    [Parse enableLocalDatastore];
+    
     [Parse setApplicationId:@"otEYQUdVy98OBM9SeUs8Zc1PrMy27EGMvEy80WaL"
                   clientKey:@"qfTOvPp03kY8uSYVu3FkL72UWwW37Tx2B6L6Ppq9"];
     
-    //[ParseCrashReporting enable];
     [PFFacebookUtils initializeFacebook];
     
     // Track app open
