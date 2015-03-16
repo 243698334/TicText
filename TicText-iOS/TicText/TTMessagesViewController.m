@@ -20,6 +20,7 @@
 @interface JSQMessagesViewController (PrivateMethods)
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant;
+- (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy;
 
 @end
 
@@ -165,7 +166,7 @@
     }];
 }
 
-#define kExpirationToolbarHeight 44.0f
+#define kExpirationToolbarHeight 32.0f
 #define kExpirationToolbarAlpha 0.60f
 - (CGRect)expirationToolbarFrame {
     return CGRectMake(0, self.inputToolbar.frame.origin.y - kExpirationToolbarHeight,
@@ -174,6 +175,7 @@
 
 - (void)setupExpirationToolbar {
     self.expirationToolbar = [[UIView alloc] initWithFrame:[self expirationToolbarFrame]];
+    [self.expirationToolbar setBackgroundColor:[UIColor whiteColor]];
     [self.expirationToolbar setAlpha:kExpirationToolbarAlpha];
     
     self.expirationLabel = [[UILabel alloc] initWithFrame:CGRectInset(CGRectMake(0, 0, self.expirationToolbar.frame.size.width, self.expirationToolbar.frame.size.height), 8.0f, 8.0f)];
@@ -193,6 +195,12 @@
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant {
     [super jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant];
+    
+    [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
+}
+
+- (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy {
+    [super jsq_adjustInputToolbarForComposerTextViewContentSizeChange:dy];
     
     [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
 }
