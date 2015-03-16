@@ -12,7 +12,10 @@
 #import "TTTic.h"
 #import "TTActivity.h"
 
+#import "TTExpirationDomain.h"
+
 #define kDefaultExpirationTime 3600
+#define kExpirationTimerIcon @"TicsTabBarIcon"
 
 @interface JSQMessagesViewController (PrivateMethods)
 
@@ -22,8 +25,8 @@
 
 @interface TTMessagesViewController ()
 
-@property (nonatomic, strong) TTExpirationTimer *expirationTimer;
 @property (nonatomic, strong) UILabel *expirationLabel;
+@property (nonatomic, strong) TTExpirationPickerController *pickerController;
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
 @property (nonatomic) BOOL isFetchingTic;
@@ -48,9 +51,11 @@
     viewController.navigationItem.title = @"Some Dialog";
     viewController.hidesBottomBarWhenPushed = YES;
     
-    viewController.expirationTimer = [TTExpirationTimer buttonWithDelegate:viewController];
-    viewController.expirationTimer.expirationTime = kDefaultExpirationTime;
-    viewController.inputToolbar.contentView.leftBarButtonItem = viewController.expirationTimer;
+    UIButton *expirationTimerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [expirationTimerButton setImage:[UIImage imageNamed:kExpirationTimerIcon] forState:UIControlStateNormal];
+    viewController.inputToolbar.contentView.leftBarButtonItem = expirationTimerButton;
+    
+    viewController.expirationTime = kDefaultExpirationTime;
     
     return viewController;
 }
@@ -58,32 +63,29 @@
 + (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient {
     TTMessagesViewController *messagesViewController = [self messagesViewController];
     messagesViewController.recipient = recipient;
-    return messagesViewController;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
     
-    self.navigationItem.title = self.recipient.displayName;
+    messagesViewController.navigationItem.title = messagesViewController.recipient.displayName; // this is called before self.recipient is set
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(confirmCleanTicHistory)];
+    messagesViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(confirmCleanTicHistory)];
     
-    [TSMessage setDelegate:self];
+    [TSMessage setDelegate:messagesViewController];
     [TSMessage addCustomDesignFromFileWithName:@"TTInAppNotificationDesign.json"];
     
-    self.senderId = [[TTUser currentUser].objectId copy];
-    self.senderDisplayName = [[TTUser currentUser].displayName copy];
+    messagesViewController.senderId = [[TTUser currentUser].objectId copy];
+    messagesViewController.senderDisplayName = [[TTUser currentUser].displayName copy];
     
-    self.tics = [[NSMutableArray alloc] init];
-    self.jsqMessages = [[NSMutableArray alloc] init];
+    messagesViewController.tics = [[NSMutableArray alloc] init];
+    messagesViewController.jsqMessages = [[NSMutableArray alloc] init];
     
-    self.isFetchingTic = NO;
-    self.bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
-    self.outgoingBubbleImageData = [self.bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
-    self.incomingBubbleImageData = [self.bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
+    messagesViewController.isFetchingTic = NO;
+    messagesViewController.bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
+    messagesViewController.outgoingBubbleImageData = [messagesViewController.bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    messagesViewController.incomingBubbleImageData = [messagesViewController.bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
     
-    [self loadTicHistory];
-    [self setupExpirationToolbar];
+    [messagesViewController loadTicHistory];
+    [messagesViewController setupExpirationToolbar];
+    
+    return messagesViewController;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -176,12 +178,17 @@
     
     self.expirationLabel = [[UILabel alloc] initWithFrame:CGRectInset(CGRectMake(0, 0, self.expirationToolbar.frame.size.width, self.expirationToolbar.frame.size.height), 8.0f, 8.0f)];
     [self.expirationLabel setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
-    [self.expirationLabel setText:[self stringForTimeInterval:kDefaultExpirationTime]];
     [self.expirationLabel setAdjustsFontSizeToFitWidth:YES];
     [self.expirationLabel setFont:[UIFont systemFontOfSize:12.0f]];
     [self.expirationToolbar addSubview:self.expirationLabel];
     
     [self.view addSubview:self.expirationToolbar];
+    
+    [self refreshExpirationToolbar];
+}
+
+- (void)refreshExpirationToolbar {
+    [self.expirationLabel setText:[TTExpirationDomain stringForTimeInterval:self.expirationTime]];
 }
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant {
@@ -191,57 +198,14 @@
 }
 
 - (void)didPressAccessoryButton:(UIButton *)sender {
+    [self.pickerController dismiss];
     
-}
-
-#pragma mark - TTExpirationTimerDelegate
-- (void)expirationTimer:(TTExpirationTimer *)expirationTimer dismissedPickerWithExpiration:(NSTimeInterval)expiration {
-    if (expirationTimer == self.expirationTimer) {
-        self.expirationLabel.text = [self stringForTimeInterval:expiration];
-    }
+    self.pickerController = [[TTExpirationPickerController alloc] initWithExpirationTime:self.expirationTime];
+    [self.pickerController setDelegate:self];
+    [self.pickerController present];
 }
 
 #pragma mark - Helpers
-- (NSString *)stringForTimeInterval:(NSTimeInterval)interval {
-    // Get the system calendar
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    
-    // Create the NSDates
-    NSDate *firstDate = [[NSDate alloc] init];
-    NSDate *secondDate = [[NSDate alloc] initWithTimeInterval:interval sinceDate:firstDate];
-    
-    unsigned unitFlags = NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
-    
-    NSDateComponents *conversionInfo = [calendar components:unitFlags
-                                                   fromDate:firstDate
-                                                     toDate:secondDate
-                                                    options:0];
-    
-    NSString *expirationTimeString = nil;
-    NSString *headerString = @"Your Tic will expire";
-    
-    NSMutableArray *expirationArray = [NSMutableArray array];
-    if ([conversionInfo hour] != 0) {
-        NSString *hourUnit = ([conversionInfo hour] == 1) ? @"hour" : @"hours";
-        [expirationArray addObject:[NSString stringWithFormat:@"%ld %@", [conversionInfo hour], hourUnit]];
-    }
-    if ([conversionInfo minute] != 0) {
-        NSString *minuteUnit = ([conversionInfo minute] == 1) ? @"min" : @"mins";
-        [expirationArray addObject:[NSString stringWithFormat:@"%ld %@", [conversionInfo minute], minuteUnit]];
-    }
-    if ([conversionInfo second] != 0) {
-        NSString *secondUnit = ([conversionInfo second] == 1) ? @"sec" : @"secs";
-        [expirationArray addObject:[NSString stringWithFormat:@"%ld %@", [conversionInfo second], secondUnit]];
-    }
-    if (expirationArray.count == 0) {
-        expirationTimeString = [NSString stringWithFormat:@"%@ %@", headerString, @"instantly"];
-    } else {
-        expirationTimeString = [NSString stringWithFormat:@"%@ in %@", headerString, [expirationArray componentsJoinedByString:@" "]];
-    }
-
-    return expirationTimeString;
-}
-
 - (void)confirmCleanTicHistory {
     [TSMessage showNotificationInViewController:self
                                           title:@"Clean Tic History"
@@ -530,6 +494,14 @@
 
 - (void)customizeMessageView:(TSMessageView *)messageView {
     messageView.alpha = 0.95;
+}
+
+#pragma mark - TTExpirationPickerControllerDelegate
+- (void)pickerController:(TTExpirationPickerController *)controller didFinishWithExpiration:(NSTimeInterval)expirationTime {
+    if (controller == self.pickerController) {
+        self.expirationTime = expirationTime;
+        [self refreshExpirationToolbar];
+    }
 }
 
 @end

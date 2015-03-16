@@ -7,6 +7,7 @@
 //
 
 #import "TTExpirationPickerController.h"
+#import "TTExpirationDomain.h"
 
 #define HEADER_HEIGHT (66.0f)
 #define PICKER_HEIGHT (216.0f)
@@ -22,16 +23,29 @@
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIView *backgroundView;
 
+@property (nonatomic, strong) UILabel *previewLabel;
+@property (nonatomic, strong) UIPickerView *pickerView;
+
+@property (nonatomic, strong) NSArray *expirationUnits;
+
+@property (nonatomic) NSTimeInterval expirationTime;
+
 @end
 
 @implementation TTExpirationPickerController
 
-- (id)initWithPickerView:(UIPickerView *)pickerView {
+- (id)initWithExpirationTime:(NSTimeInterval)expirationTime {
     if (self = [super init]) {
+        self.expirationTime = expirationTime;
+        self.expirationUnits = [TTExpirationDomain expirationUnits];
+        
         UIWindow *frontWindow = [self frontWindow];
         self.frame = CGRectMake(0, 0,
                                 frontWindow.frame.size.width, VIEW_HEIGHT);
-        self.pickerView = pickerView;
+        self.pickerView = [[UIPickerView alloc] init];
+        self.pickerView.dataSource = self;
+        self.pickerView.delegate = self;
+        [self.pickerView setBackgroundColor:kTTUIPurpleColor];
         
         [self setupHeaderView];
         [self setupPickerView];
@@ -72,6 +86,33 @@
     [self.pickerView setFrame:CGRectMake(0.0, HEADER_HEIGHT, self.frame.size.width, PICKER_HEIGHT)];
     
     [self addSubview:self.pickerView];
+    
+    [self setupDefaultValues];
+}
+
+- (void)setupDefaultValues {
+    [TTExpirationDomain setUnits:self.expirationUnits forExpirationTime:self.expirationTime];
+    
+    for (NSInteger i = 0; i < self.expirationUnits.count; i++) {
+        TTExpirationUnit *unit = self.expirationUnits[i];
+        [self.pickerView selectRow:(unit.currentValue.integerValue - unit.minValue.integerValue)
+                       inComponent:i
+                          animated:NO];
+    }
+    
+    [self refreshPreviewLabel];
+}
+
+- (void)refreshPreviewLabel {
+    self.previewLabel.text = [TTExpirationDomain stringForTimeInterval:self.expirationTime];
+}
+
+- (void)setExpirationTime:(NSTimeInterval)expirationTime {
+    if (_expirationTime != expirationTime) {
+        _expirationTime = expirationTime;
+        
+        [self refreshPreviewLabel];
+    }
 }
 
 - (void)present {
@@ -99,8 +140,9 @@
         [self setFrame:CGRectMake(0, frontWindow.frame.size.height - VIEW_HEIGHT, VIEW_WIDTH, VIEW_HEIGHT)];
     }];
 }
+
 - (void)dismiss {
-    [self.delegate pickerControllerDidFinishPicking:self];
+    [self.delegate pickerController:self didFinishWithExpiration:self.expirationTime];
     
     UIWindow *frontWindow = [self frontWindow];
     
@@ -117,12 +159,44 @@
     return [[[UIApplication sharedApplication] windows] lastObject];
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+#pragma mark - UIPickerViewDataSource
+// returns the number of 'columns' to display.
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return self.expirationUnits.count;
 }
-*/
+
+// returns the # of rows in each component..
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    TTExpirationUnit *unit = self.expirationUnits[component];
+    return unit.maxValue.integerValue - unit.minValue.integerValue + 1;
+}
+
+#pragma makr - UIPickerViewDelegate
+// returns width of column and height of row for each component.
+/*- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
+ 
+ }
+ 
+ - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
+ 
+ }*/
+
+// these methods return either a plain NSString, a NSAttributedString, or a view (e.g UILabel) to display the row for the component.
+// for the view versions, we cache any hidden and thus unused views and pass them back for reuse.
+// If you return back a different object, the old one will be released. the view will be centered in the row rect
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    TTExpirationUnit *unit = self.expirationUnits[component];
+    return [NSString stringWithFormat:@"%ld", unit.minValue.integerValue + row];
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    TTExpirationUnit *unit = self.expirationUnits[component];
+    unit.currentValue = [NSNumber numberWithInteger:(unit.minValue.integerValue + row)];
+    self.expirationTime = [TTExpirationDomain expirationTimeFromUnits:self.expirationUnits];
+}
+
+/*- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
+ 
+ }*/
 
 @end

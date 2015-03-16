@@ -29,6 +29,12 @@
 }
 
 - (void)setupDevButtons {
+    UIButton *chatWithNobodyButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [chatWithNobodyButton addTarget:self action:@selector(chatWithNobody) forControlEvents:UIControlEventTouchUpInside];
+    [chatWithNobodyButton setTitle:@"Chat with Terrence" forState:UIControlStateNormal];
+    chatWithNobodyButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width * 0.2, [UIScreen mainScreen].bounds.size.height * 0.2, [UIScreen mainScreen].bounds.size.width * 0.5, 44);
+    [self.view addSubview:chatWithNobodyButton];
+    
     UIButton *chatWithKevinDevButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [chatWithKevinDevButton addTarget:self action:@selector(chatWithKevinDev) forControlEvents:UIControlEventTouchUpInside];
     [chatWithKevinDevButton setTitle:@"Chat with KevinDev" forState:UIControlStateNormal];
@@ -54,11 +60,16 @@
     [self.view addSubview:chatWithCKButton];
 }
 
+- (void)chatWithNobody {
+    NSString *terrenceId = @"9ZI6K87trR";
+    TTUser *terrence = [TTUser objectWithoutDataWithObjectId:terrenceId];
+    [self presentMessagesViewControllerWithRecipient:terrence];
+}
+
 - (void)chatWithKevinDev {
     NSString *kevinDevId = @"F8ekXoLCGN";
     TTUser *kevinDev = [TTUser objectWithoutDataWithObjectId:kevinDevId];
     [self presentMessagesViewControllerWithRecipient:kevinDev];
-    
 }
 
 - (void)chatWithKevin {

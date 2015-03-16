@@ -10,12 +10,13 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <JSQMessagesViewController/JSQMessages.h>
 #import <TSMessages/TSMessageView.h>
+#import "TTExpirationPickerController.h"
 #import "TTMessagesBubbleImage.h"
 #import "TTUser.h"
 
-#import "TTExpirationTimer.h"
-@interface TTMessagesViewController : JSQMessagesViewController <TTExpirationTimerDelegate, UIActionSheetDelegate, TSMessageViewProtocol>
+@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, TSMessageViewProtocol, TTExpirationPickerControllerDelegate>
 
+@property (nonatomic) NSTimeInterval expirationTime;
 @property (nonatomic, strong) UIView *expirationToolbar;
 
 + (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;

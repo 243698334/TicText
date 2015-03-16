@@ -10,18 +10,22 @@
 
 @class TTExpirationPickerController;
 @protocol TTExpirationPickerControllerDelegate <NSObject>
-- (void)pickerControllerDidFinishPicking:(TTExpirationPickerController *)controller;
+
+// Method to let the picker controller notify a delegate when an expiration time was selected by the user.
+- (void)pickerController:(TTExpirationPickerController *)controller didFinishWithExpiration:(NSTimeInterval)expirationTime;
+
 @end
 
-@interface TTExpirationPickerController : UIView
+@interface TTExpirationPickerController : UIView<UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (nonatomic, weak) id<TTExpirationPickerControllerDelegate> delegate;
 
-@property (nonatomic, strong) UIPickerView *pickerView;
-@property (nonatomic, strong) UILabel *previewLabel;
+- (id)initWithExpirationTime:(NSTimeInterval)expirationTime;
 
-- (id)initWithPickerView:(UIPickerView *)pickerView;
+// Presents the controller.
 - (void)present;
+
+// Dismisses the controller.
 - (void)dismiss;
 
 @end
