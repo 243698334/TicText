@@ -18,6 +18,7 @@
 @interface TTUserTests : XCTestCase
 
 @property (nonatomic, strong) id user;
+@property (nonatomic, strong) id userPrivateData;
 
 @end
 
@@ -27,6 +28,7 @@
     [super setUp];
     
     self.user = [[TTUser alloc] init];
+    self.userPrivateData = [[TTUserPrivateData alloc] init];
 }
 
 - (void)testDisplayName {
@@ -56,10 +58,10 @@
     NSArray *friends = @[@"foo", @"bar"];
     
     // Act
-    [self.user setFacebookFriends:friends];
+    [self.userPrivateData setFacebookFriends:friends];
     
     // Assert
-    XCTAssertEqualObjects(friends, [self.user facebookFriends]);
+    XCTAssertEqualObjects(friends, [self.userPrivateData facebookFriends]);
 
 }
 
