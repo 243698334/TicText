@@ -8,11 +8,6 @@
 
 #import "TTExpirationDomain.h"
 
-#define DataSourceKeyTitle @"title"
-#define DataSourceKeyMinValue @"minval"
-#define DataSourceKeyMaxValue @"maxval"
-#define DataSourceKeyValueWidth @"valwidth"
-
 @implementation TTExpirationUnit
 
 @end

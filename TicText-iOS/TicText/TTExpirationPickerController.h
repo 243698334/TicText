@@ -20,6 +20,12 @@
 
 @property (nonatomic, weak) id<TTExpirationPickerControllerDelegate> delegate;
 
+@property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, strong) UILabel *previewLabel;
+@property (nonatomic) NSTimeInterval expirationTime;
+@property (nonatomic, strong) UIPickerView *pickerView;
+
+// Initializes the instance with a given |expirationTime|.
 - (id)initWithExpirationTime:(NSTimeInterval)expirationTime;
 
 // Presents the controller.

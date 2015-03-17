@@ -16,19 +16,13 @@
 
 #define BACKGROUND_ALPHA (0.8)
 #define PRESENTATION_DURATION (0.33)
-#define DISMISS_DURATION PRESENTATION_DURATION
+#define DISMISS_DURATION (1.5 * PRESENTATION_DURATION)
 
 @interface TTExpirationPickerController ()
 
-@property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIView *backgroundView;
 
-@property (nonatomic, strong) UILabel *previewLabel;
-@property (nonatomic, strong) UIPickerView *pickerView;
-
 @property (nonatomic, strong) NSArray *expirationUnits;
-
-@property (nonatomic) NSTimeInterval expirationTime;
 
 @end
 
@@ -65,6 +59,7 @@
     
     UIButton *dismissButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [dismissButton setTitle:@"Done" forState:UIControlStateNormal];
+    [dismissButton setTitleColor:kTTUIPurpleColor forState:UIControlStateNormal];
     [dismissButton sizeToFit];
     [dismissButton setFrame:CGRectMake(self.headerView.frame.size.width - (dismissButton.frame.size.width + 16.0), 0, dismissButton.frame.size.width + 16.0, self.headerView.frame.size.height)];
     [dismissButton setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];

@@ -31,6 +31,8 @@
 		2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED84A9B1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m */; };
 		4C0094CD1B6ED14DA0956A8F /* libPods-TicText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E62ADB5018418278F1D7F35F /* libPods-TicText.a */; };
 		9B6B74E026B95CE6BCD5D096 /* libPods-TicTextTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */; };
+		CD1330D81AB7AA4600F59523 /* TTExpirationDomainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1330D71AB7AA4600F59523 /* TTExpirationDomainTests.swift */; };
+		CD1330DE1AB7CA7800F59523 /* TTExpirationPickerControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1330DD1AB7CA7800F59523 /* TTExpirationPickerControllerTests.swift */; };
 		CD2CD4FF1AB634D300CFC89F /* TTExpirationPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */; };
 		CD4748401AB770DA00A4B8F6 /* TTExpirationDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = CD47483F1AB770DA00A4B8F6 /* TTExpirationDomain.m */; };
 		CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C11A96A5A6002B5586 /* TTSession.m */; };
@@ -102,6 +104,9 @@
 		62D5B3A2D5FD007BC1313C3B /* Pods-TicText.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicText.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TicText/Pods-TicText.debug.xcconfig"; sourceTree = "<group>"; };
 		65E0D8574E683EDF0172C6F3 /* Pods-TicTextTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicTextTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TicTextTests/Pods-TicTextTests.release.xcconfig"; sourceTree = "<group>"; };
 		69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicTextTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD1330D61AB7AA4500F59523 /* TicTextTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TicTextTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		CD1330D71AB7AA4600F59523 /* TTExpirationDomainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTExpirationDomainTests.swift; sourceTree = "<group>"; };
+		CD1330DD1AB7CA7800F59523 /* TTExpirationPickerControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTExpirationPickerControllerTests.swift; sourceTree = "<group>"; };
 		CD2CD4FD1AB634D300CFC89F /* TTExpirationPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTExpirationPickerController.h; sourceTree = "<group>"; };
 		CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTExpirationPickerController.m; sourceTree = "<group>"; };
 		CD47483E1AB770DA00A4B8F6 /* TTExpirationDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTExpirationDomain.h; sourceTree = "<group>"; };
@@ -217,11 +222,14 @@
 		0EC584FE1A7864AA00025D71 /* TicTextTests */ = {
 			isa = PBXGroup;
 			children = (
+				CD1330D91AB7AA5100F59523 /* Domain */,
 				CD4D57D01A96C956002B5586 /* Helpers */,
 				CD4D57CE1A96B93B002B5586 /* Service */,
 				CD4D57CD1A96B936002B5586 /* Models */,
 				CD935B6B1A98ED5E0017325C /* Controllers */,
+				CD1330DC1AB7CA6700F59523 /* Custom UI */,
 				0EC584FF1A7864AA00025D71 /* Supporting Files */,
+				CD1330D61AB7AA4500F59523 /* TicTextTests-Bridging-Header.h */,
 			);
 			path = TicTextTests;
 			sourceTree = "<group>";
@@ -246,7 +254,8 @@
 		2E402A181A96FE8D00C1C7BF /* Custom UI */ = {
 			isa = PBXGroup;
 			children = (
-				CD1C09BE1AAAD08200AFD23E /* ExpirationTimer */,
+				CD2CD4FD1AB634D300CFC89F /* TTExpirationPickerController.h */,
+				CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */,
 				0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */,
 				2E402A151A96FE8900C1C7BF /* TTFindFriendsTableViewCell.h */,
 				2E402A161A96FE8900C1C7BF /* TTFindFriendsTableViewCell.m */,
@@ -256,13 +265,20 @@
 			name = "Custom UI";
 			sourceTree = "<group>";
 		};
-		CD1C09BE1AAAD08200AFD23E /* ExpirationTimer */ = {
+		CD1330D91AB7AA5100F59523 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				CD2CD4FD1AB634D300CFC89F /* TTExpirationPickerController.h */,
-				CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */,
+				CD1330D71AB7AA4600F59523 /* TTExpirationDomainTests.swift */,
 			);
-			name = ExpirationTimer;
+			name = Domain;
+			sourceTree = "<group>";
+		};
+		CD1330DC1AB7CA6700F59523 /* Custom UI */ = {
+			isa = PBXGroup;
+			children = (
+				CD1330DD1AB7CA7800F59523 /* TTExpirationPickerControllerTests.swift */,
+			);
+			name = "Custom UI";
 			sourceTree = "<group>";
 		};
 		CD4D57BF1A96A54B002B5586 /* Service */ = {
@@ -548,12 +564,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD1330DE1AB7CA7800F59523 /* TTExpirationPickerControllerTests.swift in Sources */,
 				CD935B6A1A98EA9A0017325C /* TTUtilityTests.m in Sources */,
 				CD935B6D1A98ED6F0017325C /* TTRootViewControllerTests.m in Sources */,
 				CD4D57CC1A96B929002B5586 /* TTUserTests.m in Sources */,
 				CD4D57C51A96AED2002B5586 /* TTSessionTests.m in Sources */,
 				0E61D4701AAC48C800EF5826 /* TTMessagesViewControllerTests.m in Sources */,
 				2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */,
+				CD1330D81AB7AA4600F59523 /* TTExpirationDomainTests.swift in Sources */,
 				CD4D57D31A96C97D002B5586 /* TTTestHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -697,6 +715,7 @@
 			baseConfigurationReference = 579798160077DEF631AAECA1 /* Pods-TicTextTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -710,6 +729,8 @@
 				INFOPLIST_FILE = TicTextTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "TicTextTests/TicTextTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TicText.app/TicText";
 			};
 			name = Debug;
@@ -719,6 +740,7 @@
 			baseConfigurationReference = 65E0D8574E683EDF0172C6F3 /* Pods-TicTextTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -728,6 +750,7 @@
 				INFOPLIST_FILE = TicTextTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "TicTextTests/TicTextTests-Bridging-Header.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TicText.app/TicText";
 			};
 			name = Release;

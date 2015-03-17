@@ -104,6 +104,12 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    
+    [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
+}
+
 - (void)didReceiveNewTic:(NSNotification *)notification {
     AudioServicesPlayAlertSound(1033); // "Telegraph" sound
     NSString *ticId = [notification.userInfo objectForKey:kTTNotificationUserInfoTicIdKey];
