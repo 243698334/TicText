@@ -67,7 +67,7 @@
     
     messagesViewController.navigationItem.title = messagesViewController.recipient.displayName; // this is called before self.recipient is set
     
-    messagesViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(confirmCleanTicHistory)];
+    messagesViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:messagesViewController action:@selector(confirmCleanTicHistory)];
     
     [TSMessage setDelegate:messagesViewController];
     [TSMessage addCustomDesignFromFileWithName:@"TTInAppNotificationDesign.json"];
