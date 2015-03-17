@@ -13,11 +13,7 @@
 
 @implementation TTUser
 
-@dynamic displayName, friends, facebookID, facebookFriends, activeDeviceIdentifier;
-
-- (BOOL)isLinkedWithFacebook {
-    return self[kTTUserFacebookIDKey] != nil;
-}
+@dynamic displayName, facebookId, privateData;
 
 - (void)setProfilePicture:(NSData *)data {
     PFFile *file = [PFFile fileWithData:data];

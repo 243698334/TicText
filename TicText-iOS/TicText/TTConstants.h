@@ -20,8 +20,7 @@ extern float const kTTUIPurpleColorAlpha;
                                          alpha:kTTUIPurpleColorAlpha/255.0]
 
 #pragma mark - NSUserDefaults
-extern NSString * const kTTParseSessionIsValidLastCheckedKey;
-extern NSString * const kTTFacebookSessionIsValidLastCheckedKey;
+extern NSString * const kTTSessionIsValidLastCheckedKey;
 
 
 #pragma mark - NSNotification
@@ -31,8 +30,7 @@ extern NSString * const kTTLogInViewControllerDidFinishSignUpNotification;
 extern NSString * const kTTUserDidLogOutNotification;
 
 // Invalid session
-extern NSString * const kTTFacebookSessionDidBecomeInvalidNotification;
-extern NSString * const kTTParseSessionDidBecomeInvalidNotification;
+extern NSString * const kTTSessionDidBecomeInvalidNotification;
 
 // Push notification
 extern NSString * const kTTApplicationDidReceiveNewTicWhileActiveNotification;
@@ -51,24 +49,26 @@ extern NSUInteger const kTTSessionErrorParseSessionFetchFailureCode;
 extern NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode;
 
 
-#pragma mark - PFUser Class
+#pragma mark - TTUser
 // Field keys
 extern NSString * const kTTUserDisplayNameKey;
-extern NSString * const kTTUserFacebookIDKey;
 extern NSString * const kTTUserProfilePictureKey;
-extern NSString * const kTTUserProfilePictureSmallKey;
-extern NSString * const kTTUserTicTextFriendsKey;
-extern NSString * const kTTUserActiveDeviceIdentifier;
 
 
-#pragma mark - PFObject Tic Class
+#pragma mark - TTUserPrivateData
+// Class key
+extern NSString * const kTTUserPrivateDataClassKey;
+
+// Field keys
+extern NSString * const kTTUserPrivateDataUserIdKey;
+extern NSString * const kTTUserPrivateDataFriendsKey;
+extern NSString * const kTTUserPrivateDataFacebookFriendsKey;
+extern NSString * const kTTUserPrivateDataActiveDeviceIdentifierKey;
+
+
+#pragma mark - TTTic
 // Class key
 extern NSString * const kTTTicClassKey;
-
-// Cloud function names
-extern NSString * const kTTTicFetchTicFunction;
-extern NSString * const kTTTicFetchTicFunctionTicIdParameter;
-extern NSString * const kTTTicFetchTicFunctionFetchTimestampParameter;
 
 // Field keys
 extern NSString * const kTTTicSenderKey;
@@ -80,6 +80,11 @@ extern NSString * const kTTTicReceiveTimestampKey;
 extern NSString * const kTTTicStatusKey;
 extern NSString * const kTTTicContentTypeKey;
 extern NSString * const kTTTicContentKey;
+
+// Cloud function names
+extern NSString * const kTTTicFetchTicFunction;
+extern NSString * const kTTTicFetchTicFunctionTicIdParameter;
+extern NSString * const kTTTicFetchTicFunctionFetchTimestampParameter;
 
 // Type values
 extern NSString * const kTTTicTypeDefault;
@@ -96,21 +101,19 @@ extern NSString * const kTTTicContentTypeImage;
 extern NSString * const kTTTicContentTypeVoice;
 
 
-#pragma mark - PFObject Activity Class
+#pragma mark - TTActivity
 // Class key
 extern NSString * const kTTActivityClassKey;
-
-// Field keys
-extern NSString * const kTTActivityTypeKey;
-extern NSString * const kTTActivityFromUserKey;
-extern NSString * const kTTActivityToUserKey;
-extern NSString * const kTTActivityContentKey;
-extern NSString * const kTTActivityTicKey;
 
 // Type values
 extern NSString * const kTTActivityTypeSendTic;
 extern NSString * const kTTActivityTypeReadTic;
 extern NSString * const kTTActivityTypeNewUserJoin;
+
+
+#pragma mark - PFInstallation
+// Field key
+extern NSString * const kTTInstallationUserKey;
 
 
 #pragma mark - Push Notification Payload
@@ -125,9 +128,5 @@ extern NSString * const kTTPushNotificationPayloadTypeReadTic;
 extern NSString * const kTTPushNotificationPayloadTypeNewFriend;
 
 
-#pragma mark - Installation Class
-// Field keys
-extern NSString * const kTTInstallationUserKey;
-
-#pragma mark - Miscellaneous
+#pragma mark - Facebook
 #define kTTFacebookPermissions @[@"public_profile", @"user_friends"]

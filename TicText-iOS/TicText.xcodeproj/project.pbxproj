@@ -11,11 +11,14 @@
 		0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E00AA321A91AF2F00EE246D /* TTFindFriendsViewController.m */; };
 		0E0565201A9DBEFB00242137 /* TTSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E05651F1A9DBEFB00242137 /* TTSettings.m */; };
 		0E0565231A9DEAD500242137 /* TTMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0565221A9DEAD500242137 /* TTMessagesViewController.m */; };
-		0E0565261A9E841B00242137 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0565251A9E841B00242137 /* Reachability.m */; };
 		0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0F657D1A8C0645003CB363 /* TTRootViewController.m */; };
 		0E61D46B1AA5B08D00EF5826 /* TTInAppNotificationDesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */; };
 		0E61D4701AAC48C800EF5826 /* TTMessagesViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E61D46F1AAC48C800EF5826 /* TTMessagesViewControllerTests.m */; };
 		0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E68055E1A85306F00C013D2 /* TTConstants.m */; };
+		0E6AFF721AB4C99500FC69A9 /* TTUserPrivateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E6AFF711AB4C99500FC69A9 /* TTUserPrivateData.m */; };
+		0E6AFF781AB66DFF00FC69A9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E6AFF771AB66DFF00FC69A9 /* Reachability.m */; };
+		0E6AFF7A1AB7F18A00FC69A9 /* TTTicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E6AFF791AB7F18A00FC69A9 /* TTTicTests.m */; };
+		0E6AFF7C1AB7FAAC00FC69A9 /* TTActivityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E6AFF7B1AB7FAAC00FC69A9 /* TTActivityTests.m */; };
 		0EA9482D1AA3CF0E00476D4E /* TTMessagesBubbleImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EA9482C1AA3CF0E00476D4E /* TTMessagesBubbleImage.m */; };
 		0EACA86A1A97CDC100B93AAA /* TTConversationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA8691A97CDC100B93AAA /* TTConversationsViewController.m */; };
 		0EACA86D1A97CDDD00B93AAA /* TTContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA86C1A97CDDD00B93AAA /* TTContactsViewController.m */; };
@@ -61,14 +64,18 @@
 		0E05651F1A9DBEFB00242137 /* TTSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSettings.m; sourceTree = "<group>"; };
 		0E0565211A9DEAD500242137 /* TTMessagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMessagesViewController.h; sourceTree = "<group>"; };
 		0E0565221A9DEAD500242137 /* TTMessagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesViewController.m; sourceTree = "<group>"; };
-		0E0565241A9E841B00242137 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
-		0E0565251A9E841B00242137 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		0E0F657C1A8C0645003CB363 /* TTRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRootViewController.h; sourceTree = "<group>"; };
 		0E0F657D1A8C0645003CB363 /* TTRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRootViewController.m; sourceTree = "<group>"; };
 		0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TTInAppNotificationDesign.json; sourceTree = "<group>"; };
 		0E61D46F1AAC48C800EF5826 /* TTMessagesViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesViewControllerTests.m; sourceTree = "<group>"; };
 		0E68055D1A846A0000C013D2 /* TTConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTConstants.h; sourceTree = "<group>"; };
 		0E68055E1A85306F00C013D2 /* TTConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTConstants.m; sourceTree = "<group>"; };
+		0E6AFF701AB4C99500FC69A9 /* TTUserPrivateData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTUserPrivateData.h; sourceTree = "<group>"; };
+		0E6AFF711AB4C99500FC69A9 /* TTUserPrivateData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUserPrivateData.m; sourceTree = "<group>"; };
+		0E6AFF761AB66DFF00FC69A9 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		0E6AFF771AB66DFF00FC69A9 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		0E6AFF791AB7F18A00FC69A9 /* TTTicTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTicTests.m; sourceTree = "<group>"; };
+		0E6AFF7B1AB7FAAC00FC69A9 /* TTActivityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTActivityTests.m; sourceTree = "<group>"; };
 		0EA9482B1AA3CF0E00476D4E /* TTMessagesBubbleImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMessagesBubbleImage.h; sourceTree = "<group>"; };
 		0EA9482C1AA3CF0E00476D4E /* TTMessagesBubbleImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesBubbleImage.m; sourceTree = "<group>"; };
 		0EACA8681A97CDC100B93AAA /* TTConversationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTConversationsViewController.h; sourceTree = "<group>"; };
@@ -252,8 +259,8 @@
 		CD4D57BF1A96A54B002B5586 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				0E0565241A9E841B00242137 /* Reachability.h */,
-				0E0565251A9E841B00242137 /* Reachability.m */,
+				0E6AFF761AB66DFF00FC69A9 /* Reachability.h */,
+				0E6AFF771AB66DFF00FC69A9 /* Reachability.m */,
 				CD4D57C01A96A5A6002B5586 /* TTSession.h */,
 				CD4D57C11A96A5A6002B5586 /* TTSession.m */,
 				CD935B661A98E9FA0017325C /* TTUtility.h */,
@@ -273,6 +280,8 @@
 				0EACA8771A99CB8800B93AAA /* TTTic.m */,
 				CD4D57C61A96B740002B5586 /* TTUser.h */,
 				CD4D57C71A96B740002B5586 /* TTUser.m */,
+				0E6AFF701AB4C99500FC69A9 /* TTUserPrivateData.h */,
+				0E6AFF711AB4C99500FC69A9 /* TTUserPrivateData.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -281,6 +290,8 @@
 			isa = PBXGroup;
 			children = (
 				CD4D57CB1A96B929002B5586 /* TTUserTests.m */,
+				0E6AFF791AB7F18A00FC69A9 /* TTTicTests.m */,
+				0E6AFF7B1AB7FAAC00FC69A9 /* TTActivityTests.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -511,13 +522,14 @@
 				CD4D57C81A96B740002B5586 /* TTUser.m in Sources */,
 				CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */,
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
+				0E6AFF781AB66DFF00FC69A9 /* Reachability.m in Sources */,
 				CD935B681A98E9FA0017325C /* TTUtility.m in Sources */,
-				0E0565261A9E841B00242137 /* Reachability.m in Sources */,
 				0E0565231A9DEAD500242137 /* TTMessagesViewController.m in Sources */,
 				0EACA8791A99CB8800B93AAA /* TTTic.m in Sources */,
 				0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */,
 				0EC584EB1A7864AA00025D71 /* AppDelegate.m in Sources */,
 				2E402A171A96FE8900C1C7BF /* TTFindFriendsTableViewCell.m in Sources */,
+				0E6AFF721AB4C99500FC69A9 /* TTUserPrivateData.m in Sources */,
 				0E0565201A9DBEFB00242137 /* TTSettings.m in Sources */,
 				0EACA8781A99CB8800B93AAA /* TTActivity.m in Sources */,
 				0EC584E81A7864AA00025D71 /* main.m in Sources */,
@@ -530,8 +542,10 @@
 			files = (
 				CD935B6A1A98EA9A0017325C /* TTUtilityTests.m in Sources */,
 				CD935B6D1A98ED6F0017325C /* TTRootViewControllerTests.m in Sources */,
+				0E6AFF7A1AB7F18A00FC69A9 /* TTTicTests.m in Sources */,
 				CD4D57CC1A96B929002B5586 /* TTUserTests.m in Sources */,
 				CD4D57C51A96AED2002B5586 /* TTSessionTests.m in Sources */,
+				0E6AFF7C1AB7FAAC00FC69A9 /* TTActivityTests.m in Sources */,
 				0E61D4701AAC48C800EF5826 /* TTMessagesViewControllerTests.m in Sources */,
 				2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */,
 				CD4D57D31A96C97D002B5586 /* TTTestHelper.m in Sources */,

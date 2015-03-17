@@ -40,10 +40,11 @@
             }
             [[[UIAlertView alloc] initWithTitle:@"Log In Error" message:errorMessage delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil] show];
         } else {
-            if (isNewUser || ![[TTUser currentUser] isLinkedWithFacebook]) {
+            if (isNewUser) {
                 // New user sign up
                 [[TTSession sharedSession] syncForNewUser:^(NSError *error) {
                     if (error != nil) {
+                        NSLog(@"Sign up error: %@", error);
                         NSString *errorMessage = @"Uh oh. Unable to create your account. Please try again later.";
                         [[[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:errorMessage delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil] show];
                     } else {
