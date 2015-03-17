@@ -14,7 +14,6 @@
 
 @interface TTFindFriendsViewController () {
     UIImageView *_appIconImageView;
-    UIColor *_TTPurpleColor;
     NSMutableArray *_friends;
 }
 @property (nonatomic, strong) UITableView *tableView;
