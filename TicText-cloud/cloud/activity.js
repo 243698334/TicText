@@ -10,13 +10,16 @@ var TIC_SENDER = 'sender';
 var TIC_RECIPIENT = 'recipient';
 // User constants
 var USER_DISPLAY_NAME = 'displayName';
-var USER_FRIENDS = 'friends';
+var USER_PRIVATE_DATA = 'privateData';
+var USER_PRIVATE_DATA_FRIENDS = 'friends';
 // Installation constants
 var INSTALLATION_USER = 'user';
 
 Parse.Cloud.beforeSave(ACTIVITY_CLASS_NAME, function(request, response) {
     Parse.Cloud.useMasterKey();
-    var activityType = request.object.get(ACTIVITY_TYPE);
+    var activity = request.object;
+    activity.setACL(new Parse.ACL());
+    var activityType = activity.get(ACTIVITY_TYPE);
     switch(activityType) {
         case ACTIVITY_TYPE_SEND:
             response.success();
@@ -91,17 +94,25 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
             break;
         case ACTIVITY_TYPE_NEW_USER_JOIN:
             var newUser = request.user;
-            installationQuery.containedIn(INSTALLATION_USER, newUser.get(USER_FRIENDS));
-            Parse.Push.send({
-                where: installationQuery,
-                data: payload
-            }).then(function() {
-                // Push succeed
-                console.log("Push Notification for new user join successfully sent.");
-            }, function(error) {
-                // Push failed
-                console.log("Push Notification for new user join failed to sent.");
-                console.log(error);
+            newUser.get(USER_PRIVATE_DATA).fetch({
+                success: function(privateData) {
+                    installationQuery.containedIn(INSTALLATION_USER, privateData.get(USER_PRIVATE_DATA_FRIENDS));
+                    Parse.Push.send({
+                        where: installationQuery,
+                        data: payload
+                    }).then(function() {
+                        // Push succeed
+                        console.log("Push Notification for new user join successfully sent.");
+                    }, function(error) {
+                        // Push failed
+                        console.log("Push Notification for new user join failed to sent.");
+                        console.log(error);
+                    });
+                },
+                error: function(error) {
+                    console.log(error);
+                    return;
+                }
             });
             break;
     }

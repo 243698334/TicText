@@ -18,6 +18,7 @@
 @interface TTUserTests : XCTestCase
 
 @property (nonatomic, strong) id user;
+@property (nonatomic, strong) id userPrivateData;
 
 @end
 
@@ -27,30 +28,7 @@
     [super setUp];
     
     self.user = [[TTUser alloc] init];
-}
-
-- (void)testLinkedWithFacebookTrue {
-    // Arrange
-    TTUser *fakeUser = [TTTestHelper fakeUser];
-    fakeUser[kTTUserFacebookIDKey] = @1234567890;
-    
-    // Act
-    BOOL isLinked = [fakeUser isLinkedWithFacebook];
-    
-    // Assert
-    XCTAssertTrue(isLinked);
-}
-
-- (void)testLinkedWithFacebookFalse {
-    // Arrange
-    TTUser *fakeUser = [TTTestHelper fakeUser];
-    [fakeUser removeObjectForKey:kTTUserFacebookIDKey];
-    
-    // Act
-    BOOL isLinked = [fakeUser isLinkedWithFacebook];
-    
-    // Assert
-    XCTAssertFalse(isLinked);
+    self.userPrivateData = [[TTUserPrivateData alloc] init];
 }
 
 - (void)testDisplayName {
@@ -80,10 +58,10 @@
     NSArray *friends = @[@"foo", @"bar"];
     
     // Act
-    [self.user setFacebookFriends:friends];
+    [self.userPrivateData setFacebookFriends:friends];
     
     // Assert
-    XCTAssertEqualObjects(friends, [self.user facebookFriends]);
+    XCTAssertEqualObjects(friends, [self.userPrivateData facebookFriends]);
 
 }
 

@@ -15,6 +15,7 @@
 #import "TTUser.h"
 #import "TTTic.h"
 #import "TTActivity.h"
+#import "TTUserPrivateData.h"
 #import "TTRootViewController.h"
 
 

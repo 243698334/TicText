@@ -17,8 +17,7 @@ float const kTTUIPurpleColorAlpha = 255.0;
 
 
 #pragma mark - NSUserDefaults
-NSString * const kTTParseSessionIsValidLastCheckedKey = @"ParseSessionIsValidLastCheckedKey";
-NSString * const kTTFacebookSessionIsValidLastCheckedKey = @"FacebookSessionIsValidLastCheckedKey";
+NSString * const kTTSessionIsValidLastCheckedKey = @"SessionIsValidLastCheckedKey";
 
 
 #pragma mark - NSNotification
@@ -28,8 +27,7 @@ NSString * const kTTLogInViewControllerDidFinishSignUpNotification = @"LogInView
 NSString * const kTTUserDidLogOutNotification = @"UserDidLogOut";
 
 // Invalid session
-NSString * const kTTFacebookSessionDidBecomeInvalidNotification = @"FacebookSessionDidBecomeInvalidNotification";
-NSString * const kTTParseSessionDidBecomeInvalidNotification = @"ParseSessionDidBecomeInvalidNotification";
+NSString * const kTTSessionDidBecomeInvalidNotification = @"SessionDidBecomeInvalidNotification";
 
 // Push notification
 NSString * const kTTApplicationDidReceiveNewTicWhileActiveNotification = @"ApplicationDidReceiveNewTicWhileActiveNotification";
@@ -48,24 +46,26 @@ NSUInteger const kTTSessionErrorParseSessionFetchFailureCode = 0;
 NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode = 1;
 
 
-#pragma mark - PFUser Class
+#pragma mark - TTUser
 // Field keys
 NSString * const kTTUserDisplayNameKey = @"displayName";
-NSString * const kTTUserFacebookIDKey = @"facebookID";
 NSString * const kTTUserProfilePictureKey = @"profilePicture";
-NSString * const kTTUserProfilePictureSmallKey = @"profilePictureSmall";
-NSString * const kTTUserTicTextFriendsKey = @"ticTextFriends";
-NSString * const kTTUserActiveDeviceIdentifier = @"activeDeviceIdentifier";
 
 
-#pragma mark - PFObject Tic Class
+#pragma mark - TTUserPrivateData
+// Class key
+NSString * const kTTUserPrivateDataClassKey = @"UserPrivateData";
+
+// Field keys
+NSString * const kTTUserPrivateDataUserIdKey = @"userId";
+NSString * const kTTUserPrivateDataFriendsKey = @"friends";
+NSString * const kTTUserPrivateDataFacebookFriendsKey = @"facebookFriends";
+NSString * const kTTUserPrivateDataActiveDeviceIdentifierKey = @"activeDeviceIdentifier";
+
+
+#pragma mark - TTTic
 // Class key
 NSString * const kTTTicClassKey = @"Tic";
-
-// Cloud function names
-NSString * const kTTTicFetchTicFunction = @"fetchTic";
-NSString * const kTTTicFetchTicFunctionTicIdParameter = @"ticId";
-NSString * const kTTTicFetchTicFunctionFetchTimestampParameter = @"fetchTimestamp";
 
 // Field keys
 NSString * const kTTTicSenderKey = @"sender";
@@ -77,6 +77,11 @@ NSString * const kTTTicReceiveTimestampKey = @"receiveTimestamp";
 NSString * const kTTTicStatusKey = @"status";
 NSString * const kTTTicContentTypeKey = @"contentType";
 NSString * const kTTTicContentKey = @"content";
+
+// Cloud function names
+NSString * const kTTTicFetchTicFunction = @"fetchTic";
+NSString * const kTTTicFetchTicFunctionTicIdParameter = @"ticId";
+NSString * const kTTTicFetchTicFunctionFetchTimestampParameter = @"fetchTimestamp";
 
 // Type values
 NSString * const kTTTicTypeDefault = @"default";
@@ -93,21 +98,19 @@ NSString * const kTTTicContentTypeImage = @"image";
 NSString * const kTTTicContentTypeVoice = @"voice";
 
 
-#pragma mark - PFObject Activity Class
+#pragma mark - TTActivity
 // Class key
 NSString * const kTTActivityClassKey = @"Activity";
-
-// Field keys
-NSString * const kTTActivityTypeKey = @"type";
-NSString * const kTTActivityFromUserKey = @"fromUser";
-NSString * const kTTActivityToUserKey = @"toUser";
-NSString * const kTTActivityContentKey = @"content";
-NSString * const kTTActivityTicKey = @"tic";
 
 // Type values
 NSString * const kTTActivityTypeSendTic = @"send";
 NSString * const kTTActivityTypeReadTic = @"read";
 NSString * const kTTActivityTypeNewUserJoin = @"join";
+
+
+#pragma mark - PFInstallation
+// Field key
+NSString * const kTTInstallationUserKey = @"user";
 
 
 #pragma mark - Push Notification Payload
@@ -121,8 +124,3 @@ NSString * const kTTPushNotificationPayloadSenderUserId = @"sid";
 NSString * const kTTPushNotificationPayloadTypeNewTic = @"nt";
 NSString * const kTTPushNotificationPayloadTypeReadTic = @"rt";
 NSString * const kTTPushNotificationPayloadTypeNewFriend = @"nf";
-
-
-#pragma mark - Installation Class
-// Field keys
-NSString * const kTTInstallationUserKey = @"user";

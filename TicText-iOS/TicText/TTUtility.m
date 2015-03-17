@@ -23,16 +23,4 @@
     [[UIApplication sharedApplication] registerForRemoteNotifications];
 }
 
-+ (void)fetchAndPinAllFriends {
-    // TODO
-}
-
-+ (void)refreshAllFriends {
-    // TODO
-}
-
-+ (void)unpinAllFriends {
-    // TODO
-}
-
 @end

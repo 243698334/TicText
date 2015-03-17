@@ -18,7 +18,7 @@
 @interface TTRootViewController ()
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
-@property (nonatomic) BOOL shouldPresentFindFriendsViewController;
+@property (nonatomic) BOOL sessionIsInvalid;
 
 @property (nonatomic, strong) TTLogInViewController *logInViewController;
 @property (nonatomic, strong) TTFindFriendsViewController *findFriendsViewController;
@@ -41,10 +41,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.sessionIsInvalid = YES;
     self.view.backgroundColor = kTTUIPurpleColor;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionDidBecomeInvalid:) name:kTTParseSessionDidBecomeInvalidNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionDidBecomeInvalid:) name:kTTFacebookSessionDidBecomeInvalidNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionDidBecomeInvalid:) name:kTTSessionDidBecomeInvalidNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInViewControllerDidFinishLogIn) name:kTTLogInViewControllerDidFinishLogInNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInViewControllerDidFinishSignUp) name:kTTLogInViewControllerDidFinishSignUpNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogOut) name:kTTUserDidLogOutNotification object:nil];
@@ -54,6 +54,7 @@
     [super viewDidAppear:animated];
     [[TTSession sharedSession] validateSessionInBackground];
     if ([[TTSession sharedSession] isValidLastChecked]) {
+        [[TTSession sharedSession] fetchAndPinAllFriendsInBackground];
         [self presentMainUserInterface];
     } else {
         [self presentLogInViewControllerAnimated:YES];
@@ -63,6 +64,10 @@
 #pragma mark - TTRootViewController
 
 - (void)sessionDidBecomeInvalid:(NSNotification *)notification {
+    if (!self.sessionIsInvalid) {
+        return;
+    }
+    self.sessionIsInvalid = NO;
     NSError *error = [[notification userInfo] objectForKey:kTTNotificationUserInfoErrorKey];
     if (error) {
         [self handleError:error];
@@ -124,6 +129,7 @@
 
 
 - (void)logInViewControllerDidFinishLogIn {
+    self.sessionIsInvalid = YES;
     [self.logInViewController dismissViewControllerAnimated:YES completion:nil];
     [self presentMainUserInterface];
     [TTUtility setupPushNotifications];
@@ -137,6 +143,7 @@
 }
 
 - (void)userDidLogOut {
+    self.sessionIsInvalid = NO;
     self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [[TTSession sharedSession] logOut:^{
         [self.navigationController popToRootViewControllerAnimated:YES];

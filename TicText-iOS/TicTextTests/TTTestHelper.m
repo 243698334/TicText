@@ -15,16 +15,16 @@
 + (TTUser *)fakeUser {
     TTUser *user = [[TTUser alloc] init];
     user.objectId = @"fakeUserId";
-    user[kTTUserDisplayNameKey] = @"tkatzenbaer";
-    user[kTTUserFacebookIDKey] = @"1234567890";
-    user[kTTUserProfilePictureKey] = [NSData data]; // @TODO - replace with actual data
-    user[kTTUserProfilePictureSmallKey] = [NSData data]; // @TODO - replace with actual data
+    user.facebookId = @"fakeFacebookId";
+    user.displayName = @"tkatzenbaer";
+    user.profilePicture = [NSData data]; // @TODO - replace with actual data
     
-    NSArray *friends = @[
-                         @"1111111111",
-                         @"2222222222"
-                         ];
-    user[kTTUserTicTextFriendsKey] = friends;
+    TTUserPrivateData *privateData = [TTUserPrivateData object];
+    privateData.objectId = @"fakeUserPrivateDataId";
+    privateData.facebookFriends = @[@"fakeFriend1", @"fakeFriend2"];
+    privateData.activeDeviceIdentifier = @"fakeDeviceIdentifier";
+    
+    user.privateData = privateData;
     
     return user;
 }
