@@ -33,13 +33,13 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[TTFindFriendsTableViewCell class] forCellReuseIdentifier:kTableViewCell];
-    self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.backgroundColor = kTTUIPurpleColor;
     self.tableView.showsVerticalScrollIndicator = NO;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.tableView];
 
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height * 0.15)];
-    headerView.backgroundColor = _TTPurpleColor;
+    headerView.backgroundColor = kTTUIPurpleColor;
     self.tableView.tableHeaderView = headerView;
     
     //gesture recognizer code
