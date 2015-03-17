@@ -115,6 +115,8 @@
     [TTUser registerSubclass];
     [TTTic registerSubclass];
     [TTActivity registerSubclass];
+    [TTUserPrivateData registerSubclass];
+    
     
     [Parse enableLocalDatastore];
     

@@ -52,7 +52,7 @@
     OCMExpect([mockNavigationController popToRootViewControllerAnimated:[OCMArg any]]);
     
     // Act
-    [[NSNotificationCenter defaultCenter] postNotificationName:kTTFacebookSessionDidBecomeInvalidNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTSessionDidBecomeInvalidNotification object:nil];
     
     // Assert
     OCMVerifyAll(mockSession);

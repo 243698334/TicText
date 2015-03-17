@@ -23,6 +23,9 @@
 // The result of the latest session validation, cached in NSUserDefaults
 - (BOOL)isValidLastChecked;
 
+// Return if Parse service is reachable at this moment.
+- (BOOL)isParseServerReachable;
+
 // Asynchronously validates the current session. Post Parse/Facebook SessionDidBecomeInvalid notification if invalid.
 - (void)validateSessionInBackground;
 
@@ -42,16 +45,7 @@
 // Syncs the User's friend list and upload the current active device's identifier
 - (void)syncForExistingUser:(void (^)(NSError *error))completion;
 
-// Syncs the User's profile data to that on Facebook.
-- (void)syncProfileData:(void (^)(NSError *error))completion;
-
-// Syncs the User's friends list to that on Facebook.
-- (void)syncFriends:(void (^)(NSError *error))completion;
-
-// Syncs the User's profile picture to that on Facebook.
-- (void)syncProfilePicture:(void (^)(NSError *error))completion;
-
-// Syncs the User's current active device's identifier
-- (void)syncActiveDeviceIdentifier:(void (^)(NSError *))completion;
+// Fetch the public data of all the user's friends.
+- (void)fetchAndPinAllFriendsInBackground;
 
 @end
