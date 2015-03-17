@@ -91,4 +91,26 @@
     OCMVerifyAll(mockTSMessages);
 }
 
+- (void)testDidPressAccessoryButton {
+    XCTAssert(false, @"stub");
+}
+
+- (void)testPickerControllerDidFinishWithExpirationZeroValue {
+    XCTAssert(false, @"stub");
+    
+    // Reminder: Don't forget to test the expirationLabel
+}
+
+- (void)testPickerControllerDidFinishWithExpirationSomeValue {
+    XCTAssert(false, @"stub");
+    
+    // Reminder: Don't forget to test the expirationLabel
+}
+
+- (void)testPickerControllerDidFinishWithExpirationMaxValue {
+    XCTAssert(false, @"stub");
+    
+    // Reminder: Don't forget to test the expirationLabel
+}
+
 @end
