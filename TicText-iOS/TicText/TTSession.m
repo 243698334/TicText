@@ -43,11 +43,7 @@
 }
 
 - (BOOL)isValidLastChecked {
-    BOOL isParseSessionValid = [[NSUserDefaults standardUserDefaults] boolForKey:kTTParseSessionIsValidLastCheckedKey];
-    BOOL isFacebookSessionValid = [[NSUserDefaults standardUserDefaults] boolForKey:kTTFacebookSessionIsValidLastCheckedKey];
-    NSLog(@"TTSession: Parse session %@ last checked", isParseSessionValid ? @"VALID" : @"INVALID");
-    NSLog(@"TTSession: Facebook session %@ last checked", isFacebookSessionValid ? @"VALID" : @"INVALID");
-    return isParseSessionValid;
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kTTSessionIsValidLastCheckedKey];
 }
 
 - (BOOL)isParseServerReachable {
@@ -71,8 +67,8 @@
     self.isValidating = YES;
     if (![TTUser currentUser]) {
         NSLog(@"TTSession: Parse local session INVALID (user logged out). ");
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTSessionIsValidLastCheckedKey];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTTSessionDidBecomeInvalidNotification object:nil];
         self.isValidating = NO;
         return;
     }
@@ -84,14 +80,14 @@
             NSLog(@"TTSession: Parse remote session INVALID. ");
             NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionFetchFailureCode userInfo:nil];
             if ([self isParseServerReachable]) {
-                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-                [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
+                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTSessionIsValidLastCheckedKey];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kTTSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
             }
             return;
         } else {
             if ([[[TTUser currentUser].privateData activeDeviceIdentifier] isEqualToString:[UIDevice currentDevice].identifierForVendor.UUIDString]) {
                 NSLog(@"TTSession: Parse remote session VALID. ");
-                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTParseSessionIsValidLastCheckedKey];
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTSessionIsValidLastCheckedKey];
             } else {
                 NSLog(@"TTSession: Parse remote session INVALID. (invalid UUID)");
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey: @"Invalid Session",
@@ -99,8 +95,8 @@
                                            NSLocalizedRecoverySuggestionErrorKey: @"Consider turn on 2-step verification or TicText password. "};
                 NSError *error = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionInvalidUUIDCode userInfo:userInfo];
                 if ([self isParseServerReachable]) {
-                    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
+                    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTSessionIsValidLastCheckedKey];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kTTSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
                 }
                 return;
             }
@@ -137,8 +133,7 @@
     [FBSession.activeSession close];
     [FBSession setActiveSession:nil];
     
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey];
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTFacebookSessionIsValidLastCheckedKey];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTSessionIsValidLastCheckedKey];
     
     [[PFInstallation currentInstallation] removeObjectForKey:kTTInstallationUserKey];
     [[PFInstallation currentInstallation] saveInBackground];

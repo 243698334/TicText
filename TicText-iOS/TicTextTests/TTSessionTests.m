@@ -16,6 +16,9 @@
 @interface TTSessionTests : XCTestCase
 
 @property (nonatomic, strong) id mockSession;
+@property (nonatomic, strong) id mockUser;
+@property (nonatomic, strong) id mockUserPrivateData;
+@property (nonatomic, strong) id mockReachability;
 
 @end
 
@@ -24,15 +27,23 @@
 - (void)setUp {
     [super setUp];
     self.mockSession = OCMPartialMock([TTSession sharedSession]);
+    self.mockUser = OCMClassMock([TTUser class]);
+    self.mockUserPrivateData = OCMClassMock([TTUserPrivateData class]);
+    self.mockReachability = OCMClassMock([Reachability class]);
     OCMStub([self.mockSession sharedSession]).andReturn(self.mockSession);
+    OCMStub([self.mockSession isParseServerReachable]).andReturn(YES);
+    OCMStub([self.mockUser privateData]).andReturn(self.mockUserPrivateData);
+    OCMStub([self.mockReachability reachabilityForInternetConnection]).andReturn(self.mockReachability);
+    OCMStub([self.mockReachability reachabilityWithHostName:[OCMArg any]]).andReturn(self.mockReachability);
+    OCMStub([self.mockReachability startNotifier]);
+    OCMStub([self.mockReachability currentReachabilityStatus]).andReturn(ReachableViaWiFi);
 }
 
 - (void)testIsValidLastChecked {
     // Arrange
     id mockUserDefaults = OCMClassMock([NSUserDefaults class]);
-    OCMStub([mockUserDefaults boolForKey:kTTParseSessionIsValidLastCheckedKey]).andReturn(YES);
-    OCMStub([mockUserDefaults boolForKey:kTTFacebookSessionIsValidLastCheckedKey]).andReturn(NO);
     OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
+    OCMStub([mockUserDefaults boolForKey:[OCMArg any]]).andReturn(YES);
     OCMExpect([self.mockSession isValidLastChecked]);
     
     // Act
@@ -43,17 +54,17 @@
     XCTAssertFalse(result);
 }
 
-- (void)testValidateSessionInBackgroundParseLocalSession {
+- (void)testValidateSessionInBackgroundParseLocalSessionInvalid {
     // Arrange
-    id mockUser = OCMClassMock([TTUser class]);
     id mockNotificationCenter = OCMClassMock([NSNotificationCenter class]);
     id mockUserDefaults = OCMClassMock([NSUserDefaults class]);
     OCMStub([mockNotificationCenter defaultCenter]).andReturn(mockNotificationCenter);
     OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
+    
     // Parse local session INVALID (user not logged in)
-    OCMStub([mockUser currentUser]).andReturn(nil);
-    OCMExpect([mockNotificationCenter postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:nil]);
-    OCMExpect([mockUserDefaults setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey]);
+    OCMStub([self.mockUser currentUser]).andReturn(nil);
+    OCMExpect([mockNotificationCenter postNotificationName:kTTSessionDidBecomeInvalidNotification object:nil]);
+    OCMExpect([mockUserDefaults setBool:NO forKey:kTTSessionIsValidLastCheckedKey]);
     
     // Act
     [[TTSession sharedSession] validateSessionInBackground];
@@ -65,28 +76,27 @@
 
 - (void)testValidateSessionInBackgroundParseRemoteSessionFetchFailure {
     // Arrange
-    id mockUser = OCMClassMock([TTUser class]);
     id mockNotificationCenter = OCMClassMock([NSNotificationCenter class]);
     id mockUserDefaults = OCMClassMock([NSUserDefaults class]);
     OCMStub([mockNotificationCenter defaultCenter]).andReturn(mockNotificationCenter);
     OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
-    OCMExpect([mockNotificationCenter postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:[OCMArg any] userInfo:[OCMArg checkWithBlock:^BOOL(id obj) {
+    OCMExpect([mockNotificationCenter postNotificationName:kTTSessionDidBecomeInvalidNotification object:[OCMArg any] userInfo:[OCMArg checkWithBlock:^BOOL(id obj) {
         NSDictionary *userInfo = (NSDictionary *)obj;
         NSError *error = [userInfo objectForKey:kTTNotificationUserInfoErrorKey];
         return [error.domain isEqualToString:kTTSessionErrorDomain] && error.code == kTTSessionErrorParseSessionFetchFailureCode;
     }]]);
-    OCMExpect([mockUserDefaults setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey]);
+    OCMExpect([mockUserDefaults setBool:NO forKey:kTTSessionIsValidLastCheckedKey]);
     
     // Parse local session VALID
-    OCMStub(([mockUser currentUser])).andReturn(mockUser);
+    OCMStub(([self.mockUser currentUser])).andReturn(self.mockUser);
     
     // Parse remote session INVALID (fetchInBackground error)
-    OCMStub([mockUser fetchInBackgroundWithBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
+    OCMStub([self.mockUser fetchInBackgroundWithBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
         void (^fetchInBackgroundBlock)(PFObject *object, NSError *error) = nil;
         [invocation getArgument:&fetchInBackgroundBlock atIndex:2];
         NSDictionary *userInfo = @{NSLocalizedDescriptionKey: [OCMArg any]};
         NSError *error = [NSError errorWithDomain:@"Fake Domain" code:1 userInfo:userInfo];
-        fetchInBackgroundBlock(mockUser, error);
+        fetchInBackgroundBlock(self.mockUser, error);
     });
     
     // Act
@@ -100,26 +110,28 @@
 - (void)testValidateSessionInBackgroundParseRemoteSessionInvalidUUID {
     // Arrange
     id mockUser = OCMClassMock([TTUser class]);
+    id mockUserPrivateData = OCMClassMock([TTUserPrivateData class]);
+    OCMStub([mockUser privateData]).andReturn(mockUserPrivateData);
     id mockNotificationCenter = OCMClassMock([NSNotificationCenter class]);
     id mockUserDefaults = OCMClassMock([NSUserDefaults class]);
     OCMStub([mockNotificationCenter defaultCenter]).andReturn(mockNotificationCenter);
     OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
-    OCMExpect([mockNotificationCenter postNotificationName:kTTParseSessionDidBecomeInvalidNotification object:[OCMArg any] userInfo:[OCMArg checkWithBlock:^BOOL(id obj) {
+    OCMExpect([mockNotificationCenter postNotificationName:kTTSessionDidBecomeInvalidNotification object:[OCMArg any] userInfo:[OCMArg checkWithBlock:^BOOL(id obj) {
         NSDictionary *userInfo = (NSDictionary *)obj;
         NSError *error = [userInfo objectForKey:kTTNotificationUserInfoErrorKey];
         return [error.domain isEqualToString:kTTSessionErrorDomain] && error.code == kTTSessionErrorParseSessionInvalidUUIDCode;
     }]]);
-    OCMExpect([mockUserDefaults setBool:NO forKey:kTTParseSessionIsValidLastCheckedKey]);
+    OCMExpect([mockUserDefaults setBool:NO forKey:kTTSessionIsValidLastCheckedKey]);
     
     // Parse local session VALID
     OCMStub([mockUser currentUser]).andReturn(mockUser);
     
     // Parse remote session INVALID (invalid UUID)
-    OCMStub([mockUser activeDeviceIdentifier]).andReturn(@"fakeDeviceIdentifier");
-    OCMStub([mockUser fetchInBackgroundWithBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
+    OCMStub([mockUserPrivateData activeDeviceIdentifier]).andReturn(@"fakeDeviceIdentifier");
+    OCMStub([mockUserPrivateData fetchInBackgroundWithBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
         void (^fetchInBackgroundBlock)(PFObject *object, NSError *error) = nil;
         [invocation getArgument:&fetchInBackgroundBlock atIndex:2];
-        fetchInBackgroundBlock(mockUser, nil);
+        fetchInBackgroundBlock(mockUserPrivateData, nil);
     });
     
     // Act
@@ -133,21 +145,23 @@
 - (void)testValidateSessionInBackgroundParseSessionValid {
     // Arrange
     id mockUser = OCMClassMock([TTUser class]);
+    id mockUserPrivateData = OCMClassMock([TTUserPrivateData class]);
+    OCMStub([mockUser privateData]).andReturn(mockUserPrivateData);
     id mockNotificationCenter = OCMClassMock([NSNotificationCenter class]);
     id mockUserDefaults = OCMClassMock([NSUserDefaults class]);
     OCMStub([mockNotificationCenter defaultCenter]).andReturn(mockNotificationCenter);
     OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
-    OCMExpect([mockUserDefaults setBool:YES forKey:kTTParseSessionIsValidLastCheckedKey]);
+    OCMExpect([mockUserDefaults setBool:YES forKey:kTTSessionIsValidLastCheckedKey]);
     
     // Parse local session VALID
     OCMStub([mockUser currentUser]).andReturn(mockUser);
     
     // Parse remote session VALID
-    OCMStub([mockUser activeDeviceIdentifier]).andReturn([UIDevice currentDevice].identifierForVendor.UUIDString);
-    OCMStub([mockUser fetchInBackgroundWithBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
+    OCMStub([mockUserPrivateData activeDeviceIdentifier]).andReturn([UIDevice currentDevice].identifierForVendor.UUIDString);
+    OCMStub([mockUserPrivateData fetchInBackgroundWithBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
         void (^fetchInBackgroundBlock)(PFObject *object, NSError *error) = nil;
         [invocation getArgument:&fetchInBackgroundBlock atIndex:2];
-        fetchInBackgroundBlock(mockUser, nil);
+        fetchInBackgroundBlock(mockUserPrivateData, nil);
     });
     
     // Act
