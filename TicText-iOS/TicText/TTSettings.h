@@ -9,5 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface TTSettings : NSObject
-
++ (void)changeNotificationPreferences:(BOOL)newTic expireSoon:(BOOL)expire read:(BOOL)read;
++ (BOOL)newTicNotificationPreference;
++ (BOOL)expireSoonNotificationPreference;
++ (BOOL)readNotificationPreference;
 @end

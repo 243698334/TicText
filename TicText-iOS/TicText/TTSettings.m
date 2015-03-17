@@ -8,6 +8,31 @@
 
 #import "TTSettings.h"
 
+#define kNewTic @"newTic"
+#define kExpireSoon @"expireSoon"
+#define kRead @"read"
+
 @implementation TTSettings
+
+
++ (void)changeNotificationPreferences:(BOOL)newTic expireSoon:(BOOL)expire read:(BOOL)read {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setBool:newTic forKey:kNewTic];
+    [userDefaults setBool:expire forKey:kExpireSoon];
+    [userDefaults setBool:read forKey:kRead];
+    [userDefaults synchronize];
+}
+
++ (BOOL)newTicNotificationPreference {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kNewTic];
+}
+
++ (BOOL)expireSoonNotificationPreference {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kExpireSoon];
+}
+
++ (BOOL)readNotificationPreference {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kRead];
+}
 
 @end
