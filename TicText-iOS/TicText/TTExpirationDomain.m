@@ -35,6 +35,9 @@
         hourUnit.minValue = 0;
         hourUnit.maxValue = 23;
         hourUnit.minimumDisplayWidth = 1;
+        hourUnit.relevantValueFromDateComponentsBlock = ^(NSDateComponents *components) {
+            return [components hour];
+        };
         self.hourUnit = hourUnit;
         
         TTExpirationUnit *minuteUnit = [[TTExpirationUnit alloc] init];
@@ -43,6 +46,9 @@
         minuteUnit.minValue = 0;
         minuteUnit.maxValue = 59;
         minuteUnit.minimumDisplayWidth = 2;
+        minuteUnit.relevantValueFromDateComponentsBlock = ^(NSDateComponents *components) {
+            return [components minute];
+        };
         self.minuteUnit = minuteUnit;
         
         TTExpirationUnit *secondUnit = [[TTExpirationUnit alloc] init];
@@ -51,6 +57,9 @@
         secondUnit.minValue = 0;
         secondUnit.maxValue = 59;
         secondUnit.minimumDisplayWidth = 2;
+        secondUnit.relevantValueFromDateComponentsBlock = ^(NSDateComponents *components) {
+            return [components second];
+        };
         self.secondUnit = secondUnit;
         
         _expirationUnits = @[hourUnit, minuteUnit, secondUnit];
@@ -90,18 +99,15 @@
     NSString *headerString = @"Your Tic will expire";
     
     NSMutableArray *expirationArray = [NSMutableArray array];
-    if ([conversionInfo hour] != 0) {
-        NSString *hourUnit = ([conversionInfo hour] == 1) ? self.sharedDomain.hourUnit.singularTitle : self.sharedDomain.hourUnit.pluralTitle;
-        [expirationArray addObject:[NSString stringWithFormat:@"%ld %@", (long)[conversionInfo hour], hourUnit]];
+    for (int i = 0; i < self.sharedDomain.expirationUnits.count; i++) {
+        TTExpirationUnit *unit = self.sharedDomain.expirationUnits[i];
+        NSInteger relevantValue = unit.relevantValueFromDateComponentsBlock(conversionInfo);
+        if (relevantValue != 0) {
+            NSString *unitTitle = (relevantValue == 1) ? unit.singularTitle : unit.pluralTitle;
+            [expirationArray addObject:[NSString stringWithFormat:@"%ld %@", (long)relevantValue, unitTitle]];
+        }
     }
-    if ([conversionInfo minute] != 0) {
-        NSString *minuteUnit = ([conversionInfo minute] == 1) ? self.sharedDomain.minuteUnit.singularTitle : self.sharedDomain.minuteUnit.pluralTitle;
-        [expirationArray addObject:[NSString stringWithFormat:@"%ld %@", (long)[conversionInfo minute], minuteUnit]];
-    }
-    if ([conversionInfo second] != 0) {
-        NSString *secondUnit = ([conversionInfo second] == 1) ? self.sharedDomain.secondUnit.singularTitle : self.sharedDomain.secondUnit.pluralTitle;
-        [expirationArray addObject:[NSString stringWithFormat:@"%ld %@", (long)[conversionInfo second], secondUnit]];
-    }
+
     if (expirationArray.count == 0) {
         expirationTimeString = [NSString stringWithFormat:@"%@ %@.", headerString, @"instantly"];
     } else if (expirationArray.count == 1) {

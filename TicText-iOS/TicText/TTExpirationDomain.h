@@ -18,6 +18,8 @@
 @property (nonatomic) NSUInteger minimumDisplayWidth;
 @property (nonatomic) NSInteger currentValue;
 
+@property (copy) NSInteger (^relevantValueFromDateComponentsBlock)(NSDateComponents *);
+
 - (NSString *)stringValueForIndex:(NSInteger)index;
 
 @end
