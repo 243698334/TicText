@@ -176,7 +176,7 @@
                                                    type:TSMessageNotificationTypeError];
         } else {
             for (TTTic *tic in objects) {
-                [tic unpinInBackground];
+                [tic unpinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
                 [self.jsqMessages removeAllObjects];
                 [self.tics removeAllObjects];
             }
@@ -226,7 +226,7 @@
     
     // New Tic
     TTTic *newTic = [self ticWithType:kTTTicTypeDefault sender:[TTUser currentUser] recipient:self.recipient timeLimit:10 message:newJSQMessage];
-    [newTic pinInBackground];
+    [newTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
     
     // Add to local array
     [self.tics addObject:newTic];
@@ -377,7 +377,7 @@
 
     [TTTic fetchTicInBackgroundWithId:unreadTic.objectId timestamp:[NSDate date] completion:^(TTTic *fetchedTic, NSError *error) {
         if (fetchedTic) {
-            [fetchedTic pinInBackground];
+            [fetchedTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
             fetchedTic.status = kTTTicStatusRead;
             JSQMessage *fetchedJSQMessage = [self jsqMessageWithTic:fetchedTic];
             [self.tics replaceObjectAtIndex:indexPath.item withObject:fetchedTic];

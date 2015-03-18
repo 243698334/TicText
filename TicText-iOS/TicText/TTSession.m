@@ -236,7 +236,11 @@
             if (error) {
                 NSLog(@"%@", error);
             } else {
-                [TTUser pinAllInBackground:objects];
+                [TTUser unpinAllObjectsInBackgroundWithName:kTTLocalDatastoreFriendsPinName block:^(BOOL succeeded, NSError *error) {
+                    if (succeeded) {
+                        [TTUser pinAllInBackground:objects withName:kTTLocalDatastoreFriendsPinName];
+                    }
+                }];
             }
         }];
     }];
