@@ -28,6 +28,30 @@ class TTExpirationDomainTests: XCTestCase {
         XCTAssertEqual(sharedArray, classArray, "Class method expirationUnits does not return the same array as the singleton's expirationUnits property.")
     }
     
+    func testBusinessSpecifications() {
+        // Arrange
+        let domain = TTExpirationDomain.sharedDomain()
+        
+        let components = NSDateComponents()
+        components.hour = 13
+        components.minute = 43
+        components.second = 22
+        
+        // Pre-Condition
+        XCTAssertEqual(domain.expirationUnits.count, 3, "did you forget to update tests?")
+        
+        // Act
+        let expirationUnits = domain.expirationUnits as [TTExpirationUnit]
+        var hourRelevantData = expirationUnits[0].relevantValueFromDateComponentsBlock(components)
+        var minuteRelevantData = expirationUnits[1].relevantValueFromDateComponentsBlock(components)
+        var secondRelevantData = expirationUnits[2].relevantValueFromDateComponentsBlock(components)
+        
+        // Assert
+        XCTAssertEqual(hourRelevantData, 13, "bad block")
+        XCTAssertEqual(minuteRelevantData, 43, "bad block")
+        XCTAssertEqual(secondRelevantData, 22, "bad block")
+    }
+    
     var helperNonZeroMinValueUnits: [TTExpirationUnit] {
         get {
             let firstUnit = TTExpirationUnit()
