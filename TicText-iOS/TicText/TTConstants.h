@@ -49,6 +49,12 @@ extern NSUInteger const kTTSessionErrorParseSessionFetchFailureCode;
 extern NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode;
 
 
+#pragma mark - Parse Local Datastore
+// Pin names
+extern NSString * const kTTLocalDatastoreFriendsPinName;
+extern NSString * const kTTLocalDatastoreTicsPinName;
+
+
 #pragma mark - TTUser
 // Field keys
 extern NSString * const kTTUserDisplayNameKey;
