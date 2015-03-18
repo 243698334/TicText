@@ -48,6 +48,8 @@
 		CD935B681A98E9FA0017325C /* TTUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B671A98E9FA0017325C /* TTUtility.m */; };
 		CD935B6A1A98EA9A0017325C /* TTUtilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B691A98EA9A0017325C /* TTUtilityTests.m */; };
 		CD935B6D1A98ED6F0017325C /* TTRootViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B6C1A98ED6F0017325C /* TTRootViewControllerTests.m */; };
+		CD9F92861AB8F552006FFE67 /* TTExpirationPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CD9F92851AB8F552006FFE67 /* TTExpirationPickerCell.m */; };
+		CD9F92881AB91130006FFE67 /* TTExpirationUnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F92871AB91130006FFE67 /* TTExpirationUnitTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -134,6 +136,9 @@
 		CD935B671A98E9FA0017325C /* TTUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUtility.m; sourceTree = "<group>"; };
 		CD935B691A98EA9A0017325C /* TTUtilityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUtilityTests.m; sourceTree = "<group>"; };
 		CD935B6C1A98ED6F0017325C /* TTRootViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRootViewControllerTests.m; sourceTree = "<group>"; };
+		CD9F92841AB8F552006FFE67 /* TTExpirationPickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTExpirationPickerCell.h; sourceTree = "<group>"; };
+		CD9F92851AB8F552006FFE67 /* TTExpirationPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTExpirationPickerCell.m; sourceTree = "<group>"; };
+		CD9F92871AB91130006FFE67 /* TTExpirationUnitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTExpirationUnitTests.swift; sourceTree = "<group>"; };
 		E62ADB5018418278F1D7F35F /* libPods-TicText.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicText.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -265,8 +270,7 @@
 		2E402A181A96FE8D00C1C7BF /* Custom UI */ = {
 			isa = PBXGroup;
 			children = (
-				CD2CD4FD1AB634D300CFC89F /* TTExpirationPickerController.h */,
-				CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */,
+				CD9F92831AB8F530006FFE67 /* ExpirationPicker */,
 				0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */,
 				2E402A151A96FE8900C1C7BF /* TTFindFriendsTableViewCell.h */,
 				2E402A161A96FE8900C1C7BF /* TTFindFriendsTableViewCell.m */,
@@ -280,6 +284,7 @@
 			isa = PBXGroup;
 			children = (
 				CD1330D71AB7AA4600F59523 /* TTExpirationDomainTests.swift */,
+				CD9F92871AB91130006FFE67 /* TTExpirationUnitTests.swift */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -369,6 +374,17 @@
 				0E61D46F1AAC48C800EF5826 /* TTMessagesViewControllerTests.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		CD9F92831AB8F530006FFE67 /* ExpirationPicker */ = {
+			isa = PBXGroup;
+			children = (
+				CD2CD4FD1AB634D300CFC89F /* TTExpirationPickerController.h */,
+				CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */,
+				CD9F92841AB8F552006FFE67 /* TTExpirationPickerCell.h */,
+				CD9F92851AB8F552006FFE67 /* TTExpirationPickerCell.m */,
+			);
+			name = ExpirationPicker;
 			sourceTree = "<group>";
 		};
 		EF6A02DA18A27C3A07C3888B /* Pods */ = {
@@ -564,6 +580,7 @@
 				CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */,
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
 				0E6AFF781AB66DFF00FC69A9 /* Reachability.m in Sources */,
+				CD9F92861AB8F552006FFE67 /* TTExpirationPickerCell.m in Sources */,
 				CD935B681A98E9FA0017325C /* TTUtility.m in Sources */,
 				0E0565231A9DEAD500242137 /* TTMessagesViewController.m in Sources */,
 				0EACA8791A99CB8800B93AAA /* TTTic.m in Sources */,
@@ -590,6 +607,7 @@
 				CD4D57C51A96AED2002B5586 /* TTSessionTests.m in Sources */,
 				0E6AFF7C1AB7FAAC00FC69A9 /* TTActivityTests.m in Sources */,
 				0E61D4701AAC48C800EF5826 /* TTMessagesViewControllerTests.m in Sources */,
+				CD9F92881AB91130006FFE67 /* TTExpirationUnitTests.swift in Sources */,
 				2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */,
 				CD1330D81AB7AA4600F59523 /* TTExpirationDomainTests.swift in Sources */,
 				CD4D57D31A96C97D002B5586 /* TTTestHelper.m in Sources */,
@@ -635,7 +653,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -677,7 +695,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;

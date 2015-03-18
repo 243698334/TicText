@@ -11,11 +11,14 @@
 // A bean that contains metadata for expiration components
 @interface TTExpirationUnit : NSObject
 
-@property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSNumber *minValue;
-@property (nonatomic, strong) NSNumber *maxValue;
-@property (nonatomic, strong) NSNumber *minimumDisplayWidth;
-@property (nonatomic, strong) NSNumber *currentValue;
+@property (nonatomic, strong) NSString *singularTitle;
+@property (nonatomic, strong) NSString *pluralTitle;
+@property (nonatomic) NSInteger minValue;
+@property (nonatomic) NSInteger maxValue;
+@property (nonatomic) NSUInteger minimumDisplayWidth;
+@property (nonatomic) NSInteger currentValue;
+
+- (NSString *)stringValueForIndex:(NSInteger)index;
 
 @end
 

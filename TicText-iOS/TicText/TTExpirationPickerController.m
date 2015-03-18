@@ -9,6 +9,8 @@
 #import "TTExpirationPickerController.h"
 #import "TTExpirationDomain.h"
 
+#import "TTExpirationPickerCell.h"
+
 #define HEADER_HEIGHT (66.0f)
 #define PICKER_HEIGHT (216.0f)
 #define VIEW_HEIGHT (HEADER_HEIGHT + PICKER_HEIGHT)
@@ -21,8 +23,8 @@
 @interface TTExpirationPickerController ()
 
 @property (nonatomic, strong) UIView *backgroundView;
-
 @property (nonatomic, strong) NSArray *expirationUnits;
+@property (nonatomic, strong) NSMutableArray *pinnedComponentUnitLabels;
 
 @end
 
@@ -33,6 +35,7 @@
         self.expirationTime = expirationTime;
         self.expirationUnits = [TTExpirationDomain expirationUnits];
         
+        [self setBackgroundColor:kTTUIPurpleColor];
         UIWindow *frontWindow = [self frontWindow];
         self.frame = CGRectMake(0, 0,
                                 frontWindow.frame.size.width, VIEW_HEIGHT);
@@ -77,8 +80,9 @@
     [self addSubview:self.headerView];
 }
 
+#define kPickerWidthInset 8.0f
 - (void)setupPickerView {
-    [self.pickerView setFrame:CGRectMake(0.0, HEADER_HEIGHT, self.frame.size.width, PICKER_HEIGHT)];
+    [self.pickerView setFrame:CGRectMake(kPickerWidthInset, HEADER_HEIGHT, self.frame.size.width - 2 * kPickerWidthInset, PICKER_HEIGHT)];
     
     [self addSubview:self.pickerView];
     
@@ -90,12 +94,26 @@
     
     for (NSInteger i = 0; i < self.expirationUnits.count; i++) {
         TTExpirationUnit *unit = self.expirationUnits[i];
-        [self.pickerView selectRow:(unit.currentValue.integerValue - unit.minValue.integerValue)
+        [self.pickerView selectRow:(unit.currentValue - unit.minValue)
                        inComponent:i
                           animated:NO];
     }
     
     [self refreshPreviewLabel];
+}
+
+- (void)pinUnitLabelForComponent:(NSInteger)component {
+    // Remove existing label from the view.
+    [self.pinnedComponentUnitLabels[component] removeFromSuperview];
+    
+    TTExpirationPickerCell *selectedCell = (TTExpirationPickerCell *)[self.pickerView viewForRow:[self.pickerView selectedRowInComponent:component] forComponent:component];
+    
+    UILabel *unitLabel = [[selectedCell copy] unitLabel];
+    [unitLabel setHidden:NO];
+    self.pinnedComponentUnitLabels[component] = unitLabel;
+    
+    [unitLabel setFrame:[selectedCell convertRect:unitLabel.frame toView:self]];
+    [self addSubview:unitLabel];
 }
 
 - (void)refreshPreviewLabel {
@@ -133,6 +151,14 @@
     [UIView animateWithDuration:PRESENTATION_DURATION animations:^{
         [self.backgroundView setAlpha:BACKGROUND_ALPHA];
         [self setFrame:CGRectMake(0, frontWindow.frame.size.height - VIEW_HEIGHT, VIEW_WIDTH, VIEW_HEIGHT)];
+    } completion:^(BOOL finished) {
+        if (finished) {
+            self.pinnedComponentUnitLabels = [NSMutableArray arrayWithCapacity:self.expirationUnits.count];
+            for (int component = 0; component < self.expirationUnits.count; component++) {
+                [self.pinnedComponentUnitLabels addObject:[[UIView alloc] init]];
+                [self pinUnitLabelForComponent:component];
+            }
+        }
     }];
 }
 
@@ -145,7 +171,9 @@
         [self.backgroundView setAlpha:0];
         [self setFrame:CGRectMake(0, frontWindow.frame.size.height, VIEW_WIDTH, VIEW_HEIGHT)];
     } completion:^(BOOL finished) {
-        [self removeFromSuperview];
+        if (finished) {
+            [self removeFromSuperview];
+        }
     }];
 }
 
@@ -163,7 +191,7 @@
 // returns the # of rows in each component..
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
     TTExpirationUnit *unit = self.expirationUnits[component];
-    return unit.maxValue.integerValue - unit.minValue.integerValue + 1;
+    return unit.maxValue - unit.minValue + 1;
 }
 
 #pragma makr - UIPickerViewDelegate
@@ -179,19 +207,44 @@
 // these methods return either a plain NSString, a NSAttributedString, or a view (e.g UILabel) to display the row for the component.
 // for the view versions, we cache any hidden and thus unused views and pass them back for reuse.
 // If you return back a different object, the old one will be released. the view will be centered in the row rect
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    TTExpirationUnit *unit = self.expirationUnits[component];
-    return [NSString stringWithFormat:@"%ld", unit.minValue.integerValue + row];
+
+- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
+    return 50.0f;
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     TTExpirationUnit *unit = self.expirationUnits[component];
-    unit.currentValue = [NSNumber numberWithInteger:(unit.minValue.integerValue + row)];
+    unit.currentValue = unit.minValue + row;
     self.expirationTime = [TTExpirationDomain expirationTimeFromUnits:self.expirationUnits];
+    
+    [self pinUnitLabelForComponent:component];
 }
 
-/*- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
- 
- }*/
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
+    
+    CGRect viewFrame = CGRectMake(0, 0, pickerView.frame.size.width / self.expirationUnits.count, 50.0f);
+    
+    // Reuse an existing view, if possible.
+    TTExpirationPickerCell *cell;
+    if (view && [view isKindOfClass:[TTExpirationPickerCell class]]) {
+        cell = (TTExpirationPickerCell *)view;
+        [cell setFrame:viewFrame];
+    } else {
+        cell = [[TTExpirationPickerCell alloc] initWithFrame:viewFrame];
+    }
+    
+    // Customize the view for this row and component.
+    TTExpirationUnit *unit = self.expirationUnits[component];
+    
+    cell.textLabel.text = [unit stringValueForIndex:row];
+    
+    if (unit.minValue + row == 1) {
+        cell.unitLabel.text = unit.singularTitle;
+    } else {
+        cell.unitLabel.text = unit.pluralTitle;
+    }
+    
+    return cell;
+}
 
 @end
