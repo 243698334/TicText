@@ -26,6 +26,9 @@
 
 @interface TTMessagesViewController ()
 
+@property (nonatomic) NSTimeInterval expirationTime;
+@property (nonatomic, strong) UIView *expirationToolbar;
+
 @property (nonatomic, strong) UILabel *expirationLabel;
 @property (nonatomic, strong) TTExpirationPickerController *pickerController;
 
@@ -192,11 +195,11 @@
     
     [self.view addSubview:self.expirationToolbar];
     
-    [self refreshExpirationToolbar];
+    [self refreshExpirationToolbar:self.expirationTime];
 }
 
-- (void)refreshExpirationToolbar {
-    [self.expirationLabel setText:[TTExpirationDomain stringForTimeInterval:self.expirationTime]];
+- (void)refreshExpirationToolbar:(NSTimeInterval)expiration {
+    [self.expirationLabel setText:[TTExpirationDomain stringForTimeInterval:expiration]];
 }
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant {
@@ -514,7 +517,7 @@
 - (void)pickerController:(TTExpirationPickerController *)controller didFinishWithExpiration:(NSTimeInterval)expirationTime {
     if (controller == self.pickerController) {
         self.expirationTime = expirationTime;
-        [self refreshExpirationToolbar];
+        [self refreshExpirationToolbar:expirationTime];
     }
 }
 

@@ -104,10 +104,16 @@
     }
     if (expirationArray.count == 0) {
         expirationTimeString = [NSString stringWithFormat:@"%@ %@.", headerString, @"instantly"];
+    } else if (expirationArray.count == 1) {
+        expirationTimeString = [NSString stringWithFormat:@"%@ in %@.", headerString, [expirationArray lastObject]];
     } else if (expirationArray.count == 2) {
         expirationTimeString = [NSString stringWithFormat:@"%@ in %@.", headerString, [expirationArray componentsJoinedByString:@" and "]];
     } else {
-        expirationTimeString = [NSString stringWithFormat:@"%@ in %@.", headerString, [expirationArray componentsJoinedByString:@" "]];
+        NSMutableArray *stringsExceptLast = [NSMutableArray arrayWithArray:expirationArray];
+        NSString *lastString = [stringsExceptLast lastObject];
+        [stringsExceptLast removeLastObject];
+        NSString *stringsExceptLastString = [stringsExceptLast componentsJoinedByString:@", "];
+        expirationTimeString = [NSString stringWithFormat:@"%@ in %@.", headerString, [@[stringsExceptLastString, lastString] componentsJoinedByString:@", and "]];
     }
     
     return expirationTimeString;

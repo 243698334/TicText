@@ -12,15 +12,22 @@
 #import "TTTestHelper.h"
 
 #import "TTMessagesViewController.h"
+#import "TTExpirationDomain.h"
 #import "TTConstants.h"
 #import "TTTic.h"
 
 
 @interface TTMessagesViewController (Test)
 
-- (void)loadTicHistory;
+@property (nonatomic) NSTimeInterval expirationTime;
+@property (nonatomic, strong) UIView *expirationToolbar;
 
+@property (nonatomic, strong) UILabel *expirationLabel;
+@property (nonatomic, strong) TTExpirationPickerController *pickerController;
+
+- (void)loadTicHistory;
 - (void)finishReceivingMessageAnimated:(BOOL)animated;
+- (void)refreshExpirationToolbar:(NSTimeInterval)expiration;
 
 @end
 
@@ -92,25 +99,43 @@
 }
 
 - (void)testDidPressAccessoryButton {
-    XCTAssert(false, @"stub");
+    // Pre-condition
+    XCTAssert([self.mockMessagesViewController pickerController] == nil);
+    
+    // Act
+    [self.mockMessagesViewController didPressAccessoryButton:nil];
+    
+    // Assert
+    XCTAssert([self.mockMessagesViewController pickerController] != nil);
+    XCTAssert([[self.mockMessagesViewController pickerController] superview] != nil);
 }
 
 - (void)testPickerControllerDidFinishWithExpirationZeroValue {
-    XCTAssert(false, @"stub");
+    // Arrange
+    TTExpirationPickerController *controller = [[TTExpirationPickerController alloc] init];
+    [self.mockMessagesViewController setPickerController:controller];
+    [self.mockMessagesViewController setExpirationTime:3600];
+    OCMExpect([self.mockMessagesViewController refreshExpirationToolbar:0]);
     
-    // Reminder: Don't forget to test the expirationLabel
+    // Act
+    [self.mockMessagesViewController pickerController:controller didFinishWithExpiration:0];
+    
+    // Assert
+    OCMVerifyAll(self.mockMessagesViewController);
 }
 
 - (void)testPickerControllerDidFinishWithExpirationSomeValue {
-    XCTAssert(false, @"stub");
+    // Arrange
+    TTExpirationPickerController *controller = [[TTExpirationPickerController alloc] init];
+    [self.mockMessagesViewController setPickerController:controller];
+    [self.mockMessagesViewController setExpirationTime:3600];
+    OCMExpect([self.mockMessagesViewController refreshExpirationToolbar:1337]);
     
-    // Reminder: Don't forget to test the expirationLabel
-}
-
-- (void)testPickerControllerDidFinishWithExpirationMaxValue {
-    XCTAssert(false, @"stub");
+    // Act
+    [self.mockMessagesViewController pickerController:controller didFinishWithExpiration:1337];
     
-    // Reminder: Don't forget to test the expirationLabel
+    // Assert
+    OCMVerifyAll(self.mockMessagesViewController);
 }
 
 @end
