@@ -22,8 +22,6 @@
 
 @interface TTExpirationPickerController ()
 
-@property (nonatomic, strong) UIView *backgroundView;
-@property (nonatomic, strong) NSArray *expirationUnits;
 @property (nonatomic, strong) NSMutableArray *pinnedComponentUnitLabels;
 
 @end
@@ -185,63 +183,61 @@
 #pragma mark - UIPickerViewDataSource
 // returns the number of 'columns' to display.
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
-    return self.expirationUnits.count;
+    if (pickerView == self.pickerView) {
+        return self.expirationUnits.count;
+    } else {
+        return -1;
+    }
 }
 
 // returns the # of rows in each component..
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    TTExpirationUnit *unit = self.expirationUnits[component];
-    return unit.maxValue - unit.minValue + 1;
+    if (pickerView == self.pickerView) {
+        TTExpirationUnit *unit = self.expirationUnits[component];
+        return unit.maxValue - unit.minValue + 1;
+    } else {
+        return -1;
+    }
 }
 
 #pragma makr - UIPickerViewDelegate
-// returns width of column and height of row for each component.
-/*- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
- 
- }
- 
- - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
- 
- }*/
-
-// these methods return either a plain NSString, a NSAttributedString, or a view (e.g UILabel) to display the row for the component.
-// for the view versions, we cache any hidden and thus unused views and pass them back for reuse.
-// If you return back a different object, the old one will be released. the view will be centered in the row rect
-
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
     return 50.0f;
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    TTExpirationUnit *unit = self.expirationUnits[component];
-    unit.currentValue = unit.minValue + row;
-    self.expirationTime = [TTExpirationDomain expirationTimeFromUnits:self.expirationUnits];
-    
-    [self pinUnitLabelForComponent:component];
+    if (pickerView == self.pickerView) {
+        TTExpirationUnit *unit = self.expirationUnits[component];
+        unit.currentValue = unit.minValue + row;
+        self.expirationTime = [TTExpirationDomain expirationTimeFromUnits:self.expirationUnits];
+        
+        [self pinUnitLabelForComponent:component];
+    }
 }
 
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
-    
-    CGRect viewFrame = CGRectMake(0, 0, pickerView.frame.size.width / self.expirationUnits.count, 50.0f);
-    
-    // Reuse an existing view, if possible.
     TTExpirationPickerCell *cell;
-    if (view && [view isKindOfClass:[TTExpirationPickerCell class]]) {
-        cell = (TTExpirationPickerCell *)view;
-        [cell setFrame:viewFrame];
-    } else {
-        cell = [[TTExpirationPickerCell alloc] initWithFrame:viewFrame];
-    }
-    
-    // Customize the view for this row and component.
-    TTExpirationUnit *unit = self.expirationUnits[component];
-    
-    cell.textLabel.text = [unit stringValueForIndex:row];
-    
-    if (unit.minValue + row == 1) {
-        cell.unitLabel.text = unit.singularTitle;
-    } else {
-        cell.unitLabel.text = unit.pluralTitle;
+    if (pickerView == self.pickerView) {
+        CGRect viewFrame = CGRectMake(0, 0, pickerView.frame.size.width / self.expirationUnits.count, 50.0f);
+        
+        // Reuse an existing view, if possible.
+        if (view && [view isKindOfClass:[TTExpirationPickerCell class]]) {
+            cell = (TTExpirationPickerCell *)view;
+            [cell setFrame:viewFrame];
+        } else {
+            cell = [[TTExpirationPickerCell alloc] initWithFrame:viewFrame];
+        }
+        
+        // Customize the view for this row and component.
+        TTExpirationUnit *unit = self.expirationUnits[component];
+        
+        cell.textLabel.text = [unit stringValueForIndex:row];
+        
+        if (unit.minValue + row == 1) {
+            cell.unitLabel.text = unit.singularTitle;
+        } else {
+            cell.unitLabel.text = unit.pluralTitle;
+        }
     }
     
     return cell;

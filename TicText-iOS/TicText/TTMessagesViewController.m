@@ -26,10 +26,7 @@
 
 @interface TTMessagesViewController ()
 
-@property (nonatomic) NSTimeInterval expirationTime;
 @property (nonatomic, strong) UIView *expirationToolbar;
-
-@property (nonatomic, strong) UILabel *expirationLabel;
 @property (nonatomic, strong) TTExpirationPickerController *pickerController;
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
@@ -60,6 +57,7 @@
     viewController.inputToolbar.contentView.leftBarButtonItem = expirationTimerButton;
     
     viewController.expirationTime = kDefaultExpirationTime;
+    [viewController setupExpirationToolbar];
     
     return viewController;
 }
@@ -87,7 +85,6 @@
     messagesViewController.incomingBubbleImageData = [messagesViewController.bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
     
     [messagesViewController loadTicHistory];
-    [messagesViewController setupExpirationToolbar];
     
     return messagesViewController;
 }
