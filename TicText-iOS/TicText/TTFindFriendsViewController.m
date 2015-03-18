@@ -86,8 +86,9 @@
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button setTitle:@"Continue" forState:UIControlStateNormal];
     [button sizeToFit];
-    button.frame = CGRectMake(header.bounds.size.width/2, 200, 80, 30);
-    button.center = CGPointMake(header.bounds.size.width/2, 200);
+    CGFloat yPos = appIconImageViewHeight - 25;
+    button.frame = CGRectMake(header.bounds.size.width/2, yPos, 80, 30);
+    button.center = CGPointMake(header.bounds.size.width/2, yPos);
     button.layer.borderWidth = 2.0f;
     button.layer.borderColor = [UIColor whiteColor].CGColor;
     button.layer.cornerRadius = 10;
