@@ -11,12 +11,8 @@
 @implementation TTExpirationUnit
 
 - (NSString *)stringValueForIndex:(NSInteger)index {
-    NSString *stringValue = [NSString stringWithFormat:@"%ld", (long)(self.minValue + index)];
-    if (stringValue.length < self.minimumDisplayWidth) {
-        return [stringValue stringByPaddingToLength:self.minimumDisplayWidth withString:@"0" startingAtIndex:0];
-    } else {
-        return stringValue;
-    }
+    NSString *format = [NSString stringWithFormat:@"%%0%lud", (unsigned long)self.minimumDisplayWidth];
+    return [NSString stringWithFormat:format, self.minValue + index];
 }
 
 @end

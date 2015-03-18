@@ -11,26 +11,51 @@ import XCTest
 
 class TTExpirationUnitTests: XCTestCase {
 
+    let expirationUnit = TTExpirationUnit()
+    
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        
+        expirationUnit.singularTitle = "parsec"
+        expirationUnit.pluralTitle = "parsecs"
+        expirationUnit.minValue = 1000
+        expirationUnit.maxValue = 9999
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
-    // stringValueForIndex
     func testStringValueSameAsMinimumWidth() {
-        XCTAssert(false, "stub");
+        // Arrange
+        expirationUnit.minimumDisplayWidth = 4
+        expirationUnit.minValue = 1000
+        
+        // Act
+        let stringValue = expirationUnit.stringValueForIndex(234)
+        
+        // Assert
+        XCTAssertEqual(stringValue, "1234", "string values do not match")
     }
     
     func testStringValueLessThanMinimumWidth() {
-        XCTAssert(false, "stub");
+        // Arrange
+        expirationUnit.minimumDisplayWidth = 4
+        expirationUnit.minValue = 10
+        expirationUnit.maxValue = 9999
+        
+        // Act
+        let stringValue = expirationUnit.stringValueForIndex(34)
+        
+        // Assert
+        XCTAssertEqual(stringValue, "0044", "string values do not match")
     }
 
     func testStringValueGreaterThanMinimumWidth() {
-        XCTAssert(false, "stub");
+        // Arrange
+        expirationUnit.minimumDisplayWidth = 2
+        expirationUnit.minValue = 1000
+        
+        // Act
+        let stringValue = expirationUnit.stringValueForIndex(234)
+        
+        // Assert
+        XCTAssertEqual(stringValue, "1234", "string values do not match")
     }
 }
