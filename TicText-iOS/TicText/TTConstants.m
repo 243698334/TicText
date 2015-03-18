@@ -46,6 +46,12 @@ NSUInteger const kTTSessionErrorParseSessionFetchFailureCode = 0;
 NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode = 1;
 
 
+#pragma mark - Parse Local Datastore
+// Pin names
+NSString * const kTTLocalDatastoreFriendsPinName = @"friends";
+NSString * const kTTLocalDatastoreTicsPinName = @"tics";
+
+
 #pragma mark - TTUser
 // Field keys
 NSString * const kTTUserDisplayNameKey = @"displayName";
