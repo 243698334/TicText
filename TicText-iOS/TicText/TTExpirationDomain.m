@@ -17,14 +17,6 @@
 
 @end
 
-@interface TTExpirationDomain ()
-
-@property (nonatomic, strong) TTExpirationUnit *hourUnit;
-@property (nonatomic, strong) TTExpirationUnit *minuteUnit;
-@property (nonatomic, strong) TTExpirationUnit *secondUnit;
-
-@end
-
 @implementation TTExpirationDomain
 
 - (id)init {
@@ -38,7 +30,6 @@
         hourUnit.relevantValueFromDateComponentsBlock = ^(NSDateComponents *components) {
             return [components hour];
         };
-        self.hourUnit = hourUnit;
         
         TTExpirationUnit *minuteUnit = [[TTExpirationUnit alloc] init];
         minuteUnit.singularTitle = @"minute";
@@ -49,7 +40,6 @@
         minuteUnit.relevantValueFromDateComponentsBlock = ^(NSDateComponents *components) {
             return [components minute];
         };
-        self.minuteUnit = minuteUnit;
         
         TTExpirationUnit *secondUnit = [[TTExpirationUnit alloc] init];
         secondUnit.singularTitle = @"second";
@@ -60,7 +50,6 @@
         secondUnit.relevantValueFromDateComponentsBlock = ^(NSDateComponents *components) {
             return [components second];
         };
-        self.secondUnit = secondUnit;
         
         _expirationUnits = @[hourUnit, minuteUnit, secondUnit];
     }
