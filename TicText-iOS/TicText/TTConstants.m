@@ -59,8 +59,8 @@ NSString * const kTTUserProfilePictureKey = @"profilePicture";
 
 
 #pragma mark - TTUserPrivateData
-// Class key
-NSString * const kTTUserPrivateDataClassKey = @"UserPrivateData";
+// Class name
+NSString * const kTTUserPrivateDataClassName = @"UserPrivateData";
 
 // Field keys
 NSString * const kTTUserPrivateDataUserIdKey = @"userId";
@@ -70,8 +70,8 @@ NSString * const kTTUserPrivateDataActiveDeviceIdentifierKey = @"activeDeviceIde
 
 
 #pragma mark - TTTic
-// Class key
-NSString * const kTTTicClassKey = @"Tic";
+// Class name
+NSString * const kTTTicClassName = @"Tic";
 
 // Field keys
 NSString * const kTTTicSenderKey = @"sender";
@@ -104,9 +104,18 @@ NSString * const kTTTicContentTypeImage = @"image";
 NSString * const kTTTicContentTypeVoice = @"voice";
 
 
+#pragma mark - TTConversation
+// Class name
+NSString * const kTTConversationClassName = @"Conversation";
+
+// Type values
+NSString * const kTTConversationTypeDefault = @"default";
+NSString * const kTTConversationTypeAnonymous = @"anonymous";
+
+
 #pragma mark - TTActivity
-// Class key
-NSString * const kTTActivityClassKey = @"Activity";
+// Class name
+NSString * const kTTActivityClassName = @"Activity";
 
 // Type values
 NSString * const kTTActivityTypeSendTic = @"send";
@@ -122,11 +131,16 @@ NSString * const kTTInstallationUserKey = @"user";
 #pragma mark - Push Notification Payload
 // intentionally kept short
 // Field keys
-NSString * const kTTPushNotificationPayloadTypeKey = @"t";
-NSString * const kTTPushNotificationPayloadTicIdKey = @"tid";
-NSString * const kTTPushNotificationPayloadSenderUserId = @"sid";
+NSString * const kTTPushNotificationPayloadTypeKey = @"type";
+NSString * const kTTPushNotificationPayloadTicIdKey = @"ticId";
+NSString * const kTTPushNotificationPayloadSenderUserIdKey = @"senderId";
+NSString * const kTTPushNotificationPayloadTimeLimitKey = @"timeLimit";
 
 // Type values
 NSString * const kTTPushNotificationPayloadTypeNewTic = @"nt";
 NSString * const kTTPushNotificationPayloadTypeReadTic = @"rt";
 NSString * const kTTPushNotificationPayloadTypeNewFriend = @"nf";
+
+#pragma mark - Unread Tic Attributes
+NSString * const kTTUnreadTicTime = @"unreadTime";
+NSString * const kTTUnreadTicColor = @"unreadColor";

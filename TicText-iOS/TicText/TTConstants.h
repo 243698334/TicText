@@ -62,8 +62,8 @@ extern NSString * const kTTUserProfilePictureKey;
 
 
 #pragma mark - TTUserPrivateData
-// Class key
-extern NSString * const kTTUserPrivateDataClassKey;
+// Class name
+extern NSString * const kTTUserPrivateDataClassName;
 
 // Field keys
 extern NSString * const kTTUserPrivateDataUserIdKey;
@@ -73,8 +73,8 @@ extern NSString * const kTTUserPrivateDataActiveDeviceIdentifierKey;
 
 
 #pragma mark - TTTic
-// Class key
-extern NSString * const kTTTicClassKey;
+// Class name
+extern NSString * const kTTTicClassName;
 
 // Field keys
 extern NSString * const kTTTicSenderKey;
@@ -107,9 +107,18 @@ extern NSString * const kTTTicContentTypeImage;
 extern NSString * const kTTTicContentTypeVoice;
 
 
+#pragma mark - TTConversation
+// Class name
+extern NSString * const kTTConversationClassName;
+
+// Type values
+extern NSString * const kTTConversationTypeDefault;
+extern NSString * const kTTConversationTypeAnonymous;
+
+
 #pragma mark - TTActivity
-// Class key
-extern NSString * const kTTActivityClassKey;
+// Class name
+extern NSString * const kTTActivityClassName;
 
 // Type values
 extern NSString * const kTTActivityTypeSendTic;
@@ -126,13 +135,17 @@ extern NSString * const kTTInstallationUserKey;
 // Field keys
 extern NSString * const kTTPushNotificationPayloadTypeKey;
 extern NSString * const kTTPushNotificationPayloadTicIdKey;
-extern NSString * const kTTPushNotificationPayloadSenderUserId;
+extern NSString * const kTTPushNotificationPayloadSenderUserIdKey;
+extern NSString * const kTTPushNotificationPayloadTimeLimitKey;
 
 // Type values
 extern NSString * const kTTPushNotificationPayloadTypeNewTic;
 extern NSString * const kTTPushNotificationPayloadTypeReadTic;
 extern NSString * const kTTPushNotificationPayloadTypeNewFriend;
 
+#pragma mark - Unread Tic Attributes
+extern NSString * const kTTUnreadTicTime;
+extern NSString * const kTTUnreadTicColor;
 
 #pragma mark - Facebook
 #define kTTFacebookPermissions @[@"public_profile", @"user_friends"]

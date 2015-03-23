@@ -18,7 +18,7 @@
 @interface TTRootViewController ()
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
-@property (nonatomic) BOOL sessionIsInvalid;
+@property (nonatomic) BOOL sessionIsValid;
 
 @property (nonatomic, strong) TTLogInViewController *logInViewController;
 @property (nonatomic, strong) TTFindFriendsViewController *findFriendsViewController;
@@ -41,7 +41,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.sessionIsInvalid = YES;
+    self.sessionIsValid = NO;
     self.view.backgroundColor = kTTUIPurpleColor;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionDidBecomeInvalid:) name:kTTSessionDidBecomeInvalidNotification object:nil];
@@ -54,9 +54,11 @@
     [super viewDidAppear:animated];
     [[TTSession sharedSession] validateSessionInBackground];
     if ([[TTSession sharedSession] isValidLastChecked]) {
+        self.sessionIsValid = YES;
         [[TTSession sharedSession] fetchAndPinAllFriendsInBackground];
         [self presentMainUserInterface];
     } else {
+        self.sessionIsValid = NO;
         [self presentLogInViewControllerAnimated:YES];
     }
 }
@@ -64,10 +66,10 @@
 #pragma mark - TTRootViewController
 
 - (void)sessionDidBecomeInvalid:(NSNotification *)notification {
-    if (!self.sessionIsInvalid) {
+    if (self.sessionIsValid == NO) {
         return;
     }
-    self.sessionIsInvalid = NO;
+    self.sessionIsValid = NO;
     NSError *error = [[notification userInfo] objectForKey:kTTNotificationUserInfoErrorKey];
     if (error) {
         [self handleError:error];
@@ -129,7 +131,7 @@
 
 
 - (void)logInViewControllerDidFinishLogIn {
-    self.sessionIsInvalid = YES;
+    self.sessionIsValid = YES;
     [self.logInViewController dismissViewControllerAnimated:YES completion:nil];
     [self presentMainUserInterface];
     [TTUtility setupPushNotifications];
@@ -143,7 +145,7 @@
 }
 
 - (void)userDidLogOut {
-    self.sessionIsInvalid = NO;
+    self.sessionIsValid = NO;
     self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [[TTSession sharedSession] logOut:^{
         [self.navigationController popToRootViewControllerAnimated:YES];

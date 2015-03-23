@@ -30,6 +30,7 @@
 		0EC584EB1A7864AA00025D71 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC584EA1A7864AA00025D71 /* AppDelegate.m */; };
 		0EC584F31A7864AA00025D71 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0EC584F21A7864AA00025D71 /* Images.xcassets */; };
 		0EC584F61A7864AA00025D71 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0EC584F41A7864AA00025D71 /* LaunchScreen.xib */; };
+		0EEBFBE51AC0C4A4004C3634 /* TTConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEBFBE41AC0C4A4004C3634 /* TTConversation.m */; };
 		2E402A171A96FE8900C1C7BF /* TTFindFriendsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E402A161A96FE8900C1C7BF /* TTFindFriendsTableViewCell.m */; };
 		2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED84A9B1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m */; };
 		2EEEC7991AA93CF300391486 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EEEC7981AA93CF300391486 /* MessageUI.framework */; };
@@ -100,6 +101,8 @@
 		0EC584F51A7864AA00025D71 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		0EC584FB1A7864AA00025D71 /* TicTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC585001A7864AA00025D71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0EEBFBE31AC0C4A4004C3634 /* TTConversation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTConversation.h; sourceTree = "<group>"; };
+		0EEBFBE41AC0C4A4004C3634 /* TTConversation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTConversation.m; sourceTree = "<group>"; };
 		2E402A151A96FE8900C1C7BF /* TTFindFriendsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTFindFriendsTableViewCell.h; sourceTree = "<group>"; };
 		2E402A161A96FE8900C1C7BF /* TTFindFriendsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTFindFriendsTableViewCell.m; sourceTree = "<group>"; };
 		2ED84A9B1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTFindFriendsViewControllerTests.m; sourceTree = "<group>"; };
@@ -286,6 +289,8 @@
 				CD4D57C71A96B740002B5586 /* TTUser.m */,
 				0E6AFF701AB4C99500FC69A9 /* TTUserPrivateData.h */,
 				0E6AFF711AB4C99500FC69A9 /* TTUserPrivateData.m */,
+				0EEBFBE31AC0C4A4004C3634 /* TTConversation.h */,
+				0EEBFBE41AC0C4A4004C3634 /* TTConversation.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -518,6 +523,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0EEBFBE51AC0C4A4004C3634 /* TTConversation.m in Sources */,
 				0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */,
 				0EA9482D1AA3CF0E00476D4E /* TTMessagesBubbleImage.m in Sources */,
 				0EACA8731A97CE0D00B93AAA /* TTSettingsViewController.m in Sources */,

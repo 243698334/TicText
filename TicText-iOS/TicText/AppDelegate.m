@@ -19,10 +19,10 @@
 
 
 - (BOOL)application:(UIApplication *)application
-        didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-
+    
     [self parseInitializationWithUIApplication:application launchOptions:launchOptions];
     [self handlePush:launchOptions];
     [self setupColorScheme];
@@ -42,7 +42,7 @@
 }
 
 - (void)application:(UIApplication *)application
-        didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
     // Store the deviceToken in the current installation and save it to Parse.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
@@ -68,7 +68,7 @@
     // Push notification received while the app is active
     if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
         NSString *ticId = [userInfo objectForKey:kTTPushNotificationPayloadTicIdKey];
-        NSString *senderUserId = [userInfo objectForKey:kTTPushNotificationPayloadSenderUserId];
+        NSString *senderUserId = [userInfo objectForKey:kTTPushNotificationPayloadSenderUserIdKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification
                                                             object:nil
                                                           userInfo:@{kTTNotificationUserInfoTicIdKey : ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId}];
@@ -116,7 +116,7 @@
     [TTTic registerSubclass];
     [TTActivity registerSubclass];
     [TTUserPrivateData registerSubclass];
-    
+    [TTConversation registerSubclass];
     
     [Parse enableLocalDatastore];
     
