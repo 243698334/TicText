@@ -10,4 +10,8 @@
 
 @implementation TTTextToolbarItem
 
+- (UIView *)contentView {
+    return nil;
+}
+
 @end

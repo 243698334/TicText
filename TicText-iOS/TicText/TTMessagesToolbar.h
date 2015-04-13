@@ -20,6 +20,7 @@
 
 @property (nonatomic, weak) id<TTMessagesToolbarDelegate> delegate;
 @property (nonatomic, strong) UIView *topBorder;
+@property (atomic) NSInteger selectedIndex;
 
 - (id)initWithFrame:(CGRect)frame toolbarItems:(NSArray *)items;
 - (void)selectItemAtIndex:(NSInteger)index;

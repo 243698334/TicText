@@ -23,6 +23,7 @@
         self.backgroundColor = [UIColor whiteColor];
         
         self.toolbarItems = items;
+        self.selectedIndex = -1;
         
         [self setupTopBorder];
         [self setupButtons];
@@ -63,7 +64,6 @@
 }
 
 - (void)toggleItem:(TTMessagesToolbarItem *)item {
-    NSLog(@"button pressed.");
     for (TTMessagesToolbarItem *otherItem in self.toolbarItems) {
         if (item != otherItem) {
             if (otherItem.selected) {
@@ -73,6 +73,8 @@
         }
     }
     
+    self.selectedIndex = [self.toolbarItems indexOfObject:item];
+    NSLog(@"selected index is now %ld", self.selectedIndex);
     item.selected = YES;
     [self.delegate messagesToolbar:self willShowItem:item];
     

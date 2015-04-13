@@ -18,11 +18,15 @@
 #import "TTMessagesToolbarItem.h"
 #import "TTTextToolbarItem.h"
 
+#import <JSQMessagesViewController/JSQMessagesKeyboardController.h>
+
 #define kDefaultExpirationTime      3600
 #define kExpirationTimerIcon        @"TicsTabBarIcon"
 #define kMessagesToolbarHeight      44.0f
 
 @interface JSQMessagesViewController (PrivateMethods)
+
+@property (strong, nonatomic) JSQMessagesKeyboardController *keyboardController;
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant;
 - (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy;
@@ -33,10 +37,11 @@
 @interface TTMessagesViewController ()
 
 @property (nonatomic, strong) UIView *expirationToolbar;
-@property (nonatomic, strong) TTMessagesToolbar *messagesToolbar;
-@property (nonatomic, strong) UIImageView *fakeInputToolbar;
-@property (nonatomic, strong) TTExpirationPickerController *pickerController;
 @property (nonatomic) CGFloat realToolbarBottomLayoutGuideConstrant;
+@property (nonatomic, strong) TTMessagesToolbar *messagesToolbar;
+@property (nonatomic, strong) UIView *toolbarContentView;
+
+@property (nonatomic, strong) TTExpirationPickerController *pickerController;
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
 @property (nonatomic) BOOL isFetchingTic;
@@ -232,10 +237,35 @@
                       self.inputToolbar.frame.size.width, self.inputToolbar.frame.size.height);
 }
 
+- (CGRect)toolbarContentViewFrame {
+    UIWindow *frontWindow = [self frontWindow];
+    CGFloat originY = self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant;
+    CGRect frame = CGRectMake(0, originY,
+                              self.inputToolbar.frame.size.width, self.view.frame.size.height - originY);
+    
+    return [frontWindow convertRect:frame fromView:self.view];
+}
+
+- (void)removeCurrentToolbarContentView {
+    [self.toolbarContentView removeFromSuperview];
+}
+
+- (void)setupToolbarContentView:(UIView *)view {
+    UIWindow *frontWindow = [self frontWindow];
+    
+    // Arrange background view
+    self.toolbarContentView = view;
+    [frontWindow addSubview:self.toolbarContentView];
+    [frontWindow bringSubviewToFront:self.toolbarContentView];
+    
+    [self.toolbarContentView setFrame:[self toolbarContentViewFrame]];
+}
+
 - (void)updateCustomUI {
     [self.inputToolbar setFrame:[self inputToolbarFrame]];
     //[self.expirationToolbar setFrame:[self expirationToolbarFrame]];
     [self.messagesToolbar setFrame:[self messagesToolbarFrame]];
+    [self.toolbarContentView setFrame:[self toolbarContentViewFrame]];
 }
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant {
@@ -245,7 +275,13 @@
     
     // Offset the input toolbar by |kMessagesToolbarHeight| so we can put the messagesToolbar
     // below the inputToolbar.
-    [super jsq_setToolbarBottomLayoutGuideConstant:constant + kMessagesToolbarHeight];
+    if (self.messagesToolbar.selectedIndex == 0) {
+        [super jsq_setToolbarBottomLayoutGuideConstant:constant + kMessagesToolbarHeight];
+    } else {
+        [super jsq_setToolbarBottomLayoutGuideConstant:constant];
+    }
+    
+    NSLog(@"setting toolbar bottom layout guide constant to %lf for index: %ld", constant, self.messagesToolbar.selectedIndex);
     
     [self updateCustomUI];
 }
@@ -593,16 +629,12 @@
                          [self.inputToolbar setFrame:[self caculateInputToolbarFrameHidden:hidden]];
                          if (hidden) {
                              [self.messagesToolbar.topBorder setAlpha:1.0f];
+                              [self.inputToolbar setHidden:YES];
                          } else {
                              [self.messagesToolbar.topBorder setAlpha:0.0f];
                          }
                      } completion:^(BOOL finished) {
-                         if (hidden) {
-                             [super jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
-                             [self.inputToolbar setHidden:YES];
-                         } else {
-                             [self jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
-                         }
+                         [self jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
                      }];
 }
 
@@ -621,6 +653,9 @@
         [self setInputToolbarHiddenState:YES];
     }
     
+    [self removeCurrentToolbarContentView];
+    [self setupToolbarContentView:item.contentView];
+    
     NSLog(@"item shown with class: %@", item.class);
 }
 
@@ -630,6 +665,11 @@
     }
     
     NSLog(@"item hidden with class: %@", item.class);
+}
+
+#pragma mark - Helper Methods
+- (UIWindow *)frontWindow {
+    return [[[UIApplication sharedApplication] windows] lastObject];
 }
 
 @end

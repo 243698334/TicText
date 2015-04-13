@@ -21,7 +21,9 @@
 }
 
 - (UIView *)contentView {
-    return [[UIView alloc] init];
+    UIView *view = [[UIView alloc] init];
+    [view setBackgroundColor:[UIColor whiteColor]];
+    return view;
 }
 
 @end
