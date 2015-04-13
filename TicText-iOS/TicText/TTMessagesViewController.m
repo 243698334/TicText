@@ -191,7 +191,7 @@
 }
 
 - (void)setupExpirationToolbar {
-    self.expirationToolbar = [[UIView alloc] initWithFrame:[self expirationToolbarFrame]];
+    /*self.expirationToolbar = [[UIView alloc] initWithFrame:[self expirationToolbarFrame]];
     [self.expirationToolbar setBackgroundColor:[UIColor whiteColor]];
     [self.expirationToolbar setAlpha:kExpirationToolbarAlpha];
     
@@ -203,7 +203,7 @@
     
     [self.view addSubview:self.expirationToolbar];
     
-    [self refreshExpirationToolbar:self.expirationTime];
+    [self refreshExpirationToolbar:self.expirationTime];*/
 }
 
 - (void)refreshExpirationToolbar:(NSTimeInterval)expiration {
@@ -216,21 +216,25 @@
     self.messagesToolbar.delegate = self;
     [self.view addSubview:self.messagesToolbar];
     
-    // Default configuration for inputToolbar.
+    [self.inputToolbar.contentView setBackgroundColor:[UIColor whiteColor]];
+    [self.inputToolbar.contentView.rightBarButtonItem setTintColor:kTTUIPurpleColor];
+    
     [self.inputToolbar setHidden:YES];
-    [self jsq_setToolbarBottomLayoutGuideConstant:0];
-    //[super jsq_setToolbarBottomLayoutGuideConstant:0];
+}
+
+- (CGRect)inputToolbarFrame {
+    return CGRectMake(0, self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant - kMessagesToolbarHeight * 2,
+                      self.inputToolbar.frame.size.width, self.inputToolbar.frame.size.height);
 }
 
 - (CGRect)messagesToolbarFrame {
-    return CGRectMake(0,
-                      self.inputToolbar.frame.origin.y + self.inputToolbar.frame.size.height,
-                      self.view.frame.size.width,
-                      kMessagesToolbarHeight);
+    return CGRectMake(0, self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant - kMessagesToolbarHeight,
+                      self.inputToolbar.frame.size.width, self.inputToolbar.frame.size.height);
 }
 
 - (void)updateCustomUI {
-    [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
+    [self.inputToolbar setFrame:[self inputToolbarFrame]];
+    //[self.expirationToolbar setFrame:[self expirationToolbarFrame]];
     [self.messagesToolbar setFrame:[self messagesToolbarFrame]];
 }
 
@@ -565,6 +569,43 @@
 #define kInputToolbarHideAnimationDuration 0.44
 #define kInputToolbarShowAnimationDuration 0.23
 
+- (CGRect)caculateInputToolbarFrameHidden:(BOOL)hidden {
+    CGFloat inputToolbarHeight = self.inputToolbar.frame.size.height;
+    CGFloat inputToolbarWidth = self.inputToolbar.frame.size.width;
+    if (hidden) {
+        return CGRectMake(0, self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant - inputToolbarHeight,
+                          inputToolbarWidth, inputToolbarHeight);
+    } else {
+        return CGRectMake(0, self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant - inputToolbarHeight * 2,
+                          inputToolbarWidth, inputToolbarHeight);
+    }
+}
+
+- (void)setInputToolbarHiddenState:(BOOL)hidden {
+    if (!hidden) {
+        [self.inputToolbar setHidden:NO];
+    }
+    
+    CGFloat animationDuration = (hidden) ? kInputToolbarHideAnimationDuration : kInputToolbarShowAnimationDuration;
+    
+    [UIView animateWithDuration:animationDuration
+                     animations:^{
+                         [self.inputToolbar setFrame:[self caculateInputToolbarFrameHidden:hidden]];
+                         if (hidden) {
+                             [self.messagesToolbar.topBorder setAlpha:1.0f];
+                         } else {
+                             [self.messagesToolbar.topBorder setAlpha:0.0f];
+                         }
+                     } completion:^(BOOL finished) {
+                         if (hidden) {
+                             [super jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
+                             [self.inputToolbar setHidden:YES];
+                         } else {
+                             [self jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
+                         }
+                     }];
+}
+
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar willShowItem:(TTMessagesToolbarItem *)item {
     if (toolbar != self.messagesToolbar) {
         return;
@@ -575,17 +616,9 @@
     }
     
     if ([item isKindOfClass:[TTTextToolbarItem class]]) {
-        [self.inputToolbar setHidden:NO];
-        CGRect originalFrame = self.inputToolbar.frame;
-        [UIView animateWithDuration:kInputToolbarShowAnimationDuration
-                         animations:^{
-                             // need to calculate the frame not using relative position
-                             [self.inputToolbar setFrame:CGRectOffset(originalFrame, 0, -kMessagesToolbarHeight)];
-                         } completion:^(BOOL finished) {
-                             [self jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
-                             
-                             [self jsq_updateCollectionViewInsets]; // remark: is this even necessary?
-                         }];
+        [self setInputToolbarHiddenState:NO];
+    } else {
+        [self setInputToolbarHiddenState:YES];
     }
     
     NSLog(@"item shown with class: %@", item.class);
@@ -594,23 +627,6 @@
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar willHideItem:(TTMessagesToolbarItem *)item {
     if (toolbar != self.messagesToolbar) {
         return;
-    }
-    
-    if ([item isKindOfClass:[TTTextToolbarItem class]]) {
-        CGRect originalFrame = self.inputToolbar.frame;
-        [UIView animateWithDuration:kInputToolbarHideAnimationDuration
-                         animations:^{
-                              // need to calculate the frame not using relative position
-                             [self.inputToolbar setFrame:CGRectOffset(originalFrame, 0, kMessagesToolbarHeight)];
-                         } completion:^(BOOL finished) {
-                             [super jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
-                             [self.inputToolbar setHidden:YES];
-                             //[self.inputToolbar setFrame:originalFrame];
-                             
-                             [self jsq_updateCollectionViewInsets]; // remark: is this even necessary?
-                         }];
-        
-        [self jsq_updateCollectionViewInsets];
     }
     
     NSLog(@"item hidden with class: %@", item.class);

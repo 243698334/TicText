@@ -24,6 +24,7 @@
         
         self.toolbarItems = items;
         
+        [self setupTopBorder];
         [self setupButtons];
     }
     return self;
@@ -31,6 +32,17 @@
 
 - (id)initWithFrame:(CGRect)frame {
     return (self = [self initWithFrame:frame toolbarItems:@[]]);
+}
+
+- (CGRect)topBorderFrame {
+    return CGRectMake(0.0f, 0.0f, self.frame.size.width, 1.0f);
+}
+
+- (void)setupTopBorder {
+    self.topBorder = [[UIView alloc] initWithFrame:[self topBorderFrame]];
+    [self.topBorder setBackgroundColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0]];
+    [self.topBorder setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin];
+    [self addSubview:self.topBorder];
 }
 
 - (void)setupButtons {
