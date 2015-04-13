@@ -14,8 +14,8 @@
     if (self = [super initWithFrame:frame]) {
         [self setTitle:@"Aa" forState:UIControlStateNormal];
         [self setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [self setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
-        [self setTitleColor:[UIColor blueColor] forState:UIControlStateSelected];
+        [self setTitleColor:kTTUIPurpleColor forState:UIControlStateHighlighted];
+        [self setTitleColor:kTTUIPurpleColor forState:UIControlStateSelected];
     }
     return self;
 }

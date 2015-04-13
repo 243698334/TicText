@@ -30,6 +30,7 @@
 
 @property (nonatomic, strong) UIView *expirationToolbar;
 @property (nonatomic, strong) TTMessagesToolbar *messagesToolbar;
+@property (nonatomic, strong) UIImageView *fakeInputToolbar;
 @property (nonatomic, strong) TTExpirationPickerController *pickerController;
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
@@ -207,11 +208,21 @@
     self.messagesToolbar = [[TTMessagesToolbar alloc] initWithFrame:[self messagesToolbarFrame]];
     self.messagesToolbar.delegate = self;
     [self.view addSubview:self.messagesToolbar];
+    
+    [self setupFakeInputToolbar];
+}
+
+- (void)setupFakeInputToolbar {
+/*    UIImage *image = [self.inputToolbar imageFromScreenshot];
+    self.fakeInputToolbar = [[UIImageView alloc] initWithImage:<#(UIImage *)#>];*/
+    
+    // wait doing this won't work because then users can't interact with the fake input toolbar....
+    // time to go back to the drawing board... -sigh-
 }
 
 - (CGRect)messagesToolbarFrame {
     return CGRectMake(0,
-                      self.inputToolbar.frame.origin.y + self.inputToolbar.frame.size.height - kMessagesToolbarHeight,
+                      self.inputToolbar.frame.origin.y + self.inputToolbar.frame.size.height,
                       self.view.frame.size.width,
                       kMessagesToolbarHeight);
 }
@@ -222,7 +233,7 @@
 }
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant {
-    [super jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant];
+    [super jsq_setToolbarBottomLayoutGuideConstant:constant + kMessagesToolbarHeight];
     
     [self updateCustomUI];
 }
@@ -239,7 +250,7 @@
     self.pickerController = [[TTExpirationPickerController alloc] initWithExpirationTime:self.expirationTime];
     [self.pickerController setDelegate:self];
     [self.pickerController present];*/
-    UIImage *image = [self.inputToolbar imageFromScreenshot];
+    
 }
 
 #pragma mark - Helpers
