@@ -15,6 +15,9 @@
 #import "TTExpirationDomain.h"
 #import "UIView+Screenshot.h"
 
+#import "TTMessagesToolbarItem.h"
+#import "TTTextToolbarItem.h"
+
 #define kDefaultExpirationTime      3600
 #define kExpirationTimerIcon        @"TicsTabBarIcon"
 #define kMessagesToolbarHeight      44.0f
@@ -23,6 +26,7 @@
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant;
 - (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy;
+- (void)jsq_updateCollectionViewInsets;
 
 @end
 
@@ -32,6 +36,7 @@
 @property (nonatomic, strong) TTMessagesToolbar *messagesToolbar;
 @property (nonatomic, strong) UIImageView *fakeInputToolbar;
 @property (nonatomic, strong) TTExpirationPickerController *pickerController;
+@property (nonatomic) CGFloat realToolbarBottomLayoutGuideConstrant;
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
 @property (nonatomic) BOOL isFetchingTic;
@@ -205,19 +210,15 @@
 }
 
 - (void)setupMessagesToolbar {
-    self.messagesToolbar = [[TTMessagesToolbar alloc] initWithFrame:[self messagesToolbarFrame]];
+    NSArray *toolbarItems = @[[[TTTextToolbarItem alloc] init], [[TTMessagesToolbarItem alloc] init]];
+    self.messagesToolbar = [[TTMessagesToolbar alloc] initWithFrame:[self messagesToolbarFrame] toolbarItems:toolbarItems];
     self.messagesToolbar.delegate = self;
     [self.view addSubview:self.messagesToolbar];
     
-    [self setupFakeInputToolbar];
-}
-
-- (void)setupFakeInputToolbar {
-/*    UIImage *image = [self.inputToolbar imageFromScreenshot];
-    self.fakeInputToolbar = [[UIImageView alloc] initWithImage:<#(UIImage *)#>];*/
-    
-    // wait doing this won't work because then users can't interact with the fake input toolbar....
-    // time to go back to the drawing board... -sigh-
+    // Default configuration for inputToolbar.
+    [self.inputToolbar setHidden:YES];
+    [self jsq_setToolbarBottomLayoutGuideConstant:0];
+    //[super jsq_setToolbarBottomLayoutGuideConstant:0];
 }
 
 - (CGRect)messagesToolbarFrame {
@@ -233,6 +234,12 @@
 }
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant {
+    // Save the real constant so we can restore it when we hide the input toolbar.
+    // The input toolbar will be hidden when an item that's not the TTTextToolbarItem is selected.
+    self.realToolbarBottomLayoutGuideConstrant = constant;
+    
+    // Offset the input toolbar by |kMessagesToolbarHeight| so we can put the messagesToolbar
+    // below the inputToolbar.
     [super jsq_setToolbarBottomLayoutGuideConstant:constant + kMessagesToolbarHeight];
     
     [self updateCustomUI];
@@ -553,6 +560,10 @@
 }
 
 #pragma mark - TTMessagesToolbarDelegate
+
+#define kInputToolbarHideAnimationDuration 0.44
+#define kInputToolbarShowAnimationDuration 0.23
+
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar willShowItem:(TTMessagesToolbarItem *)item {
     if (toolbar != self.messagesToolbar) {
         return;
@@ -561,10 +572,47 @@
     if (![self.inputToolbar.contentView.textView isFirstResponder]) {
         [self.inputToolbar.contentView.textView becomeFirstResponder];
     }
+    
+    if ([item isKindOfClass:[TTTextToolbarItem class]]) {
+        [self.inputToolbar setHidden:NO];
+        CGRect originalFrame = self.inputToolbar.frame;
+        [UIView animateWithDuration:kInputToolbarShowAnimationDuration
+                         animations:^{
+                             // need to calculate the frame not using relative position
+                             [self.inputToolbar setFrame:CGRectOffset(originalFrame, 0, -kMessagesToolbarHeight)];
+                         } completion:^(BOOL finished) {
+                             [self jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
+                             
+                             [self jsq_updateCollectionViewInsets]; // remark: is this even necessary?
+                         }];
+    }
+    
+    NSLog(@"item shown with class: %@", item.class);
 }
 
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar willHideItem:(TTMessagesToolbarItem *)item {
+    if (toolbar != self.messagesToolbar) {
+        return;
+    }
     
+    if ([item isKindOfClass:[TTTextToolbarItem class]]) {
+        CGRect originalFrame = self.inputToolbar.frame;
+        [UIView animateWithDuration:kInputToolbarHideAnimationDuration
+                         animations:^{
+                              // need to calculate the frame not using relative position
+                             [self.inputToolbar setFrame:CGRectOffset(originalFrame, 0, kMessagesToolbarHeight)];
+                         } completion:^(BOOL finished) {
+                             [super jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
+                             [self.inputToolbar setHidden:YES];
+                             //[self.inputToolbar setFrame:originalFrame];
+                             
+                             [self jsq_updateCollectionViewInsets]; // remark: is this even necessary?
+                         }];
+        
+        [self jsq_updateCollectionViewInsets];
+    }
+    
+    NSLog(@"item hidden with class: %@", item.class);
 }
 
 @end

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface TTTextToolbarItem : NSObject
+#import "TTMessagesToolbarItem.h"
+
+@interface TTTextToolbarItem : TTMessagesToolbarItem
 
 @end

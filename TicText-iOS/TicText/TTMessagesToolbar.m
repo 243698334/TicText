@@ -18,19 +18,19 @@
 
 @implementation TTMessagesToolbar
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame toolbarItems:(NSArray *)items {
     if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor whiteColor];
         
-        self.toolbarItems = @[
-          [[TTMessagesToolbarItem alloc] init],
-          [[TTMessagesToolbarItem alloc] init],
-          [[TTMessagesToolbarItem alloc] init]
-        ];
+        self.toolbarItems = items;
         
         [self setupButtons];
     }
     return self;
+}
+
+- (id)initWithFrame:(CGRect)frame {
+    return (self = [self initWithFrame:frame toolbarItems:@[]]);
 }
 
 - (void)setupButtons {
@@ -43,6 +43,11 @@
         
         [self addSubview:item];
     }
+}
+
+- (void)selectItemAtIndex:(NSInteger)index {
+    TTMessagesToolbarItem *item = self.toolbarItems[index];
+    [item sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)toggleItem:(TTMessagesToolbarItem *)item {

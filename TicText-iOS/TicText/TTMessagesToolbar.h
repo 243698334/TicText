@@ -20,4 +20,7 @@
 
 @property (nonatomic, weak) id<TTMessagesToolbarDelegate> delegate;
 
+- (id)initWithFrame:(CGRect)frame toolbarItems:(NSArray *)items;
+- (void)selectItemAtIndex:(NSInteger)index;
+
 @end
