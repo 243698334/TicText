@@ -61,9 +61,10 @@
     viewController.navigationItem.title = @"Some Dialog";
     viewController.hidesBottomBarWhenPushed = YES;
     
-    UIButton *expirationTimerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    /*UIButton *expirationTimerButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [expirationTimerButton setImage:[UIImage imageNamed:kExpirationTimerIcon] forState:UIControlStateNormal];
-    viewController.inputToolbar.contentView.leftBarButtonItem = expirationTimerButton;
+    viewController.inputToolbar.contentView.leftBarButtonItem = expirationTimerButton;*/
+    viewController.inputToolbar.contentView.leftBarButtonItem = nil;
     
     viewController.expirationTime = kDefaultExpirationTime;
     [viewController setupExpirationToolbar];
