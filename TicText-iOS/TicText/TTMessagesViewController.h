@@ -11,10 +11,11 @@
 #import <JSQMessagesViewController/JSQMessages.h>
 #import <TSMessages/TSMessageView.h>
 #import "TTExpirationPickerController.h"
+#import "TTMessagesToolbar.h"
 #import "TTMessagesBubbleImage.h"
 #import "TTUser.h"
 
-@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, TSMessageViewProtocol, TTExpirationPickerControllerDelegate>
+@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, TSMessageViewProtocol, TTExpirationPickerControllerDelegate, TTMessagesToolbarDelegate>
 
 @property (nonatomic) NSTimeInterval expirationTime;
 @property (nonatomic, strong) UILabel *expirationLabel;

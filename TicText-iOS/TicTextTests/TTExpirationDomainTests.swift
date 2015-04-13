@@ -23,8 +23,8 @@ class TTExpirationDomainTests: XCTestCase {
     }
     
     func testExpirationUnitsClassAccessor() {
-        let sharedArray = TTExpirationDomain.sharedDomain().expirationUnits as [TTExpirationUnit]
-        let classArray = TTExpirationDomain.expirationUnits() as [TTExpirationUnit]
+        let sharedArray = TTExpirationDomain.sharedDomain().expirationUnits as! [TTExpirationUnit]
+        let classArray = TTExpirationDomain.expirationUnits() as! [TTExpirationUnit]
         XCTAssertEqual(sharedArray, classArray, "Class method expirationUnits does not return the same array as the singleton's expirationUnits property.")
     }
     
@@ -41,7 +41,7 @@ class TTExpirationDomainTests: XCTestCase {
         XCTAssertEqual(domain.expirationUnits.count, 3, "did you forget to update tests?")
         
         // Act
-        let expirationUnits = domain.expirationUnits as [TTExpirationUnit]
+        let expirationUnits = domain.expirationUnits as! [TTExpirationUnit]
         var hourRelevantData = expirationUnits[0].relevantValueFromDateComponentsBlock(components)
         var minuteRelevantData = expirationUnits[1].relevantValueFromDateComponentsBlock(components)
         var secondRelevantData = expirationUnits[2].relevantValueFromDateComponentsBlock(components)
@@ -357,7 +357,7 @@ class TTExpirationDomainTests: XCTestCase {
     
     func testExpirationTimeFromUnitsInstantly() {
         // Arrange
-        var expirationUnits = TTExpirationDomain.expirationUnits() as [TTExpirationUnit]
+        var expirationUnits = TTExpirationDomain.expirationUnits() as! [TTExpirationUnit]
         XCTAssertEqual(expirationUnits.count, 3, "did you forget to add new tests for new units?")
         
         expirationUnits[0].currentValue = 0
@@ -373,7 +373,7 @@ class TTExpirationDomainTests: XCTestCase {
     
     func testExpirationTimeFromUnitsSecondsOnly() {
         // Arrange
-        var expirationUnits = TTExpirationDomain.expirationUnits() as [TTExpirationUnit]
+        var expirationUnits = TTExpirationDomain.expirationUnits() as! [TTExpirationUnit]
         XCTAssertEqual(expirationUnits.count, 3, "did you forget to add new tests for new units?")
         
         expirationUnits[0].currentValue = 0
@@ -389,7 +389,7 @@ class TTExpirationDomainTests: XCTestCase {
     
     func testExpirationTimeFromUnitsMinutesOnly() {
         // Arrange
-        var expirationUnits = TTExpirationDomain.expirationUnits() as [TTExpirationUnit]
+        var expirationUnits = TTExpirationDomain.expirationUnits() as! [TTExpirationUnit]
         XCTAssertEqual(expirationUnits.count, 3, "did you forget to add new tests for new units?")
         
         expirationUnits[0].currentValue = 0
@@ -405,7 +405,7 @@ class TTExpirationDomainTests: XCTestCase {
     
     func testExpirationTimeFromUnitsHoursOnly() {
         // Arrange
-        var expirationUnits = TTExpirationDomain.expirationUnits() as [TTExpirationUnit]
+        var expirationUnits = TTExpirationDomain.expirationUnits() as! [TTExpirationUnit]
         XCTAssertEqual(expirationUnits.count, 3, "did you forget to add new tests for new units?")
         
         expirationUnits[0].currentValue = 13
@@ -421,7 +421,7 @@ class TTExpirationDomainTests: XCTestCase {
     
     func testExpirationTimeFromUnitsMinutesSeconds() {
         // Arrange
-        var expirationUnits = TTExpirationDomain.expirationUnits() as [TTExpirationUnit]
+        var expirationUnits = TTExpirationDomain.expirationUnits() as! [TTExpirationUnit]
         XCTAssertEqual(expirationUnits.count, 3, "did you forget to add new tests for new units?")
         
         expirationUnits[0].currentValue = 0
@@ -437,7 +437,7 @@ class TTExpirationDomainTests: XCTestCase {
     
     func testExpirationTimeFromUnitsHoursSeconds() {
         // Arrange
-        var expirationUnits = TTExpirationDomain.expirationUnits() as [TTExpirationUnit]
+        var expirationUnits = TTExpirationDomain.expirationUnits() as! [TTExpirationUnit]
         XCTAssertEqual(expirationUnits.count, 3, "did you forget to add new tests for new units?")
         
         expirationUnits[0].currentValue = 7
@@ -453,7 +453,7 @@ class TTExpirationDomainTests: XCTestCase {
     
     func testExpirationTimeFromUnitsHoursMinutes() {
         // Arrange
-        var expirationUnits = TTExpirationDomain.expirationUnits() as [TTExpirationUnit]
+        var expirationUnits = TTExpirationDomain.expirationUnits() as! [TTExpirationUnit]
         XCTAssertEqual(expirationUnits.count, 3, "did you forget to add new tests for new units?")
         
         expirationUnits[0].currentValue = 7
@@ -469,7 +469,7 @@ class TTExpirationDomainTests: XCTestCase {
     
     func testExpirationTimeFromUnitsMaxValue() {
         // Arrange
-        var expirationUnits = TTExpirationDomain.expirationUnits() as [TTExpirationUnit]
+        var expirationUnits = TTExpirationDomain.expirationUnits() as! [TTExpirationUnit]
         XCTAssertEqual(expirationUnits.count, 3, "did you forget to add new tests for new units?")
         
         expirationUnits[0].currentValue = 23

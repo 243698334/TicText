@@ -13,9 +13,11 @@
 #import "TTActivity.h"
 
 #import "TTExpirationDomain.h"
+#import "UIView+Screenshot.h"
 
-#define kDefaultExpirationTime 3600
-#define kExpirationTimerIcon @"TicsTabBarIcon"
+#define kDefaultExpirationTime      3600
+#define kExpirationTimerIcon        @"TicsTabBarIcon"
+#define kMessagesToolbarHeight      44.0f
 
 @interface JSQMessagesViewController (PrivateMethods)
 
@@ -27,6 +29,7 @@
 @interface TTMessagesViewController ()
 
 @property (nonatomic, strong) UIView *expirationToolbar;
+@property (nonatomic, strong) TTMessagesToolbar *messagesToolbar;
 @property (nonatomic, strong) TTExpirationPickerController *pickerController;
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
@@ -58,6 +61,7 @@
     
     viewController.expirationTime = kDefaultExpirationTime;
     [viewController setupExpirationToolbar];
+    [viewController setupMessagesToolbar];
     
     return viewController;
 }
@@ -107,7 +111,7 @@
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     
-    [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
+    [self updateCustomUI];
 }
 
 - (void)didReceiveNewTic:(NSNotification *)notification {
@@ -199,24 +203,43 @@
     [self.expirationLabel setText:[TTExpirationDomain stringForTimeInterval:expiration]];
 }
 
+- (void)setupMessagesToolbar {
+    self.messagesToolbar = [[TTMessagesToolbar alloc] initWithFrame:[self messagesToolbarFrame]];
+    self.messagesToolbar.delegate = self;
+    [self.view addSubview:self.messagesToolbar];
+}
+
+- (CGRect)messagesToolbarFrame {
+    return CGRectMake(0,
+                      self.inputToolbar.frame.origin.y + self.inputToolbar.frame.size.height - kMessagesToolbarHeight,
+                      self.view.frame.size.width,
+                      kMessagesToolbarHeight);
+}
+
+- (void)updateCustomUI {
+    [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
+    [self.messagesToolbar setFrame:[self messagesToolbarFrame]];
+}
+
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant {
     [super jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant];
     
-    [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
+    [self updateCustomUI];
 }
 
 - (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy {
     [super jsq_adjustInputToolbarForComposerTextViewContentSizeChange:dy];
     
-    [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
+    [self updateCustomUI];
 }
 
 - (void)didPressAccessoryButton:(UIButton *)sender {
-    [self.pickerController dismiss];
+/*    [self.pickerController dismiss];
     
     self.pickerController = [[TTExpirationPickerController alloc] initWithExpirationTime:self.expirationTime];
     [self.pickerController setDelegate:self];
-    [self.pickerController present];
+    [self.pickerController present];*/
+    UIImage *image = [self.inputToolbar imageFromScreenshot];
 }
 
 #pragma mark - Helpers
@@ -516,6 +539,21 @@
         self.expirationTime = expirationTime;
         [self refreshExpirationToolbar:expirationTime];
     }
+}
+
+#pragma mark - TTMessagesToolbarDelegate
+- (void)messagesToolbar:(TTMessagesToolbar *)toolbar willShowItem:(TTMessagesToolbarItem *)item {
+    if (toolbar != self.messagesToolbar) {
+        return;
+    }
+    
+    if (![self.inputToolbar.contentView.textView isFirstResponder]) {
+        [self.inputToolbar.contentView.textView becomeFirstResponder];
+    }
+}
+
+- (void)messagesToolbar:(TTMessagesToolbar *)toolbar willHideItem:(TTMessagesToolbarItem *)item {
+    
 }
 
 @end

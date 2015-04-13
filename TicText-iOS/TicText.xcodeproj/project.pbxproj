@@ -50,6 +50,10 @@
 		CD935B6D1A98ED6F0017325C /* TTRootViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B6C1A98ED6F0017325C /* TTRootViewControllerTests.m */; };
 		CD9F92861AB8F552006FFE67 /* TTExpirationPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CD9F92851AB8F552006FFE67 /* TTExpirationPickerCell.m */; };
 		CD9F92881AB91130006FFE67 /* TTExpirationUnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F92871AB91130006FFE67 /* TTExpirationUnitTests.swift */; };
+		CDB970841ADB572D0054079B /* UIView+Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB970831ADB572D0054079B /* UIView+Screenshot.m */; };
+		CDB970881ADB60A80054079B /* TTMessagesToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB970871ADB60A80054079B /* TTMessagesToolbar.m */; };
+		CDB9708C1ADB6FFB0054079B /* TTMessagesToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB9708B1ADB6FFB0054079B /* TTMessagesToolbarItem.m */; };
+		CDB970901ADB78840054079B /* TTTextToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB9708F1ADB78840054079B /* TTTextToolbarItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,6 +143,14 @@
 		CD9F92841AB8F552006FFE67 /* TTExpirationPickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTExpirationPickerCell.h; sourceTree = "<group>"; };
 		CD9F92851AB8F552006FFE67 /* TTExpirationPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTExpirationPickerCell.m; sourceTree = "<group>"; };
 		CD9F92871AB91130006FFE67 /* TTExpirationUnitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTExpirationUnitTests.swift; sourceTree = "<group>"; };
+		CDB970821ADB572D0054079B /* UIView+Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Screenshot.h"; sourceTree = "<group>"; };
+		CDB970831ADB572D0054079B /* UIView+Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Screenshot.m"; sourceTree = "<group>"; };
+		CDB970861ADB60A80054079B /* TTMessagesToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMessagesToolbar.h; sourceTree = "<group>"; };
+		CDB970871ADB60A80054079B /* TTMessagesToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesToolbar.m; sourceTree = "<group>"; };
+		CDB9708A1ADB6FFB0054079B /* TTMessagesToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMessagesToolbarItem.h; sourceTree = "<group>"; };
+		CDB9708B1ADB6FFB0054079B /* TTMessagesToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesToolbarItem.m; sourceTree = "<group>"; };
+		CDB9708E1ADB78840054079B /* TTTextToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTextToolbarItem.h; sourceTree = "<group>"; };
+		CDB9708F1ADB78840054079B /* TTTextToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTextToolbarItem.m; sourceTree = "<group>"; };
 		E62ADB5018418278F1D7F35F /* libPods-TicText.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicText.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -270,6 +282,7 @@
 		2E402A181A96FE8D00C1C7BF /* Custom UI */ = {
 			isa = PBXGroup;
 			children = (
+				CDB970891ADB670D0054079B /* MessagesToolbar */,
 				CD9F92831AB8F530006FFE67 /* ExpirationPicker */,
 				0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */,
 				2E402A151A96FE8900C1C7BF /* TTFindFriendsTableViewCell.h */,
@@ -362,6 +375,8 @@
 				0E68055E1A85306F00C013D2 /* TTConstants.m */,
 				CD47483E1AB770DA00A4B8F6 /* TTExpirationDomain.h */,
 				CD47483F1AB770DA00A4B8F6 /* TTExpirationDomain.m */,
+				CDB970821ADB572D0054079B /* UIView+Screenshot.h */,
+				CDB970831ADB572D0054079B /* UIView+Screenshot.m */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -385,6 +400,27 @@
 				CD9F92851AB8F552006FFE67 /* TTExpirationPickerCell.m */,
 			);
 			name = ExpirationPicker;
+			sourceTree = "<group>";
+		};
+		CDB970891ADB670D0054079B /* MessagesToolbar */ = {
+			isa = PBXGroup;
+			children = (
+				CDB970861ADB60A80054079B /* TTMessagesToolbar.h */,
+				CDB970871ADB60A80054079B /* TTMessagesToolbar.m */,
+				CDB9708A1ADB6FFB0054079B /* TTMessagesToolbarItem.h */,
+				CDB9708B1ADB6FFB0054079B /* TTMessagesToolbarItem.m */,
+				CDB9708D1ADB780C0054079B /* ToolbarItems */,
+			);
+			name = MessagesToolbar;
+			sourceTree = "<group>";
+		};
+		CDB9708D1ADB780C0054079B /* ToolbarItems */ = {
+			isa = PBXGroup;
+			children = (
+				CDB9708E1ADB78840054079B /* TTTextToolbarItem.h */,
+				CDB9708F1ADB78840054079B /* TTTextToolbarItem.m */,
+			);
+			name = ToolbarItems;
 			sourceTree = "<group>";
 		};
 		EF6A02DA18A27C3A07C3888B /* Pods */ = {
@@ -569,6 +605,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */,
+				CDB970881ADB60A80054079B /* TTMessagesToolbar.m in Sources */,
 				CD2CD4FF1AB634D300CFC89F /* TTExpirationPickerController.m in Sources */,
 				0EA9482D1AA3CF0E00476D4E /* TTMessagesBubbleImage.m in Sources */,
 				0EACA8731A97CE0D00B93AAA /* TTSettingsViewController.m in Sources */,
@@ -576,9 +613,11 @@
 				0EACA86D1A97CDDD00B93AAA /* TTContactsViewController.m in Sources */,
 				0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */,
 				0EACA86A1A97CDC100B93AAA /* TTConversationsViewController.m in Sources */,
+				CDB970901ADB78840054079B /* TTTextToolbarItem.m in Sources */,
 				CD4D57C81A96B740002B5586 /* TTUser.m in Sources */,
 				CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */,
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
+				CDB9708C1ADB6FFB0054079B /* TTMessagesToolbarItem.m in Sources */,
 				0E6AFF781AB66DFF00FC69A9 /* Reachability.m in Sources */,
 				CD9F92861AB8F552006FFE67 /* TTExpirationPickerCell.m in Sources */,
 				CD935B681A98E9FA0017325C /* TTUtility.m in Sources */,
@@ -592,6 +631,7 @@
 				0EACA8781A99CB8800B93AAA /* TTActivity.m in Sources */,
 				CD4748401AB770DA00A4B8F6 /* TTExpirationDomain.m in Sources */,
 				0EC584E81A7864AA00025D71 /* main.m in Sources */,
+				CDB970841ADB572D0054079B /* UIView+Screenshot.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
