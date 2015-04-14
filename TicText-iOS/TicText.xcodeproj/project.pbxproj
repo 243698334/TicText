@@ -15,7 +15,6 @@
 		0E5769C81ADA54C60096601C /* TTConversationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5769C71ADA54C60096601C /* TTConversationTableViewCell.m */; };
 		0E576F0F1ADCE56A0096601C /* TTParallaxHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E576F0E1ADCE56A0096601C /* TTParallaxHeaderView.m */; };
 		0E576F151ADD159B0096601C /* TTComposeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E576F141ADD159B0096601C /* TTComposeView.m */; };
-		0E576F181ADD1E720096601C /* TTDropDownViewNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E576F171ADD1E720096601C /* TTDropDownViewNavigationController.m */; };
 		0E61D46B1AA5B08D00EF5826 /* TTInAppNotificationDesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */; };
 		0E61D4701AAC48C800EF5826 /* TTMessagesViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E61D46F1AAC48C800EF5826 /* TTMessagesViewControllerTests.m */; };
 		0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E68055E1A85306F00C013D2 /* TTConstants.m */; };
@@ -80,8 +79,6 @@
 		0E576F0E1ADCE56A0096601C /* TTParallaxHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTParallaxHeaderView.m; sourceTree = "<group>"; };
 		0E576F131ADD159B0096601C /* TTComposeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTComposeView.h; sourceTree = "<group>"; };
 		0E576F141ADD159B0096601C /* TTComposeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTComposeView.m; sourceTree = "<group>"; };
-		0E576F161ADD1E720096601C /* TTDropDownViewNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTDropDownViewNavigationController.h; sourceTree = "<group>"; };
-		0E576F171ADD1E720096601C /* TTDropDownViewNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTDropDownViewNavigationController.m; sourceTree = "<group>"; };
 		0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TTInAppNotificationDesign.json; sourceTree = "<group>"; };
 		0E61D46F1AAC48C800EF5826 /* TTMessagesViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesViewControllerTests.m; sourceTree = "<group>"; };
 		0E68055D1A846A0000C013D2 /* TTConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTConstants.h; sourceTree = "<group>"; };
@@ -287,8 +284,6 @@
 				0E576F0E1ADCE56A0096601C /* TTParallaxHeaderView.m */,
 				0E576F131ADD159B0096601C /* TTComposeView.h */,
 				0E576F141ADD159B0096601C /* TTComposeView.m */,
-				0E576F161ADD1E720096601C /* TTDropDownViewNavigationController.h */,
-				0E576F171ADD1E720096601C /* TTDropDownViewNavigationController.m */,
 			);
 			name = "Custom UI";
 			sourceTree = "<group>";
@@ -580,7 +575,6 @@
 				0E0565201A9DBEFB00242137 /* TTSettings.m in Sources */,
 				0EACA8781A99CB8800B93AAA /* TTActivity.m in Sources */,
 				0EC584E81A7864AA00025D71 /* main.m in Sources */,
-				0E576F181ADD1E720096601C /* TTDropDownViewNavigationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

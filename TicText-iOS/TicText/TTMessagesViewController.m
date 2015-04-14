@@ -38,6 +38,12 @@
     return messagesViewController;
 }
 
++ (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation {
+    TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewController];
+    messagesViewController.recipient = conversation.recipient;
+    return messagesViewController;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -69,6 +75,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    if (self.isKeyboardFirstResponder) {
+        [self.inputToolbar.contentView.textView becomeFirstResponder];
+    }
     self.collectionView.collectionViewLayout.springinessEnabled = NO;
 }
 

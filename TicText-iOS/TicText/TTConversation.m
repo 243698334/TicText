@@ -17,7 +17,11 @@
 }
 
 - (NSDate *)lastActivityTimestamp {
-    return self.lastTic.status == kTTTicStatusRead ? self.lastTic.receiveTimestamp : self.lastTic.sendTimestamp;
+    if (self.lastTic == nil) {
+        return [NSDate date];
+    } else {
+        return self.lastTic.status == kTTTicStatusRead ? self.lastTic.receiveTimestamp : self.lastTic.sendTimestamp;
+    }
 }
 
 @end

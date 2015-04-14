@@ -34,23 +34,43 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self generateFakeConversations];
     [self loadInterface];
     
     self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [self loadConversationsInBackgroundFromLocal:YES completion:^(NSError *error) {
+    [self loadConversationsInBackgroundFromLocal:YES completion:^(BOOL conversationsDidLoad, NSError *error) {
         if (error) {
             [TSMessage showNotificationInViewController:self title:@"Local Datastore Failed" subtitle:@"We are unable to locally load your conversations at this moment. Please wait for few seconds while we reload them from our server. " type:TSMessageNotificationTypeWarning];
-            [self loadConversationsInBackgroundFromLocal:NO completion:^(NSError *error) {
+            [self loadConversationsInBackgroundFromLocal:NO completion:^(BOOL conversationsDidLoad, NSError *error) {
                 [self.progressHUD removeFromSuperview];
-                [TSMessage showNotificationInViewController:self title:@"Concersations Synced" subtitle:@"We have just synced your conversations with our server. " type:TSMessageNotificationTypeSuccess];
-                [self reloadDataForViews];
+                if (conversationsDidLoad) {
+                    [TSMessage showNotificationInViewController:self title:@"Concersations Synced" subtitle:@"We have just synced your conversations with our server. " type:TSMessageNotificationTypeSuccess];
+                    [self reloadDataForViews];
+                } else {
+                    // TODO: no conversations
+                }
             }];
         } else {
-            [self.progressHUD removeFromSuperview];
-            [self reloadDataForViews];
+            if (conversationsDidLoad) {
+                [self.progressHUD removeFromSuperview];
+                [self reloadDataForViews];
+            } else {
+                [self.progressHUD removeFromSuperview];
+                [self loadConversationsInBackgroundFromLocal:NO completion:^(BOOL conversationsDidLoad, NSError *error) {
+                    if (conversationsDidLoad) {
+                        [TSMessage showNotificationInViewController:self title:@"Concersations Synced" subtitle:@"We have just synced your conversations with our server. " type:TSMessageNotificationTypeSuccess];
+                        [self reloadDataForViews];
+                    } else {
+                        // TODO: no conversations
+                    }
+                }];
+            }
         }
     }];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self reloadDataForViews];
 }
 
 - (void)loadInterface {
@@ -78,44 +98,33 @@
     self.unreadTicsView.delegate = self;
     self.unreadTicsView.clipsToBounds = YES;
     self.unreadTicsView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.view.bounds.size.height, 0); //Set frame again to shrink to 0.
-    
-    // compose view
-    self.composeView = [[TTComposeView alloc] initWithFrame:CGRectMake(0, 64, 0, 0)];
-    
 }
 
 - (void)showComposeView {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(collapseComposeView)];
     self.composeView = [[TTComposeView alloc] initWithFrame:CGRectMake(0, self.scrollToTopView.bounds.size.height - 20, self.view.frame.size.width, self.view.frame.size.height - 49)];
-    //self.composeView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.view.frame.size.width, self.view.frame.size.height - 49);
-    
-//    [UIView animateKeyframesWithDuration:0.25 delay:0 options:UIViewKeyframeAnimationOptionAllowUserInteraction animations:^{
-//        self.composeView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.view.frame.size.width, self.view.frame.size.height - 49);
-//        [self.view addSubview:self.composeView];
-//    } completion:nil];
-    
-//    [UIView animateWithDuration:0.25 animations:^{
-////        [self.view addSubview:self.composeView];
-////        self.composeView.frame = composeViewFrame;
-////        [self.composeView layoutSubviews];
-//    } completion:^(BOOL finished) {
-//        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(collapseComposeView)];
-//    }];
-    
-    [UIView animateKeyframesWithDuration:0.25 delay:0 options:UIViewKeyframeAnimationOptionAllowUserInteraction animations:^{
-        [self.view addSubview:self.composeView];
-        self.composeView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height - 20, self.view.frame.size.width, self.view.frame.size.height - 49);
-    } completion:nil];
+    self.composeView.delegate = self;
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.25;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    transition.type = kCATransitionPush;
+    transition.subtype = kCATransitionFromBottom;
+    transition.delegate = self;
+    [self.view addSubview:self.composeView];
+    [self.composeView.layer addAnimation:transition forKey:nil];
 }
 
 - (void)collapseComposeView {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(showComposeView)];
-    CGRect composeViewFrame = CGRectMake(0, self.scrollToTopView.bounds.size.height - 20, self.view.frame.size.width, 0);
-    [UIView animateWithDuration:0.25 animations:^{
-        self.composeView.frame = composeViewFrame;
+    [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
+        self.composeView.frame = CGRectMake(self.composeView.frame.origin.x, self.composeView.frame.origin.y - self.composeView.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
     } completion:^(BOOL finished) {
         [self.composeView removeFromSuperview];
     }];
+}
+
+- (void)removeComposeView {
+    [self.composeView removeFromSuperview];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -145,18 +154,22 @@
         cell.textLabel.text = currentConversation.recipient.displayName;
         cell.imageView.image = [[UIImage alloc] initWithData:currentConversation.recipient.profilePicture];
     }
-    if (currentConversation.lastTic.status == kTTTicStatusUnread) {
-        cell.detailTextLabel.text = @"[Unread Tic]";
-        // should have more UI effects here to highlight the unread Tic
-    } else if (currentConversation.lastTic.status == kTTTIcStatusExpired) {
-        cell.detailTextLabel.text = @"[Expired Tic]";
+    if (currentConversation.lastTic == nil) {
+        cell.detailTextLabel.text = @"[Draft]";
     } else {
-        if (currentConversation.lastTic.contentType == kTTTicContentTypeImage) {
-            cell.detailTextLabel.text = @"[Image]";
-        } else if (currentConversation.lastTic.contentType == kTTTicContentTypeVoice) {
-            cell.detailTextLabel.text = @"[Voice]";
+        if (currentConversation.lastTic.status == kTTTicStatusUnread) {
+            cell.detailTextLabel.text = @"[Unread Tic]";
+            // should have more UI effects here to highlight the unread Tic
+        } else if (currentConversation.lastTic.status == kTTTIcStatusExpired) {
+            cell.detailTextLabel.text = @"[Expired Tic]";
         } else {
-            cell.detailTextLabel.text = [NSString stringWithUTF8String:[currentConversation.lastTic.content bytes]];
+            if (currentConversation.lastTic.contentType == kTTTicContentTypeImage) {
+                cell.detailTextLabel.text = @"[Image]";
+            } else if (currentConversation.lastTic.contentType == kTTTicContentTypeVoice) {
+                cell.detailTextLabel.text = @"[Voice]";
+            } else {
+                cell.detailTextLabel.text = [NSString stringWithUTF8String:[currentConversation.lastTic.content bytes]];
+            }
         }
     }
     cell.lastActivityTimestamp = currentConversation.lastActivityTimestamp;
@@ -210,27 +223,33 @@
     return @"Nothing";
 }
 
-- (void)loadConversationsInBackgroundFromLocal:(BOOL)isLocalQuery completion:(void (^)(NSError *error))completion {
+- (void)loadConversationsInBackgroundFromLocal:(BOOL)isLocalQuery completion:(void (^)(BOOL conversationsDidLoad, NSError *error))completion {
     PFQuery *conversationsQuery = [TTConversation query];
     if (isLocalQuery) {
         [conversationsQuery fromPinWithName:kTTLocalDatastoreConversationsPinName];
     }
     [conversationsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        self.conversations = [objects mutableCopy];
-        [self.conversations sortUsingComparator:^NSComparisonResult(TTConversation *firstConversation, TTConversation *secondConversation) {
-            TTTic *firstTic = firstConversation.lastTic;
-            TTTic *secondTic = secondConversation.lastTic;
-            NSDate *firstLastActivityTimestamp = firstTic.status == kTTTicStatusRead ? firstTic.receiveTimestamp : firstTic.sendTimestamp;
-            NSDate *secondLastActivityTimestamp = secondTic.status == kTTTicStatusRead ? secondTic.receiveTimestamp : secondTic.sendTimestamp;
-            return [secondLastActivityTimestamp compare:firstLastActivityTimestamp];
-        }];
-        if (!isLocalQuery) {
-            [TTConversation unpinAllObjectsInBackgroundWithName:kTTLocalDatastoreConversationsPinName block:^(BOOL succeeded, NSError *error) {
-                [TTConversation pinAllInBackground:self.conversations withName:kTTLocalDatastoreConversationsPinName];
+        if (objects == nil || [objects count] == 0) {
+            if (completion) {
+                completion(NO, error);
+            }
+        } else {
+            self.conversations = [objects mutableCopy];
+            [self.conversations sortUsingComparator:^NSComparisonResult(TTConversation *firstConversation, TTConversation *secondConversation) {
+                TTTic *firstTic = firstConversation.lastTic;
+                TTTic *secondTic = secondConversation.lastTic;
+                NSDate *firstLastActivityTimestamp = firstTic.status == kTTTicStatusRead ? firstTic.receiveTimestamp : firstTic.sendTimestamp;
+                NSDate *secondLastActivityTimestamp = secondTic.status == kTTTicStatusRead ? secondTic.receiveTimestamp : secondTic.sendTimestamp;
+                return [secondLastActivityTimestamp compare:firstLastActivityTimestamp];
             }];
-        }
-        if (completion) {
-            completion(error);
+            if (!isLocalQuery) {
+                [TTConversation unpinAllObjectsInBackgroundWithName:kTTLocalDatastoreConversationsPinName block:^(BOOL succeeded, NSError *error) {
+                    [TTConversation pinAllInBackground:self.conversations withName:kTTLocalDatastoreConversationsPinName];
+                }];
+            }
+            if (completion) {
+                completion(YES, error);
+            }
         }
     }];
 }
@@ -245,7 +264,33 @@
 }
 
 - (void)composeViewDidSelectContact:(TTUser *)contact {
-    // TODO
+    [self collapseComposeView];
+    [contact fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *err) {
+        TTUser *currentFriend = (TTUser *)object;
+        PFQuery *conversationQuery = [TTConversation query];
+        [conversationQuery fromPinWithName:kTTLocalDatastoreConversationsPinName];
+        [conversationQuery whereKey:kTTConversationUserIdKey equalTo:currentFriend.objectId];
+        [conversationQuery whereKey:kTTConversationTypeKey notEqualTo:kTTConversationTypeAnonymous];
+        [conversationQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            TTConversation *currentConversation = nil;
+            if (error || object == nil) {
+                currentConversation = [TTConversation object];
+                currentConversation.type = kTTConversationTypeDefault;
+                currentConversation.userId = currentFriend.objectId;
+                currentConversation.recipient = currentFriend;
+                currentConversation.lastTic = nil;
+                [currentConversation pinInBackgroundWithName:kTTLocalDatastoreConversationsPinName];
+                [currentConversation saveEventually];
+            } else {
+                currentConversation = (TTConversation *)object;
+            }
+            TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewControllerWithRecipient:currentFriend];
+            messagesViewController.hidesBottomBarWhenPushed = YES;
+            messagesViewController.isKeyboardFirstResponder = YES;
+            [self.navigationController pushViewController:messagesViewController animated:YES];
+        }];
+
+    }];
 }
 
 - (void)unreadButtonPressed {

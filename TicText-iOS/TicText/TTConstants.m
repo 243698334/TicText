@@ -109,6 +109,10 @@ NSString * const kTTTicContentTypeVoice = @"voice";
 // Class name
 NSString * const kTTConversationClassName = @"Conversation";
 
+// Field keys
+NSString * const kTTConversationTypeKey = @"type";
+NSString * const kTTConversationUserIdKey = @"userId";
+
 // Type values
 NSString * const kTTConversationTypeDefault = @"default";
 NSString * const kTTConversationTypeAnonymous = @"anonymous";

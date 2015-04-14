@@ -9,13 +9,11 @@
 #import "TTComposeView.h"
 
 #import <QuartzCore/QuartzCore.h>
-#import <MBProgressHUD/MBProgressHUD.h>
 #import "TTParallaxHeaderView.h"
 #import "TTUser.h"
 
 @interface TTComposeView ()
 
-@property (nonatomic, strong) MBProgressHUD *progressHUD;
 @property (nonatomic, strong) TTParallaxHeaderView *parallaxHeaderView;
 @property (nonatomic, strong) UITableView *contactsTableView;
 
@@ -27,7 +25,7 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.parallaxHeaderView = [[TTParallaxHeaderView alloc] initWithTitle:@"Start Ticing with your friends." image:[UIImage imageNamed:@"ComposeHeader"] size:CGSizeMake(self.frame.size.width, self.frame.size.width * 0.375)];
+        self.parallaxHeaderView = [[TTParallaxHeaderView alloc] initWithTitle:@"Start Ticing with your friends" image:[UIImage imageNamed:@"ComposeHeader"] size:CGSizeMake(self.frame.size.width, self.frame.size.width * 0.375)];
         self.contactsTableView = [[UITableView alloc] initWithFrame:self.frame style:UITableViewStyleGrouped];
         self.contactsTableView.delegate = self;
         self.contactsTableView.dataSource = self;
@@ -35,13 +33,11 @@
         [self.contactsTableView setTableHeaderView:self.parallaxHeaderView];
         [self addSubview:self.contactsTableView];
         
-        self.progressHUD = [MBProgressHUD showHUDAddedTo:self animated:YES];
         PFQuery *contactsQuery = [TTUser query];
         [contactsQuery fromPinWithName:kTTLocalDatastoreFriendsPinName];
         [contactsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             self.contacts = objects;
             [self.contactsTableView reloadData];
-            [self.progressHUD removeFromSuperview];
         }];
         [self.parallaxHeaderView refreshBluredImageView];
     }
@@ -77,13 +73,13 @@
     }
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"ComposeTableViewCell"];
+    // TODO: use Jack's ContactsTableViewCell
     
     UIImage *profilePicture = [UIImage imageWithData:((TTUser *)[self.contacts objectAtIndex:indexPath.row]).profilePicture];
     CGRect imageViewFrame = cell.imageView.frame;
-    imageViewFrame.size.height = imageViewFrame.size.width = 40;
     cell.imageView.frame = imageViewFrame;
     cell.imageView.image = profilePicture;
-    cell.imageView.layer.cornerRadius = 20;
+    cell.imageView.layer.cornerRadius = 25;
     cell.imageView.clipsToBounds = YES;
     
     cell.textLabel.text = ((TTUser *)[self.contacts objectAtIndex:indexPath.row]).displayName;
@@ -106,7 +102,6 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView == self.contactsTableView) {
-        // pass the current offset of the UITableView so that the ParallaxHeaderView layouts the subViews.
         [self.parallaxHeaderView layoutHeaderViewForScrollViewOffset:scrollView.contentOffset];
     }
 }

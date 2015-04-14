@@ -12,9 +12,14 @@
 #import <TSMessages/TSMessageView.h>
 #import "TTMessagesBubbleImage.h"
 #import "TTUser.h"
+#import "TTConversation.h"
 
 @interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, TSMessageViewProtocol>
 
+@property (nonatomic, assign) BOOL isKeyboardFirstResponder;
+
 + (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;
+
++ (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation;
 
 @end

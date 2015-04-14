@@ -44,7 +44,7 @@
     tmpFrame.origin.x = 58;
     self.detailTextLabel.frame = tmpFrame;
     
-    UILabel *lastTicTimestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 10)];
+    UILabel *lastTicTimestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 15)];
     lastTicTimestampLabel.font = [UIFont systemFontOfSize:10];
     lastTicTimestampLabel.textAlignment = NSTextAlignmentCenter;
     

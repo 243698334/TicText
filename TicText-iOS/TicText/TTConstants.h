@@ -112,6 +112,10 @@ extern NSString * const kTTTicContentTypeVoice;
 // Class name
 extern NSString * const kTTConversationClassName;
 
+// Field keys
+extern NSString * const kTTConversationTypeKey;
+extern NSString * const kTTConversationUserIdKey;
+
 // Type values
 extern NSString * const kTTConversationTypeDefault;
 extern NSString * const kTTConversationTypeAnonymous;
