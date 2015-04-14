@@ -137,7 +137,7 @@ class TTExpirationPickerControllerTests: XCTestCase {
         pickerController.dismiss()
     }
     
-    func testDismissDelegateZeroExpirationTime() {
+    /*func testDismissDelegateZeroExpirationTime() {
         // Arrange
         let messageViewController: TTMessagesViewController = TTMessagesViewController()
         messageViewController.expirationTime = 420
@@ -171,7 +171,7 @@ class TTExpirationPickerControllerTests: XCTestCase {
         
         // Assert
         XCTAssertEqual(messageViewController.expirationTime, 23 * 60 * 60 + 59 * 60 + 59, "expiration time not updated")
-    }
+    }*/
     
     func testSelectRowSecondsZeroOnly() {
         // Arrange

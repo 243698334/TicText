@@ -10,6 +10,13 @@
 
 @implementation TTTextToolbarItem
 
+- (id)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        [self setTitle:@"Aa" forState:UIControlStateNormal];
+    }
+    return self;
+}
+
 - (UIView *)contentView {
     return nil;
 }

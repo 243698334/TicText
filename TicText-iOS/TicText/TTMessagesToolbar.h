@@ -13,6 +13,9 @@
 
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar willShowItem:(TTMessagesToolbarItem *)item;
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar willHideItem:(TTMessagesToolbarItem *)item;
+- (void)messagesToolbar:(TTMessagesToolbar *)toolbar setAnonymousTic:(BOOL)anonymous;
+- (void)messagesToolbar:(TTMessagesToolbar *)toolbar setExpirationTime:(NSTimeInterval)expirationTime;
+- (NSTimeInterval)currentExpirationTime;
 
 @end
 

@@ -45,6 +45,8 @@
 		CD4D57CC1A96B929002B5586 /* TTUserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57CB1A96B929002B5586 /* TTUserTests.m */; };
 		CD4D57D31A96C97D002B5586 /* TTTestHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57D21A96C97D002B5586 /* TTTestHelper.m */; };
 		CD4D57D61A96E9EE002B5586 /* TTLogInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD4D57D51A96E9EE002B5586 /* TTLogInViewController.xib */; };
+		CD8C0ABA1ADCA0F400EA9874 /* TTAnonymousToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CD8C0AB91ADCA0F400EA9874 /* TTAnonymousToolbarItem.m */; };
+		CD8C0ABD1ADCA12800EA9874 /* TTExpirationToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CD8C0ABC1ADCA12800EA9874 /* TTExpirationToolbarItem.m */; };
 		CD935B681A98E9FA0017325C /* TTUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B671A98E9FA0017325C /* TTUtility.m */; };
 		CD935B6A1A98EA9A0017325C /* TTUtilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B691A98EA9A0017325C /* TTUtilityTests.m */; };
 		CD935B6D1A98ED6F0017325C /* TTRootViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD935B6C1A98ED6F0017325C /* TTRootViewControllerTests.m */; };
@@ -136,6 +138,10 @@
 		CD4D57D11A96C97D002B5586 /* TTTestHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTestHelper.h; sourceTree = "<group>"; };
 		CD4D57D21A96C97D002B5586 /* TTTestHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTestHelper.m; sourceTree = "<group>"; };
 		CD4D57D51A96E9EE002B5586 /* TTLogInViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TTLogInViewController.xib; sourceTree = "<group>"; };
+		CD8C0AB81ADCA0F400EA9874 /* TTAnonymousToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTAnonymousToolbarItem.h; sourceTree = "<group>"; };
+		CD8C0AB91ADCA0F400EA9874 /* TTAnonymousToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTAnonymousToolbarItem.m; sourceTree = "<group>"; };
+		CD8C0ABB1ADCA12800EA9874 /* TTExpirationToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTExpirationToolbarItem.h; sourceTree = "<group>"; };
+		CD8C0ABC1ADCA12800EA9874 /* TTExpirationToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTExpirationToolbarItem.m; sourceTree = "<group>"; };
 		CD935B661A98E9FA0017325C /* TTUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTUtility.h; sourceTree = "<group>"; };
 		CD935B671A98E9FA0017325C /* TTUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUtility.m; sourceTree = "<group>"; };
 		CD935B691A98EA9A0017325C /* TTUtilityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUtilityTests.m; sourceTree = "<group>"; };
@@ -419,6 +425,10 @@
 			children = (
 				CDB9708E1ADB78840054079B /* TTTextToolbarItem.h */,
 				CDB9708F1ADB78840054079B /* TTTextToolbarItem.m */,
+				CD8C0AB81ADCA0F400EA9874 /* TTAnonymousToolbarItem.h */,
+				CD8C0AB91ADCA0F400EA9874 /* TTAnonymousToolbarItem.m */,
+				CD8C0ABB1ADCA12800EA9874 /* TTExpirationToolbarItem.h */,
+				CD8C0ABC1ADCA12800EA9874 /* TTExpirationToolbarItem.m */,
 			);
 			name = ToolbarItems;
 			sourceTree = "<group>";
@@ -613,11 +623,13 @@
 				0EACA86D1A97CDDD00B93AAA /* TTContactsViewController.m in Sources */,
 				0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */,
 				0EACA86A1A97CDC100B93AAA /* TTConversationsViewController.m in Sources */,
+				CD8C0ABA1ADCA0F400EA9874 /* TTAnonymousToolbarItem.m in Sources */,
 				CDB970901ADB78840054079B /* TTTextToolbarItem.m in Sources */,
 				CD4D57C81A96B740002B5586 /* TTUser.m in Sources */,
 				CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */,
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
 				CDB9708C1ADB6FFB0054079B /* TTMessagesToolbarItem.m in Sources */,
+				CD8C0ABD1ADCA12800EA9874 /* TTExpirationToolbarItem.m in Sources */,
 				0E6AFF781AB66DFF00FC69A9 /* Reachability.m in Sources */,
 				CD9F92861AB8F552006FFE67 /* TTExpirationPickerCell.m in Sources */,
 				CD935B681A98E9FA0017325C /* TTUtility.m in Sources */,

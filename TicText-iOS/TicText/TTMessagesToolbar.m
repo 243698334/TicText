@@ -26,9 +26,14 @@
         self.selectedIndex = -1;
         
         [self setupTopBorder];
-        [self setupButtons];
     }
     return self;
+}
+
+- (void)setDelegate:(id<TTMessagesToolbarDelegate>)delegate {
+    _delegate = delegate;
+    
+    [self setupButtons];
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -49,6 +54,7 @@
 - (void)setupButtons {
     for (int i = 0; i < self.toolbarItems.count; i++) {
         TTMessagesToolbarItem *item = self.toolbarItems[i];
+        item.toolbar = self;
         
         // Modify the button for our use.
         [item setFrame:[self frameForButtonIndex:i]];
@@ -64,28 +70,31 @@
 }
 
 - (void)toggleItem:(TTMessagesToolbarItem *)item {
-    for (TTMessagesToolbarItem *otherItem in self.toolbarItems) {
-        if (item != otherItem) {
-            if (otherItem.selected) {
-                otherItem.selected = NO;
-                [self.delegate messagesToolbar:self willHideItem:otherItem];
-            }
-        }
+    if ([self.toolbarItems indexOfObject:item] == self.selectedIndex) {
+        return;
     }
     
-    self.selectedIndex = [self.toolbarItems indexOfObject:item];
-    NSLog(@"selected index is now %ld", self.selectedIndex);
-    item.selected = YES;
-    [self.delegate messagesToolbar:self willShowItem:item];
+    TTMessagesToolbarItem *oldItem = nil;
+    if (self.selectedIndex >= 0) {
+        oldItem = self.toolbarItems[self.selectedIndex];
+        [oldItem buttonOnDeselect:self];
+    }
     
-    // Add content view to window. Hopefully, the delegate displayed the keyboard so its UI
-    // will automatically adjust.
+    [item buttonOnSelect:self];
+    if ([item switchViewOnAction]) {
+        self.selectedIndex = [self.toolbarItems indexOfObject:item];
+        [self.delegate messagesToolbar:self willShowItem:item];
+    }
 }
 
 #define kToolbarButtonWidth (self.frame.size.height)
 #define kToolbarButtonHeight kToolbarButtonWidth
 - (CGRect)frameForButtonIndex:(NSInteger)index {
-    return CGRectMake(index * kToolbarButtonWidth, 0, kToolbarButtonWidth, kToolbarButtonHeight);
+    CGFloat xOffset = 0.0f;
+    for (int i = 0; i < index; i++) {
+        xOffset += [self.toolbarItems[i] widthMultiplier] * kToolbarButtonWidth;
+    }
+    return CGRectMake(xOffset, 0, [self.toolbarItems[index] widthMultiplier] * kToolbarButtonWidth, kToolbarButtonHeight);
 }
 
 @end

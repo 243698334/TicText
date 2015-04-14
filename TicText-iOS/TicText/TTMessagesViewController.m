@@ -17,11 +17,12 @@
 
 #import "TTMessagesToolbarItem.h"
 #import "TTTextToolbarItem.h"
+#import "TTAnonymousToolbarItem.h"
+#import "TTExpirationToolbarItem.h"
 
 #import <JSQMessagesViewController/JSQMessagesKeyboardController.h>
 
 #define kDefaultExpirationTime      3600
-#define kExpirationTimerIcon        @"TicsTabBarIcon"
 #define kMessagesToolbarHeight      44.0f
 
 @interface JSQMessagesViewController (PrivateMethods)
@@ -40,6 +41,8 @@
 @property (nonatomic) CGFloat realToolbarBottomLayoutGuideConstrant;
 @property (nonatomic, strong) TTMessagesToolbar *messagesToolbar;
 @property (nonatomic, strong) UIView *toolbarContentView;
+
+@property (nonatomic) BOOL isAnonymous;
 
 @property (nonatomic, strong) TTExpirationPickerController *pickerController;
 
@@ -65,14 +68,10 @@
     viewController.view.backgroundColor = [UIColor grayColor];
     viewController.navigationItem.title = @"Some Dialog";
     viewController.hidesBottomBarWhenPushed = YES;
-    
-    /*UIButton *expirationTimerButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [expirationTimerButton setImage:[UIImage imageNamed:kExpirationTimerIcon] forState:UIControlStateNormal];
-    viewController.inputToolbar.contentView.leftBarButtonItem = expirationTimerButton;*/
+
     viewController.inputToolbar.contentView.leftBarButtonItem = nil;
     
     viewController.expirationTime = kDefaultExpirationTime;
-    [viewController setupExpirationToolbar];
     [viewController setupMessagesToolbar];
     
     return viewController;
@@ -113,6 +112,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.collectionView.collectionViewLayout.springinessEnabled = NO;
+    [self jsq_setToolbarBottomLayoutGuideConstant:0];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -188,35 +188,8 @@
     }];
 }
 
-#define kExpirationToolbarHeight 32.0f
-#define kExpirationToolbarAlpha 0.60f
-- (CGRect)expirationToolbarFrame {
-    return CGRectMake(0, self.inputToolbar.frame.origin.y - kExpirationToolbarHeight,
-                      self.inputToolbar.frame.size.width, kExpirationToolbarHeight);
-}
-
-- (void)setupExpirationToolbar {
-    /*self.expirationToolbar = [[UIView alloc] initWithFrame:[self expirationToolbarFrame]];
-    [self.expirationToolbar setBackgroundColor:[UIColor whiteColor]];
-    [self.expirationToolbar setAlpha:kExpirationToolbarAlpha];
-    
-    self.expirationLabel = [[UILabel alloc] initWithFrame:CGRectInset(CGRectMake(0, 0, self.expirationToolbar.frame.size.width, self.expirationToolbar.frame.size.height), 8.0f, 8.0f)];
-    [self.expirationLabel setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
-    [self.expirationLabel setAdjustsFontSizeToFitWidth:YES];
-    [self.expirationLabel setFont:[UIFont systemFontOfSize:12.0f]];
-    [self.expirationToolbar addSubview:self.expirationLabel];
-    
-    [self.view addSubview:self.expirationToolbar];
-    
-    [self refreshExpirationToolbar:self.expirationTime];*/
-}
-
-- (void)refreshExpirationToolbar:(NSTimeInterval)expiration {
-    [self.expirationLabel setText:[TTExpirationDomain stringForTimeInterval:expiration]];
-}
-
 - (void)setupMessagesToolbar {
-    NSArray *toolbarItems = @[[[TTTextToolbarItem alloc] init], [[TTMessagesToolbarItem alloc] init]];
+    NSArray *toolbarItems = @[[[TTTextToolbarItem alloc] init], [[TTMessagesToolbarItem alloc] init], [[TTAnonymousToolbarItem alloc] init], [[TTExpirationToolbarItem alloc] init]];
     self.messagesToolbar = [[TTMessagesToolbar alloc] initWithFrame:[self messagesToolbarFrame] toolbarItems:toolbarItems];
     self.messagesToolbar.delegate = self;
     [self.view addSubview:self.messagesToolbar];
@@ -228,8 +201,13 @@
 }
 
 - (CGRect)inputToolbarFrame {
-    return CGRectMake(0, self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant - kMessagesToolbarHeight * 2,
+    if (self.messagesToolbar.selectedIndex == 0) {
+        CGFloat originY = self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant - kMessagesToolbarHeight - self.inputToolbar.frame.size.height;
+        return CGRectMake(0, originY,
                       self.inputToolbar.frame.size.width, self.inputToolbar.frame.size.height);
+    } else {
+        return [self messagesToolbarFrame];
+    }
 }
 
 - (CGRect)messagesToolbarFrame {
@@ -263,7 +241,6 @@
 
 - (void)updateCustomUI {
     [self.inputToolbar setFrame:[self inputToolbarFrame]];
-    //[self.expirationToolbar setFrame:[self expirationToolbarFrame]];
     [self.messagesToolbar setFrame:[self messagesToolbarFrame]];
     [self.toolbarContentView setFrame:[self toolbarContentViewFrame]];
 }
@@ -290,15 +267,6 @@
     [super jsq_adjustInputToolbarForComposerTextViewContentSizeChange:dy];
     
     [self updateCustomUI];
-}
-
-- (void)didPressAccessoryButton:(UIButton *)sender {
-/*    [self.pickerController dismiss];
-    
-    self.pickerController = [[TTExpirationPickerController alloc] initWithExpirationTime:self.expirationTime];
-    [self.pickerController setDelegate:self];
-    [self.pickerController present];*/
-    
 }
 
 #pragma mark - Helpers
@@ -384,7 +352,11 @@
     JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:date text:text];
     
     // New Tic
-    TTTic *newTic = [self ticWithType:kTTTicTypeDefault sender:[TTUser currentUser] recipient:self.recipient timeLimit:self.expirationTime message:newJSQMessage];
+    NSString *ticType = kTTTicTypeDefault;
+    if (self.isAnonymous) {
+        ticType = kTTTIcTypeAnonymous;
+    }
+    TTTic *newTic = [self ticWithType:ticType sender:[TTUser currentUser] recipient:self.recipient timeLimit:self.expirationTime message:newJSQMessage];
     [newTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
     
     // Add to local array
@@ -505,7 +477,6 @@
     return 0.0f;
 }
 
-
 #pragma mark - Responding to collection view tap events
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender {
@@ -592,28 +563,16 @@
     messageView.alpha = 0.95;
 }
 
-#pragma mark - TTExpirationPickerControllerDelegate
-- (void)pickerController:(TTExpirationPickerController *)controller didFinishWithExpiration:(NSTimeInterval)expirationTime {
-    if (controller == self.pickerController) {
-        self.expirationTime = expirationTime;
-        [self refreshExpirationToolbar:expirationTime];
-    }
-}
-
 #pragma mark - TTMessagesToolbarDelegate
 
 #define kInputToolbarHideAnimationDuration 0.44
 #define kInputToolbarShowAnimationDuration 0.23
 
 - (CGRect)caculateInputToolbarFrameHidden:(BOOL)hidden {
-    CGFloat inputToolbarHeight = self.inputToolbar.frame.size.height;
-    CGFloat inputToolbarWidth = self.inputToolbar.frame.size.width;
-    if (hidden) {
-        return CGRectMake(0, self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant - inputToolbarHeight,
-                          inputToolbarWidth, inputToolbarHeight);
+    if (!hidden) {
+        return [self inputToolbarFrame];
     } else {
-        return CGRectMake(0, self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant - inputToolbarHeight * 2,
-                          inputToolbarWidth, inputToolbarHeight);
+        return CGRectOffset([self inputToolbarFrame], 0, self.inputToolbar.frame.size.height);
     }
 }
 
@@ -629,11 +588,13 @@
                          [self.inputToolbar setFrame:[self caculateInputToolbarFrameHidden:hidden]];
                          if (hidden) {
                              [self.messagesToolbar.topBorder setAlpha:1.0f];
-                              [self.inputToolbar setHidden:YES];
                          } else {
                              [self.messagesToolbar.topBorder setAlpha:0.0f];
                          }
                      } completion:^(BOOL finished) {
+                         if (hidden) {
+                             [self.inputToolbar setHidden:YES];
+                         }
                          [self jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
                      }];
 }
@@ -665,6 +626,22 @@
     }
     
     NSLog(@"item hidden with class: %@", item.class);
+}
+
+- (void)messagesToolbar:(TTMessagesToolbar *)toolbar setAnonymousTic:(BOOL)anonymous {
+    if (toolbar == self.messagesToolbar) {
+        self.isAnonymous = anonymous;
+    }
+}
+
+- (void)messagesToolbar:(TTMessagesToolbar *)toolbar setExpirationTime:(NSTimeInterval)expirationTime {
+    if (toolbar == self.messagesToolbar) {
+        self.expirationTime = expirationTime;
+    }
+}
+
+- (NSTimeInterval)currentExpirationTime {
+    return self.expirationTime;
 }
 
 #pragma mark - Helper Methods
