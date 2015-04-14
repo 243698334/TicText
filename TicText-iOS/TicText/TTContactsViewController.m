@@ -108,6 +108,8 @@
     //used to create a new tic if the person presses the button
     cell.createTicButtton.tag = indexPath.row;
     [cell.createTicButtton addTarget:self action:@selector(createConversationFromButton:) forControlEvents:UIControlEventTouchUpInside];
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone; //no need for selection
     return cell;
 }
 

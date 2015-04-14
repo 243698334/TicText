@@ -30,14 +30,14 @@
         self.nameLabel = [[UILabel alloc] init];
         self.createTicButtton = [[UIButton alloc] init];
         
+        self.createTicVisible = NO;
+        
         [self.createTicButtton setImage:[UIImage imageNamed:@"TicsTabBarIcon"] forState:UIControlStateNormal];
         [self.createTicButtton setImage:[UIImage imageNamed:@"TicsTabBarIconSelected"] forState:UIControlStateHighlighted];
         
         [self addSubview:self.profileImageView];
         [self addSubview:self.nameLabel];
         [self addSubview:self.createTicButtton];
-        
-        self.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     return self;
 }
@@ -70,6 +70,10 @@
             });
         });
     }];
+}
+
+-(void)setCreateTicVisible:(BOOL)createTicVisible {
+    [self.createTicButtton setHidden:!createTicVisible];
 }
 
 @end

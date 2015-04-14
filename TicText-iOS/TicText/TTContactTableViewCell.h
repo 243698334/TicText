@@ -15,4 +15,6 @@
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIButton *createTicButtton;
+
+@property (nonatomic) BOOL createTicVisible;
 @end
