@@ -16,4 +16,8 @@
     return kTTConversationClassName;
 }
 
+- (NSDate *)lastActivityTimestamp {
+    return self.lastTic.status == kTTTicStatusRead ? self.lastTic.receiveTimestamp : self.lastTic.sendTimestamp;
+}
+
 @end

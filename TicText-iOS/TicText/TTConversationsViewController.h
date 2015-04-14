@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TTConversationsViewController : UIViewController
+#import "TTScrollToTopView.h"
+#import "TTUnreadTicsView.h"
+#import "TTComposeView.h"
+#import "TTConversationTableViewCell.h"
+
+@interface TTConversationsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, TTScrollToTopViewDelegate, TTUnreadTicsViewDelegate, TTComposeViewDelegate>
 
 @end

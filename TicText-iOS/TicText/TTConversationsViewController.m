@@ -9,16 +9,24 @@
 #import "TTConversationsViewController.h"
 
 #import <MBProgressHUD/MBProgressHUD.h>
+#import <TSMessages/TSMessageView.h>
 #import "TTMessagesViewController.h"
+
+#import "TTUtility.h"
 #import "TTUser.h"
+#import "TTConversation.h"
 
-@interface TTConversationsViewController () {
-    NSNumber *devButtonCount;
-    NSMutableDictionary *devFriendsDictionary;
-    NSMutableDictionary *devButtonsDictionary;
-}
+@interface TTConversationsViewController ()
 
+@property (nonatomic) BOOL tableVisible;
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
+@property (nonatomic, strong) TTScrollToTopView *scrollToTopView;
+@property (nonatomic, strong) TTUnreadTicsView *unreadTicsView;
+@property (nonatomic, strong) TTComposeView *composeView;
+@property (nonatomic, strong) UITableView *conversationsTableView;
+
+@property (nonatomic, strong) NSMutableArray *conversations;
+@property (nonatomic, strong) NSMutableArray *unreadTics;
 
 @end
 
@@ -26,55 +34,315 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self generateFakeConversations];
+    [self loadInterface];
     
-    self.navigationItem.title = @"TicText";
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self setupDevButtons];
-}
-
-- (void)setupDevButtons {
-    NSArray *devButtonsKeys = [devButtonsDictionary allKeys];
-    for (NSNumber *devButtonKey in devButtonsKeys) {
-        UIButton *devButton = [devButtonsDictionary objectForKey:devButtonKey];
-        [devButton removeFromSuperview];
-    }
-    
-    devButtonCount = [NSNumber numberWithInteger:0];
-    devFriendsDictionary = [[NSMutableDictionary alloc] init];
-    devButtonsDictionary = [[NSMutableDictionary alloc] init];
-    
-    PFQuery *localFriendsQuery = [TTUser query];
-    [localFriendsQuery fromLocalDatastore];
-    [localFriendsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        for (TTUser *currentFriend in objects) {
-            [self setupDevChatButton:currentFriend];
+    self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [self loadConversationsInBackgroundFromLocal:YES completion:^(NSError *error) {
+        if (error) {
+            [TSMessage showNotificationInViewController:self title:@"Local Datastore Failed" subtitle:@"We are unable to locally load your conversations at this moment. Please wait for few seconds while we reload them from our server. " type:TSMessageNotificationTypeWarning];
+            [self loadConversationsInBackgroundFromLocal:NO completion:^(NSError *error) {
+                [self.progressHUD removeFromSuperview];
+                [TSMessage showNotificationInViewController:self title:@"Concersations Synced" subtitle:@"We have just synced your conversations with our server. " type:TSMessageNotificationTypeSuccess];
+                [self reloadDataForViews];
+            }];
+        } else {
+            [self.progressHUD removeFromSuperview];
+            [self reloadDataForViews];
         }
     }];
 }
 
-- (void)setupDevChatButton:(TTUser *)user {
-    UIButton *chatButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    chatButton.tag = [devButtonCount integerValue];
-    [chatButton addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [chatButton setTitle:[NSString stringWithFormat:@"Chat with %@", user.displayName] forState:UIControlStateNormal];
-    chatButton.frame = CGRectMake([UIScreen mainScreen].bounds.size.width * 0.2,
-                                  [UIScreen mainScreen].bounds.size.height * (0.25 + 0.05 * devButtonCount.integerValue),
-                                  [UIScreen mainScreen].bounds.size.width * 0.5, 44);
-    [self.view addSubview:chatButton];
-    [devFriendsDictionary setObject:user forKey:devButtonCount];
-    [devButtonsDictionary setObject:chatButton forKey:devButtonCount];
-    devButtonCount = [NSNumber numberWithInteger:devButtonCount.integerValue + 1];
+- (void)loadInterface {
+    // navigation bar
+    self.navigationItem.title = @"TicText";
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(showComposeView)];
+    
+    // set up tableview
+    self.conversationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height) style:UITableViewStylePlain];
+    self.conversationsTableView.delegate = self;
+    self.conversationsTableView.dataSource = self;
+    [self.conversationsTableView registerClass:[TTConversationTableViewCell class] forCellReuseIdentifier:@"cell"];
+    self.conversationsTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.conversationsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:self.conversationsTableView];
+    
+    // scroll to top view
+    self.scrollToTopView = [[TTScrollToTopView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
+    self.scrollToTopView.unreadMessages = [self.unreadTics count];
+    self.scrollToTopView.delegate = self;
+    
+    // unread tics view
+    self.unreadTicsView = [[TTUnreadTicsView alloc] initWithFrame:CGRectMake(0, 44, self.view.bounds.size.width, 44 * self.unreadTics.count)];
+    self.unreadTicsView.delegate = self;
+    self.unreadTicsView.clipsToBounds = YES;
+    self.unreadTicsView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.view.bounds.size.height, 0); //Set frame again to shrink to 0.
+    
+    // compose view
+    self.composeView = [[TTComposeView alloc] initWithFrame:CGRectMake(0, 64, 0, 0)];
+    
 }
 
-- (void)buttonTapped:(UIButton *)button {
-    NSNumber *devFriendKey = [NSNumber numberWithInteger:button.tag];
-    TTUser *currentFriend = [devFriendsDictionary objectForKey:devFriendKey];
-    TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewControllerWithRecipient:currentFriend];
-    messagesViewController.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:messagesViewController animated:YES];
+- (void)showComposeView {
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(collapseComposeView)];
+    self.composeView = [[TTComposeView alloc] initWithFrame:CGRectMake(0, self.scrollToTopView.bounds.size.height - 20, self.view.frame.size.width, self.view.frame.size.height - 49)];
+    //self.composeView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.view.frame.size.width, self.view.frame.size.height - 49);
+    
+//    [UIView animateKeyframesWithDuration:0.25 delay:0 options:UIViewKeyframeAnimationOptionAllowUserInteraction animations:^{
+//        self.composeView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.view.frame.size.width, self.view.frame.size.height - 49);
+//        [self.view addSubview:self.composeView];
+//    } completion:nil];
+    
+//    [UIView animateWithDuration:0.25 animations:^{
+////        [self.view addSubview:self.composeView];
+////        self.composeView.frame = composeViewFrame;
+////        [self.composeView layoutSubviews];
+//    } completion:^(BOOL finished) {
+//        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(collapseComposeView)];
+//    }];
+    
+    [UIView animateKeyframesWithDuration:0.25 delay:0 options:UIViewKeyframeAnimationOptionAllowUserInteraction animations:^{
+        [self.view addSubview:self.composeView];
+        self.composeView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height - 20, self.view.frame.size.width, self.view.frame.size.height - 49);
+    } completion:nil];
 }
+
+- (void)collapseComposeView {
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(showComposeView)];
+    CGRect composeViewFrame = CGRectMake(0, self.scrollToTopView.bounds.size.height - 20, self.view.frame.size.width, 0);
+    [UIView animateWithDuration:0.25 animations:^{
+        self.composeView.frame = composeViewFrame;
+    } completion:^(BOOL finished) {
+        [self.composeView removeFromSuperview];
+    }];
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [self.conversations count];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [TTConversationTableViewCell height];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    TTConversation *currentConversation = [self.conversations objectAtIndex:indexPath.row];
+    TTConversationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    if (currentConversation.type == kTTConversationTypeAnonymous) {
+        cell.textLabel.text = @"Anonymous";
+        cell.imageView.image = nil;
+    } else {
+        cell.textLabel.text = currentConversation.recipient.displayName;
+        cell.imageView.image = [[UIImage alloc] initWithData:currentConversation.recipient.profilePicture];
+    }
+    if (currentConversation.lastTic.status == kTTTicStatusUnread) {
+        cell.detailTextLabel.text = @"[Unread Tic]";
+        // should have more UI effects here to highlight the unread Tic
+    } else if (currentConversation.lastTic.status == kTTTIcStatusExpired) {
+        cell.detailTextLabel.text = @"[Expired Tic]";
+    } else {
+        if (currentConversation.lastTic.contentType == kTTTicContentTypeImage) {
+            cell.detailTextLabel.text = @"[Image]";
+        } else if (currentConversation.lastTic.contentType == kTTTicContentTypeVoice) {
+            cell.detailTextLabel.text = @"[Voice]";
+        } else {
+            cell.detailTextLabel.text = [NSString stringWithUTF8String:[currentConversation.lastTic.content bytes]];
+        }
+    }
+    cell.lastActivityTimestamp = currentConversation.lastActivityTimestamp;
+    return cell;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    CGFloat height = 0;
+    if (self.tableVisible) {
+        height = self.scrollToTopView.bounds.size.height + self.unreadTicsView.bounds.size.height;
+    } else {
+        height = self.scrollToTopView.bounds.size.height;
+    }
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height)];
+    [view addSubview:self.scrollToTopView];
+    
+    if (self.tableVisible) {
+        [view addSubview:self.unreadTicsView];
+    }
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (self.tableVisible) {
+        return self.scrollToTopView.bounds.size.height + self.unreadTicsView.bounds.size.height;
+    }
+    else {
+        return self.scrollToTopView.bounds.size.height;
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
+- (NSInteger)numberOfUnreadMessages {
+    return [self.unreadTics count];
+}
+
+- (void)unreadMessagesdidSwipe:(id)unreadView {
+    [self hideTable];
+}
+
+- (NSString *)timeStampForMessageAtIndex:(NSInteger)index {
+    return @"Nothing";
+}
+
+- (void)loadConversationsInBackgroundFromLocal:(BOOL)isLocalQuery completion:(void (^)(NSError *error))completion {
+    PFQuery *conversationsQuery = [TTConversation query];
+    if (isLocalQuery) {
+        [conversationsQuery fromPinWithName:kTTLocalDatastoreConversationsPinName];
+    }
+    [conversationsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        self.conversations = [objects mutableCopy];
+        [self.conversations sortUsingComparator:^NSComparisonResult(TTConversation *firstConversation, TTConversation *secondConversation) {
+            TTTic *firstTic = firstConversation.lastTic;
+            TTTic *secondTic = secondConversation.lastTic;
+            NSDate *firstLastActivityTimestamp = firstTic.status == kTTTicStatusRead ? firstTic.receiveTimestamp : firstTic.sendTimestamp;
+            NSDate *secondLastActivityTimestamp = secondTic.status == kTTTicStatusRead ? secondTic.receiveTimestamp : secondTic.sendTimestamp;
+            return [secondLastActivityTimestamp compare:firstLastActivityTimestamp];
+        }];
+        if (!isLocalQuery) {
+            [TTConversation unpinAllObjectsInBackgroundWithName:kTTLocalDatastoreConversationsPinName block:^(BOOL succeeded, NSError *error) {
+                [TTConversation pinAllInBackground:self.conversations withName:kTTLocalDatastoreConversationsPinName];
+            }];
+        }
+        if (completion) {
+            completion(error);
+        }
+    }];
+}
+
+- (void)reloadDataForViews {
+    // reload data for unread Tics
+    self.unreadTicsView.frame = CGRectMake(0, 44, self.view.bounds.size.width, 44 * self.unreadTics.count);
+    [self.unreadTicsView reloadData];
+    
+    // reload data for conversations
+    [self.conversationsTableView reloadData];
+}
+
+- (void)composeViewDidSelectContact:(TTUser *)contact {
+    // TODO
+}
+
+- (void)unreadButtonPressed {
+    self.tableVisible = !self.tableVisible;
+    [self.scrollToTopView setTableVisible:self.tableVisible];
+    if(self.tableVisible) {
+        [self.conversationsTableView reloadData];
+        [UIView animateKeyframesWithDuration:0.2 delay:0 options:UIViewKeyframeAnimationOptionAllowUserInteraction animations:^{
+            self.unreadTicsView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.unreadTicsView.bounds.size.width, 44 * [self.unreadTics count]);
+        } completion:^(BOOL finished) {
+        }];
+    }
+    
+    else {
+        [UIView animateKeyframesWithDuration:0.2 delay:0 options:UIViewKeyframeAnimationOptionAllowUserInteraction animations:^{
+            self.unreadTicsView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.unreadTicsView.bounds.size.width, 0);
+        } completion:^(BOOL finished) {
+            [self.conversationsTableView reloadData];
+        }];
+    }
+}
+
+
+- (void)hideTable {
+    self.tableVisible = NO;
+    [self.scrollToTopView setTableVisible:self.tableVisible];
+    [UIView animateKeyframesWithDuration:0.2 delay:0 options:UIViewKeyframeAnimationOptionAllowUserInteraction animations:^{
+        self.unreadTicsView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.unreadTicsView.bounds.size.width, 0);
+    } completion:nil];
+}
+
+- (void)generateFakeConversations {
+    NSLog(@"Generating fake conversations...");
+    
+    PFQuery *conversationsQuery = [TTConversation query];
+    [conversationsQuery fromPinWithName:kTTLocalDatastoreConversationsPinName];
+    [TTConversation unpinAll:[conversationsQuery findObjects]];
+    [TTConversation unpinAllObjectsWithName:kTTLocalDatastoreConversationsPinName];
+    [TTConversation unpinAllObjectsWithName:kTTLocalDatastoreTicsPinName];
+    
+    
+    TTConversation *fakeConversation1 = [TTConversation object];
+    TTTic *fakeLastTic1 = [TTTic object];
+    [fakeLastTic1 pinWithName:kTTLocalDatastoreTicsPinName];
+    fakeLastTic1.status = kTTTicStatusRead;
+    fakeLastTic1.type = kTTTicTypeDefault;
+    fakeLastTic1.contentType = kTTTicContentTypeText;
+    fakeLastTic1.content = [@"This is a normal read Tic read 10 min ago." dataUsingEncoding:NSUTF8StringEncoding];
+    fakeLastTic1.sendTimestamp = [NSDate dateWithTimeInterval:-700 sinceDate:[NSDate date]];
+    fakeLastTic1.receiveTimestamp = [NSDate dateWithTimeInterval:-600 sinceDate:[NSDate date]];
+    [fakeConversation1 pinWithName:kTTLocalDatastoreConversationsPinName];
+    fakeConversation1.type = kTTConversationTypeDefault;
+    fakeConversation1.recipient = [TTUser currentUser];
+    fakeConversation1.lastTic = fakeLastTic1;
+    
+    TTConversation *fakeConversation2 = [TTConversation object];
+    TTTic *fakeLastTic2 = [TTTic object];
+    [fakeLastTic2 pinWithName:kTTLocalDatastoreTicsPinName];
+    fakeLastTic2.status = kTTTicStatusUnread;
+    fakeLastTic2.type = kTTTicTypeDefault;
+    fakeLastTic2.contentType = kTTTicContentTypeText;
+    fakeLastTic2.content = [@"This is an unread tic. " dataUsingEncoding:NSUTF8StringEncoding];
+    fakeLastTic2.sendTimestamp = [NSDate dateWithTimeInterval:-90000 sinceDate:[NSDate date]];
+    fakeLastTic2.receiveTimestamp = nil;
+    [fakeConversation2 pinWithName:kTTLocalDatastoreConversationsPinName];
+    fakeConversation2.type = kTTConversationTypeDefault;
+    fakeConversation2.recipient = [TTUser currentUser];
+    fakeConversation2.lastTic = fakeLastTic2;
+    
+    TTConversation *fakeConversation3 = [TTConversation object];
+    TTTic *fakeLastTic3 = [TTTic object];
+    [fakeLastTic3 pinWithName:kTTLocalDatastoreTicsPinName];
+    fakeLastTic3.status = kTTTicStatusUnread;
+    fakeLastTic3.type = kTTTIcTypeAnonymous;
+    fakeLastTic3.contentType = kTTTicContentTypeText;
+    fakeLastTic3.content = [@"This is an anonymous Tic sent 30sec ago. " dataUsingEncoding:NSUTF8StringEncoding];
+    fakeLastTic3.sendTimestamp = [NSDate dateWithTimeInterval:-30 sinceDate:[NSDate date]];
+    fakeLastTic3.receiveTimestamp = nil;
+    [fakeConversation3 pinWithName:kTTLocalDatastoreConversationsPinName];
+    fakeConversation3.type = kTTConversationTypeAnonymous;
+    fakeConversation3.recipient = [TTUser currentUser];
+    fakeConversation3.lastTic = fakeLastTic3;
+    
+    TTConversation *fakeConversation4 = [TTConversation object];
+    TTTic *fakeLastTic4 = [TTTic object];
+    [fakeLastTic4 pinWithName:kTTLocalDatastoreTicsPinName];
+    fakeLastTic4.status = kTTTIcStatusExpired;
+    fakeLastTic4.type = kTTTicTypeDefault;
+    fakeLastTic4.contentType = kTTTicContentTypeText;
+    fakeLastTic4.content = [@"This is an expired Tic sent 3 hours ago." dataUsingEncoding:NSUTF8StringEncoding];
+    fakeLastTic4.sendTimestamp = [NSDate dateWithTimeInterval:-10800 sinceDate:[NSDate date]];
+    fakeLastTic4.receiveTimestamp = nil;
+    [fakeConversation4 pinWithName:kTTLocalDatastoreConversationsPinName];
+    fakeConversation4.type = kTTConversationTypeDefault;
+    fakeConversation4.recipient = [TTUser currentUser];
+    fakeConversation4.lastTic = fakeLastTic4;
+}
+
 
 @end

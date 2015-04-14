@@ -230,20 +230,24 @@
 
 - (void)fetchAndPinAllFriendsInBackground {
     NSLog(@"Fetching all friends' public data. ");
-    [[TTUser currentUser].privateData fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        TTUserPrivateData *fetchedPrivateData = (TTUserPrivateData *)object;
-        [TTUser fetchAllInBackground:fetchedPrivateData.friends block:^(NSArray *objects, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error);
-            } else {
-                [TTUser unpinAllObjectsInBackgroundWithName:kTTLocalDatastoreFriendsPinName block:^(BOOL succeeded, NSError *error) {
-                    if (succeeded) {
-                        [TTUser pinAllInBackground:objects withName:kTTLocalDatastoreFriendsPinName];
-                    }
-                }];
-            }
-        }];
-    }];
+//    [[TTUser currentUser].privateData fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+//        TTUserPrivateData *fetchedPrivateData = (TTUserPrivateData *)object;
+//        [TTUser fetchAllInBackground:fetchedPrivateData.friends block:^(NSArray *objects, NSError *error) {
+//            if (error) {
+//                NSLog(@"%@", error);
+//            } else {
+//                [TTUser unpinAllObjectsInBackgroundWithName:kTTLocalDatastoreFriendsPinName block:^(BOOL succeeded, NSError *error) {
+//                    if (succeeded) {
+//                        [TTUser pinAllInBackground:objects withName:kTTLocalDatastoreFriendsPinName];
+//                    }
+//                }];
+//            }
+//        }];
+//    }];
+    [[TTUser currentUser].privateData fetchIfNeeded];
+    [TTUser fetchAllIfNeeded:[TTUser currentUser].privateData.friends];
+    [TTUser unpinAllObjectsWithName:kTTLocalDatastoreFriendsPinName];
+    [TTUser pinAll:[TTUser currentUser].privateData.friends withName:kTTLocalDatastoreFriendsPinName];
 }
 
 - (void)syncActiveDeviceIdentifier:(void (^)(NSError *))completion {

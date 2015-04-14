@@ -50,6 +50,7 @@ NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode = 1;
 // Pin names
 NSString * const kTTLocalDatastoreFriendsPinName = @"friends";
 NSString * const kTTLocalDatastoreTicsPinName = @"tics";
+NSString * const kTTLocalDatastoreConversationsPinName = @"conversations";
 
 
 #pragma mark - TTUser

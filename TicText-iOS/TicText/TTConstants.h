@@ -53,6 +53,7 @@ extern NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode;
 // Pin names
 extern NSString * const kTTLocalDatastoreFriendsPinName;
 extern NSString * const kTTLocalDatastoreTicsPinName;
+extern NSString * const kTTLocalDatastoreConversationsPinName;
 
 
 #pragma mark - TTUser

@@ -18,4 +18,6 @@
 @property (nonatomic, strong) TTUser *recipient;
 @property (nonatomic, strong) TTTic *lastTic;
 
+- (NSDate *)lastActivityTimestamp;
+
 @end
