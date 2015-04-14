@@ -9,6 +9,7 @@
 #import "TTMessagesViewController.h"
 
 #import <AudioToolbox/AudioServices.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "TTTic.h"
 #import "TTActivity.h"
 
@@ -345,6 +346,27 @@
     }];
 }
 
+- (void)sendTicWithMediaContent:(TTTic *)tic {
+    [tic saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            TTActivity *sendTicActivity = [TTActivity activityWithType:kTTActivityTypeSendTic tic:tic];
+            [sendTicActivity saveEventually:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    NSLog(@"Activity saved. ");
+                } else {
+                    NSLog(@"Failed to save Activity, error: %@", error);
+                }
+            }];
+        } else {
+            [TSMessage showNotificationInViewController:self
+                                                  title:@"Connection Error"
+                                               subtitle:@"Unable to send media content."
+                                                   type:TSMessageNotificationTypeError];
+            // TODO:provide resend option?
+        }
+    }];
+}
+
 #pragma mark - JSQMessagesViewController method overrides
 
 - (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
@@ -355,7 +377,8 @@
     JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:date text:text];
     
     // New Tic
-    TTTic *newTic = [self ticWithMessage:newJSQMessage];
+    TTTic *newTic = [self ticWithMessage:newJSQMessage mediaFile:nil];
+
     [newTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
     
     // Add to local array
@@ -499,8 +522,11 @@
     
     JSQMessagesCollectionViewCell *tappedCell = (JSQMessagesCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [tappedCell.textView setHidden:YES];
-    MBProgressHUD *progressHUD = [[MBProgressHUD alloc] initWithView:tappedCell.messageBubbleImageView];
-    [tappedCell.messageBubbleImageView addSubview:progressHUD];
+    [tappedCell.mediaView setHidden:YES];
+//    MBProgressHUD *progressHUD = [[MBProgressHUD alloc] initWithView:tappedCell.messageBubbleImageView];
+//    [tappedCell.messageBubbleImageView addSubview:progressHUD];
+    MBProgressHUD *progressHUD = [[MBProgressHUD alloc] initWithView:tappedCell.messageBubbleContainerView];
+    [tappedCell.messageBubbleContainerView addSubview:progressHUD];
     progressHUD.opacity = 0;
     [progressHUD show:YES];
 
@@ -520,6 +546,7 @@
         }
         [progressHUD removeFromSuperview];
         [tappedCell.textView setHidden:NO];
+        [tappedCell.mediaView setHidden:NO];
         [self finishReceivingMessageAnimated:YES];
         self.isFetchingTic = NO;
     }];
@@ -531,7 +558,7 @@
 
 #pragma mark - TTMessagesViewController
 
-- (TTTic *)ticWithMessage:(JSQMessage *)message {
+- (TTTic *)ticWithMessage:(JSQMessage *)message mediaFile:(PFFile *)mediaFile {
     TTTic *newTic = [TTTic object];
     newTic.type = (self.isAnonymous) ? kTTTIcTypeAnonymous : kTTTicTypeDefault;
     newTic.sender = [TTUser currentUser];
@@ -541,8 +568,12 @@
     newTic.receiveTimestamp = nil;
     newTic.status = kTTTicStatusUnread;
     if (message.isMediaMessage) {
-        // @TODO: determine media type?
-        newTic.contentType = nil;
+        // image
+        newTic.contentType = kTTTicContentTypeImage;
+        newTic.mediaContent = mediaFile;
+        
+        // TODO:voice
+        
         newTic.content = nil;
     } else {
         newTic.contentType = kTTTicContentTypeText;
@@ -553,7 +584,29 @@
 
 - (JSQMessage *)jsqMessageWithTic:(TTTic *)tic {
     TTUser *sender = tic.sender;
-    return [[JSQMessage alloc] initWithSenderId:sender.objectId senderDisplayName:sender.displayName date:tic.sendTimestamp text:[NSString stringWithUTF8String:[tic.content bytes]]];
+    PFFile *mediaContent = tic.mediaContent;
+
+    if (mediaContent) {
+        // TODO:classify more media types
+        JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:nil];
+        mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:self.senderId];
+        
+        [mediaContent getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
+             if (error) {
+                 [TSMessage showNotificationInViewController:self
+                                                       title:@"Connection Error"
+                                                    subtitle:@"Unable to fetch media content."
+                                                        type:TSMessageNotificationTypeError];
+             } else {
+                 mediaItem.image = [UIImage imageWithData:imageData];
+                 [self.collectionView reloadData];
+             }
+         }];
+        
+        return [[JSQMessage alloc] initWithSenderId:sender.objectId senderDisplayName:sender.displayName date:tic.sendTimestamp media:mediaItem];
+    } else {
+        return [[JSQMessage alloc] initWithSenderId:sender.objectId senderDisplayName:sender.displayName date:tic.sendTimestamp text:[NSString stringWithUTF8String:[tic.content bytes]]];
+    }
 }
 
 #pragma mark - TSMessageView
@@ -616,6 +669,7 @@
         [self setInputToolbarHiddenState:NO];
     } else {
         [self setInputToolbarHiddenState:YES];
+        [self shouldStartPhotoLibraryWithTarget:self canEdit:YES];
     }
     
     [self removeCurrentToolbarContentView];
@@ -650,6 +704,69 @@
     [super textViewDidEndEditing:textView];
     
     [self deselectCurrentToolbarItem];
+}
+
+#pragma mark - UIImagePicker
+- (BOOL)shouldStartPhotoLibraryWithTarget:(id)target canEdit:(BOOL)canEdit {
+    if (([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary] == NO
+         && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum] == NO)) {
+        return NO;
+    }
+    
+    NSString *type = (NSString *)kUTTypeImage;
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]
+        && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary] containsObject:type]) {
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.mediaTypes = [NSArray arrayWithObject:type];
+    } else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]
+               && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum] containsObject:type]) {
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+        imagePicker.mediaTypes = [NSArray arrayWithObject:type];
+    } else {
+        return NO;
+    }
+    
+    imagePicker.allowsEditing = canEdit;
+    imagePicker.delegate = target;
+    [self presentViewController:imagePicker animated:YES completion:nil];
+    
+    return YES;
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage *picture = [info objectForKey:UIImagePickerControllerEditedImage];
+    
+    if (picture != nil) {
+        // Image file as PFFile
+        PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
+        
+        // Play sound
+        [JSQSystemSoundPlayer jsq_playMessageSentSound];
+        
+        // Media Item
+        JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:picture];
+        mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:self.senderId];
+        
+        // New JSQMessage
+        JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:[NSDate date] media:mediaItem];
+        
+        // New Tic
+        TTTic *newTic = [self ticWithMessage:newJSQMessage mediaFile:filePicture];
+        [newTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
+        
+        // Add to local array
+        [self.tics addObject:newTic];
+        [self.jsqMessages addObject:newJSQMessage];
+        
+        [self finishSendingMessageAnimated:YES];
+        [self sendTicWithMediaContent:newTic];
+        
+    }
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Helper Methods
