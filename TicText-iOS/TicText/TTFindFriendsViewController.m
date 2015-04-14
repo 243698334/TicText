@@ -142,10 +142,6 @@
     
     _friends = [[NSMutableArray alloc] initWithArray:_user.privateData.friends];
     //stuff just for testing
-    [_friends addObjectsFromArray: _user.privateData.friends];
-    [_friends addObjectsFromArray: _user.privateData.friends];
-    [_friends addObjectsFromArray: _user.privateData.friends];
-    [_friends addObjectsFromArray: _user.privateData.friends];
     if(_friends.count == 0) {
         NSLog(@"no friends on tictext :(");
         [self dismissViewControllerAnimated:YES completion:nil];

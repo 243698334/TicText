@@ -40,7 +40,7 @@
 
 @implementation TTMessagesViewControllerTests
 
-- (void)setUp {
+/*- (void)setUp {
     [super setUp];
     self.mockRecipient = OCMClassMock([TTUser class]);
     OCMStub([self.mockRecipient objectId]).andReturn(@"fakeUserId");
@@ -136,6 +136,6 @@
     
     // Assert
     OCMVerifyAll(self.mockMessagesViewController);
-}
+}*/
 
 @end

@@ -14,6 +14,8 @@
 
 #import "TTExpirationDomain.h"
 
+#import "CountDownView.h"
+
 #define kDefaultExpirationTime 3600
 #define kExpirationTimerIcon @"TicsTabBarIcon"
 
@@ -376,6 +378,14 @@
 
 - (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
+    CGRect viewRect = CGRectMake(0, 0, 100, 100);
+    TTTic *theTic = [self.tics objectAtIndex:indexPath.item];
+    CountDownView *myView = [[CountDownView alloc] initWithFrame:viewRect time:theTic.timeLimit];
+    myView.layer.borderWidth = 2;
+    myView.layer.cornerRadius = 10;
+    myView.layer.borderColor = [kTTUIPurpleColor CGColor];
+    [cell setMediaView: myView];
+    
     JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
     
     if (!message.isMediaMessage) {
@@ -445,12 +455,17 @@
         return;
     }
     
+    NSLog(@"tapped message bubble method invoked.");
     JSQMessagesCollectionViewCell *tappedCell = (JSQMessagesCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+   // tappedCell.textView
+    tappedCell.mediaView = nil;
+    //tappedCell.textView = [[JSQMessagesCellTextView alloc] init];
+    //tappedCell.textView.text = @"your secret message";
     [tappedCell.textView setHidden:YES];
-    MBProgressHUD *progressHUD = [[MBProgressHUD alloc] initWithView:tappedCell.messageBubbleImageView];
-    [tappedCell.messageBubbleImageView addSubview:progressHUD];
-    progressHUD.opacity = 0;
-    [progressHUD show:YES];
+    //MBProgressHUD *progressHUD = [[MBProgressHUD alloc] initWithView:tappedCell.messageBubbleImageView];
+    //[tappedCell.messageBubbleImageView addSubview:progressHUD];
+    //progressHUD.opacity = 0;
+    //[progressHUD show:YES];
 
     [TTTic fetchTicInBackgroundWithId:unreadTic.objectId timestamp:[NSDate date] completion:^(TTTic *fetchedTic, NSError *error) {
         if (fetchedTic) {
@@ -466,7 +481,7 @@
             [self.jsqMessages replaceObjectAtIndex:indexPath.item withObject:expiredMessage];
             unreadTic.status = kTTTIcStatusExpired;
         }
-        [progressHUD removeFromSuperview];
+        //[progressHUD removeFromSuperview];
         [tappedCell.textView setHidden:NO];
         [self finishReceivingMessageAnimated:YES];
         self.isFetchingTic = NO;
@@ -475,6 +490,7 @@
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapCellAtIndexPath:(NSIndexPath *)indexPath touchLocation:(CGPoint)touchLocation {
     NSLog(@"Tapped cell at %@!", NSStringFromCGPoint(touchLocation));
+    
 }
 
 #pragma mark - TTMessagesViewController
