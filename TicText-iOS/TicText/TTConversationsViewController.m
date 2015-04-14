@@ -43,7 +43,7 @@
             [self loadConversationsInBackgroundFromLocal:NO completion:^(BOOL conversationsDidLoad, NSError *error) {
                 [self.progressHUD removeFromSuperview];
                 if (conversationsDidLoad) {
-                    [TSMessage showNotificationInViewController:self title:@"Concersations Synced" subtitle:@"We have just synced your conversations with our server. " type:TSMessageNotificationTypeSuccess];
+                    [TSMessage showNotificationInViewController:self title:@"Conversations Synced" subtitle:@"We have just synced your conversations with our server. " type:TSMessageNotificationTypeSuccess];
                     [self reloadDataForViews];
                 } else {
                     // TODO: no conversations
@@ -123,10 +123,6 @@
     }];
 }
 
-- (void)removeComposeView {
-    [self.composeView removeFromSuperview];
-}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -141,7 +137,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+    TTUser *currentFriend = ((TTConversation *)[self.conversations objectAtIndex:indexPath.row]).recipient;
+    TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewControllerWithRecipient:currentFriend];
+    messagesViewController.hidesBottomBarWhenPushed = YES;
+    messagesViewController.isKeyboardFirstResponder = YES;
+    [self.navigationController pushViewController:messagesViewController animated:YES];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
