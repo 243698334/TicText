@@ -12,5 +12,7 @@
 @interface TTContactTableViewCell : UITableViewCell
 
 @property (nonatomic, strong) TTUser *user;
-
+@property (nonatomic, strong) UIImageView *profileImageView;
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIButton *createTicButtton;
 @end

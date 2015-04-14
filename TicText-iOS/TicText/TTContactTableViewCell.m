@@ -9,9 +9,6 @@
 #import "TTContactTableViewCell.h"
 
 @interface TTContactTableViewCell ()
-@property (nonatomic, strong) UIImageView *profileImageView;
-@property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UIButton *createTicButtton;
 @end
 
 @implementation TTContactTableViewCell
@@ -46,16 +43,20 @@
 }
 
 -(void)setUser:(TTUser *)user {
+    //Set frame and text of nameLabel
+    self.nameLabel.frame = CGRectMake(35 + self.profileImageView.bounds.size.width, 0, self.bounds.size.width - 150, self.bounds.size.height);
+    self.nameLabel.text = user.displayName;
+    
+    self.createTicButtton.frame = CGRectMake(self.bounds.size.width - 40 , 7, self.bounds.size.height - 14, self.bounds.size.height - 14);
+    
+    
+    //Set frame of profile Image View
     self.profileImageView.frame = CGRectMake(15, 5, self.bounds.size.height - 10, self.bounds.size.height - 10);
     self.profileImageView.layer.cornerRadius = self.profileImageView.bounds.size.height/2;
     self.profileImageView.clipsToBounds = YES;
     
-    self.nameLabel.frame = CGRectMake(35 + self.profileImageView.bounds.size.width, 0, self.bounds.size.width - 150, self.bounds.size.height);
-    self.nameLabel.text = user.displayName;
-    
-    
-    self.createTicButtton.frame = CGRectMake(self.bounds.size.width - 40 , 7, self.bounds.size.height - 14, self.bounds.size.height - 14);
-    
+    //if the profile picture needs to be loaded from parse, it does so here
+    //if not, it fetches it from the cache and puts it in the main view
     [user fetchInBackgroundWithBlock:^(PFObject *object, NSError *err) {
         TTUser *user = (TTUser *)object;
         __block NSData *data;
