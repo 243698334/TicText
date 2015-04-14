@@ -11,7 +11,9 @@
 
 #define kContactCellIdentifier @"cell"
 
-@interface TTContactsViewController ()
+@interface TTContactsViewController () {
+    BOOL searchActive;
+}
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UISearchBar *searchBar;
 
@@ -19,6 +21,7 @@
 @property (nonatomic, strong) UIBarButtonItem *cancelButton;
 
 @property (nonatomic, strong) NSArray *friends;
+@property (nonatomic, strong) NSArray *queriedFriends;
 @end
 
 @implementation TTContactsViewController
@@ -27,6 +30,8 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"Contacts";
+    
+    searchActive = NO;
     
     //create new table view and add it to the view
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
@@ -40,6 +45,7 @@
     //If the search bar is pressed then the view is added to self.navigationItem.titleView
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width - 150, 44)];
     self.searchBar.placeholder = @"Search Contacts";
+    self.searchBar.delegate = self;
     self.searchBar.translucent = NO;
     
     //Create UIBarButtonItems, only self.searchBar is initially shown, if the search bar is visible
@@ -65,11 +71,16 @@
 -(void)willShowSearchBar {
     self.navigationItem.titleView = self.searchBar;
     self.navigationItem.rightBarButtonItem = self.cancelButton;
+    [self.searchBar becomeFirstResponder];
+    searchActive = YES;
+    [self.tableView reloadData];
 }
 
 -(void)willCancelSearch {
     self.navigationItem.titleView = nil;
     self.navigationItem.rightBarButtonItem = self.searchButton;
+    searchActive = NO;
+    [self.tableView reloadData];
 }
 
 #pragma mark - Table view delegate methods
@@ -78,12 +89,19 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if(searchActive) {
+        return self.queriedFriends.count;
+    }
     return self.friends.count;
 }
 
 //Creates contact cell and assigns a user to the cell.
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TTContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kContactCellIdentifier forIndexPath:indexPath];
+    if (searchActive) {
+        cell.user = (TTUser *)self.queriedFriends[indexPath.row];
+        //used to create a new tic if the person presses the button
+    }
     cell.user = (TTUser *)self.friends[indexPath.row];
     //used to create a new tic if the person presses the button
     cell.createTicButtton.tag = indexPath.row;
@@ -91,13 +109,47 @@
     return cell;
 }
 
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self.searchBar resignFirstResponder];
+}
+
 #pragma mark - new Tic method
 -(void)createConversationFromButton:(UIButton *)cellButton {
+    [self.searchBar resignFirstResponder];
     NSInteger index = cellButton.tag;
-    TTUser *friend = self.friends[index]; //gets correct friend and pushes the messagesViewController
+    TTUser *friend;
+    if (searchActive) {
+        friend = self.queriedFriends[index];
+    }
+    else {
+        friend = self.friends[index]; //gets correct friend and pushes the messagesViewController
+    }
     TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewControllerWithRecipient:friend];
     messagesViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:messagesViewController animated:YES];
+}
+
+
+#pragma mark - Search Bar Delegates
+
+-(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        TTUser *_u = (TTUser *)evaluatedObject;
+        NSString *lowerSearch = searchText.lowercaseString;
+        NSString *lowerDisplay = _u.displayName.lowercaseString;
+        return [lowerDisplay containsString:lowerSearch];
+    }];
+    
+    self.queriedFriends = [self.friends filteredArrayUsingPredicate:predicate];
+//    for (int i = 0; i < self.queriedFriends.count; i++) {
+//        TTUser *_u = self.queriedFriends[i];
+//        NSLog(@"%@", _u.displayName);
+//    }
+    [self.tableView reloadData];
+}
+
+-(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
 }
 
 @end
