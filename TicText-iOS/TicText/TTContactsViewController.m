@@ -90,7 +90,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(searchActive) {
-        return self.queriedFriends.count;
+        return self.queriedFriends.count; //queried friends
     }
     return self.friends.count;
 }
@@ -99,10 +99,12 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TTContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kContactCellIdentifier forIndexPath:indexPath];
     if (searchActive) {
-        cell.user = (TTUser *)self.queriedFriends[indexPath.row];
-        //used to create a new tic if the person presses the button
+        cell.user = (TTUser *)self.queriedFriends[indexPath.row]; //queried cells
     }
-    cell.user = (TTUser *)self.friends[indexPath.row];
+    else {
+        cell.user = (TTUser *)self.friends[indexPath.row]; //regular scrolling cells
+    }
+    
     //used to create a new tic if the person presses the button
     cell.createTicButtton.tag = indexPath.row;
     [cell.createTicButtton addTarget:self action:@selector(createConversationFromButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -110,7 +112,7 @@
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self.searchBar resignFirstResponder];
+    [self.searchBar resignFirstResponder]; //hides keyboard to give the user more room to scroll
 }
 
 #pragma mark - new Tic method
@@ -133,23 +135,18 @@
 #pragma mark - Search Bar Delegates
 
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    //creates search predicate and searches the display name using the lower case representation of their name
     NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
         TTUser *_u = (TTUser *)evaluatedObject;
-        NSString *lowerSearch = searchText.lowercaseString;
-        NSString *lowerDisplay = _u.displayName.lowercaseString;
-        return [lowerDisplay containsString:lowerSearch];
+        return [_u.displayName.lowercaseString containsString:searchText.lowercaseString];
     }];
     
     self.queriedFriends = [self.friends filteredArrayUsingPredicate:predicate];
-//    for (int i = 0; i < self.queriedFriends.count; i++) {
-//        TTUser *_u = self.queriedFriends[i];
-//        NSLog(@"%@", _u.displayName);
-//    }
-    [self.tableView reloadData];
+    [self.tableView reloadData]; //table reloads after each key stroke
 }
 
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [searchBar resignFirstResponder];
+    [searchBar resignFirstResponder]; //hides keyboard, really doesnt do much
 }
 
 @end
