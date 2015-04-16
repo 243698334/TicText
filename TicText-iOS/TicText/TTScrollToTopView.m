@@ -60,6 +60,7 @@
     self.messageLabel.text = [NSString stringWithFormat:@"%li", (long)unreadMessages];
     if(unreadMessages == 0) {
         self.unreadLabel.text = @"You have no new Tics";
+        self.unreadLabel.font = [UIFont fontWithName:@"Avenir-Light" size:self.unreadLabel.font.pointSize];
     }
 }
 

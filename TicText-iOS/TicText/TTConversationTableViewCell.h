@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTConversation.h"
 
 @interface TTConversationTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) NSDate *lastActivityTimestamp;
-
 + (CGFloat)height;
+
++ (NSString *)reuseIdentifier;
+
+- (void)updateWithConversation:(TTConversation *)conversation;
 
 @end

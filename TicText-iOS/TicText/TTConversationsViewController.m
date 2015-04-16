@@ -25,6 +25,8 @@
 @property (nonatomic, strong) TTComposeView *composeView;
 @property (nonatomic, strong) UITableView *conversationsTableView;
 
+@property (nonatomic, strong) NSTimer *updateCellTimer;
+
 @property (nonatomic, strong) NSMutableArray *conversations;
 @property (nonatomic, strong) NSMutableArray *unreadTics;
 
@@ -35,7 +37,50 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self loadInterface];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
+    self.updateCellTimer = [NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(updateVisibleCells:) userInfo:nil repeats:YES];
+    
+    [self loadConversations];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self reloadDataForViews];
+}
+
+- (void)loadInterface {
+    // navigation bar
+    self.navigationItem.title = @"TicText";
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(showComposeView)];
+    
+    // set up tableview
+    self.conversationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height) style:UITableViewStylePlain];
+    self.conversationsTableView.delegate = self;
+    self.conversationsTableView.dataSource = self;
+    [self.conversationsTableView registerClass:[TTConversationTableViewCell class] forCellReuseIdentifier:@"cell"];
+    self.conversationsTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.conversationsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.conversationsTableView registerClass:[TTConversationTableViewCell class] forCellReuseIdentifier:[TTConversationTableViewCell reuseIdentifier]];
+    [self.view addSubview:self.conversationsTableView];
+    
+    // scroll to top view
+    self.scrollToTopView = [[TTScrollToTopView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
+    self.scrollToTopView.unreadMessages = [self.unreadTics count];
+    self.scrollToTopView.delegate = self;
+    
+    // unread tics view
+    self.unreadTicsView = [[TTUnreadTicsView alloc] initWithFrame:CGRectMake(0, 44, self.view.bounds.size.width, 44 * self.unreadTics.count)];
+    self.unreadTicsView.delegate = self;
+    self.unreadTicsView.clipsToBounds = YES;
+    self.unreadTicsView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.view.bounds.size.height, 0); //Set frame again to shrink to 0.
+}
+
+- (void)loadConversations {
     self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [self loadConversationsInBackgroundFromLocal:YES completion:^(BOOL conversationsDidLoad, NSError *error) {
         if (error) {
@@ -68,36 +113,20 @@
     }];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [self reloadDataForViews];
-}
-
-- (void)loadInterface {
-    // navigation bar
-    self.navigationItem.title = @"TicText";
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(showComposeView)];
-    
-    // set up tableview
-    self.conversationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height) style:UITableViewStylePlain];
-    self.conversationsTableView.delegate = self;
-    self.conversationsTableView.dataSource = self;
-    [self.conversationsTableView registerClass:[TTConversationTableViewCell class] forCellReuseIdentifier:@"cell"];
-    self.conversationsTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    self.conversationsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [self.view addSubview:self.conversationsTableView];
-    
-    // scroll to top view
-    self.scrollToTopView = [[TTScrollToTopView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
-    self.scrollToTopView.unreadMessages = [self.unreadTics count];
-    self.scrollToTopView.delegate = self;
-    
-    // unread tics view
-    self.unreadTicsView = [[TTUnreadTicsView alloc] initWithFrame:CGRectMake(0, 44, self.view.bounds.size.width, 44 * self.unreadTics.count)];
-    self.unreadTicsView.delegate = self;
-    self.unreadTicsView.clipsToBounds = YES;
-    self.unreadTicsView.frame = CGRectMake(0, self.scrollToTopView.bounds.size.height, self.view.bounds.size.height, 0); //Set frame again to shrink to 0.
+- (void)updateVisibleCells:(id)sender {
+    NSArray *indexPathsArray = [self.conversationsTableView indexPathsForVisibleRows];
+    for (NSIndexPath *indexPath in indexPathsArray) {
+        TTConversation *currentConversation = [self.conversations objectAtIndex:indexPath.row];
+        UITableViewCell *currentCell = [self.conversationsTableView cellForRowAtIndexPath:indexPath];
+        if ([currentCell isKindOfClass:[TTConversationTableViewCell class]]) {
+            [currentConversation fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                if (error != nil) {
+                    TTConversation *updatedCurrentConversation = (TTConversation *)object;
+                    [(TTConversationTableViewCell *)currentCell updateWithConversation:updatedCurrentConversation];
+                }
+            }];
+        }
+    }
 }
 
 - (void)showComposeView {
@@ -140,39 +169,15 @@
     TTUser *currentFriend = ((TTConversation *)[self.conversations objectAtIndex:indexPath.row]).recipient;
     TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewControllerWithRecipient:currentFriend];
     messagesViewController.hidesBottomBarWhenPushed = YES;
-    messagesViewController.isKeyboardFirstResponder = YES;
+    messagesViewController.isKeyboardFirstResponder = NO;
     [self.navigationController pushViewController:messagesViewController animated:YES];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TTConversation *currentConversation = [self.conversations objectAtIndex:indexPath.row];
-    TTConversationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-    if (currentConversation.type == kTTConversationTypeAnonymous) {
-        cell.textLabel.text = @"Anonymous";
-        cell.imageView.image = nil;
-    } else {
-        cell.textLabel.text = currentConversation.recipient.displayName;
-        cell.imageView.image = [[UIImage alloc] initWithData:currentConversation.recipient.profilePicture];
-    }
-    if (currentConversation.lastTic == nil) {
-        cell.detailTextLabel.text = @"[Draft]";
-    } else {
-        if (currentConversation.lastTic.status == kTTTicStatusUnread) {
-            cell.detailTextLabel.text = @"[Unread Tic]";
-            // should have more UI effects here to highlight the unread Tic
-        } else if (currentConversation.lastTic.status == kTTTIcStatusExpired) {
-            cell.detailTextLabel.text = @"[Expired Tic]";
-        } else {
-            if (currentConversation.lastTic.contentType == kTTTicContentTypeImage) {
-                cell.detailTextLabel.text = @"[Image]";
-            } else if (currentConversation.lastTic.contentType == kTTTicContentTypeVoice) {
-                cell.detailTextLabel.text = @"[Voice]";
-            } else {
-                cell.detailTextLabel.text = [NSString stringWithUTF8String:[currentConversation.lastTic.content bytes]];
-            }
-        }
-    }
-    cell.lastActivityTimestamp = currentConversation.lastActivityTimestamp;
+    TTConversationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[TTConversationTableViewCell reuseIdentifier] forIndexPath:indexPath];
+    //[cell.profilePictureImageView.layer setCornerRadius:([TTConversationTableViewCell height] - 2 * [TTConversationTableViewCell profilePicturePadding]) / 2.0];
+    [cell updateWithConversation:currentConversation];
     return cell;
 }
 

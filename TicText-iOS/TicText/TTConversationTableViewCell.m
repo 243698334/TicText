@@ -8,84 +8,164 @@
 
 #import "TTConversationTableViewCell.h"
 
+#import <PureLayout/PureLayout.h>
+
+@interface TTConversationTableViewCell ()
+
+@property (nonatomic) BOOL addedConstraints;
+
+@property (nonatomic, strong) UIImageView *profilePictureImageView;
+@property (nonatomic, strong) UILabel *displayNameLabel;
+@property (nonatomic, strong) UILabel *lastTicLabel;
+@property (nonatomic, strong) UILabel *timestampLabel;
+
+@end
+
+CGFloat const kCellHeight = 70;
+CGFloat const kPadding = 8;
+CGFloat const kTimestampWidth = 40;
+
 @implementation TTConversationTableViewCell
 
 + (CGFloat)height {
-    return 60;
+    return kCellHeight;
 }
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    if ((self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier])){
-        self.accessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 50, 40)];
++ (NSString *)reuseIdentifier {
+    return NSStringFromClass([self class]);
+}
+
+- (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+        // Profile picture
+        self.profilePictureImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"profile"]];
+        self.profilePictureImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        CALayer *profilePictureLayer = self.profilePictureImageView.layer;
+        [profilePictureLayer setBorderWidth:2.0];
+        [profilePictureLayer setMasksToBounds:YES];
+        [profilePictureLayer setBorderColor:[kTTUIPurpleColor CGColor]];
+        [profilePictureLayer setCornerRadius:(kCellHeight - 2 * kPadding) / 2.0];
+        [self.contentView addSubview:self.profilePictureImageView];
+
+        
+        // Display name label
+        self.displayNameLabel = [[UILabel alloc] init];
+        self.displayNameLabel.font = [UIFont fontWithName:@"Avenir" size:self.displayNameLabel.font.pointSize];
+        self.displayNameLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addSubview:self.displayNameLabel];
+        
+        // Last Tic label
+        self.lastTicLabel = [[UILabel alloc] init];
+        self.lastTicLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.lastTicLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        self.lastTicLabel.numberOfLines = 0;
+        self.lastTicLabel.font = [UIFont fontWithName:@"Avenir-Light" size:self.displayNameLabel.font.pointSize - 4];
+        self.lastTicLabel.textColor = [UIColor grayColor];
+        [self.contentView addSubview:self.lastTicLabel];
+        
+        // Timestamp label
+        self.timestampLabel = [[UILabel alloc] init];
+        self.timestampLabel.font = [UIFont fontWithName:@"Avenir-Light" size:12];
+        self.timestampLabel.textColor = [UIColor grayColor];
+        self.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addSubview:self.timestampLabel];
+        
+        self.addedConstraints = NO;
     }
     return self;
 }
 
-- (void)prepareForReuse {
-    for (UIView *subview in [self.accessoryView subviews]) {
-        [subview removeFromSuperview];
+- (void)updateConstraints {
+    if (!self.addedConstraints) {
+        // Profile picture
+        [self.profilePictureImageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(kPadding, kPadding, kPadding, kPadding) excludingEdge:ALEdgeTrailing];
+        [self.profilePictureImageView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionWidth ofView:self.profilePictureImageView];
+        
+        // display name
+        [self.displayNameLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.profilePictureImageView withOffset:kPadding];
+        [self.displayNameLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:kPadding];
+        [self.displayNameLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kPadding * 2 + kTimestampWidth];
+        [self.displayNameLabel autoSetDimension:ALDimensionHeight toSize:(kCellHeight - 2 * kPadding) / 2];
+        
+        // last tic
+        [self.lastTicLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.profilePictureImageView withOffset:kPadding];
+        [self.lastTicLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:kPadding];
+        [self.lastTicLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kPadding];
+        [self.lastTicLabel autoSetDimension:ALDimensionHeight toSize:(kCellHeight - 2 * kPadding) / 2];
+        
+        // timestamp
+        [self.timestampLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kPadding];
+        [self.timestampLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:kPadding];
+        
+        self.addedConstraints = YES;
     }
+    [super updateConstraints];
 }
 
-- (void)layoutSubviews {
-    for (UIView *subview in [self.accessoryView subviews]) {
-        [subview removeFromSuperview];
+- (void)updateWithConversation:(TTConversation *)conversation {
+    // update display name and profile picture
+    [conversation.recipient fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        TTUser *recipient = (TTUser *)object;
+        self.profilePictureImageView.image = [UIImage imageWithData:recipient.profilePicture];
+        if (conversation.type == kTTConversationTypeAnonymous) {
+            self.displayNameLabel.text = @"Anonymous"; // TODO generate fake names
+        } else {
+            self.displayNameLabel.text = recipient.displayName;
+        }
+    }];
+    
+    // update last tic
+    if (conversation.lastTic == nil) {
+        self.lastTicLabel.text = @"[Draft]"; // TODO concatenate the content of the draft
+    } else {
+        if (conversation.lastTic.status == kTTTicStatusRead) {
+            [conversation.lastTic fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                TTTic *lastTic = (TTTic *)object;
+                if (lastTic.contentType == kTTTicContentTypeText) {
+                    self.lastTicLabel.text = [NSString stringWithUTF8String:[lastTic.content bytes]];
+                } else if (lastTic.contentType == kTTTicContentTypeImage) {
+                    self.lastTicLabel.text = @"[Image]";
+                } else if (lastTic.contentType == kTTTicContentTypeVoice) {
+                    self.lastTicLabel.text = @"[Voice]";
+                }
+            }];
+        } else if (conversation.lastTic.status == kTTTicStatusUnread) {
+            self.lastTicLabel.text = @"[New Tic]";
+            self.lastTicLabel.font = [UIFont boldSystemFontOfSize:self.lastTicLabel.font.pointSize];
+        } else if (conversation.lastTic.status == kTTTIcStatusExpired) {
+            self.lastTicLabel.text = @"[Expired]";
+        }
     }
-    [super layoutSubviews];
     
-    self.imageView.frame = CGRectMake(5, 5, 48, 48);
-    
-    CGRect tmpFrame = self.textLabel.frame;
-    tmpFrame.origin.x = 58;
-    tmpFrame.origin.y = 5;
-    self.textLabel.frame = tmpFrame;
-    
-    tmpFrame = self.detailTextLabel.frame;
-    tmpFrame.origin.x = 58;
-    self.detailTextLabel.frame = tmpFrame;
-    
-    UILabel *lastTicTimestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 15)];
-    lastTicTimestampLabel.font = [UIFont systemFontOfSize:10];
-    lastTicTimestampLabel.textAlignment = NSTextAlignmentCenter;
-    
-    NSTimeInterval secondsSinceLastTic = [[NSDate date] timeIntervalSinceDate:self.lastActivityTimestamp];
+    // update timestamp
+    NSTimeInterval secondsSinceLastTic = fabs([conversation.lastActivityTimestamp timeIntervalSinceNow]);
     unsigned dateComponentsFlags = NSHourCalendarUnit | NSMinuteCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSYearCalendarUnit;
     NSDateComponents *todaysDateComponents = [[NSCalendar currentCalendar] components:dateComponentsFlags fromDate:[NSDate date]];
-    NSDateComponents *lastTicDateComponents = [[NSCalendar currentCalendar] components:dateComponentsFlags fromDate:self.lastActivityTimestamp];
+    NSDateComponents *lastTicDateComponents = [[NSCalendar currentCalendar] components:dateComponentsFlags fromDate:conversation.lastActivityTimestamp];
+    BOOL lastTicIsToday = [todaysDateComponents month] == [lastTicDateComponents month]
+    && [todaysDateComponents day] == [lastTicDateComponents day]
+    && [todaysDateComponents year] == [lastTicDateComponents year];
     NSDateFormatter *lastTicTimestampFormatter = [[NSDateFormatter alloc] init];
     
-    BOOL lastTicIsToday = [todaysDateComponents month] == [lastTicDateComponents month] && [todaysDateComponents day] == [lastTicDateComponents day] && [todaysDateComponents year] == [lastTicDateComponents year];
-    
-    if (lastTicIsToday) {
-        if (secondsSinceLastTic < 60) {
-            // show "just now" for last Tic within one minute
-            lastTicTimestampLabel.text = @"Just now";
-        } else if (secondsSinceLastTic >= 60 && secondsSinceLastTic < 3600) {
-            // show minutes passed for last Tic within one hour
-            lastTicTimestampLabel.text = [NSString stringWithFormat:@"%lumin ago", (NSUInteger)secondsSinceLastTic / 60 + 1];
-        } else {
-            // show "h:mm a" for last Tic within same day
-            [lastTicTimestampFormatter setDateFormat:@"h:mm a"];
-            [lastTicTimestampFormatter setDoesRelativeDateFormatting:NO];
-            lastTicTimestampLabel.text = [lastTicTimestampFormatter stringFromDate:self.lastActivityTimestamp];
-        }
+    if (secondsSinceLastTic < 60) {
+        self.timestampLabel.text = @"Just now";
+    } else if (secondsSinceLastTic < 60 * 60) {
+        NSUInteger numberOfMinutes = secondsSinceLastTic / 60;
+        self.timestampLabel.text = [NSString stringWithFormat:@"%ld %@", numberOfMinutes, numberOfMinutes == 1 ? @"min" :@"mins"];
+    } else if (lastTicIsToday) {
+        self.timestampLabel.text = [NSDateFormatter localizedStringFromDate:conversation.lastActivityTimestamp dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterShortStyle];
     } else {
         [lastTicTimestampFormatter setDateStyle:NSDateFormatterMediumStyle];
         [lastTicTimestampFormatter setDoesRelativeDateFormatting:YES];
-        NSString *lastTicDateString = [lastTicTimestampFormatter stringFromDate:self.lastActivityTimestamp];
-        if ([lastTicDateString isEqualToString:@"Yesterday"]) {
-            // show "Yesterday" for last Tic of yesterday
-            lastTicTimestampLabel.text = @"Yesterday";
+        if (secondsSinceLastTic < 60 * 60 * 24 * 7) {
+            lastTicTimestampFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"EEE" options:0 locale:[NSLocale currentLocale]];
         } else {
-            // show date for last Tic before yesterday
-            [lastTicTimestampFormatter setDateFormat:@"MMM d"];
-            [lastTicTimestampFormatter setDoesRelativeDateFormatting:NO];
-            lastTicTimestampLabel.text = [lastTicTimestampFormatter stringFromDate:self.lastActivityTimestamp];
+            lastTicTimestampFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"MMM d" options:0 locale:[NSLocale currentLocale]];
         }
+        self.timestampLabel.text = [lastTicTimestampFormatter stringFromDate:conversation.lastActivityTimestamp];
     }
     
-    [self.accessoryView addSubview:lastTicTimestampLabel];
+    [self.contentView setNeedsUpdateConstraints];
 }
-
 
 @end
