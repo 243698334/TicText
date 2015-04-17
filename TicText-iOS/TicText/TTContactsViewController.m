@@ -22,6 +22,8 @@
 
 @property (nonatomic, strong) NSArray *friends;
 @property (nonatomic, strong) NSArray *queriedFriends;
+@property (nonatomic, strong) NSMutableArray *listedFriends;
+@property (nonatomic, strong) NSMutableArray *activeLetters;
 @end
 
 @implementation TTContactsViewController
@@ -32,6 +34,31 @@
     self.navigationItem.title = @"Contacts";
     
     searchActive = NO;
+    
+    //Gets list of friends and sorts them by their first name
+    NSArray *unsortedFriends = [TTUser currentUser].privateData.friends;
+    self.friends= [unsortedFriends sortedArrayUsingComparator:^NSComparisonResult(TTUser *_u1, TTUser *_u2){
+        return [_u1.displayName compare:_u2.displayName];
+    }];
+    
+    NSArray *alphabet = @[@"a", @"b", @"c", @"d", @"e", @"f", @"g", @"h", @"i", @"j", @"k", @"l", @"m", @"n", @"o", @"p", @"q", @"r", @"s", @"t", @"u", @"v", @"w", @"x", @"y", @"z"];
+    self.listedFriends = [[NSMutableArray alloc] init];
+    self.activeLetters = [[NSMutableArray alloc] init];
+    for (int i = 0; i < alphabet.count; i++) {
+        NSMutableArray *letterArray = [[NSMutableArray alloc] init];
+        for (int j = 0; j < self.friends.count; j++) {
+            NSString *displayName = ((TTUser *)self.friends[j]).displayName.lowercaseString;
+            NSString *letter = alphabet[i];
+            if([displayName characterAtIndex:0] == [letter characterAtIndex:0]) {
+                [letterArray addObject:self.friends[j]];
+            }
+        }
+        if(letterArray.count > 0) {
+            [self.activeLetters addObject:alphabet[i]];
+        }
+        [self.listedFriends addObject:letterArray];
+    }
+    NSLog(@"%@", self.listedFriends);
     
     //create new table view and add it to the view
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
@@ -55,11 +82,6 @@
     self.navigationItem.rightBarButtonItem = self.searchButton;
     
     
-    //Gets list of friends and sorts them by their first name
-    NSArray *unsortedFriends = [TTUser currentUser].privateData.friends;
-    self.friends= [unsortedFriends sortedArrayUsingComparator:^NSComparisonResult(TTUser *_u1, TTUser *_u2){
-        return [_u1.displayName compare:_u2.displayName];
-    }];
 }
 
 
@@ -85,14 +107,17 @@
 
 #pragma mark - Table view delegate methods
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    if(searchActive) {
+        return 1; //queried friends
+    }
+    return [self numOfNonEmptyLetterArrays];
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(searchActive) {
         return self.queriedFriends.count; //queried friends
     }
-    return self.friends.count;
+    return [self numOfContactsForLetter:self.activeLetters[section]];
 }
 
 //Creates contact cell and assigns a user to the cell.
@@ -102,19 +127,31 @@
         cell.user = (TTUser *)self.queriedFriends[indexPath.row]; //queried cells
     }
     else {
-        cell.user = (TTUser *)self.friends[indexPath.row]; //regular scrolling cells
+        cell.user = [self getUserForIndexPath:indexPath]; //regular scrolling cells
     }
     
     //used to create a new tic if the person presses the button
-    cell.createTicButtton.tag = indexPath.row;
+    cell.createTicVisible = YES;
+    cell.createTicButtton.tag = indexPath.row + 1000 * indexPath.section;
     [cell.createTicButtton addTarget:self action:@selector(createConversationFromButton:) forControlEvents:UIControlEventTouchUpInside];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone; //no need for selection
     return cell;
 }
 
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if(searchActive) {
+        return @"Search";
+    }
+    return ((NSString *)self.activeLetters[section]).uppercaseString;
+}
+
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self.searchBar resignFirstResponder]; //hides keyboard to give the user more room to scroll
+}
+
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString*)title atIndex:(NSInteger)index {
+    return index;
 }
 
 #pragma mark - new Tic method
@@ -126,7 +163,8 @@
         friend = self.queriedFriends[index];
     }
     else {
-        friend = self.friends[index]; //gets correct friend and pushes the messagesViewController
+        friend = [self getUserForTag:index];
+        //gets correct friend and pushes the messagesViewController
     }
     TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewControllerWithRecipient:friend];
     messagesViewController.hidesBottomBarWhenPushed = YES;
@@ -149,6 +187,46 @@
 
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [searchBar resignFirstResponder]; //hides keyboard, really doesnt do much
+}
+
+#pragma mark - Helper functions
+-(NSInteger)numOfNonEmptyLetterArrays {
+    NSInteger count = 0;
+    for (int i = 0; i < self.listedFriends.count; i++) {
+        NSArray *arr = self.listedFriends[i];
+        if(arr.count > 0) {
+            count++;
+        }
+    }
+    return count;
+}
+
+-(NSInteger)numOfContactsForLetter:(NSString *)letter {
+    NSArray *arr = [self.listedFriends objectAtIndex:[self intForLetter:letter]];
+    return arr.count;
+}
+
+
+-(NSInteger)intForLetter:(NSString *)letter {
+    NSArray *alphabet = @[@"a", @"b", @"c", @"d", @"e", @"f", @"g", @"h", @"i", @"j", @"k", @"l", @"m", @"n", @"o", @"p", @"q", @"r", @"s", @"t", @"u", @"v", @"w", @"x", @"y", @"z"];
+    
+    return [alphabet indexOfObject:letter];
+}
+
+-(TTUser *)getUserForIndexPath:(NSIndexPath *)indexPath {
+    NSString *currentLetter = self.activeLetters[indexPath.section];
+    NSInteger indexOfLetter = [self intForLetter:currentLetter];
+    NSArray *arr = self.listedFriends[indexOfLetter];
+    
+    return arr[indexPath.row];
+}
+
+-(TTUser *)getUserForTag:(NSInteger)tag {
+    NSInteger index = tag/1000;
+    NSInteger inner = tag %1000;
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:inner inSection:index];
+    return [self getUserForIndexPath:indexPath];
 }
 
 @end
