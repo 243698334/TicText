@@ -98,6 +98,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
 {
     [self toggleSelectionAtIndexPath:indexPath];
+    NSLog(@"image selected at %ld", [@(indexPath.row) integerValue]);
 }
 
 - (void)toggleSelectionAtIndexPath:(NSIndexPath *)indexPath
@@ -107,7 +108,6 @@
     
 //    TTScrollingImagePickerCell *cell = (TTScrollingImagePickerCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     self.selectedIndex = path;
-
     //TODO: Manage internal selection state
     //blur effect?
     

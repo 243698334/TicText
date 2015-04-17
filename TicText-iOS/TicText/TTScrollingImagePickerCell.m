@@ -48,7 +48,6 @@
 
 - (void)prepareForReuse
 {
-    NSLog(@"reusing cell");
     [super prepareForReuse];
     [self setSelected:NO];
 }

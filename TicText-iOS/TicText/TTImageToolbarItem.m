@@ -38,6 +38,7 @@
                     //ALAssetRepresentation holds all the information about the asset being accessed.
                     if (result) {
                         UIImage *image = [UIImage imageWithCGImage:[result thumbnail]];
+//                        UIImage *image = [UIImage imageWithCGImage:[[result defaultRepresentation] fullResolutionImage]];
                         [photoArray addObject:image];
                         NSArray *images = [photoArray copy];
                         [self.imagePicker setImages:images];
@@ -53,6 +54,7 @@
         [alertView show];
     }
     return self.imagePicker;
+//    return [super contentView];
 }
 
 @end
