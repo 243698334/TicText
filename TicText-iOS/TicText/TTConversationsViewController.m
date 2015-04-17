@@ -41,15 +41,14 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    self.updateCellTimer = [NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(updateVisibleCells:) userInfo:nil repeats:YES];
-    
     [self loadConversations];
+    self.updateCellTimer = [NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(updateVisibleCells) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self reloadDataForViews];
+    [self updateVisibleCells];
 }
 
 - (void)loadInterface {
@@ -113,7 +112,7 @@
     }];
 }
 
-- (void)updateVisibleCells:(id)sender {
+- (void)updateVisibleCells {
     NSArray *indexPathsArray = [self.conversationsTableView indexPathsForVisibleRows];
     for (NSIndexPath *indexPath in indexPathsArray) {
         TTConversation *currentConversation = [self.conversations objectAtIndex:indexPath.row];
