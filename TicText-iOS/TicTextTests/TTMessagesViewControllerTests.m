@@ -398,7 +398,7 @@
     vc.expirationTime = 1234;
     
     // Act
-    TTTic *result = [vc ticWithMessage:nil];
+    TTTic *result = [vc ticWithMessage:nil mediaFile:nil];
     
     // Assert
     XCTAssertEqual(result.recipient, recipientUser);
@@ -416,7 +416,7 @@
     vc.expirationTime = 1234;
     
     // Act
-    TTTic *result = [vc ticWithMessage:nil];
+    TTTic *result = [vc ticWithMessage:nil mediaFile:nil];
     
     // Assert
     XCTAssertEqual(result.recipient, recipientUser);
@@ -434,7 +434,7 @@
     vc.expirationTime = 12;
     
     // Act
-    TTTic *result = [vc ticWithMessage:nil];
+    TTTic *result = [vc ticWithMessage:nil mediaFile:nil];
     
     // Assert
     XCTAssertEqual(result.recipient, recipientUser);
@@ -455,7 +455,7 @@
     XCTAssertFalse(someMessage.isMediaMessage);
     
     // Act
-    TTTic *result = [vc ticWithMessage:someMessage];
+    TTTic *result = [vc ticWithMessage:someMessage mediaFile:nil];
     
     // Assert
     XCTAssertEqual(result.recipient, recipientUser);

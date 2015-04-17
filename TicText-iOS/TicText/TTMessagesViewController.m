@@ -18,6 +18,7 @@
 
 #import "TTMessagesToolbarItem.h"
 #import "TTTextToolbarItem.h"
+#import "TTImageToolbarItem.h"
 #import "TTAnonymousToolbarItem.h"
 #import "TTExpirationToolbarItem.h"
 
