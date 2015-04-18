@@ -112,6 +112,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNewTic:) name:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willShowPhotoLibrary) name:kTTScrollingImagePickerDidTapImagePickerButton object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -717,32 +718,30 @@
 }
 
 #pragma mark - UIImagePicker
-- (BOOL)shouldStartPhotoLibraryWithTarget:(id)target canEdit:(BOOL)canEdit {
+- (void)willShowPhotoLibrary {
     if (([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary] == NO
          && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum] == NO)) {
-        return NO;
+        // TODO handle error
     }
     
     NSString *type = (NSString *)kUTTypeImage;
-    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
     
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]
         && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary] containsObject:type]) {
-        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        imagePicker.mediaTypes = [NSArray arrayWithObject:type];
+        imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePickerController.mediaTypes = [NSArray arrayWithObject:type];
     } else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]
                && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum] containsObject:type]) {
-        imagePicker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-        imagePicker.mediaTypes = [NSArray arrayWithObject:type];
+        imagePickerController.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+        imagePickerController.mediaTypes = [NSArray arrayWithObject:type];
     } else {
-        return NO;
+        // TODO handle error
     }
     
-    imagePicker.allowsEditing = canEdit;
-    imagePicker.delegate = target;
-    [self presentViewController:imagePicker animated:YES completion:nil];
-    
-    return YES;
+    imagePickerController.allowsEditing = YES;
+    imagePickerController.delegate = self;
+    [self presentViewController:imagePickerController animated:YES completion:nil];
 }
 
 #pragma mark - UIImagePickerControllerDelegate

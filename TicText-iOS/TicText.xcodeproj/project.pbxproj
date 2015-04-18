@@ -65,7 +65,7 @@
 		CDB970901ADB78840054079B /* TTTextToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB9708F1ADB78840054079B /* TTTextToolbarItem.m */; };
 		F984314B1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F984314A1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m */; };
 		F984314E1AE18A4600EA66F5 /* TTScrollingLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F984314D1AE18A4600EA66F5 /* TTScrollingLayout.m */; };
-		F98431511AE18A5500EA66F5 /* TTScrollingImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = F98431501AE18A5500EA66F5 /* TTScrollingImagePicker.m */; };
+		F98431511AE18A5500EA66F5 /* TTScrollingImagePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = F98431501AE18A5500EA66F5 /* TTScrollingImagePickerView.m */; };
 		F984315A1AE1A70E00EA66F5 /* TTImageToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F98431591AE1A70E00EA66F5 /* TTImageToolbarItem.m */; };
 /* End PBXBuildFile section */
 
@@ -181,8 +181,8 @@
 		F984314A1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingImagePickerCell.m; sourceTree = "<group>"; };
 		F984314C1AE18A4600EA66F5 /* TTScrollingLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollingLayout.h; sourceTree = "<group>"; };
 		F984314D1AE18A4600EA66F5 /* TTScrollingLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingLayout.m; sourceTree = "<group>"; };
-		F984314F1AE18A5500EA66F5 /* TTScrollingImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollingImagePicker.h; sourceTree = "<group>"; };
-		F98431501AE18A5500EA66F5 /* TTScrollingImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingImagePicker.m; sourceTree = "<group>"; };
+		F984314F1AE18A5500EA66F5 /* TTScrollingImagePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollingImagePickerView.h; sourceTree = "<group>"; };
+		F98431501AE18A5500EA66F5 /* TTScrollingImagePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingImagePickerView.m; sourceTree = "<group>"; };
 		F98431581AE1A70E00EA66F5 /* TTImageToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTImageToolbarItem.h; sourceTree = "<group>"; };
 		F98431591AE1A70E00EA66F5 /* TTImageToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTImageToolbarItem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -315,8 +315,8 @@
 		2E402A181A96FE8D00C1C7BF /* Custom UI */ = {
 			isa = PBXGroup;
 			children = (
-				F98431421AE1876100EA66F5 /* ScollImagePicker */,
 				CDB970891ADB670D0054079B /* MessagesToolbar */,
+				F98431421AE1876100EA66F5 /* ScollImagePicker */,
 				CD9F92831AB8F530006FFE67 /* ExpirationPicker */,
 				0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */,
 				2E402A151A96FE8900C1C7BF /* TTFindFriendsTableViewCell.h */,
@@ -501,8 +501,8 @@
 		F98431421AE1876100EA66F5 /* ScollImagePicker */ = {
 			isa = PBXGroup;
 			children = (
-				F984314F1AE18A5500EA66F5 /* TTScrollingImagePicker.h */,
-				F98431501AE18A5500EA66F5 /* TTScrollingImagePicker.m */,
+				F984314F1AE18A5500EA66F5 /* TTScrollingImagePickerView.h */,
+				F98431501AE18A5500EA66F5 /* TTScrollingImagePickerView.m */,
 				F98431491AE18A3300EA66F5 /* TTScrollingImagePickerCell.h */,
 				F984314A1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m */,
 				F984314C1AE18A4600EA66F5 /* TTScrollingLayout.h */,
@@ -564,11 +564,11 @@
 				TargetAttributes = {
 					0EC584E11A7864AA00025D71 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 35RV9RPQY7;
+						DevelopmentTeam = L26MMJT3VJ;
 					};
 					0EC584FA1A7864AA00025D71 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 35RV9RPQY7;
+						DevelopmentTeam = H87QWL564H;
 						TestTargetID = 0EC584E11A7864AA00025D71;
 					};
 				};
@@ -698,7 +698,7 @@
 				CD4D57C81A96B740002B5586 /* TTUser.m in Sources */,
 				CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */,
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
-				F98431511AE18A5500EA66F5 /* TTScrollingImagePicker.m in Sources */,
+				F98431511AE18A5500EA66F5 /* TTScrollingImagePickerView.m in Sources */,
 				CDB9708C1ADB6FFB0054079B /* TTMessagesToolbarItem.m in Sources */,
 				CD8C0ABD1ADCA12800EA9874 /* TTExpirationToolbarItem.m in Sources */,
 				0E6AFF781AB66DFF00FC69A9 /* Reachability.m in Sources */,
@@ -898,6 +898,7 @@
 				INFOPLIST_FILE = TicTextTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "TicTextTests/TicTextTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TicText.app/TicText";
@@ -920,6 +921,7 @@
 				INFOPLIST_FILE = TicTextTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "TicTextTests/TicTextTests-Bridging-Header.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TicText.app/TicText";
 			};

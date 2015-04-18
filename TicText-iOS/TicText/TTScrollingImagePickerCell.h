@@ -10,6 +10,10 @@
 
 @interface TTScrollingImagePickerCell : UICollectionViewCell
 
-@property (nonatomic, readonly) UIImageView *imageView;
+- (void)setImage:(UIImage *)image;
+
+- (void)showOptionButtons;
+
+- (void)hideOptionButtons;
 
 @end

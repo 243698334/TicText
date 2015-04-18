@@ -7,7 +7,9 @@
 //
 
 #import "TTImageToolbarItem.h"
+
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <TSMessages/TSMessage.h>
 
 @implementation TTImageToolbarItem
 
@@ -20,41 +22,31 @@
 }
 
 - (UIView *)contentView {
-    self.imagePicker = [[TTScrollingImagePicker alloc] init];
-    [self.imagePicker setBackgroundColor:[UIColor whiteColor]];
+    self.scrollingImagePickerView = [[TTScrollingImagePickerView alloc] init];
+    self.scrollingImagePickerView.backgroundColor = [UIColor whiteColor];
     
-    NSMutableArray *photoArray = [NSMutableArray array];
-    
-    ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
-    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
-    status = ALAuthorizationStatusAuthorized; //how to actually grant this?????
-    if (status == ALAuthorizationStatusAuthorized) {
-        [assetLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-            if (group) {
-                [group setAssetsFilter:[ALAssetsFilter allPhotos]];
-                
-                [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-                    
-                    //ALAssetRepresentation holds all the information about the asset being accessed.
+    NSMutableArray *images = [NSMutableArray array];
+    [[[ALAssetsLibrary alloc] init] enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+        if (group) {
+            [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+            [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                if (index < 10) {
                     if (result) {
-                        UIImage *image = [UIImage imageWithCGImage:[result thumbnail]];
-//                        UIImage *image = [UIImage imageWithCGImage:[[result defaultRepresentation] fullResolutionImage]];
-                        [photoArray addObject:image];
-                        NSArray *images = [photoArray copy];
-                        [self.imagePicker setImages:images];
+                        // UIImage *image = [UIImage imageWithCGImage:[result thumbnail]];
+                        UIImage *image = [UIImage imageWithCGImage:[[result defaultRepresentation] fullResolutionImage]];
+                        [images addObject:image];
+                        [self.scrollingImagePickerView setImages:images];
                     }
-                }];
-                
-            }
-        } failureBlock:^(NSError *error) {
-            NSLog(@"Error Description %@",[error description]);
-        }];
-    } else {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Permission Denied" message:@"Please allow the application to access your photo and videos in settings panel of your device" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];
-        [alertView show];
-    }
-    return self.imagePicker;
-//    return [super contentView];
+                } else {
+                    *stop = YES;
+                }
+            }];
+            
+        }
+    } failureBlock:^(NSError *error) {
+        [TSMessage showNotificationWithTitle:@"Permission Denied" subtitle:@"Please allow TicText to access your Camera Roll." type:TSMessageNotificationTypeError];
+    }];
+    return self.scrollingImagePickerView;
 }
 
 @end

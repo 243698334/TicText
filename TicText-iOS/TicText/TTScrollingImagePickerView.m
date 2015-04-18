@@ -1,29 +1,32 @@
 //
-//  TTScrollingImagePicker.m
+//  TTScrollingImagePickerView
 //  TicText
 //
 //  Created by Chengkan Huang on 4/17/15.
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import "TTScrollingImagePicker.h"
+#import "TTScrollingImagePickerView.h"
+
+#import <PureLayout/PureLayout.h>
 #import "TTScrollingLayout.h"
 #import "TTScrollingImagePickerCell.h"
 
 #define kImageSpacing 2.0
 
-@interface TTScrollingImagePicker () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface TTScrollingImagePickerView () <UICollectionViewDataSource, UICollectionViewDelegate>
 
+@property (nonatomic) BOOL addConstraints;
+@property (nonatomic, strong) UIButton *imagePickerButton;
 @property (nonatomic, weak) UICollectionView *collectionView;
 @property (nonatomic, strong) NSMutableArray *imagesArray;
 @property (nonatomic, strong) NSNumber *selectedIndex;
 
 @end
 
-@implementation TTScrollingImagePicker
+@implementation TTScrollingImagePickerView
 
-- (id)init
-{
+- (id)init {
     self = [super init];
     if (self) {
         [self setup];
@@ -31,13 +34,7 @@
     return self;
 }
 
-- (void)awakeFromNib
-{
-    [self setup];
-}
-
-- (void)setup
-{
+- (void)setup {
     TTScrollingLayout *flow = [[TTScrollingLayout alloc] init];
     flow.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     flow.minimumLineSpacing = kImageSpacing;
@@ -63,10 +60,34 @@
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[collectionView]|" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[collectionView]|" options:0 metrics:nil views:views]];
     
+    self.imagePickerButton = [[UIButton alloc] init];
+    [self.imagePickerButton setImage:[UIImage imageNamed:@"ImagePickerIcon"] forState:UIControlStateNormal];
+    CALayer *imagePickerButtonLayer = self.imagePickerButton.layer;
+    [imagePickerButtonLayer setMasksToBounds:YES];
+    [imagePickerButtonLayer setCornerRadius:25];
+    self.imagePickerButton.backgroundColor = [UIColor colorWithRed:130.0/255.0 green:100.0/255.0 blue:200.0/255.0 alpha:0.8];
+    [self.imagePickerButton addTarget:self action:@selector(didTapImagePickerButton) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.imagePickerButton];
+
 }
 
-- (void)setImages:(NSMutableArray *)images;
-{
+- (void)updateConstraints {
+    if (!self.addConstraints) {
+        self.addConstraints = YES;
+        [self.imagePickerButton autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self withOffset:-5 relation:NSLayoutRelationEqual];
+        [self.imagePickerButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:self withOffset:5 relation:NSLayoutRelationEqual];
+        [self.imagePickerButton autoSetDimension:ALDimensionHeight toSize:50];
+        [self.imagePickerButton autoSetDimension:ALDimensionWidth toSize:50];
+    }
+    [super updateConstraints];
+}
+
+- (void)didTapImagePickerButton {
+    [self.imagePickerButton removeFromSuperview];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTScrollingImagePickerDidTapImagePickerButton object:nil];
+}
+
+- (void)setImages:(NSMutableArray *)images {
     self.imagesArray = [images copy];
     
     [self.collectionView reloadData];
@@ -74,15 +95,13 @@
 
 #pragma mark - UICollectionViewDataSource
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section;
-{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.imagesArray.count;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath;
-{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     TTScrollingImagePickerCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
-    cell.imageView.image = [self.imagesArray objectAtIndex:indexPath.row];
+    [cell setImage:[self.imagesArray objectAtIndex:indexPath.row]];
     return cell;
 }
 
@@ -90,19 +109,19 @@
 
 #pragma mark - UICollectionViewDelegate
 
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath;
-{
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self toggleSelectionAtIndexPath:indexPath];
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
-{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self toggleSelectionAtIndexPath:indexPath];
+    TTScrollingImagePickerCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+    [cell showOptionButtons];
+    
     NSLog(@"image selected at %ld", [@(indexPath.row) integerValue]);
 }
 
-- (void)toggleSelectionAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)toggleSelectionAtIndexPath:(NSIndexPath *)indexPath {
     NSUInteger index = indexPath.row;
     NSNumber *path = @(index);
     
@@ -110,17 +129,11 @@
     self.selectedIndex = path;
     //TODO: Manage internal selection state
     //blur effect?
-    
-    // Notify delegate
-    if (self.delegate && [self.delegate respondsToSelector:@selector(selectionDidUpdateForPicker:)]) {
-        [self.delegate selectionDidUpdateForPicker:self];
-    }
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout*)collectionViewLayout
-  sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
-{
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     UIImage *imageAtPath = [self.imagesArray objectAtIndex:indexPath.row];
     
     CGFloat imageHeight = imageAtPath.size.height;

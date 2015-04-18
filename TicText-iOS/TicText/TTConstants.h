@@ -16,11 +16,20 @@ extern float const kTTUIPurpleColorGreen;
 extern float const kTTUIPurpleColorBlue;
 extern float const kTTUIPurpleColorAlpha;
 
+extern float const kTTUILightPurpleColorRed;
+extern float const kTTUILightPurpleColorGreen;
+extern float const kTTUILightPurpleColorBlue;
+extern float const kTTUILightPurpleColorAlpha;
+
 #define kTTUIPurpleColor [UIColor colorWithRed:kTTUIPurpleColorRed/255.0 \
                                          green:kTTUIPurpleColorGreen/255.0 \
                                           blue:kTTUIPurpleColorBlue/255.0 \
                                          alpha:kTTUIPurpleColorAlpha/255.0]
 
+#define kTTUILightPurpleColor [UIColor colorWithRed:kTTUILightPurpleColorRed/255.0 \
+                                              green:kTTUILightPurpleColorGreen/255.0 \
+                                               blue:kTTUILightPurpleColorBlue/255.0 \
+                                              alpha:kTTUILightPurpleColorAlpha/255.0]
 #pragma mark - NSUserDefaults
 extern NSString * const kTTSessionIsValidLastCheckedKey;
 
@@ -43,6 +52,10 @@ extern NSString * const kTTApplicationDidReceiveNewUserJoinWhileActiveNotificati
 extern NSString * const kTTNotificationUserInfoErrorKey;
 extern NSString * const kTTNotificationUserInfoTicIdKey;
 extern NSString * const kTTNotificationUserInfoSenderUserIdKey;
+
+// UI Events
+extern NSString * const kTTScrollingImagePickerDidTapImagePickerButton;
+extern NSString * const kTTUIImagePickerDidDismissEvent;
 
 
 #pragma mark - NSError

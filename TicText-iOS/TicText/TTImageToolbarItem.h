@@ -7,10 +7,10 @@
 //
 
 #import "TTMessagesToolbarItem.h"
-#import "TTScrollingImagePicker.h"
+#import "TTScrollingImagePickerView.h"
 
 @interface TTImageToolbarItem : TTMessagesToolbarItem
 
-@property (nonatomic, strong) TTScrollingImagePicker *imagePicker;
+@property (nonatomic, strong) TTScrollingImagePickerView *scrollingImagePickerView;
 
 @end
