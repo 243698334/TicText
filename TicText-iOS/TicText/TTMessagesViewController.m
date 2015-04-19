@@ -241,11 +241,8 @@
     
     // Arrange background view
     self.toolbarContentView = view;
-    if (self.inputToolbar.isHidden) {
-        self.toolbarContentView.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height, self.toolbarContentViewFrame.size.width, self.toolbarContentViewFrame.size.height);
-    } else {
-        self.toolbarContentView.frame = CGRectMake(-[UIScreen mainScreen].bounds.size.width, self.toolbarContentViewFrame.origin.y, self.toolbarContentViewFrame.size.width, self.toolbarContentViewFrame.size.height);
-    }
+    self.toolbarContentView.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height, self.toolbarContentViewFrame.size.width, self.toolbarContentViewFrame.size.height);
+
     [frontWindow addSubview:self.toolbarContentView];
     [UIView animateWithDuration:0.25 delay:0.0 options:458752 animations:^{
         self.toolbarContentView.frame = [self toolbarContentViewFrame];
