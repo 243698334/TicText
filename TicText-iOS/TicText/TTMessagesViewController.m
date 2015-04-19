@@ -65,6 +65,8 @@
     viewController.hidesBottomBarWhenPushed = YES;
 
     viewController.inputToolbar.contentView.leftBarButtonItem = nil;
+    viewController.inputToolbar.contentView.backgroundColor = [UIColor whiteColor];
+    viewController.inputToolbar.contentView.rightBarButtonItem.tintColor = kTTUIPurpleColor;
     
     viewController.expirationTime = kDefaultExpirationTime; // @TODO Load from user settings
     [viewController setupMessagesToolbar];
@@ -187,9 +189,6 @@
     self.messagesToolbar = [[TTMessagesToolbar alloc] initWithFrame:[self messagesToolbarFrame]];
     self.messagesToolbar.delegate = self;
     [self.view addSubview:self.messagesToolbar];
-    
-    [self.inputToolbar.contentView setBackgroundColor:[UIColor whiteColor]];
-    [self.inputToolbar.contentView.rightBarButtonItem setTintColor:kTTUIPurpleColor];
     
     [self.inputToolbar setHidden:YES];
 }
@@ -586,10 +585,14 @@
                              [self.messagesToolbar.topBorder setAlpha:0.0f];
                          }
                      } completion:^(BOOL finished) {
-                         if (hidden) {
-                             [self.inputToolbar setHidden:YES];
+                         if (finished) {
+                             if (hidden) {
+                                 [self.inputToolbar setHidden:YES];
+                             } else {
+                                 [self.inputToolbar setHidden:NO]; // hack to fix a rapid switching bug
+                             }
+                             [self jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
                          }
-                         [self jsq_setToolbarBottomLayoutGuideConstant:self.realToolbarBottomLayoutGuideConstrant];
                      }];
 }
 
