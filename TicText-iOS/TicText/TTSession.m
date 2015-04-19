@@ -24,7 +24,7 @@
     dispatch_once(&onceToken, ^{
         _sharedInstance = [[TTSession alloc] init];
     });
-     
+    
     return _sharedInstance;
 }
 
@@ -53,7 +53,7 @@
 }
 
 - (void)validateSessionInBackground {
-    // Skip validate when 
+    // Skip validate when
     if (self.isValidating) {
         return;
     }
@@ -169,28 +169,28 @@
             [TTUser currentUser].privateData.ACL = [PFACL ACLWithUser:[TTUser currentUser]];
             [TTUser currentUser].privateData.facebookFriends = facebookFriends;
             [TTUser currentUser].privateData.activeDeviceIdentifier = [UIDevice currentDevice].identifierForVendor.UUIDString;
-
+            
             NSURLRequest *profilePictureURLRequest = [NSURLRequest requestWithURL:profilePictureURL];
             [NSURLConnection sendAsynchronousRequest:profilePictureURLRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                 if (connectionError == nil && data != nil) {
-                     [[TTUser currentUser] setProfilePicture:data];
-                     [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                         if (succeeded) {
-                             [self fetchAndPinAllFriendsInBackground];
-                             [[TTActivity activityWithType:kTTActivityTypeNewUserJoin] saveInBackground];
-                         } else {
-                             [self logOut:nil];
-                         }
-                         if (completion) {
-                             completion(error);
-                         }
-                     }];
-                 } else {
-                     if (completion) {
-                         completion(connectionError);
-                     }
-                 }
-             }];
+                if (connectionError == nil && data != nil) {
+                    [[TTUser currentUser] setProfilePicture:data];
+                    [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        if (succeeded) {
+                            [self fetchAndPinAllFriendsInBackground];
+                            [[TTActivity activityWithType:kTTActivityTypeNewUserJoin] saveInBackground];
+                        } else {
+                            [self logOut:nil];
+                        }
+                        if (completion) {
+                            completion(error);
+                        }
+                    }];
+                } else {
+                    if (completion) {
+                        completion(connectionError);
+                    }
+                }
+            }];
         } else {
             if (completion) {
                 completion(error);
@@ -230,20 +230,24 @@
 
 - (void)fetchAndPinAllFriendsInBackground {
     NSLog(@"Fetching all friends' public data. ");
-    [[TTUser currentUser].privateData fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        TTUserPrivateData *fetchedPrivateData = (TTUserPrivateData *)object;
-        [TTUser fetchAllInBackground:fetchedPrivateData.friends block:^(NSArray *objects, NSError *error) {
-            if (error) {
-                NSLog(@"%@", error);
-            } else {
-                [TTUser unpinAllObjectsInBackgroundWithName:kTTLocalDatastoreFriendsPinName block:^(BOOL succeeded, NSError *error) {
-                    if (succeeded) {
-                        [TTUser pinAllInBackground:objects withName:kTTLocalDatastoreFriendsPinName];
-                    }
-                }];
-            }
-        }];
-    }];
+    //    [[TTUser currentUser].privateData fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+    //        TTUserPrivateData *fetchedPrivateData = (TTUserPrivateData *)object;
+    //        [TTUser fetchAllInBackground:fetchedPrivateData.friends block:^(NSArray *objects, NSError *error) {
+    //            if (error) {
+    //                NSLog(@"%@", error);
+    //            } else {
+    //                [TTUser unpinAllObjectsInBackgroundWithName:kTTLocalDatastoreFriendsPinName block:^(BOOL succeeded, NSError *error) {
+    //                    if (succeeded) {
+    //                        [TTUser pinAllInBackground:objects withName:kTTLocalDatastoreFriendsPinName];
+    //                    }
+    //                }];
+    //            }
+    //        }];
+    //    }];
+    [[TTUser currentUser].privateData fetchIfNeeded];
+    [TTUser fetchAllIfNeeded:[TTUser currentUser].privateData.friends];
+    [TTUser unpinAllObjectsWithName:kTTLocalDatastoreFriendsPinName];
+    [TTUser pinAll:[TTUser currentUser].privateData.friends withName:kTTLocalDatastoreFriendsPinName];
 }
 
 - (void)syncActiveDeviceIdentifier:(void (^)(NSError *))completion {

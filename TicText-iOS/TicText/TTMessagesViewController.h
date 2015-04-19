@@ -10,15 +10,16 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <JSQMessagesViewController/JSQMessages.h>
 #import <TSMessages/TSMessageView.h>
-#import "TTExpirationPickerController.h"
 #import "TTMessagesBubbleImage.h"
 #import "TTUser.h"
+#import "TTConversation.h"
 
-@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, TSMessageViewProtocol, TTExpirationPickerControllerDelegate>
+@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, TSMessageViewProtocol>
 
-@property (nonatomic) NSTimeInterval expirationTime;
-@property (nonatomic, strong) UILabel *expirationLabel;
+@property (nonatomic, assign) BOOL isKeyboardFirstResponder;
 
 + (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;
+
++ (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation;
 
 @end

@@ -14,4 +14,7 @@
 // Prompts the user to register their device for push notifications.
 + (void)setupPushNotifications;
 
+// Determine the reachability of Parse APIs.
++ (BOOL)isParseServerReachable;
+
 @end

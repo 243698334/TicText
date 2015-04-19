@@ -20,7 +20,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = kTTUIPurpleColor;    
+    self.view.backgroundColor = kTTUIPurpleColor;
     self.facebookLogInView.readPermissions = kTTFacebookPermissions;
 }
 
@@ -53,7 +53,7 @@
                     [self.progressHUD removeFromSuperview];
                 }];
             } else {
-                // Existing user log in                 
+                // Existing user log in
                 [[TTSession sharedSession] syncForExistingUser:^(NSError *error) {
                     if (error != nil) {
                         NSString *errorMessage = @"Uh oh. Unable to refresh your profile. Please try again later.";

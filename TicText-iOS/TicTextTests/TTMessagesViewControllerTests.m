@@ -12,6 +12,7 @@
 #import "TTTestHelper.h"
 
 #import "TTMessagesViewController.h"
+#import "TTExpirationPickerController.h"
 #import "TTExpirationDomain.h"
 #import "TTConstants.h"
 #import "TTTic.h"
