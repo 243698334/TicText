@@ -8,8 +8,8 @@
 
 #import "TTUtility.h"
 
-
 #import <UIKit/UIKit.h>
+#import "Reachability.h"
 #import "TTUser.h"
 
 @implementation TTUtility
@@ -22,6 +22,12 @@
                                                                              categories:nil];
     [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
     [[UIApplication sharedApplication] registerForRemoteNotifications];
+}
+
++ (BOOL)isParseServerReachable {
+    Reachability *parseReachability = [Reachability reachabilityWithHostName:@"api.parse.com"];
+    NetworkStatus parseNetworkStatus = [parseReachability currentReachabilityStatus];
+    return parseNetworkStatus == ReachableViaWiFi || parseNetworkStatus == ReachableViaWWAN || [parseReachability connectionRequired];
 }
 
 @end

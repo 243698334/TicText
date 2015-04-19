@@ -13,7 +13,7 @@
 @dynamic userId, friends, facebookFriends, activeDeviceIdentifier;
 
 + (NSString *)parseClassName {
-    return kTTUserPrivateDataClassKey;
+    return kTTUserPrivateDataClassName;
 }
 
 @end

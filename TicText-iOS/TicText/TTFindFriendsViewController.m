@@ -36,7 +36,7 @@
     self.tableView.showsVerticalScrollIndicator = NO;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.tableView];
-
+    
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height * 0.15)];
     headerView.backgroundColor = kTTUIPurpleColor;
     self.tableView.tableHeaderView = headerView;
@@ -64,7 +64,7 @@
     iv.image = self.screenshot;
     [self.view addSubview: iv];
     [self.view sendSubviewToBack:iv];
-
+    
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -86,9 +86,8 @@
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button setTitle:@"Continue" forState:UIControlStateNormal];
     [button sizeToFit];
-    CGFloat yPos = appIconImageViewHeight - 25;
-    button.frame = CGRectMake(header.bounds.size.width/2, yPos, 80, 30);
-    button.center = CGPointMake(header.bounds.size.width/2, yPos);
+    button.frame = CGRectMake(header.bounds.size.width/2, 200, 80, 30);
+    button.center = CGPointMake(header.bounds.size.width/2, 200);
     button.layer.borderWidth = 2.0f;
     button.layer.borderColor = [UIColor whiteColor].CGColor;
     button.layer.cornerRadius = 10;
@@ -194,7 +193,7 @@
         self.tableView.alpha = 0;
         self.tableView.transform = CGAffineTransformMakeTranslation(shift, 0);
     } completion:^(BOOL finished){
-       [self hideView];
+        [self hideView];
     }];
 }
 

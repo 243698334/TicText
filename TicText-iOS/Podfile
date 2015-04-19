@@ -10,6 +10,7 @@ target 'TicText' do
   pod 'JSQMessagesViewController'
   pod 'JMStaticContentTableViewController'
   pod 'TSMessages'
+  pod 'PureLayout'
 end
 
 target 'TicTextTests' do

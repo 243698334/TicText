@@ -13,11 +13,11 @@
 @dynamic status, type, timeLimit, contentType, content, sendTimestamp, receiveTimestamp, sender, recipient;
 
 + (NSString *)parseClassName {
-    return kTTTicClassKey;
+    return kTTTicClassName;
 }
 
 + (instancetype)unreadTicWithId:(NSString*)objectId {
-    TTTic *unreadTic = [TTTic objectWithoutDataWithClassName:kTTTicClassKey objectId:objectId];
+    TTTic *unreadTic = [TTTic objectWithoutDataWithClassName:kTTTicClassName objectId:objectId];
     unreadTic.status = kTTTicStatusUnread;
     return unreadTic;
 }

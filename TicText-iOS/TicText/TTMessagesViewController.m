@@ -12,22 +12,8 @@
 #import "TTTic.h"
 #import "TTActivity.h"
 
-#import "TTExpirationDomain.h"
-
-#define kDefaultExpirationTime 3600
-#define kExpirationTimerIcon @"TicsTabBarIcon"
-
-@interface JSQMessagesViewController (PrivateMethods)
-
-- (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant;
-- (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy;
-
-@end
 
 @interface TTMessagesViewController ()
-
-@property (nonatomic, strong) UIView *expirationToolbar;
-@property (nonatomic, strong) TTExpirationPickerController *pickerController;
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
 @property (nonatomic) BOOL isFetchingTic;
@@ -41,52 +27,45 @@
 @property (nonatomic, strong) JSQMessagesBubbleImage *outgoingBubbleImageData;
 @property (nonatomic, strong) JSQMessagesBubbleImage *incomingBubbleImageData;
 @property (nonatomic, strong) JSQMessagesBubbleImageFactory *bubbleFactory;
+
 @end
 
 @implementation TTMessagesViewController
 
-+ (instancetype)messagesViewController {
-    TTMessagesViewController *viewController = [super messagesViewController];
-    
-    viewController.view.backgroundColor = [UIColor grayColor];
-    viewController.navigationItem.title = @"Some Dialog";
-    viewController.hidesBottomBarWhenPushed = YES;
-    
-    UIButton *expirationTimerButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [expirationTimerButton setImage:[UIImage imageNamed:kExpirationTimerIcon] forState:UIControlStateNormal];
-    viewController.inputToolbar.contentView.leftBarButtonItem = expirationTimerButton;
-    
-    viewController.expirationTime = kDefaultExpirationTime;
-    [viewController setupExpirationToolbar];
-    
-    return viewController;
++ (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient {
+    TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewController];
+    messagesViewController.recipient = recipient;
+    return messagesViewController;
 }
 
-+ (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient {
-    TTMessagesViewController *messagesViewController = [self messagesViewController];
-    messagesViewController.recipient = recipient;
++ (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation {
+    TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewController];
+    messagesViewController.recipient = conversation.recipient;
+    return messagesViewController;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
     
-    messagesViewController.navigationItem.title = messagesViewController.recipient.displayName; // this is called before self.recipient is set
+    self.navigationItem.title = self.recipient.displayName;
     
-    messagesViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:messagesViewController action:@selector(confirmCleanTicHistory)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(confirmCleanTicHistory)];
     
-    [TSMessage setDelegate:messagesViewController];
+    [TSMessage setDelegate:self];
     [TSMessage addCustomDesignFromFileWithName:@"TTInAppNotificationDesign.json"];
     
-    messagesViewController.senderId = [[TTUser currentUser].objectId copy];
-    messagesViewController.senderDisplayName = [[TTUser currentUser].displayName copy];
+    self.senderId = [[TTUser currentUser].objectId copy];
+    self.senderDisplayName = [[TTUser currentUser].displayName copy];
     
-    messagesViewController.tics = [[NSMutableArray alloc] init];
-    messagesViewController.jsqMessages = [[NSMutableArray alloc] init];
+    self.tics = [[NSMutableArray alloc] init];
+    self.jsqMessages = [[NSMutableArray alloc] init];
     
-    messagesViewController.isFetchingTic = NO;
-    messagesViewController.bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
-    messagesViewController.outgoingBubbleImageData = [messagesViewController.bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
-    messagesViewController.incomingBubbleImageData = [messagesViewController.bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
+    self.isFetchingTic = NO;
+    self.bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
+    self.outgoingBubbleImageData = [self.bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    self.incomingBubbleImageData = [self.bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
     
-    [messagesViewController loadTicHistory];
-    
-    return messagesViewController;
+    [self loadTicHistory];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -96,18 +75,15 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    if (self.isKeyboardFirstResponder) {
+        [self.inputToolbar.contentView.textView becomeFirstResponder];
+    }
     self.collectionView.collectionViewLayout.springinessEnabled = NO;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
-    
-    [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
 }
 
 - (void)didReceiveNewTic:(NSNotification *)notification {
@@ -172,54 +148,6 @@
     }];
 }
 
-#define kExpirationToolbarHeight 32.0f
-#define kExpirationToolbarAlpha 0.60f
-- (CGRect)expirationToolbarFrame {
-    return CGRectMake(0, self.inputToolbar.frame.origin.y - kExpirationToolbarHeight,
-                      self.inputToolbar.frame.size.width, kExpirationToolbarHeight);
-}
-
-- (void)setupExpirationToolbar {
-    self.expirationToolbar = [[UIView alloc] initWithFrame:[self expirationToolbarFrame]];
-    [self.expirationToolbar setBackgroundColor:[UIColor whiteColor]];
-    [self.expirationToolbar setAlpha:kExpirationToolbarAlpha];
-    
-    self.expirationLabel = [[UILabel alloc] initWithFrame:CGRectInset(CGRectMake(0, 0, self.expirationToolbar.frame.size.width, self.expirationToolbar.frame.size.height), 8.0f, 8.0f)];
-    [self.expirationLabel setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
-    [self.expirationLabel setAdjustsFontSizeToFitWidth:YES];
-    [self.expirationLabel setFont:[UIFont systemFontOfSize:12.0f]];
-    [self.expirationToolbar addSubview:self.expirationLabel];
-    
-    [self.view addSubview:self.expirationToolbar];
-    
-    [self refreshExpirationToolbar:self.expirationTime];
-}
-
-- (void)refreshExpirationToolbar:(NSTimeInterval)expiration {
-    [self.expirationLabel setText:[TTExpirationDomain stringForTimeInterval:expiration]];
-}
-
-- (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant {
-    [super jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant];
-    
-    [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
-}
-
-- (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy {
-    [super jsq_adjustInputToolbarForComposerTextViewContentSizeChange:dy];
-    
-    [self.expirationToolbar setFrame:[self expirationToolbarFrame]];
-}
-
-- (void)didPressAccessoryButton:(UIButton *)sender {
-    [self.pickerController dismiss];
-    
-    self.pickerController = [[TTExpirationPickerController alloc] initWithExpirationTime:self.expirationTime];
-    [self.pickerController setDelegate:self];
-    [self.pickerController present];
-}
-
-#pragma mark - Helpers
 - (void)confirmCleanTicHistory {
     [TSMessage showNotificationInViewController:self
                                           title:@"Clean Tic History"
@@ -292,6 +220,10 @@
     }];
 }
 
+- (void)didPressAccessoryButton:(UIButton *)sender {
+    NSLog(@"didPressAccessoryButton");
+}
+
 #pragma mark - JSQMessagesViewController method overrides
 
 - (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
@@ -302,7 +234,7 @@
     JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:date text:text];
     
     // New Tic
-    TTTic *newTic = [self ticWithType:kTTTicTypeDefault sender:[TTUser currentUser] recipient:self.recipient timeLimit:self.expirationTime message:newJSQMessage];
+    TTTic *newTic = [self ticWithType:kTTTicTypeDefault sender:[TTUser currentUser] recipient:self.recipient timeLimit:10 message:newJSQMessage];
     [newTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
     
     // Add to local array
@@ -451,7 +383,7 @@
     [tappedCell.messageBubbleImageView addSubview:progressHUD];
     progressHUD.opacity = 0;
     [progressHUD show:YES];
-
+    
     [TTTic fetchTicInBackgroundWithId:unreadTic.objectId timestamp:[NSDate date] completion:^(TTTic *fetchedTic, NSError *error) {
         if (fetchedTic) {
             [fetchedTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
@@ -508,14 +440,6 @@
 
 - (void)customizeMessageView:(TSMessageView *)messageView {
     messageView.alpha = 0.95;
-}
-
-#pragma mark - TTExpirationPickerControllerDelegate
-- (void)pickerController:(TTExpirationPickerController *)controller didFinishWithExpiration:(NSTimeInterval)expirationTime {
-    if (controller == self.pickerController) {
-        self.expirationTime = expirationTime;
-        [self refreshExpirationToolbar:expirationTime];
-    }
 }
 
 @end
