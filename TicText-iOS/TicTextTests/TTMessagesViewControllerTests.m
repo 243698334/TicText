@@ -138,4 +138,6 @@
     OCMVerifyAll(self.mockMessagesViewController);
 }
 
+// Add tests for TTMessagesToolbar
+
 @end
