@@ -138,6 +138,68 @@
     OCMVerifyAll(self.mockMessagesViewController);
 }
 
-// Add tests for TTMessagesToolbar
+- (void)testSetupMessagesToolbar {
+    // @stub
+}
+
+- (void)testInputToolbarFrame {
+    // @stub
+}
+
+- (void)testMessagesToolbarFrame {
+    // @stub
+}
+
+- (void)testToolbarContentViewFrame {
+    // @stub
+}
+
+- (void)testRemoveCurrentToolbarContentView {
+    // @stub
+}
+
+- (void)testSetupToolbarContentView {
+    // @stub
+}
+
+- (void)testUpdateCustomUI {
+    // @stub
+}
+
+- (void)testJsq_setToolbarBottomLayoutGuideConstant {
+    // @stub
+}
+
+- (void)testSendButtonExpirationTime {
+    // @stub
+}
+
+- (void)testSendButtonTicType {
+    // @stub
+}
+
+- (void)testCaculateInputToolbarFrameHidden {
+    // @stub
+}
+
+- (void)testMessagesToolbarWillShowItem {
+    // @stub
+}
+
+- (void)testMessagesToolbarWillHideItem {
+    // @stub
+}
+
+- (void)testMessagesToolbarSetAnonymousTic {
+    // @stub
+}
+
+- (void)testMessagesToolbarSetExpirationTime {
+    // @stub
+}
+
+- (void)testCurrentExpirationTime {
+    // @stub
+}
 
 @end

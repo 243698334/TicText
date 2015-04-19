@@ -16,21 +16,36 @@ class TTMessagesToolbarTests: XCTestCase {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+    func testInitWithFrameToolbarItems() {
+        // @stub
+    }
+    
+    func testInitWithFrame() {
+        // @stub
+    }
+    
+    func testTopBorderFrame() {
+        // @stub
+    }
+    
+    func testSetupTopBorder() {
+        // @stub
+    }
+    
+    func testSetupButtons() {
+        // @stub
+    }
+    
+    func testSelectItemAtIndex() {
+        // @stub
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
+    func testToggleItem() {
+        // @stub
     }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
-        }
+    
+    func testFrameForButtonIndex() {
+        // @stub
     }
 
 }

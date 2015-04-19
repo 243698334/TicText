@@ -11,7 +11,8 @@
 @class TTMessagesToolbar;
 @interface TTMessagesToolbarItem : UIButton
 
-@property (nonatomic, strong) TTMessagesToolbar *toolbar;
+// 
+@property (nonatomic, weak) TTMessagesToolbar *toolbar;
 
 - (CGFloat)widthMultiplier;
 - (UIView *)contentView;

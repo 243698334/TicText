@@ -562,10 +562,10 @@
 #define kInputToolbarShowAnimationDuration 0.23
 
 - (CGRect)caculateInputToolbarFrameHidden:(BOOL)hidden {
-    if (!hidden) {
-        return [self inputToolbarFrame];
-    } else {
+    if (hidden) {
         return CGRectOffset([self inputToolbarFrame], 0, self.inputToolbar.frame.size.height);
+    } else {
+        return [self inputToolbarFrame];
     }
 }
 

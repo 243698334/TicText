@@ -10,12 +10,6 @@
 
 #import "TTMessagesToolbarItem.h"
 
-@interface TTMessagesToolbar ()
-
-@property (nonatomic, strong) NSArray *toolbarItems;
-
-@end
-
 @implementation TTMessagesToolbar
 
 - (id)initWithFrame:(CGRect)frame toolbarItems:(NSArray *)items {

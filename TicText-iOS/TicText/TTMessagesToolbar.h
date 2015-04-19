@@ -29,3 +29,15 @@
 - (void)selectItemAtIndex:(NSInteger)index;
 
 @end
+
+@interface TTMessagesToolbar (Private)
+
+@property (nonatomic, strong) NSArray *toolbarItems;
+
+- (CGRect)topBorderFrame;
+- (void)setupTopBorder;
+- (void)setupButtons;
+- (void)toggleItem:(TTMessagesToolbarItem *)item;
+- (CGRect)frameForButtonIndex:(NSInteger)index;
+
+@end
