@@ -37,14 +37,9 @@
 
 @interface TTMessagesViewController ()
 
-@property (nonatomic, strong) UIView *expirationToolbar;
 @property (nonatomic) CGFloat realToolbarBottomLayoutGuideConstrant;
 @property (nonatomic, strong) TTMessagesToolbar *messagesToolbar;
 @property (nonatomic, strong) UIView *toolbarContentView;
-
-@property (nonatomic) BOOL isAnonymous;
-
-@property (nonatomic, strong) TTExpirationPickerController *pickerController;
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
 @property (nonatomic) BOOL isFetchingTic;
@@ -71,7 +66,7 @@
 
     viewController.inputToolbar.contentView.leftBarButtonItem = nil;
     
-    viewController.expirationTime = kDefaultExpirationTime;
+    viewController.expirationTime = kDefaultExpirationTime; // @TODO Load from user settings
     [viewController setupMessagesToolbar];
     
     return viewController;
@@ -189,8 +184,7 @@
 }
 
 - (void)setupMessagesToolbar {
-    NSArray *toolbarItems = @[[[TTTextToolbarItem alloc] init], [[TTMessagesToolbarItem alloc] init], [[TTAnonymousToolbarItem alloc] init], [[TTExpirationToolbarItem alloc] init]];
-    self.messagesToolbar = [[TTMessagesToolbar alloc] initWithFrame:[self messagesToolbarFrame] toolbarItems:toolbarItems];
+    self.messagesToolbar = [[TTMessagesToolbar alloc] initWithFrame:[self messagesToolbarFrame]];
     self.messagesToolbar.delegate = self;
     [self.view addSubview:self.messagesToolbar];
     

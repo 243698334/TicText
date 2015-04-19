@@ -37,7 +37,13 @@
 }
 
 - (id)initWithFrame:(CGRect)frame {
-    return (self = [self initWithFrame:frame toolbarItems:@[]]);
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"InstalledToolbarItems" ofType:@"plist"];
+    NSArray *itemClasses = [[NSArray alloc] initWithContentsOfFile:path];
+    NSMutableArray *items = [NSMutableArray array];
+    for (NSString *itemClass in itemClasses) {
+        [items addObject:[[NSClassFromString(itemClass) alloc] init]];
+    }
+    return (self = [self initWithFrame:frame toolbarItems:[NSArray arrayWithArray:items]]);
 }
 
 - (CGRect)topBorderFrame {

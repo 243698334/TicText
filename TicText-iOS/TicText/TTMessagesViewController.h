@@ -18,7 +18,7 @@
 @interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, TSMessageViewProtocol, TTMessagesToolbarDelegate>
 
 @property (nonatomic) NSTimeInterval expirationTime;
-@property (nonatomic, strong) UILabel *expirationLabel;
+@property (nonatomic) BOOL isAnonymous;
 
 + (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;
 

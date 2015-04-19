@@ -43,6 +43,7 @@
 		CD4433601AE42F56008828FE /* TTTextToolbarItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD44335F1AE42F56008828FE /* TTTextToolbarItemTests.swift */; };
 		CD4433621AE42F63008828FE /* TTAnonymousToolbarItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4433611AE42F63008828FE /* TTAnonymousToolbarItemTests.swift */; };
 		CD4433641AE42F6F008828FE /* TTExpirationToolbarItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4433631AE42F6F008828FE /* TTExpirationToolbarItemTests.swift */; };
+		CD4433661AE434B4008828FE /* InstalledToolbarItems.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD4433651AE434B4008828FE /* InstalledToolbarItems.plist */; };
 		CD4748401AB770DA00A4B8F6 /* TTExpirationDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = CD47483F1AB770DA00A4B8F6 /* TTExpirationDomain.m */; };
 		CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C11A96A5A6002B5586 /* TTSession.m */; };
 		CD4D57C51A96AED2002B5586 /* TTSessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD4D57C41A96AED2002B5586 /* TTSessionTests.m */; };
@@ -136,6 +137,7 @@
 		CD44335F1AE42F56008828FE /* TTTextToolbarItemTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTTextToolbarItemTests.swift; sourceTree = "<group>"; };
 		CD4433611AE42F63008828FE /* TTAnonymousToolbarItemTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTAnonymousToolbarItemTests.swift; sourceTree = "<group>"; };
 		CD4433631AE42F6F008828FE /* TTExpirationToolbarItemTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTExpirationToolbarItemTests.swift; sourceTree = "<group>"; };
+		CD4433651AE434B4008828FE /* InstalledToolbarItems.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InstalledToolbarItems.plist; sourceTree = "<group>"; };
 		CD47483E1AB770DA00A4B8F6 /* TTExpirationDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTExpirationDomain.h; sourceTree = "<group>"; };
 		CD47483F1AB770DA00A4B8F6 /* TTExpirationDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTExpirationDomain.m; sourceTree = "<group>"; };
 		CD4D57C01A96A5A6002B5586 /* TTSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSession.h; sourceTree = "<group>"; };
@@ -446,6 +448,7 @@
 				CDB970871ADB60A80054079B /* TTMessagesToolbar.m */,
 				CDB9708A1ADB6FFB0054079B /* TTMessagesToolbarItem.h */,
 				CDB9708B1ADB6FFB0054079B /* TTMessagesToolbarItem.m */,
+				CD4433651AE434B4008828FE /* InstalledToolbarItems.plist */,
 				CDB9708D1ADB780C0054079B /* ToolbarItems */,
 			);
 			name = MessagesToolbar;
@@ -563,6 +566,7 @@
 			files = (
 				0EC584F61A7864AA00025D71 /* LaunchScreen.xib in Resources */,
 				0EC584F31A7864AA00025D71 /* Images.xcassets in Resources */,
+				CD4433661AE434B4008828FE /* InstalledToolbarItems.plist in Resources */,
 				0E61D46B1AA5B08D00EF5826 /* TTInAppNotificationDesign.json in Resources */,
 				CD4D57D61A96E9EE002B5586 /* TTLogInViewController.xib in Resources */,
 			);
