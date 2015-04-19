@@ -80,14 +80,15 @@
         return;
     }
     
-    TTMessagesToolbarItem *oldItem = nil;
-    if (self.selectedIndex >= 0) {
-        oldItem = self.toolbarItems[self.selectedIndex];
-        [oldItem buttonOnDeselect:self];
-    }
-    
     [item buttonOnSelect:self];
-    if ([item switchViewOnAction]) {
+    
+    TTMessagesToolbarItem *oldItem = nil;
+    if ([item switchViewOnAction]) { // if the new view should change the contentView
+        if (self.selectedIndex >= 0) { // if we have a selected item
+            oldItem = self.toolbarItems[self.selectedIndex];
+            [oldItem buttonOnDeselect:self];
+        }
+        
         self.selectedIndex = [self.toolbarItems indexOfObject:item];
         [self.delegate messagesToolbar:self willShowItem:item];
     }
