@@ -9,12 +9,6 @@
 #import "TTAnonymousToolbarItem.h"
 #import "TTMessagesToolbar.h"
 
-@interface TTAnonymousToolbarItem ()
-
-@property (nonatomic) BOOL isAnonymous;
-
-@end
-
 @implementation TTAnonymousToolbarItem
 
 - (id)initWithFrame:(CGRect)frame {
@@ -22,7 +16,7 @@
         [self setTitle:@"Anonymous" forState:UIControlStateNormal];
         [self.titleLabel setAdjustsFontSizeToFitWidth:YES];
         
-        self.isAnonymous = NO;
+        self.selected = NO;
     }
     return self;
 }
@@ -40,15 +34,13 @@
         return;
     }
     
-    BOOL newValue = !self.isAnonymous;
-    self.isAnonymous = self.selected = newValue;
-    if (newValue) {
+    if ((self.selected = !self.selected)) {
         [self.titleLabel setFont:[UIFont boldSystemFontOfSize:20.0f]];
     } else {
         [self.titleLabel setFont:[UIFont systemFontOfSize:20.0f]];
     }
     
-    [self.toolbar.delegate messagesToolbar:toolbar setAnonymousTic:self.isAnonymous];
+    [self.toolbar.delegate messagesToolbar:toolbar setAnonymousTic:self.selected];
 }
 
 - (void)buttonOnDeselect:(TTMessagesToolbar *)toolbar {

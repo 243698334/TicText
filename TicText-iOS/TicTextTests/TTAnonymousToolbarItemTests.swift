@@ -10,35 +10,93 @@ import UIKit
 import XCTest
 
 class TTAnonymousToolbarItemTests: XCTestCase {
+    
+    class ToolbarDelegate: NSObject, TTMessagesToolbarDelegate {
+        
+        var isAnonymous = false
+        
+        @objc func messagesToolbar(toolbar: TTMessagesToolbar!, setAnonymousTic anonymous: Bool) {
+            self.isAnonymous = anonymous
+        }
+        
+        @objc func messagesToolbar(toolbar: TTMessagesToolbar!, setExpirationTime expirationTime: NSTimeInterval) { }
+        
+        @objc func messagesToolbar(toolbar: TTMessagesToolbar!, willHideItem item: TTMessagesToolbarItem!) { }
+        
+        @objc func messagesToolbar(toolbar: TTMessagesToolbar!, willShowItem item: TTMessagesToolbarItem!) { }
+        
+        @objc func currentExpirationTime() -> NSTimeInterval {
+            return 0
+        }
+    }
 
+    var toolbarItem: TTAnonymousToolbarItem!
+    
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        
+        toolbarItem = TTAnonymousToolbarItem()
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+    func testItemTitle() {
+        XCTAssertEqual(toolbarItem.titleLabel!.text!, "Anonymous")
     }
     
     func testWidthMultiplier() {
-        // @stub
+        XCTAssertEqual(toolbarItem.widthMultiplier(), 2.0)
     }
     
     func testContentView() {
-        // @stub
+        XCTAssertNil(toolbarItem.contentView)
     }
     
     func testButtonOnSelect() {
-        // @stub
+        // Arrange
+        toolbarItem.selected = false
+        
+        let toolbar = TTMessagesToolbar()
+        let toolbarDelegate = ToolbarDelegate()
+        toolbar.delegate = toolbarDelegate
+        toolbarItem.toolbar = toolbar
+        
+        XCTAssertEqual(toolbarItem.selected, false, "precondition")
+        XCTAssertNotNil(toolbarItem.toolbar, "precondition")
+        
+        // Act
+        toolbarItem.buttonOnSelect(toolbar)
+        
+        // Assert
+        XCTAssertEqual(toolbarItem.selected, true)
+        XCTAssertEqual(toolbarDelegate.isAnonymous, true)
     }
     
-    func testButtonOnDeselect() {
-        // @stub
+    func testButtonOnSelect2() {
+        // Arrange
+        toolbarItem.selected = true
+        
+        let toolbar = TTMessagesToolbar()
+        let toolbarDelegate = ToolbarDelegate()
+        toolbarDelegate.isAnonymous = true
+        toolbar.delegate = toolbarDelegate
+        toolbarItem.toolbar = toolbar
+        
+        XCTAssertEqual(toolbarItem.selected, true, "precondition")
+        XCTAssertNotNil(toolbarItem.toolbar, "precondition")
+        
+        // Act
+        toolbarItem.buttonOnSelect(toolbar)
+        
+        // Assert
+        XCTAssertEqual(toolbarItem.selected, false)
+        XCTAssertEqual(toolbarDelegate.isAnonymous, false)
     }
     
     func testSwitchViewOnAction() {
-        // @stub
+        XCTAssertEqual(toolbarItem.shouldSwitchViewOnAction(), false)
+    }
+    
+    func testToolbarItemClassName() {
+        XCTAssertEqual(toolbarItem.className, "TTAnonymousToolbarItem")
     }
 
 }
