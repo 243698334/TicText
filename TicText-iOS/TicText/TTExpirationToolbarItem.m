@@ -50,7 +50,7 @@
     return;
 }
 
-- (BOOL)switchViewOnAction {
+- (BOOL)shouldSwitchViewOnAction {
     return NO;
 }
 

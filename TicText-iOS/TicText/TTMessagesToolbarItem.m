@@ -48,8 +48,12 @@
     self.selected = NO;
 }
 
-- (BOOL)switchViewOnAction {
+- (BOOL)shouldSwitchViewOnAction {
     return YES;
+}
+
+- (NSString *)className {
+    return NSStringFromClass(self.class);
 }
 
 @end

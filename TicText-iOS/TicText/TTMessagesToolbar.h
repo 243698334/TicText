@@ -34,6 +34,9 @@
 // currently selected item's |contentView|.
 @property (nonatomic, weak) id<TTMessagesToolbarDelegate> delegate;
 
+// The array used internally to hold the toolbar items.
+@property (nonatomic, strong) NSArray *toolbarItems;
+
 // A sliver view displayed along the top side of this toolbar that is exposed to this toolbar's
 // owner so it can, when needed, hide or show.
 @property (nonatomic, strong) UIView *topBorder;
@@ -53,10 +56,7 @@
 
 @end
 
-@interface TTMessagesToolbar (Private)
-
-// The array used internally to hold the toolbar items.
-@property (nonatomic, strong) NSArray *toolbarItems;
+@interface TTMessagesToolbar (PrivateMethods)
 
 // Frame, respective to the toolbar, for the |topBorder| view.
 - (CGRect)topBorderFrame;

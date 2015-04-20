@@ -40,5 +40,47 @@ class TTExpirationToolbarItemTests: XCTestCase {
     func testSwitchViewOnAction() {
         // @stub
     }
+    
+    /*
+    - (void)testDidPressAccessoryButton {
+        // Pre-condition
+        XCTAssert([self.mockMessagesViewController pickerController] == nil);
+
+        // Act
+        [self.mockMessagesViewController didPressAccessoryButton:nil];
+
+        // Assert
+        XCTAssert([self.mockMessagesViewController pickerController] != nil);
+        XCTAssert([[self.mockMessagesViewController pickerController] superview] != nil);
+    }
+
+    - (void)testPickerControllerDidFinishWithExpirationZeroValue {
+        // Arrange
+        TTExpirationPickerController *controller = [[TTExpirationPickerController alloc] init];
+        [self.mockMessagesViewController setPickerController:controller];
+        [self.mockMessagesViewController setExpirationTime:3600];
+        OCMExpect([self.mockMessagesViewController refreshExpirationToolbar:0]);
+
+        // Act
+        [self.mockMessagesViewController pickerController:controller didFinishWithExpiration:0];
+
+        // Assert
+        OCMVerifyAll(self.mockMessagesViewController);
+    }
+
+    - (void)testPickerControllerDidFinishWithExpirationSomeValue {
+        // Arrange
+        TTExpirationPickerController *controller = [[TTExpirationPickerController alloc] init];
+        [self.mockMessagesViewController setPickerController:controller];
+        [self.mockMessagesViewController setExpirationTime:3600];
+        OCMExpect([self.mockMessagesViewController refreshExpirationToolbar:1337]);
+
+        // Act
+        [self.mockMessagesViewController pickerController:controller didFinishWithExpiration:1337];
+
+        // Assert
+        OCMVerifyAll(self.mockMessagesViewController);
+    }
+*/
 
 }

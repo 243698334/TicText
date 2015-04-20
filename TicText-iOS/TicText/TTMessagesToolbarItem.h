@@ -15,11 +15,14 @@
 // Automatically set by the toolbar when it's initialized containing an instance of this item.
 @property (nonatomic, weak) TTMessagesToolbar *toolbar;
 
-// Used to give this item more or less width when presented in the toolbar.
-- (CGFloat)widthMultiplier;
+// Helper to get the class name for unit testing.
+@property (nonatomic, readonly) NSString *className;
 
 // Displayed by the toolbar's owner when this item is selected.
-- (UIView *)contentView;
+@property (nonatomic, readonly) UIView *contentView;
+
+// Used to give this item more or less width when presented in the toolbar.
+- (CGFloat)widthMultiplier;
 
 // Called by the toolbar when this button is selected.
 // @Note This is not called multiple times if this item is currently selected.
@@ -30,6 +33,6 @@
 - (void)buttonOnDeselect:(TTMessagesToolbar *)toolbar;
 
 // Used by the toolbar and its owner to determine interactions with this item.
-- (BOOL)switchViewOnAction;
+- (BOOL)shouldSwitchViewOnAction;
 
 @end
