@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define kTTDemoModeEnabled NO
+
 #pragma mark - UIColors
 extern float const kTTUIPurpleColorRed;
 extern float const kTTUIPurpleColorGreen;

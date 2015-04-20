@@ -142,11 +142,14 @@
     
     [_user.privateData fetchIfNeeded]; // @Remark: This fixes the unit tests, but relies on a synchronous call.
     _friends = [[NSMutableArray alloc] initWithArray:_user.privateData.friends];
-    //stuff just for testing
-    [_friends addObjectsFromArray: _user.privateData.friends];
-    [_friends addObjectsFromArray: _user.privateData.friends];
-    [_friends addObjectsFromArray: _user.privateData.friends];
-    [_friends addObjectsFromArray: _user.privateData.friends];
+    
+    if (kTTDemoModeEnabled) { // stuff just for testing
+        [_friends addObjectsFromArray: _user.privateData.friends];
+        [_friends addObjectsFromArray: _user.privateData.friends];
+        [_friends addObjectsFromArray: _user.privateData.friends];
+        [_friends addObjectsFromArray: _user.privateData.friends];
+    }
+    
     if(_friends.count == 0) {
         NSLog(@"no friends on tictext :(");
         [self dismissViewControllerAnimated:YES completion:nil];
