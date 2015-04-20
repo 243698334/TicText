@@ -11,34 +11,60 @@ import XCTest
 
 class TTTextToolbarItemTests: XCTestCase {
 
+    var toolbarItem: TTTextToolbarItem!
+    
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        
+        toolbarItem = TTTextToolbarItem()
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+    func testItemTitle() {
+        XCTAssertEqual(toolbarItem.titleLabel!.text!, "Aa")
     }
     
     func testWidthMultiplier() {
-        // @stub
+        XCTAssertEqual(toolbarItem.widthMultiplier(), 1.0)
     }
     
     func testContentView() {
-        // @stub
+        XCTAssertNil(toolbarItem.contentView)
     }
     
     func testButtonOnSelect() {
-        // @stub
+        // Arrange
+        toolbarItem.selected = false
+        
+        XCTAssertEqual(toolbarItem.selected, false, "precondition")
+        XCTAssertNil(toolbarItem.toolbar, "precondition")
+        
+        // Act
+        toolbarItem.buttonOnSelect(nil)
+        
+        // Assert
+        XCTAssertEqual(toolbarItem.selected, true)
     }
     
     func testButtonOnDeselect() {
-        // @stub
+        // Arrange
+        toolbarItem.selected = true
+        
+        XCTAssertEqual(toolbarItem.selected, true, "precondition")
+        XCTAssertNil(toolbarItem.toolbar, "precondition")
+        
+        // Act
+        toolbarItem.buttonOnDeselect(nil)
+        
+        // Assert
+        XCTAssertEqual(toolbarItem.selected, false)
     }
     
     func testSwitchViewOnAction() {
-        // @stub
+        XCTAssertEqual(toolbarItem.shouldSwitchViewOnAction(), true)
+    }
+    
+    func testToolbarItemClassName() {
+        XCTAssertEqual(toolbarItem.className, "TTTextToolbarItem")
     }
     
 }
