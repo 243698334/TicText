@@ -17,7 +17,7 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self setTitle:@"Expires in\n4h3m2s" forState:UIControlStateNormal];
+        [self setTitle:@"Expires in\n---" forState:UIControlStateNormal];
         [self.titleLabel setNumberOfLines:2];
         [self setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
         [self.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
@@ -62,6 +62,10 @@
 
 #pragma mark - TTExpirationPickerControllerDelegate
 - (void)pickerController:(TTExpirationPickerController *)controller didFinishWithExpiration:(NSTimeInterval)expirationTime {
+    if (controller != self.pickerController) {
+        return;
+    }
+    
     [self.toolbar.delegate messagesToolbar:self.toolbar setExpirationTime:expirationTime];
     
     [self refreshTitle];

@@ -38,6 +38,7 @@
 
 @end
 
+// @Remark: For some reason, these tests require you to be signed in because the |loadTicHistory| method in |TTMessagesViewController| calls |TTUser.currentUser| and then sets it in a |PFQuery|.
 @implementation TTMessagesViewControllerTests
 
 - (void)setUp {

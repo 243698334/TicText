@@ -140,6 +140,7 @@
         [self dismissViewControllerAnimated:YES completion:nil];
     }
     
+    [_user.privateData fetchIfNeeded]; // @Remark: This fixes the unit tests, but relies on a synchronous call.
     _friends = [[NSMutableArray alloc] initWithArray:_user.privateData.friends];
     //stuff just for testing
     [_friends addObjectsFromArray: _user.privateData.friends];
