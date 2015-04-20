@@ -33,6 +33,7 @@ class TTMessagesToolbarTests: XCTestCase {
     
     var toolbar: TTMessagesToolbar!
     override func setUp() {
+        super.setUp()
         let someFrame = CGRect(x: 0, y: 0, width: 320.0, height: 64.0)
         toolbar = TTMessagesToolbar(frame: someFrame)
     }
@@ -158,9 +159,9 @@ class TTMessagesToolbarTests: XCTestCase {
         let expectedThirdFrame = CGRect(x: expectedItemWidth * 4, y: 0, width: expectedItemWidth * 4, height: expectedItemHeight)
         
         // Assert
-        XCTAssertEqual(firstFrame, expectedFirstFrame, "")
-        XCTAssertEqual(secondFrame, expectedSecondFrame, "")
-        XCTAssertEqual(thirdFrame, expectedThirdFrame, "")
+        XCTAssertEqual(firstFrame, expectedFirstFrame)
+        XCTAssertEqual(secondFrame, expectedSecondFrame)
+        XCTAssertEqual(thirdFrame, expectedThirdFrame)
     }
 
 }

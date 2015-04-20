@@ -9,36 +9,61 @@
 import UIKit
 import XCTest
 
+// These tests are mostly specification tests - just update these tests when you are intentionally changing the code under test.
 class TTMessagesToolbarItemTests: XCTestCase {
 
+    var toolbarItem: TTMessagesToolbarItem!
+    
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+        
+        toolbarItem = TTMessagesToolbarItem()
     }
 
     func testWidthMultiplier() {
-        // @stub
+        XCTAssertEqual(toolbarItem.widthMultiplier(), 1.0)
     }
     
     func testContentView() {
-        // @stub
+        let view = toolbarItem.contentView
+        XCTAssertNotNil(view)
+        XCTAssert(view.isKindOfClass(UIView.self))
     }
     
     func testButtonOnSelect() {
-        // @stub
+        // Arrange
+        toolbarItem.selected = false
+        
+        XCTAssertEqual(toolbarItem.selected, false, "precondition")
+        XCTAssertNil(toolbarItem.toolbar, "precondition")
+        
+        // Act
+        toolbarItem.buttonOnSelect(nil)
+        
+        // Assert
+        XCTAssertEqual(toolbarItem.selected, true)
     }
     
     func testButtonOnDeselect() {
-        // @stub
+        // Arrange
+        toolbarItem.selected = true
+        
+        XCTAssertEqual(toolbarItem.selected, true, "precondition")
+        XCTAssertNil(toolbarItem.toolbar, "precondition")
+        
+        // Act
+        toolbarItem.buttonOnDeselect(nil)
+        
+        // Assert
+        XCTAssertEqual(toolbarItem.selected, false)
     }
     
     func testSwitchViewOnAction() {
-        // @stub
+        XCTAssertEqual(toolbarItem.shouldSwitchViewOnAction(), true)
+    }
+    
+    func testToolbarItemClassName() {
+        XCTAssertEqual(toolbarItem.className, "TTMessagesToolbarItem")
     }
 
 }
