@@ -16,18 +16,30 @@
 #import "TTConstants.h"
 #import "TTTic.h"
 
+#import <JSQMessagesViewController/JSQMessagesKeyboardController.h>
 
 @interface TTMessagesViewController (Test)
 
-@property (nonatomic) NSTimeInterval expirationTime;
-@property (nonatomic, strong) UIView *expirationToolbar;
-
-@property (nonatomic, strong) UILabel *expirationLabel;
-@property (nonatomic, strong) TTExpirationPickerController *pickerController;
+@property (strong, nonatomic) JSQMessagesKeyboardController *keyboardController;
+@property (nonatomic) CGFloat realToolbarBottomLayoutGuideConstrant;
 
 - (void)loadTicHistory;
 - (void)finishReceivingMessageAnimated:(BOOL)animated;
-- (void)refreshExpirationToolbar:(NSTimeInterval)expiration;
+
+- (void)setupMessagesToolbar;
+- (CGRect)inputToolbarFrame;
+- (CGRect)messagesToolbarFrame;
+- (CGRect)toolbarContentViewFrame;
+- (void)removeCurrentToolbarContentView;
+- (void)setupToolbarContentView:(UIView *)view;
+- (void)updateCustomUI;
+- (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant;
+- (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy;
+- (void)jsq_updateCollectionViewInsets;
+
+- (CGRect)caculateInputToolbarFrameHidden:(BOOL)hidden;
+- (void)setInputToolbarHiddenState:(BOOL)hidden;
+- (UIWindow *)frontWindow;
 
 @end
 
@@ -100,43 +112,355 @@
 }
 
 - (void)testSetupMessagesToolbar {
-    // @stub
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    vc.messagesToolbar = nil;
+    
+    XCTAssertNil(vc.messagesToolbar, "pre-condition");
+    
+    // Act
+    [vc setupMessagesToolbar];
+    
+    // Assert
+    XCTAssertNotNil(vc);
+    XCTAssertEqual(vc.messagesToolbar.delegate, vc);
+    XCTAssertEqual(vc.messagesToolbar.superview, vc.view);
 }
 
-- (void)testInputToolbarFrame {
-    // @stub
+- (void)testInputToolbarFrameForZeroLayoutGuideAndVisible {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    CGRect frame = CGRectMake(0, 0, 480, 640);
+    [vc.view setFrame:frame];
+    
+    [vc setupMessagesToolbar];
+    [vc.messagesToolbar setSelectedIndex:0];
+    
+    XCTAssertNotNil(vc.messagesToolbar, "pre-condition");
+    XCTAssertEqual(vc.messagesToolbar.selectedIndex, 0, "pre-condition");
+    
+    vc.realToolbarBottomLayoutGuideConstrant = 0;
+    
+    // Act
+    CGRect result = [vc inputToolbarFrame];
+    
+    // Assert
+    XCTAssertEqual(result.origin.x, 0);
+    XCTAssertEqual(result.origin.y, 640 - 44 - vc.inputToolbar.frame.size.height);
+    XCTAssertEqual(result.size.width, vc.inputToolbar.frame.size.width);
+    XCTAssertEqual(result.size.height, vc.inputToolbar.frame.size.height);
 }
 
-- (void)testMessagesToolbarFrame {
-    // @stub
+- (void)testInputToolbarFrameForNonZeroLayoutGuideAndVisible {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    CGRect frame = CGRectMake(0, 0, 480, 640);
+    [vc.view setFrame:frame];
+    
+    [vc setupMessagesToolbar];
+    [vc.messagesToolbar setSelectedIndex:0];
+    
+    XCTAssertNotNil(vc.messagesToolbar, "pre-condition");
+    XCTAssertEqual(vc.messagesToolbar.selectedIndex, 0, "pre-condition");
+    
+    vc.realToolbarBottomLayoutGuideConstrant = 120;
+    
+    // Act
+    CGRect result = [vc inputToolbarFrame];
+    
+    // Assert
+    XCTAssertEqual(result.origin.x, 0);
+    XCTAssertEqual(result.origin.y, 640 - 44 - 120 - vc.inputToolbar.frame.size.height);
+    XCTAssertEqual(result.size.width, vc.inputToolbar.frame.size.width);
+    XCTAssertEqual(result.size.height, vc.inputToolbar.frame.size.height);
 }
 
-- (void)testToolbarContentViewFrame {
-    // @stub
+- (void)testInputToolbarFrameForZeroLayoutGuideAndInvisible {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    CGRect frame = CGRectMake(0, 0, 480, 640);
+    [vc.view setFrame:frame];
+    
+    [vc setupMessagesToolbar];
+    [vc.messagesToolbar setSelectedIndex:1];
+    
+    XCTAssertNotNil(vc.messagesToolbar, "pre-condition");
+    XCTAssertEqual(vc.messagesToolbar.selectedIndex, 1, "pre-condition");
+
+    vc.realToolbarBottomLayoutGuideConstrant = 0;
+    
+    // Act
+    CGRect result = [vc inputToolbarFrame];
+    
+    // Assert
+    XCTAssertTrue(CGRectEqualToRect(result, [vc messagesToolbarFrame]));
+}
+
+- (void)testInputToolbarFrameForNonZeroLayoutGuideAndInvisible {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    CGRect frame = CGRectMake(0, 0, 480, 640);
+    [vc.view setFrame:frame];
+    
+    [vc setupMessagesToolbar];
+    [vc.messagesToolbar setSelectedIndex:1];
+    
+    XCTAssertNotNil(vc.messagesToolbar, "pre-condition");
+    XCTAssertEqual(vc.messagesToolbar.selectedIndex, 1, "pre-condition");
+
+    vc.realToolbarBottomLayoutGuideConstrant = 120;
+    
+    // Act
+    CGRect result = [vc inputToolbarFrame];
+    
+    // Assert
+    XCTAssertTrue(CGRectEqualToRect(result, [vc messagesToolbarFrame]));
+}
+
+- (void)testMessagesToolbarFrameZeroLayoutGuide {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    CGRect frame = CGRectMake(0, 0, 480, 640);
+    [vc.view setFrame:frame];
+    
+    vc.realToolbarBottomLayoutGuideConstrant = 0;
+    
+    // Act
+    CGRect result = [vc messagesToolbarFrame];
+    
+    // Assert
+    CGRect expected = CGRectMake(0, 640 - kMessagesToolbarHeight, vc.inputToolbar.frame.size.width, vc.inputToolbar.frame.size.height);
+    XCTAssertTrue(CGRectEqualToRect(result, expected));
+}
+
+- (void)testMessagesToolbarFrameNonZeroLayoutGuide {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    CGRect frame = CGRectMake(0, 0, 480, 640);
+    [vc.view setFrame:frame];
+    
+    vc.realToolbarBottomLayoutGuideConstrant = 120;
+    
+    // Act
+    CGRect result = [vc messagesToolbarFrame];
+    
+    // Assert
+    CGRect expected = CGRectMake(0, 640 - 120 - kMessagesToolbarHeight, vc.inputToolbar.frame.size.width, vc.inputToolbar.frame.size.height);
+    XCTAssertTrue(CGRectEqualToRect(result, expected));
+}
+
+- (void)testToolbarContentViewFrameZeroLayoutGuide {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    CGRect frame = CGRectMake(0, 0, 480, 640);
+    [vc.view setFrame:frame];
+    
+    vc.realToolbarBottomLayoutGuideConstrant = 0;
+    
+    // Act
+    CGRect result = [vc toolbarContentViewFrame];
+    
+    // Assert
+    UIWindow *window = vc.frontWindow;
+    CGFloat expectedOriginY = vc.view.frame.size.height - 0;
+    CGRect expected = CGRectMake(0, expectedOriginY,
+                                 vc.view.frame.size.width,
+                                 vc.view.frame.size.height - expectedOriginY);
+    expected = [window convertRect:expected fromView:vc.view];
+
+    XCTAssertTrue(CGRectEqualToRect(result, expected));
+}
+
+- (void)testToolbarContentViewFrameNonZeroLayoutGuide {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    CGRect frame = CGRectMake(0, 0, 480, 640);
+    [vc.view setFrame:frame];
+    
+    vc.realToolbarBottomLayoutGuideConstrant = 120;
+    
+    // Act
+    CGRect result = [vc toolbarContentViewFrame];
+    
+    // Assert
+    UIWindow *window = vc.frontWindow;
+    CGFloat expectedOriginY = vc.view.frame.size.height - 120;
+    CGRect expected = CGRectMake(0, expectedOriginY,
+                                 vc.view.frame.size.width,
+                                 vc.view.frame.size.height - expectedOriginY);
+    expected = [window convertRect:expected fromView:vc.view];
+    
+    XCTAssertTrue(CGRectEqualToRect(result, expected));
 }
 
 - (void)testRemoveCurrentToolbarContentView {
-    // @stub
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    
+    vc.toolbarContentView = [[UIView alloc] init];
+    [vc.view addSubview:vc.toolbarContentView];
+    
+    XCTAssertNotNil(vc.toolbarContentView);
+    XCTAssertNotNil(vc.toolbarContentView.superview);
+    
+    // Act
+    [vc removeCurrentToolbarContentView];
+    
+    // Assert
+    XCTAssertNil(vc.toolbarContentView.superview);
 }
 
 - (void)testSetupToolbarContentView {
-    // @stub
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    UIWindow *window = vc.frontWindow;
+    
+    UIView *viewUnderTest = [[UIView alloc] init];
+    
+    XCTAssertNil(viewUnderTest.superview);
+    
+    // Act
+    [vc setupToolbarContentView:viewUnderTest];
+    
+    // Assert
+    XCTAssertEqual(viewUnderTest.superview, window);
+    XCTAssertTrue(CGRectEqualToRect(viewUnderTest.frame, vc.toolbarContentViewFrame));
+    
+    // Cleanup
+    [viewUnderTest removeFromSuperview];
 }
 
 - (void)testUpdateCustomUI {
-    // @stub
+    // Arrange
+    XCTAssertNotNil([self.mockMessagesViewController inputToolbar], "pre-condition");
+    XCTAssertNotNil([self.mockMessagesViewController messagesToolbar], "pre-condition");
+    
+    UIView *someContentView = [[UIView alloc] init];
+    [self.mockMessagesViewController setToolbarContentView:someContentView];
+    
+    XCTAssertNotNil([self.mockMessagesViewController toolbarContentView], "pre-condition");
+
+    [[self.mockMessagesViewController inputToolbar] setFrame:CGRectZero];
+    [[self.mockMessagesViewController messagesToolbar] setFrame:CGRectZero];
+    [[self.mockMessagesViewController toolbarContentView] setFrame:CGRectZero];
+    
+    // Act
+    [self.mockMessagesViewController updateCustomUI];
+    
+    // Assert
+    XCTAssertTrue(CGRectEqualToRect([self.mockMessagesViewController inputToolbar].frame, [self.mockMessagesViewController inputToolbarFrame]));
+    XCTAssertTrue(CGRectEqualToRect([self.mockMessagesViewController messagesToolbar].frame, [self.mockMessagesViewController messagesToolbarFrame]));
+    XCTAssertTrue(CGRectEqualToRect([self.mockMessagesViewController toolbarContentView].frame, [self.mockMessagesViewController toolbarContentViewFrame]));
 }
 
-- (void)testJsq_setToolbarBottomLayoutGuideConstant {
-    // @stub
+- (void)testJsq_setToolbarBottomLayoutGuideConstantZero {
+    // Arrange
+    OCMExpect([self.mockMessagesViewController updateCustomUI]);
+    
+    [self.mockMessagesViewController setRealToolbarBottomLayoutGuideConstrant:-1];
+    
+    XCTAssertNotEqual([self.mockMessagesViewController realToolbarBottomLayoutGuideConstrant], 0);
+    
+    // Act
+    [self.mockMessagesViewController jsq_setToolbarBottomLayoutGuideConstant:0];
+    
+    // Assert
+    OCMVerifyAll(self.mockMessagesViewController);
+    
+    XCTAssertEqual([self.mockMessagesViewController realToolbarBottomLayoutGuideConstrant], 0);
 }
 
-- (void)testSendButtonExpirationTime {
-    // @stub
+- (void)testJsq_setToolbarBottomLayoutGuideConstantSomeValue {
+    // Arrange
+    OCMExpect([self.mockMessagesViewController updateCustomUI]);
+    
+    [self.mockMessagesViewController setRealToolbarBottomLayoutGuideConstrant:0];
+    
+    XCTAssertEqual([self.mockMessagesViewController realToolbarBottomLayoutGuideConstrant], 0);
+    
+    // Act
+    [self.mockMessagesViewController jsq_setToolbarBottomLayoutGuideConstant:120];
+    
+    // Assert
+    OCMVerifyAll(self.mockMessagesViewController);
+    
+    XCTAssertEqual([self.mockMessagesViewController realToolbarBottomLayoutGuideConstrant], 120);
 }
 
-- (void)testSendButtonTicType {
-    // @stub
+- (void)testTic1 {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    
+    TTUser *recipientUser = (TTUser *)[TTUser user];
+    vc.recipient = recipientUser;
+    vc.isAnonymous = YES;
+    vc.expirationTime = 1234;
+    
+    // Act
+    TTTic *result = [vc ticWithMessage:nil];
+    
+    // Assert
+    XCTAssertEqual(result.recipient, recipientUser);
+    XCTAssertEqual(result.type, kTTTIcTypeAnonymous);
+    XCTAssertEqual(result.timeLimit, 1234);
+}
+
+- (void)testTic2 {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    
+    TTUser *recipientUser = (TTUser *)[TTUser user];
+    vc.recipient = recipientUser;
+    vc.isAnonymous = NO;
+    vc.expirationTime = 1234;
+    
+    // Act
+    TTTic *result = [vc ticWithMessage:nil];
+    
+    // Assert
+    XCTAssertEqual(result.recipient, recipientUser);
+    XCTAssertEqual(result.type, kTTTicTypeDefault);
+    XCTAssertEqual(result.timeLimit, 1234);
+}
+
+- (void)testTic3 {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    
+    TTUser *recipientUser = (TTUser *)[TTUser user];
+    vc.recipient = recipientUser;
+    vc.isAnonymous = NO;
+    vc.expirationTime = 12;
+    
+    // Act
+    TTTic *result = [vc ticWithMessage:nil];
+    
+    // Assert
+    XCTAssertEqual(result.recipient, recipientUser);
+    XCTAssertEqual(result.type, kTTTicTypeDefault);
+    XCTAssertEqual(result.timeLimit, 12);
+}
+
+- (void)testTic4 {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    
+    TTUser *recipientUser = (TTUser *)[TTUser user];
+    vc.recipient = recipientUser;
+    vc.isAnonymous = YES;
+    vc.expirationTime = 1234;
+    
+    JSQMessage *someMessage = [[JSQMessage alloc] initWithSenderId:@"" senderDisplayName:@"" date:[NSDate date] text:@"some text"];
+    XCTAssertFalse(someMessage.isMediaMessage);
+    
+    // Act
+    TTTic *result = [vc ticWithMessage:someMessage];
+    
+    // Assert
+    XCTAssertEqual(result.recipient, recipientUser);
+    XCTAssertEqual(result.type, kTTTIcTypeAnonymous);
+    XCTAssertEqual(result.timeLimit, 1234);
+    XCTAssertEqual(result.contentType, kTTTicContentTypeText);
+    XCTAssertEqualObjects(result.content, [someMessage.text dataUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)testCaculateInputToolbarFrameHidden {

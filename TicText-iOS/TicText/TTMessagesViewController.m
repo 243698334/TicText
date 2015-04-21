@@ -22,29 +22,35 @@
 
 #import <JSQMessagesViewController/JSQMessagesKeyboardController.h>
 
-#define kDefaultExpirationTime      3600
-#define kMessagesToolbarHeight      44.0f
-
 @interface JSQMessagesViewController (PrivateMethods)
 
-@property (strong, nonatomic) JSQMessagesKeyboardController *keyboardController;
+- (void)loadTicHistory;
+- (void)finishReceivingMessageAnimated:(BOOL)animated;
 
+- (void)setupMessagesToolbar;
+- (CGRect)inputToolbarFrame;
+- (CGRect)messagesToolbarFrame;
+- (CGRect)toolbarContentViewFrame;
+- (void)removeCurrentToolbarContentView;
+- (void)setupToolbarContentView:(UIView *)view;
+- (void)updateCustomUI;
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant;
 - (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy;
 - (void)jsq_updateCollectionViewInsets;
+
+- (CGRect)caculateInputToolbarFrameHidden:(BOOL)hidden;
+- (void)setInputToolbarHiddenState:(BOOL)hidden;
+- (UIWindow *)frontWindow;
 
 @end
 
 @interface TTMessagesViewController ()
 
 @property (nonatomic) CGFloat realToolbarBottomLayoutGuideConstrant;
-@property (nonatomic, strong) TTMessagesToolbar *messagesToolbar;
-@property (nonatomic, strong) UIView *toolbarContentView;
+@property (strong, nonatomic) JSQMessagesKeyboardController *keyboardController;
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
 @property (nonatomic) BOOL isFetchingTic;
-
-@property (nonatomic, strong) TTUser *recipient;
 
 @property (nonatomic, strong) NSMutableArray *tics;
 @property (nonatomic, strong) NSMutableArray *jsqMessages;
@@ -212,7 +218,7 @@
     UIWindow *frontWindow = [self frontWindow];
     CGFloat originY = self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant;
     CGRect frame = CGRectMake(0, originY,
-                              self.inputToolbar.frame.size.width, self.view.frame.size.height - originY);
+                              self.view.frame.size.width, self.view.frame.size.height - originY);
     
     return [frontWindow convertRect:frame fromView:self.view];
 }
@@ -250,8 +256,6 @@
     } else {
         [super jsq_setToolbarBottomLayoutGuideConstant:constant];
     }
-    
-    NSLog(@"setting toolbar bottom layout guide constant to %lf for index: %ld", constant, self.messagesToolbar.selectedIndex);
     
     [self updateCustomUI];
 }
@@ -345,11 +349,7 @@
     JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:date text:text];
     
     // New Tic
-    NSString *ticType = kTTTicTypeDefault;
-    if (self.isAnonymous) {
-        ticType = kTTTIcTypeAnonymous;
-    }
-    TTTic *newTic = [self ticWithType:ticType sender:[TTUser currentUser] recipient:self.recipient timeLimit:self.expirationTime message:newJSQMessage];
+    TTTic *newTic = [self ticWithMessage:newJSQMessage];
     [newTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
     
     // Add to local array
@@ -525,12 +525,12 @@
 
 #pragma mark - TTMessagesViewController
 
-- (TTTic *)ticWithType:(NSString *)type sender:(TTUser *)sender recipient:(TTUser *)recipient timeLimit:(NSTimeInterval)timeLimit message:(JSQMessage *)message {
+- (TTTic *)ticWithMessage:(JSQMessage *)message {
     TTTic *newTic = [TTTic object];
-    newTic.type = type;
-    newTic.sender = sender;
-    newTic.recipient = recipient;
-    newTic.timeLimit = timeLimit;
+    newTic.type = (self.isAnonymous) ? kTTTIcTypeAnonymous : kTTTicTypeDefault;
+    newTic.sender = [TTUser currentUser];
+    newTic.recipient = self.recipient;
+    newTic.timeLimit = self.expirationTime;
     newTic.sendTimestamp = message.date;
     newTic.receiveTimestamp = nil;
     newTic.status = kTTTicStatusUnread;
