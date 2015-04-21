@@ -27,8 +27,12 @@
 }
 
 - (UIView *)contentView {
-    UIView *view = [[UIView alloc] init];
-    [view setBackgroundColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0]];
+    static dispatch_once_t onceToken;
+    static UIView *view = nil;
+    dispatch_once(&onceToken, ^{
+        view = [[UIView alloc] init];
+        [view setBackgroundColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0]];
+    });
     return view;
 }
 

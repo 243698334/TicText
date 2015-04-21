@@ -41,7 +41,7 @@
     
     [self.pickerController dismiss];
     
-    self.pickerController = [[TTExpirationPickerController alloc] initWithExpirationTime:[toolbar.delegate currentExpirationTime]];
+    self.pickerController = [[TTExpirationPickerController alloc] initWithExpirationTime:[toolbar.delegate expirationTime]];
     [self.pickerController setDelegate:self];
     [self.pickerController present];
 }
@@ -73,7 +73,7 @@
 
 #pragma mark - Helpers
 - (void)refreshTitle {
-    NSTimeInterval expirationTime = [self.toolbar.delegate currentExpirationTime];
+    NSTimeInterval expirationTime = [self.toolbar.delegate expirationTime];
     [self setTitle:[TTExpirationDomain shortStringForTimeInterval:expirationTime] forState:UIControlStateNormal];
 }
 

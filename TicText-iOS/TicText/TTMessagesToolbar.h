@@ -24,7 +24,7 @@
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar setExpirationTime:(NSTimeInterval)expirationTime;
 
 // Called by toolbar items that want to obtain the current |expirationTime| of the draft Tic.
-- (NSTimeInterval)currentExpirationTime;
+- (NSTimeInterval)expirationTime;
 
 @end
 

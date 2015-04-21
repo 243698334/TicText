@@ -25,7 +25,7 @@ class TTAnonymousToolbarItemTests: XCTestCase {
         
         @objc func messagesToolbar(toolbar: TTMessagesToolbar!, willShowItem item: TTMessagesToolbarItem!) { }
         
-        @objc func currentExpirationTime() -> NSTimeInterval {
+        @objc func expirationTime() -> NSTimeInterval {
             return 0
         }
     }

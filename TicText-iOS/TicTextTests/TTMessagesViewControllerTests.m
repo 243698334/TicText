@@ -15,6 +15,8 @@
 #import "TTExpirationDomain.h"
 #import "TTConstants.h"
 #import "TTTic.h"
+#import "TTMessagesToolbarItem.h"
+#import "TTTextToolbarItem.h"
 
 #import <JSQMessagesViewController/JSQMessagesKeyboardController.h>
 
@@ -37,7 +39,7 @@
 - (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy;
 - (void)jsq_updateCollectionViewInsets;
 
-- (CGRect)caculateInputToolbarFrameHidden:(BOOL)hidden;
+- (CGRect)calculateInputToolbarFrameHidden:(BOOL)hidden;
 - (void)setInputToolbarHiddenState:(BOOL)hidden;
 - (UIWindow *)frontWindow;
 
@@ -464,27 +466,182 @@
 }
 
 - (void)testCaculateInputToolbarFrameHidden {
-    // @stub
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    BOOL hidden = YES;
+    
+    // Act
+    CGRect result = [vc calculateInputToolbarFrameHidden:hidden];
+    
+    // Assert
+    CGRect expected = CGRectOffset(vc.inputToolbarFrame, 0, vc.inputToolbar.frame.size.height);
+    
+    XCTAssertTrue(CGRectEqualToRect(result, expected));
+}
+
+- (void)testCaculateInputToolbarFrameVisible {
+    // Arrange
+    TTMessagesViewController *vc = [[TTMessagesViewController alloc] init];
+    BOOL hidden = NO;
+    
+    // Act
+    CGRect result = [vc calculateInputToolbarFrameHidden:hidden];
+    
+    // Assert
+    CGRect expected = vc.inputToolbarFrame;
+    
+    XCTAssertTrue(CGRectEqualToRect(result, expected));
 }
 
 - (void)testMessagesToolbarWillShowItem {
-    // @stub
+    // @Comment: I spent a couple of hours trying to find a way to test the invocation of |becomeFirstResponder| on the textView using partial mocks, but was unable to find a way that didn't result in an EXC_BAD_ACCESS or a malloc_error_break exception. So for now, that isn't tested.
+    
+    // Arrange
+    JSQMessagesInputToolbar *inputToolbar = [self.mockMessagesViewController inputToolbar];
+    JSQMessagesComposerTextView *textView = inputToolbar.contentView.textView;
+    
+    XCTAssertNotNil(inputToolbar);
+    XCTAssertNotNil(textView);
+    
+    TTMessagesToolbar *toolbar = [[TTMessagesToolbar alloc] init];
+    [self.mockMessagesViewController setMessagesToolbar:toolbar];
+    
+    TTMessagesToolbarItem *item = [[TTMessagesToolbarItem alloc] init];
+    
+    XCTAssertFalse([item isKindOfClass:[TTTextToolbarItem class]]);
+    
+    OCMExpect([self.mockMessagesViewController setInputToolbarHiddenState:YES]);
+    OCMExpect([self.mockMessagesViewController removeCurrentToolbarContentView]);
+    OCMExpect([self.mockMessagesViewController setupToolbarContentView:item.contentView]);
+    
+    // Act
+    [self.mockMessagesViewController messagesToolbar:toolbar willShowItem:item];
+    
+    // Assert
+    OCMVerifyAll(self.mockMessagesViewController);
+}
+
+- (void)testMessagesToolbarWillShowItemTextToolbarItem {
+    // @Comment: I spent a couple of hours trying to find a way to test the invocation of |becomeFirstResponder| on the textView using partial mocks, but was unable to find a way that didn't result in an EXC_BAD_ACCESS or a malloc_error_break exception. So for now, that isn't tested.
+    
+    // Arrange
+    JSQMessagesInputToolbar *inputToolbar = [self.mockMessagesViewController inputToolbar];
+    JSQMessagesComposerTextView *textView = inputToolbar.contentView.textView;
+    
+    XCTAssertNotNil(inputToolbar);
+    XCTAssertNotNil(textView);
+    
+    TTMessagesToolbar *toolbar = [[TTMessagesToolbar alloc] init];
+    [self.mockMessagesViewController setMessagesToolbar:toolbar];
+    
+    TTTextToolbarItem *item = [[TTTextToolbarItem alloc] init];
+    
+    XCTAssertTrue([item isKindOfClass:[TTTextToolbarItem class]]);
+    
+    OCMExpect([self.mockMessagesViewController setInputToolbarHiddenState:NO]);
+    OCMExpect([self.mockMessagesViewController removeCurrentToolbarContentView]);
+    OCMExpect([self.mockMessagesViewController setupToolbarContentView:item.contentView]);
+    
+    // Act
+    [self.mockMessagesViewController messagesToolbar:toolbar willShowItem:item];
+    
+    // Assert
+    OCMVerifyAll(self.mockMessagesViewController);
 }
 
 - (void)testMessagesToolbarWillHideItem {
-    // @stub
+    // @Note: No tests because the method body is currently empty.
 }
 
-- (void)testMessagesToolbarSetAnonymousTic {
-    // @stub
+- (void)testMessagesToolbarSetAnonymousTicTrue {
+    // Arrange
+    TTMessagesToolbar *toolbar = [[TTMessagesToolbar alloc] init];
+    [self.mockMessagesViewController setMessagesToolbar:toolbar];
+    
+    // Act
+    [self.mockMessagesViewController messagesToolbar:toolbar setAnonymousTic:YES];
+    
+    // Assert
+    XCTAssertTrue([self.mockMessagesViewController isAnonymous]);
 }
 
-- (void)testMessagesToolbarSetExpirationTime {
-    // @stub
+- (void)testMessagesToolbarSetAnonymousTicFalse {
+    // Arrange
+    TTMessagesToolbar *toolbar = [[TTMessagesToolbar alloc] init];
+    [self.mockMessagesViewController setMessagesToolbar:toolbar];
+    
+    // Act
+    [self.mockMessagesViewController messagesToolbar:toolbar setAnonymousTic:NO];
+    
+    // Assert
+    XCTAssertFalse([self.mockMessagesViewController isAnonymous]);
+}
+
+- (void)testMessagesToolbarSetExpirationTimeZero {
+    // Arrange
+    TTMessagesToolbar *toolbar = [[TTMessagesToolbar alloc] init];
+    [self.mockMessagesViewController setMessagesToolbar:toolbar];
+    
+    [self.mockMessagesViewController setExpirationTime:1234];
+    
+    // Act
+    XCTAssertGreaterThan([self.mockMessagesViewController expirationTime], 0);
+    [self.mockMessagesViewController messagesToolbar:toolbar setExpirationTime:0];
+    
+    // Assert
+    XCTAssertEqual([self.mockMessagesViewController expirationTime], 0);
+    
+    // Act
+    XCTAssertEqual([self.mockMessagesViewController expirationTime], 0);
+    [self.mockMessagesViewController messagesToolbar:toolbar setExpirationTime:0];
+    
+    // Assert
+    XCTAssertEqual([self.mockMessagesViewController expirationTime], 0);
+}
+
+- (void)testMessagesToolbarSetExpirationTimeNonZero {
+    // Arrange
+    TTMessagesToolbar *toolbar = [[TTMessagesToolbar alloc] init];
+    [self.mockMessagesViewController setMessagesToolbar:toolbar];
+    
+    [self.mockMessagesViewController setExpirationTime:1];
+    
+    // Act
+    XCTAssertGreaterThan([self.mockMessagesViewController expirationTime], 0);
+    [self.mockMessagesViewController messagesToolbar:toolbar setExpirationTime:2];
+
+    // Assert
+    XCTAssertEqual([self.mockMessagesViewController expirationTime], 2);
+    
+    // Arrange
+    [self.mockMessagesViewController setExpirationTime:0];
+    
+    // Act
+    XCTAssertEqual([self.mockMessagesViewController expirationTime], 0);
+    [self.mockMessagesViewController messagesToolbar:toolbar setExpirationTime:2];
+    
+    // Assert
+    XCTAssertEqual([self.mockMessagesViewController expirationTime], 2);
 }
 
 - (void)testCurrentExpirationTime {
-    // @stub
+    // Arrange
+    [self.mockMessagesViewController setExpirationTime:0];
+    
+    // Act
+    NSTimeInterval result = [self.mockMessagesViewController expirationTime];
+    
+    // Assert
+    XCTAssertEqual(result, 0);
+    
+    // Arrange
+    [self.mockMessagesViewController setExpirationTime:43];
+    
+    // Act
+    result = [self.mockMessagesViewController expirationTime];
+    
+    // Arrange
+    XCTAssertEqual(result, 43);
 }
 
 @end

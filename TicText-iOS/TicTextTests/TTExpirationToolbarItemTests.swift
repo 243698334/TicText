@@ -13,20 +13,20 @@ class TTExpirationToolbarItemTests: XCTestCase {
 
     class ToolbarDelegate: NSObject, TTMessagesToolbarDelegate {
         
-        var expirationTime: NSTimeInterval = 0
+        var _expirationTime: NSTimeInterval = 0
         
         @objc func messagesToolbar(toolbar: TTMessagesToolbar!, setAnonymousTic anonymous: Bool) { }
         
         @objc func messagesToolbar(toolbar: TTMessagesToolbar!, setExpirationTime expirationTime: NSTimeInterval) {
-            self.expirationTime = expirationTime
+            self._expirationTime = expirationTime
         }
         
         @objc func messagesToolbar(toolbar: TTMessagesToolbar!, willHideItem item: TTMessagesToolbarItem!) { }
         
         @objc func messagesToolbar(toolbar: TTMessagesToolbar!, willShowItem item: TTMessagesToolbarItem!) { }
         
-        @objc func currentExpirationTime() -> NSTimeInterval {
-            return self.expirationTime
+        @objc func expirationTime() -> NSTimeInterval {
+            return self._expirationTime
         }
     }
     
@@ -94,7 +94,7 @@ class TTExpirationToolbarItemTests: XCTestCase {
         
         // Assert
         XCTAssertEqual(toolbarItem.titleLabel!.text!, "Expires in\n42s")
-        XCTAssertEqual(toolbarDelegate.expirationTime, 42)
+        XCTAssertEqual(toolbarDelegate._expirationTime, 42)
     }
     
     func testPickerControllerDidFinishWithExpiration2() {
@@ -107,7 +107,7 @@ class TTExpirationToolbarItemTests: XCTestCase {
         
         // Assert
         XCTAssertEqual(toolbarItem.titleLabel!.text!, "Expires in\n1h 1m 6s")
-        XCTAssertEqual(toolbarDelegate.expirationTime, 3666)
+        XCTAssertEqual(toolbarDelegate._expirationTime, 3666)
     }
 
 }

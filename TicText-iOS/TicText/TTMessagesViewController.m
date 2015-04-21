@@ -561,7 +561,8 @@
 #define kInputToolbarHideAnimationDuration 0.44
 #define kInputToolbarShowAnimationDuration 0.23
 
-- (CGRect)caculateInputToolbarFrameHidden:(BOOL)hidden {
+- (CGRect)calculateInputToolbarFrameHidden:(BOOL)hidden {
+    // @Remark: This subroutine might be redundant. It might only be necessary to call |inputToolbarFrame|.
     if (hidden) {
         return CGRectOffset([self inputToolbarFrame], 0, self.inputToolbar.frame.size.height);
     } else {
@@ -578,7 +579,7 @@
     
     [UIView animateWithDuration:animationDuration
                      animations:^{
-                         [self.inputToolbar setFrame:[self caculateInputToolbarFrameHidden:hidden]];
+                         [self.inputToolbar setFrame:[self calculateInputToolbarFrameHidden:hidden]];
                          if (hidden) {
                              [self.messagesToolbar.topBorder setAlpha:1.0f];
                          } else {
@@ -614,7 +615,7 @@
     [self removeCurrentToolbarContentView];
     [self setupToolbarContentView:item.contentView];
     
-    NSLog(@"item shown with class: %@", item.class);
+    NSLog(@"TTMessagesViewController-messagesToolbar: Item shown with class: %@", item.class);
 }
 
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar willHideItem:(TTMessagesToolbarItem *)item {
@@ -622,7 +623,7 @@
         return;
     }
     
-    NSLog(@"item hidden with class: %@", item.class);
+    NSLog(@"TTMessagesViewController-messagesToolbar: Item hidden with class: %@", item.class);
 }
 
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar setAnonymousTic:(BOOL)anonymous {
@@ -635,10 +636,6 @@
     if (toolbar == self.messagesToolbar) {
         self.expirationTime = expirationTime;
     }
-}
-
-- (NSTimeInterval)currentExpirationTime {
-    return self.expirationTime;
 }
 
 #pragma mark - Helper Methods
