@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTUser.h"
+#import "TTContactTableViewCell.h"
 
-@interface TTContactsViewController : UIViewController
+@interface TTContactsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
 @end
