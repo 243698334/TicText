@@ -29,7 +29,7 @@
     return 2.0f;
 }
 
-- (void)buttonOnSelect:(TTMessagesToolbar *)toolbar {
+- (void)didSelectToolbarButton:(TTMessagesToolbar *)toolbar {
     if (toolbar != self.toolbar) {
         return;
     }
@@ -43,7 +43,7 @@
     [self.toolbar.delegate messagesToolbar:toolbar setAnonymousTic:self.selected];
 }
 
-- (void)buttonOnDeselect:(TTMessagesToolbar *)toolbar {
+- (void)didDeselectToolbarButton:(TTMessagesToolbar *)toolbar {
     return;
 }
 

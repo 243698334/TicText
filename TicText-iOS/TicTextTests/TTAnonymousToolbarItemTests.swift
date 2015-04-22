@@ -63,7 +63,7 @@ class TTAnonymousToolbarItemTests: XCTestCase {
         XCTAssertNotNil(toolbarItem.toolbar, "precondition")
         
         // Act
-        toolbarItem.buttonOnSelect(toolbar)
+        toolbarItem.didSelectToolbarButton(toolbar)
         
         // Assert
         XCTAssertEqual(toolbarItem.selected, true)
@@ -84,7 +84,7 @@ class TTAnonymousToolbarItemTests: XCTestCase {
         XCTAssertNotNil(toolbarItem.toolbar, "precondition")
         
         // Act
-        toolbarItem.buttonOnSelect(toolbar)
+        toolbarItem.didSelectToolbarButton(toolbar)
         
         // Assert
         XCTAssertEqual(toolbarItem.selected, false)

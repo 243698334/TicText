@@ -34,7 +34,7 @@
     return 3.0f;
 }
 
-- (void)buttonOnSelect:(TTMessagesToolbar *)toolbar {
+- (void)didSelectToolbarButton:(TTMessagesToolbar *)toolbar {
     if (toolbar != self.toolbar) {
         return;
     }
@@ -46,7 +46,7 @@
     [self.pickerController present];
 }
 
-- (void)buttonOnDeselect:(TTMessagesToolbar *)toolbar {
+- (void)didDeselectToolbarButton:(TTMessagesToolbar *)toolbar {
     return;
 }
 

@@ -26,11 +26,11 @@
 
 // Called by the toolbar when this button is selected.
 // @Note This is not called multiple times if this item is currently selected.
-- (void)buttonOnSelect:(TTMessagesToolbar *)toolbar;
+- (void)didSelectToolbarButton:(TTMessagesToolbar *)toolbar;
 
 // Called by the toolbar when this button is deselected.
 // @Note This will not be called if the newly selected item's |switchViewOnAction| returns NO.
-- (void)buttonOnDeselect:(TTMessagesToolbar *)toolbar;
+- (void)didDeselectToolbarButton:(TTMessagesToolbar *)toolbar;
 
 // Used by the toolbar and its owner to determine interactions with this item.
 - (BOOL)shouldSwitchViewOnAction;

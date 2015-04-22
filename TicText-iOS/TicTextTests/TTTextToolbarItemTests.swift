@@ -39,7 +39,7 @@ class TTTextToolbarItemTests: XCTestCase {
         XCTAssertNil(toolbarItem.toolbar, "precondition")
         
         // Act
-        toolbarItem.buttonOnSelect(nil)
+        toolbarItem.didSelectToolbarButton(nil)
         
         // Assert
         XCTAssertEqual(toolbarItem.selected, true)
@@ -53,7 +53,7 @@ class TTTextToolbarItemTests: XCTestCase {
         XCTAssertNil(toolbarItem.toolbar, "precondition")
         
         // Act
-        toolbarItem.buttonOnDeselect(nil)
+        toolbarItem.didDeselectToolbarButton(nil)
         
         // Assert
         XCTAssertEqual(toolbarItem.selected, false)

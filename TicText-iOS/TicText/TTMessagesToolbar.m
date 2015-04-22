@@ -74,13 +74,13 @@
         return;
     }
     
-    [item buttonOnSelect:self];
+    [item didSelectToolbarButton:self];
     
     TTMessagesToolbarItem *oldItem = nil;
     if ([item shouldSwitchViewOnAction]) { // if the new view should change the contentView
         if (self.selectedIndex >= 0) { // if we have a selected item
             oldItem = self.toolbarItems[self.selectedIndex];
-            [oldItem buttonOnDeselect:self];
+            [oldItem didDeselectToolbarButton:self];
         }
         
         self.selectedIndex = [self.toolbarItems indexOfObject:item];

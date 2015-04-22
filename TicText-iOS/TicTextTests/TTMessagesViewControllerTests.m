@@ -503,6 +503,10 @@
     XCTAssertNotNil(inputToolbar);
     XCTAssertNotNil(textView);
     
+    /*id mockTextView = OCMPartialMock(textView);
+    OCMExpect([mockTextView isFirstResponder]);
+    OCMExpect([mockTextView becomeFirstResponder]);*/
+    
     TTMessagesToolbar *toolbar = [[TTMessagesToolbar alloc] init];
     [self.mockMessagesViewController setMessagesToolbar:toolbar];
     
@@ -519,6 +523,7 @@
     
     // Assert
     OCMVerifyAll(self.mockMessagesViewController);
+    //OCMVerifyAll(mockTextView);
 }
 
 - (void)testMessagesToolbarWillShowItemTextToolbarItem {

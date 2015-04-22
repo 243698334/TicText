@@ -65,7 +65,7 @@ class TTExpirationToolbarItemTests: XCTestCase {
         XCTAssertNil(toolbarItem.pickerController)
         
         // Act
-        toolbarItem.buttonOnSelect(toolbar)
+        toolbarItem.didSelectToolbarButton(toolbar)
         
         // Assert
         XCTAssertNotNil(toolbarItem.pickerController)
