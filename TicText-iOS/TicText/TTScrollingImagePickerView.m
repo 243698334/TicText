@@ -73,6 +73,7 @@
                      forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.imagePickerButton];
 
+    [self setNeedsUpdateConstraints];
 }
 
 - (void)updateConstraints {
@@ -148,7 +149,7 @@
     UIImage *imageAtPath = [self.imagesArray objectAtIndex:indexPath.row];
     
     CGFloat imageHeight = imageAtPath.size.height;
-    CGFloat viewHeight = collectionView.bounds.size.height;
+    CGFloat viewHeight = self.frame.size.height;
     CGFloat scaleFactor = viewHeight/imageHeight;
     
     CGSize scaledSize = CGSizeApplyAffineTransform(imageAtPath.size, CGAffineTransformMakeScale(scaleFactor, scaleFactor));

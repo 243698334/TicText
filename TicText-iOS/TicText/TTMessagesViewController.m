@@ -257,6 +257,9 @@
     [self.inputToolbar setFrame:[self inputToolbarFrame]];
     [self.messagesToolbar setFrame:[self messagesToolbarFrame]];
     [self.toolbarContentView setFrame:[self toolbarContentViewFrame]];
+    [UIView animateWithDuration:0 animations:^{ // Fixes Auto Layout resize "jaggedness"
+        [self.toolbarContentView layoutIfNeeded];
+    }];
 }
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant {
