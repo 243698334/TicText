@@ -116,6 +116,12 @@
     [super viewDidAppear:animated];
     self.collectionView.collectionViewLayout.springinessEnabled = NO;
     [self jsq_setToolbarBottomLayoutGuideConstant:0];
+    
+    if (self.messagesToolbar.selectedIndex != kTTMessagesToolbarSelectedItemNone) {
+        if (![self.inputToolbar.contentView.textView isFirstResponder]) {
+            [self.inputToolbar.contentView.textView becomeFirstResponder];
+        }
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

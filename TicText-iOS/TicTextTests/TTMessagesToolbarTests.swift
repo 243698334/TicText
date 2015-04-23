@@ -47,7 +47,7 @@ class TTMessagesToolbarTests: XCTestCase {
         XCTAssertEqual(toolbar.frame, someFrame, "frame")
         XCTAssertEqual(toolbar.backgroundColor!, UIColor.whiteColor(), "backgroundColor")
         XCTAssertEqual(toolbar.toolbarItems as! [TTMessagesToolbarItem], someItems, "toolbarItems")
-        XCTAssertEqual(toolbar.selectedIndex, -1, "selectedIndex")
+        XCTAssertEqual(toolbar.selectedIndex, Int(kTTMessagesToolbarSelectedItemNone), "selectedIndex")
         XCTAssertNotNil(toolbar.topBorder, "topBorder")
     }
     
@@ -102,7 +102,7 @@ class TTMessagesToolbarTests: XCTestCase {
     }
 
     func testToggleFirstItem() {
-        XCTAssertEqual(toolbar.selectedIndex, -1, "pre-condition")
+        XCTAssertEqual(toolbar.selectedIndex, Int(kTTMessagesToolbarSelectedItemNone), "pre-condition")
         
         // Arrange
         let firstItem = toolbar.toolbarItems.first as! TTMessagesToolbarItem
