@@ -227,7 +227,7 @@
     UIWindow *frontWindow = [self frontWindow];
     CGFloat originY = self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant;
     CGRect frame = CGRectMake(0, originY,
-                              self.view.frame.size.width, self.view.frame.size.height - originY);
+                              self.view.frame.size.width, self.keyboardController.currentKeyboardFrame.size.height);
     
     return [frontWindow convertRect:frame fromView:self.view];
 }
@@ -241,10 +241,13 @@
     
     // Arrange background view
     self.toolbarContentView = view;
-    self.toolbarContentView.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height, self.toolbarContentViewFrame.size.width, self.toolbarContentViewFrame.size.height);
-
+    CGRect frame = [self toolbarContentViewFrame];
+    frame.origin.y = [UIScreen mainScreen].bounds.size.height;
+    self.toolbarContentView.frame = frame;
+    
     [frontWindow addSubview:self.toolbarContentView];
-    [UIView animateWithDuration:0.25 delay:0.0 options:458752 animations:^{
+    
+    [UIView animateWithDuration:0.25 animations:^{
         self.toolbarContentView.frame = [self toolbarContentViewFrame];
     } completion:^(BOOL finished) {
         if (finished ) {
@@ -744,6 +747,10 @@
 
 #pragma mark - TextView Delegate
 #define kTTMessagesViewControllerToolbarItemDeselectOnKeyboardHideDelay 0.4
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    [super textViewDidBeginEditing:textView];
+}
+
 - (void)textViewDidEndEditing:(UITextView *)textView {
     [super textViewDidEndEditing:textView];
     

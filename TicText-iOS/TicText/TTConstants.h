@@ -61,6 +61,8 @@ extern NSString * const kTTScrollingUIImagePickerDidChooseImage;
 // UI Events Keys
 extern NSString * const kTTScrollingUIImagePickerChosenImageKey;
 
+// App Events
+extern NSString * const kTTApplicationDidBecomeActive;
 
 #pragma mark - NSError
 extern NSString * const kTTSessionErrorDomain;

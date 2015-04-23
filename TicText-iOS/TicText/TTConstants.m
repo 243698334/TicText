@@ -51,6 +51,8 @@ NSString * const kTTScrollingUIImagePickerDidChooseImage = @"kTTUIImagePickerDid
 // UI Events Keys
 NSString * const kTTScrollingUIImagePickerChosenImageKey = @"kTTScrollingUIImagePickerChosenImageKey";
 
+// App Events
+NSString * const kTTApplicationDidBecomeActive = @"kTTApplicationDidBecomeActive";
 
 #pragma mark - NSError
 NSString * const kTTSessionErrorDomain = @"SessionError";

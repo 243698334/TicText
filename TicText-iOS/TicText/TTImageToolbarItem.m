@@ -30,35 +30,32 @@
 }
 
 - (UIView *)contentView {
-    if (self.scrollingImagePickerView == nil) {
-        self.scrollingImagePickerView = [[TTScrollingImagePickerView alloc] init];
-        self.scrollingImagePickerView.backgroundColor = [UIColor whiteColor];
-        
-        NSMutableArray *images = [NSMutableArray array];
-        [[[ALAssetsLibrary alloc] init] enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos
-                                                      usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-            if (group) {
-                [group setAssetsFilter:[ALAssetsFilter allPhotos]];
-                [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-                    if (index < 10) {
-                        if (result) {
-                            // UIImage *image = [UIImage imageWithCGImage:[result thumbnail]];
-                            UIImage *image = [UIImage imageWithCGImage:[[result defaultRepresentation] fullResolutionImage]];
-                            [images addObject:image];
-                            [self.scrollingImagePickerView setImages:images];
-                        }
-                    } else {
-                        *stop = YES;
+    self.scrollingImagePickerView = [[TTScrollingImagePickerView alloc] init];
+    
+    NSMutableArray *images = [NSMutableArray array];
+    [[[ALAssetsLibrary alloc] init] enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos
+                                                  usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+        if (group) {
+            [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+            [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                if (index < 10) {
+                    if (result) {
+                        // UIImage *image = [UIImage imageWithCGImage:[result thumbnail]];
+                        UIImage *image = [UIImage imageWithCGImage:[[result defaultRepresentation] fullResolutionImage]];
+                        [images addObject:image];
+                        [self.scrollingImagePickerView setImages:images];
                     }
-                }];
-                
-            }
-        } failureBlock:^(NSError *error) {
-            [TSMessage showNotificationWithTitle:@"Permission Denied"
-                                        subtitle:@"Please allow TicText to access your Camera Roll."
-                                            type:TSMessageNotificationTypeError];
-        }];
-    }
+                } else {
+                    *stop = YES;
+                }
+            }];
+            
+        }
+    } failureBlock:^(NSError *error) {
+        [TSMessage showNotificationWithTitle:@"Permission Denied"
+                                    subtitle:@"Please allow TicText to access your Camera Roll."
+                                        type:TSMessageNotificationTypeError];
+    }];
     
     return self.scrollingImagePickerView;
 }

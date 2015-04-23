@@ -21,6 +21,7 @@
 @property (nonatomic, weak) UICollectionView *collectionView;
 @property (nonatomic, strong) NSMutableArray *imagesArray;
 @property (nonatomic, strong) NSNumber *selectedIndex;
+@property (nonatomic, strong) TTScrollingLayout *flowLayout;
 
 @end
 
@@ -39,7 +40,8 @@
     
     TTScrollingLayout *flow = [[TTScrollingLayout alloc] init];
     flow.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    flow.minimumLineSpacing = kImageSpacing;
+    flow.minimumInteritemSpacing = kImageSpacing;
+    self.flowLayout = flow;
     
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:flow];
     collectionView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -54,7 +56,7 @@
     [self addSubview:collectionView];
     self.collectionView = collectionView;
     
-    self.collectionView.backgroundColor = [UIColor clearColor];
+    self.collectionView.backgroundColor = [UIColor whiteColor];
     self.backgroundColor = [UIColor clearColor];
     
     NSDictionary *views = NSDictionaryOfVariableBindings(collectionView);
@@ -76,6 +78,11 @@
     [self setNeedsUpdateConstraints];
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.flowLayout.estimatedItemSize = CGSizeMake(1, self.collectionView.frame.size.height);
+}
+
 - (void)updateConstraints {
     if (!self.addConstraints) {
         self.addConstraints = YES;
@@ -89,7 +96,6 @@
 }
 
 - (void)didTapImagePickerButton {
-    //[self.imagePickerButton removeFromSuperview];
     [[NSNotificationCenter defaultCenter] postNotificationName:kTTScrollingImagePickerDidTapImagePickerButton object:nil];
 }
 
@@ -122,8 +128,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self toggleSelectionAtIndexPath:indexPath];
-    TTScrollingImagePickerCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
-                                                                                      forIndexPath:indexPath];
+    TTScrollingImagePickerCell *cell = (TTScrollingImagePickerCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     [cell showOptionButtons];
     
     NSInteger intIndex = [@(indexPath.row) integerValue];
@@ -149,10 +154,11 @@
     UIImage *imageAtPath = [self.imagesArray objectAtIndex:indexPath.row];
     
     CGFloat imageHeight = imageAtPath.size.height;
-    CGFloat viewHeight = self.frame.size.height;
+    CGFloat viewHeight = collectionView.frame.size.height;
     CGFloat scaleFactor = viewHeight/imageHeight;
     
     CGSize scaledSize = CGSizeApplyAffineTransform(imageAtPath.size, CGAffineTransformMakeScale(scaleFactor, scaleFactor));
+    scaledSize.height = MIN(viewHeight, scaledSize.height);
     return scaledSize;
 }
 
