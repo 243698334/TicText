@@ -744,7 +744,9 @@
 - (void)textViewDidEndEditing:(UITextView *)textView {
     [super textViewDidEndEditing:textView];
     
-    [self deselectCurrentToolbarItem];
+    if (self.presentedViewController == nil) {
+        [self deselectCurrentToolbarItem]; // only hide when we intentionally dismiss the keyboard
+    }
 }
 
 #pragma mark - UIImagePicker
