@@ -56,6 +56,10 @@ extern NSString * const kTTNotificationUserInfoSenderUserIdKey;
 // UI Events
 extern NSString * const kTTScrollingImagePickerDidTapImagePickerButton;
 extern NSString * const kTTUIImagePickerDidDismissEvent;
+extern NSString * const kTTScrollingUIImagePickerDidChooseImage;
+
+// UI Events Keys
+extern NSString * const kTTScrollingUIImagePickerChosenImageKey;
 
 
 #pragma mark - NSError

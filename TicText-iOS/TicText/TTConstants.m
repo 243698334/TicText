@@ -46,6 +46,10 @@ NSString * const kTTNotificationUserInfoSenderUserIdKey = @"senderUserId";
 // UI Events
 NSString * const kTTScrollingImagePickerDidTapImagePickerButton = @"ScrollingImagePickerDidTapImagePickerButton";
 NSString * const kTTUIImagePickerDidDismissEvent = @"kTTUIImagePickerDidDismissEvent";
+NSString * const kTTScrollingUIImagePickerDidChooseImage = @"kTTUIImagePickerDidChooseImage";
+
+// UI Events Keys
+NSString * const kTTScrollingUIImagePickerChosenImageKey = @"kTTScrollingUIImagePickerChosenImageKey";
 
 
 #pragma mark - NSError

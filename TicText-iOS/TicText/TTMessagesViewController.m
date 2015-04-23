@@ -337,6 +337,52 @@
     }];
 }
 
+- (TTTic *)createTicWithMessegeText:(NSString *)text mediaContent:(id)mediaContent senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
+    // Play sound
+    [JSQSystemSoundPlayer jsq_playMessageSentSound];
+    
+    // New JSQMessage
+    JSQMessage *newJSQMessage = nil;
+    
+    // New Tic and anonymous status
+    NSString *ticType = kTTTicTypeDefault;
+    if (self.isAnonymous) {
+        ticType = kTTTIcTypeAnonymous;
+    }
+    TTTic *newTic = nil;
+    
+    // Tic can't contain both text and media content
+    if (text) {
+        newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
+                                           senderDisplayName:senderDisplayName
+                                                        date:date
+                                                        text:text];
+        newTic = [self ticWithMessage:newJSQMessage mediaFile:nil];
+    } else {
+        // Media Item
+        JSQPhotoMediaItem *mediaItem = nil;
+        PFFile *file = nil;
+        
+        if ([mediaContent isKindOfClass:[UIImage class]]) {
+            mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:(UIImage *)mediaContent];
+            mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:senderId];
+            file = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation((UIImage *)mediaContent, 0.6)];
+        }
+        newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
+                                           senderDisplayName:senderDisplayName
+                                                        date:date
+                                                       media:mediaItem];
+        newTic = [self ticWithMessage:newJSQMessage mediaFile:file];
+    }
+    
+    // Add to local array
+    [self.tics addObject:newTic];
+    [self.jsqMessages addObject:newJSQMessage];
+    
+    [self finishSendingMessageAnimated:YES];
+    return newTic;
+}
+
 - (void)sendTic:(TTTic *)tic {
     [tic saveEventually:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
@@ -378,22 +424,9 @@
 #pragma mark - JSQMessagesViewController method overrides
 
 - (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
-    // Play sound
-    [JSQSystemSoundPlayer jsq_playMessageSentSound];
-    
-    // New JSQMessage
-    JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:date text:text];
-    
-    // New Tic
-    TTTic *newTic = [self ticWithMessage:newJSQMessage mediaFile:nil];
 
-    [newTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
-    
-    // Add to local array
-    [self.tics addObject:newTic];
-    [self.jsqMessages addObject:newJSQMessage];
-    
-    [self finishSendingMessageAnimated:YES];
+    TTTic *newTic = [self createTicWithMessegeText:text mediaContent:nil senderId:self.senderId senderDisplayName:self.senderDisplayName date:date];
+
     [self sendTic:newTic];
 }
 
@@ -718,7 +751,9 @@
 - (void)willShowPhotoLibrary {
     if (([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary] == NO
          && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum] == NO)) {
-        // TODO handle error
+        [TSMessage showNotificationWithTitle:@"Permission Denied"
+                                    subtitle:@"Please allow TicText to access your Camera Roll."
+                                        type:TSMessageNotificationTypeError];
     }
     
     NSString *type = (NSString *)kUTTypeImage;
@@ -733,7 +768,9 @@
         imagePickerController.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
         imagePickerController.mediaTypes = [NSArray arrayWithObject:type];
     } else {
-        // TODO handle error
+        [TSMessage showNotificationWithTitle:@"Permission Denied"
+                                    subtitle:@"Please allow TicText to access your Camera Roll."
+                                        type:TSMessageNotificationTypeError];
     }
     
     imagePickerController.allowsEditing = YES;
@@ -746,30 +783,9 @@
     UIImage *picture = [info objectForKey:UIImagePickerControllerEditedImage];
     
     if (picture != nil) {
-        // Image file as PFFile
-        PFFile *filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
-        
-        // Play sound
-        [JSQSystemSoundPlayer jsq_playMessageSentSound];
-        
-        // Media Item
-        JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:picture];
-        mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:self.senderId];
-        
-        // New JSQMessage
-        JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:[NSDate date] media:mediaItem];
-        
-        // New Tic
-        TTTic *newTic = [self ticWithMessage:newJSQMessage mediaFile:filePicture];
-        [newTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
-        
-        // Add to local array
-        [self.tics addObject:newTic];
-        [self.jsqMessages addObject:newJSQMessage];
-        
-        [self finishSendingMessageAnimated:YES];
+        TTTic *newTic = [self createTicWithMessegeText:nil mediaContent:picture senderId:self.senderId senderDisplayName:self.senderDisplayName date:[NSDate date]];
+
         [self sendTicWithMediaContent:newTic];
-        
     }
     
     [picker dismissViewControllerAnimated:YES completion:nil];

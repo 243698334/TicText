@@ -66,7 +66,9 @@
     [imagePickerButtonLayer setMasksToBounds:YES];
     [imagePickerButtonLayer setCornerRadius:25];
     self.imagePickerButton.backgroundColor = [UIColor colorWithRed:130.0/255.0 green:100.0/255.0 blue:200.0/255.0 alpha:0.8];
-    [self.imagePickerButton addTarget:self action:@selector(didTapImagePickerButton) forControlEvents:UIControlEventTouchUpInside];
+    [self.imagePickerButton addTarget:self
+                               action:@selector(didTapImagePickerButton)
+                     forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.imagePickerButton];
 
 }
@@ -100,7 +102,8 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    TTScrollingImagePickerCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+    TTScrollingImagePickerCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
+                                                                                      forIndexPath:indexPath];
     [cell setImage:[self.imagesArray objectAtIndex:indexPath.row]];
     return cell;
 }
@@ -115,10 +118,15 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self toggleSelectionAtIndexPath:indexPath];
-    TTScrollingImagePickerCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+    TTScrollingImagePickerCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
+                                                                                      forIndexPath:indexPath];
     [cell showOptionButtons];
     
-    NSLog(@"image selected at %ld", [@(indexPath.row) integerValue]);
+    NSInteger intIndex = [@(indexPath.row) integerValue];
+    NSLog(@"image selected at %ld", intIndex);
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTScrollingUIImagePickerDidChooseImage
+                                                        object:nil
+                                                      userInfo:@{kTTScrollingUIImagePickerChosenImageKey : [self.imagesArray objectAtIndex:intIndex]}];
 }
 
 - (void)toggleSelectionAtIndexPath:(NSIndexPath *)indexPath {
