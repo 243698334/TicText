@@ -35,6 +35,8 @@
 }
 
 - (void)setup {
+    [self setClipsToBounds:YES];
+    
     TTScrollingLayout *flow = [[TTScrollingLayout alloc] init];
     flow.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     flow.minimumLineSpacing = kImageSpacing;
@@ -81,11 +83,12 @@
         [self.imagePickerButton autoSetDimension:ALDimensionHeight toSize:50];
         [self.imagePickerButton autoSetDimension:ALDimensionWidth toSize:50];
     }
+    
     [super updateConstraints];
 }
 
 - (void)didTapImagePickerButton {
-    [self.imagePickerButton removeFromSuperview];
+    //[self.imagePickerButton removeFromSuperview];
     [[NSNotificationCenter defaultCenter] postNotificationName:kTTScrollingImagePickerDidTapImagePickerButton object:nil];
 }
 
