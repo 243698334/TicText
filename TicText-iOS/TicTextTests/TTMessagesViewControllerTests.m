@@ -288,7 +288,7 @@
     CGFloat expectedOriginY = vc.view.frame.size.height - 120;
     CGRect expected = CGRectMake(0, expectedOriginY,
                                  vc.view.frame.size.width,
-                                 vc.view.frame.size.height - expectedOriginY);
+                                 vc.keyboardController.currentKeyboardFrame.size.height);
     expected = [window convertRect:expected fromView:vc.view];
     
     XCTAssertTrue(CGRectEqualToRect(result, expected));
