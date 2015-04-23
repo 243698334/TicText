@@ -113,6 +113,7 @@
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNewTic:) name:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willShowPhotoLibrary) name:kTTScrollingImagePickerDidTapImagePickerButton object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPickImageFromScrollingImagePickerWithObject:) name:kTTScrollingUIImagePickerDidChooseImage object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -425,6 +426,12 @@
             // TODO:provide resend option?
         }
     }];
+}
+
+- (void)didPickImageFromScrollingImagePickerWithObject:(NSNotification *)notification {
+    TTTic *newTic = [self createTicWithMessegeText:nil mediaContent:[[notification userInfo] objectForKey:kTTScrollingUIImagePickerChosenImageKey] senderId:self.senderId senderDisplayName:self.senderDisplayName date:[NSDate date]];
+    
+    [self sendTicWithMediaContent:newTic];
 }
 
 #pragma mark - JSQMessagesViewController method overrides
