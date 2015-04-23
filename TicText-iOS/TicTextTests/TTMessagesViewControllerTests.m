@@ -649,4 +649,40 @@
     XCTAssertEqual(result, 43);
 }
 
+- (void)testDeselectCurrentToolbarItem {
+    // Arrange
+    [[self.mockMessagesViewController messagesToolbar] setSelectedIndex:0];
+    id mockMessagesToolbar = OCMPartialMock([self.mockMessagesViewController messagesToolbar]);
+    OCMExpect([mockMessagesToolbar deselectItemAtIndex:0]);
+    
+    // Act
+    [self.mockMessagesViewController deselectCurrentToolbarItem];
+    
+    // Assert
+    OCMVerifyAll(mockMessagesToolbar);
+    XCTAssertEqual([self.mockMessagesViewController messagesToolbar].selectedIndex, kTTMessagesToolbarSelectedItemNone);
+    
+    // Arrange
+    [[self.mockMessagesViewController messagesToolbar] setSelectedIndex:1];
+    OCMExpect([mockMessagesToolbar deselectItemAtIndex:1]);
+    
+    // Act
+    [self.mockMessagesViewController deselectCurrentToolbarItem];
+    
+    // Assert
+    OCMVerifyAll(mockMessagesToolbar);
+    XCTAssertEqual([self.mockMessagesViewController messagesToolbar].selectedIndex, kTTMessagesToolbarSelectedItemNone);
+    
+    // Arrange
+    [[self.mockMessagesViewController messagesToolbar] setSelectedIndex:-1];
+    OCMExpect([mockMessagesToolbar deselectItemAtIndex:-1]);
+    
+    // Act
+    [self.mockMessagesViewController deselectCurrentToolbarItem];
+    
+    // Assert
+    OCMVerifyAll(mockMessagesToolbar);
+    XCTAssertEqual([self.mockMessagesViewController messagesToolbar].selectedIndex, kTTMessagesToolbarSelectedItemNone);
+}
+
 @end

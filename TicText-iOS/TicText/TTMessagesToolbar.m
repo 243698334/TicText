@@ -17,7 +17,7 @@
         self.backgroundColor = [UIColor whiteColor];
         
         self.toolbarItems = items;
-        self.selectedIndex = -1;
+        self.selectedIndex = kTTMessagesToolbarSelectedItemNone;
         
         [self setupTopBorder];
     }
@@ -69,6 +69,13 @@
     [item sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
+- (void)deselectItemAtIndex:(NSInteger)index {
+    if (index >= 0) { // if we have a selected item
+        TTMessagesToolbarItem *oldItem = self.toolbarItems[index];
+        [oldItem didDeselectToolbarButton:self];
+    }
+}
+
 - (void)toggleItem:(TTMessagesToolbarItem *)item {
     if ([self.toolbarItems indexOfObject:item] == self.selectedIndex) {
         return;
@@ -76,12 +83,8 @@
     
     [item didSelectToolbarButton:self];
     
-    TTMessagesToolbarItem *oldItem = nil;
     if ([item shouldSwitchViewOnAction]) { // if the new view should change the contentView
-        if (self.selectedIndex >= 0) { // if we have a selected item
-            oldItem = self.toolbarItems[self.selectedIndex];
-            [oldItem didDeselectToolbarButton:self];
-        }
+        [self deselectItemAtIndex:self.selectedIndex];
         
         self.selectedIndex = [self.toolbarItems indexOfObject:item];
         [self.delegate messagesToolbar:self willShowItem:item];

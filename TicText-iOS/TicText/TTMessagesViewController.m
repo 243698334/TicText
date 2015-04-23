@@ -638,9 +638,22 @@
     }
 }
 
+#pragma mark - TextView Delegate
+#define kTTMessagesViewControllerToolbarItemDeselectOnKeyboardHideDelay 0.4
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    [super textViewDidEndEditing:textView];
+    
+    [self deselectCurrentToolbarItem];
+}
+
 #pragma mark - Helper Methods
 - (UIWindow *)frontWindow {
     return [[[UIApplication sharedApplication] windows] lastObject];
+}
+
+- (void)deselectCurrentToolbarItem {
+    [self.messagesToolbar deselectItemAtIndex:self.messagesToolbar.selectedIndex];
+    [self.messagesToolbar setSelectedIndex:kTTMessagesToolbarSelectedItemNone];
 }
 
 @end

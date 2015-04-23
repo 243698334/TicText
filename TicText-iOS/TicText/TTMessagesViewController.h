@@ -30,5 +30,6 @@
 
 + (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;
 - (TTTic *)ticWithMessage:(JSQMessage *)message;
+- (void)deselectCurrentToolbarItem;
 
 @end

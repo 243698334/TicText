@@ -28,6 +28,8 @@
 
 @end
 
+#define kTTMessagesToolbarSelectedItemNone -1
+
 @interface TTMessagesToolbar : UIView
 
 // This toolbar's owner that will be responsible for displaying and managing the
@@ -53,6 +55,9 @@
 
 // Programatically selects an item at the specified index.
 - (void)selectItemAtIndex:(NSInteger)index;
+
+// Programmatically deselects an item at the specified index. This method is called on the currnetly shown |contentView| when newly selected item wants its |contentView| shown.
+- (void)deselectItemAtIndex:(NSInteger)index;
 
 @end
 
