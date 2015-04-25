@@ -8,7 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@class TTScrollingImagePickerCell;
+@protocol TTScrollingImagePickerCellDelegate <NSObject>
+
+- (void)didTapSendButtonInScrollingImagePickerCell;
+
+@end
+
 @interface TTScrollingImagePickerCell : UICollectionViewCell
+
+@property (nonatomic, weak) id<TTScrollingImagePickerCellDelegate> delegate;
 
 - (void)setImage:(UIImage *)image;
 

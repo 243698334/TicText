@@ -14,14 +14,18 @@
 
 #define kImageSpacing 2.0
 
-@interface TTScrollingImagePickerView () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface TTScrollingImagePickerView () <UICollectionViewDataSource, UICollectionViewDelegate, TTScrollingImagePickerCellDelegate>
 
 @property (nonatomic) BOOL addConstraints;
 @property (nonatomic, strong) UIButton *imagePickerButton;
 @property (nonatomic, weak) UICollectionView *collectionView;
 @property (nonatomic, strong) NSMutableArray *imagesArray;
-@property (nonatomic, strong) NSNumber *selectedIndex;
+@property (nonatomic, assign) NSInteger selectedIndex;
 @property (nonatomic, strong) TTScrollingLayout *flowLayout;
+
+@property (nonatomic, strong) UIView *optionButtonsView;
+@property (nonatomic, strong) UIButton *sendButton;
+@property (nonatomic) BOOL optionViewShown;
 
 @end
 
@@ -74,13 +78,16 @@
                                action:@selector(didTapImagePickerButton)
                      forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.imagePickerButton];
+    
+    self.addConstraints = NO;
+    self.optionViewShown = NO;
 
     [self setNeedsUpdateConstraints];
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.flowLayout.estimatedItemSize = CGSizeMake(1, self.collectionView.frame.size.height);
+//    self.flowLayout.estimatedItemSize = CGSizeMake(1, self.collectionView.frame.size.height);
 }
 
 - (void)updateConstraints {
@@ -128,25 +135,34 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self toggleSelectionAtIndexPath:indexPath];
-    TTScrollingImagePickerCell *cell = (TTScrollingImagePickerCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    [cell showOptionButtons];
-    
-    NSInteger intIndex = [@(indexPath.row) integerValue];
-    NSLog(@"image selected at %ld", intIndex);
-    [[NSNotificationCenter defaultCenter] postNotificationName:kTTScrollingUIImagePickerDidChooseImage
-                                                        object:nil
-                                                      userInfo:@{kTTScrollingUIImagePickerChosenImageKey : [self.imagesArray objectAtIndex:intIndex]}];
 }
 
 - (void)toggleSelectionAtIndexPath:(NSIndexPath *)indexPath {
-    NSUInteger index = indexPath.row;
-    NSNumber *path = @(index);
+    self.selectedIndex = indexPath.row;
     
-//    TTScrollingImagePickerCell *cell = (TTScrollingImagePickerCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    self.selectedIndex = path;
+    TTScrollingImagePickerCell *cell = (TTScrollingImagePickerCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+        
+    if (!self.optionViewShown) {
+        [cell showOptionButtons];
+        self.optionViewShown = YES;
+        cell.delegate = self;
+    } else {
+        [cell hideOptionButtons];
+        self.optionViewShown = NO;
+        cell.delegate = nil;
+    }
     //TODO: Manage internal selection state
     //blur effect?
 }
+
+# pragma mark - TTScrollingImagePickerCellDelegate
+- (void) didTapSendButtonInScrollingImagePickerCell {
+    NSLog(@"Send image at index %ld", (NSInteger)self.selectedIndex);
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTScrollingUIImagePickerDidChooseImage
+                                                        object:nil
+                                                      userInfo:@{kTTScrollingUIImagePickerChosenImageKey : [self.imagesArray objectAtIndex:(NSInteger)self.selectedIndex]}];
+}
+
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout*)collectionViewLayout

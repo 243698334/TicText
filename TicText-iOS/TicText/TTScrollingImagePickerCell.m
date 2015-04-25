@@ -10,10 +10,14 @@
 
 #import <PureLayout/PureLayout.h>
 
+#define kSendButtonRadius 40
+
 @interface TTScrollingImagePickerCell ()
 
+@property (nonatomic) BOOL addConstraints;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *optionButtonsView;
+@property (nonatomic, strong) UIButton *sendButton;
 
 @end
 
@@ -40,6 +44,7 @@
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[imageView]|" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]|" options:0 metrics:nil views:views]];
+    
 }
 
 - (void)setImage:(UIImage *)image {
@@ -50,19 +55,18 @@
     self.optionButtonsView = [[UIView alloc] initWithFrame:self.contentView.bounds];
     self.optionButtonsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
-    UIButton *sendButton = [[UIButton alloc] init];
-    NSLog(@"Frame Height: %f", self.imageView.frame.size.height);
-    sendButton.frame = self.contentView.bounds;
-    sendButton.titleLabel.text = @"Send";
-    sendButton.titleLabel.textColor = [UIColor whiteColor];
-    sendButton.backgroundColor = [UIColor colorWithRed:130.0/255.0 green:100.0/255.0 blue:200.0/255.0 alpha:0.8];
-    CALayer *imagePickerButtonLayer = sendButton.layer;
-    [imagePickerButtonLayer setMasksToBounds:YES];
-    [imagePickerButtonLayer setCornerRadius:25];
-    [sendButton addTarget:self action:@selector(didTapSendButton:) forControlEvents:UIControlEventTouchUpInside];
-    [self.optionButtonsView addSubview:sendButton];
-    [self.optionButtonsView bringSubviewToFront:sendButton];
-    //[self.optionButtonsView autoSetDimensionsToSize:CGSizeMake(70, 70)];
+    self.sendButton = [[UIButton alloc] init];
+    self.sendButton.frame = CGRectMake(0, 0, kSendButtonRadius, kSendButtonRadius);
+    self.sendButton.titleLabel.text = @"Send";
+    self.sendButton.titleLabel.textColor = [UIColor whiteColor];
+    self.sendButton.backgroundColor = [UIColor colorWithRed:130.0/255.0 green:100.0/255.0 blue:200.0/255.0 alpha:0.8];
+    
+    [self.sendButton.layer setMasksToBounds:YES];
+    [self.sendButton.layer setCornerRadius:kSendButtonRadius/2.0f];
+    [self.sendButton addTarget:self action:@selector(didTapSendButton) forControlEvents:UIControlEventTouchUpInside];
+    [self.optionButtonsView addSubview:self.sendButton];
+    [self.optionButtonsView bringSubviewToFront:self.sendButton];
+    
     [self.contentView addSubview:self.optionButtonsView];
     [self.contentView bringSubviewToFront:self.optionButtonsView];
 
@@ -77,12 +81,23 @@
     //[self.contentView setNeedsLayout];
 }
 
+- (void)didTapSendButton {
+    if (self.delegate) {
+        [self.delegate didTapSendButtonInScrollingImagePickerCell];
+    }
+}
+
 - (void)hideOptionButtons {
     [self.optionButtonsView removeFromSuperview];
 }
 
-- (void)didTapSendButton:(id)sender {
+- (void)updateConstraints {
+    if (!self.addConstraints) {
+        self.addConstraints = YES;
+        [self.sendButton autoCenterInSuperview];
+    }
     
+    [super updateConstraints];
 }
 
 - (void)prepareForReuse {
