@@ -482,7 +482,7 @@
                 animationScrollToTopView.unreadTicsCountLabel.transform = CGAffineTransformScale(animationScrollToTopView.unreadTicsCountLabel.transform, zoomInScale, zoomInScale);
             } completion:^(BOOL finished) {
                 // update count
-                animationScrollToTopView.unreadTicsCountLabel.text = [NSString stringWithFormat:@"%li", [self.unreadTics count]];
+                animationScrollToTopView.unreadTicsCountLabel.text = [NSString stringWithFormat:@"%li", (unsigned long)[self.unreadTics count]];
                 [UIView animateWithDuration:0.1 animations:^{
                     // zoom out
                     animationScrollToTopView.unreadTicsCountLabel.transform = CGAffineTransformScale(animationScrollToTopView.unreadTicsCountLabel.transform, zoomOutScale, zoomOutScale);
