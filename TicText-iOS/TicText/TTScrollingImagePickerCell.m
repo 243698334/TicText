@@ -10,7 +10,8 @@
 
 #import <PureLayout/PureLayout.h>
 
-#define kSendButtonRadius 40
+#define kSendButtonRadius 60.0
+#define kSendButtonBorderWidth 2.0
 
 @interface TTScrollingImagePickerCell ()
 
@@ -51,8 +52,6 @@
 }
 
 - (void)showOptionButtons {
-    [self setNeedsUpdateConstraints];
-    
     self.optionButtonsView = [[UIView alloc] initWithFrame:self.contentView.bounds];
     self.optionButtonsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
@@ -60,50 +59,65 @@
     [self.bluredEffectView setFrame:self.optionButtonsView.bounds];
     [self.optionButtonsView addSubview:self.bluredEffectView];
     
-    self.sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    self.sendButton.center = self.superview.center;
-//    CGRect tempFrame = self.sendButton.frame;
-//    tempFrame.size.height = kSendButtonRadius;
-//    tempFrame.size.width = kSendButtonRadius;
-//    self.sendButton.frame = tempFrame;
-    self.sendButton.frame = CGRectMake(0, 0, kSendButtonRadius, kSendButtonRadius);
-    self.sendButton.titleLabel.text = @"Send";
-    self.sendButton.titleLabel.textColor = [UIColor whiteColor];
-    self.sendButton.backgroundColor = [UIColor colorWithRed:130.0/255.0 green:100.0/255.0 blue:200.0/255.0 alpha:0.8];
-    
-    [self.sendButton.layer setMasksToBounds:YES];
+    self.sendButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, kSendButtonRadius, kSendButtonRadius)];
     [self.sendButton.layer setCornerRadius:kSendButtonRadius/2.0f];
+    [self.sendButton.layer setBorderWidth:kSendButtonBorderWidth];
+    [self.sendButton.layer setBorderColor:[UIColor whiteColor].CGColor];
+    [self.sendButton.layer setMasksToBounds:YES];
+    [self.sendButton setTitle:@"Send" forState:UIControlStateNormal];
+    [self.sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];;
+    [self.sendButton setTitleColor:kTTUIPurpleColor forState:UIControlStateHighlighted];
+    [self.sendButton setBackgroundColor:kTTUIPurpleColor];
+    [self.sendButton setAlpha:0.7];
+
+    [self.sendButton addTarget:self action:@selector(toggleButtonColor:) forControlEvents:UIControlEventTouchDown];
+    [self.sendButton addTarget:self action:@selector(toggleButtonColor:) forControlEvents:UIControlEventTouchUpOutside];
     [self.sendButton addTarget:self action:@selector(didTapSendButton) forControlEvents:UIControlEventTouchUpInside];
     [self.optionButtonsView addSubview:self.sendButton];
     [self.optionButtonsView bringSubviewToFront:self.sendButton];
     
-    self.optionButtonsView.alpha = 0.0;
+    // Put send button at center
+    self.sendButton.center = self.optionButtonsView.center;
+    CGRect tempFrame = self.sendButton.frame;
+    tempFrame.size.height = kSendButtonRadius;
+    tempFrame.size.width = kSendButtonRadius;
+    self.sendButton.frame = tempFrame;
+    
+    [self.optionButtonsView setAlpha:0.0];
     [self.contentView addSubview:self.optionButtonsView];
     [UIView animateWithDuration:0.25 animations:^{
-        self.optionButtonsView.alpha = 1.0;
+        [self.optionButtonsView setAlpha:1.0];
     } completion:^(BOOL finished) {
         [self.contentView bringSubviewToFront:self.optionButtonsView];
     }];
 }
 
+- (void)toggleButtonColor:(id)sender {
+    UIButton *sendButton = (UIButton *)sender;
+    if (sendButton.isHighlighted) {
+        [UIView animateWithDuration:0.25 animations:^{
+            sendButton.backgroundColor = [UIColor whiteColor];
+        }];
+    } else {
+        [UIView animateWithDuration:0.25 animations:^{
+            sendButton.backgroundColor = kTTUIPurpleColor;
+        }];
+    }
+}
+
 - (void)didTapSendButton {
     if (self.delegate) {
-        [self.delegate didTapSendButtonInScrollingImagePickerCell];
+        [self.delegate didTapSendButtonInScrollingImagePickerCell:self];
     }
 }
 
 - (void)hideOptionButtons {
     [self.contentView addSubview:self.optionButtonsView];
     [UIView animateWithDuration:0.25 animations:^{
-        self.optionButtonsView.alpha = 0.0;
+        [self.optionButtonsView setAlpha:0.0];
     } completion:^(BOOL finished) {
         [self.optionButtonsView removeFromSuperview];
     }];
-}
-
-- (void)updateConstraints {
-    [self.sendButton autoCenterInSuperview];
-    [super updateConstraints];
 }
 
 - (void)prepareForReuse {

@@ -11,7 +11,7 @@
 @class TTScrollingImagePickerCell;
 @protocol TTScrollingImagePickerCellDelegate <NSObject>
 
-- (void)didTapSendButtonInScrollingImagePickerCell;
+- (void)didTapSendButtonInScrollingImagePickerCell:(TTScrollingImagePickerCell *)cell;
 
 @end
 

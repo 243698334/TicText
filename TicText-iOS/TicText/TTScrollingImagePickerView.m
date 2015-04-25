@@ -128,9 +128,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"deselect at %ld", indexPath.row);
     TTScrollingImagePickerCell *cell = (TTScrollingImagePickerCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    self.optionViewIsShown = NO;
-    cell.delegate = nil;
-    [cell hideOptionButtons];
+    [self removeEffectFromCell:cell];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -139,24 +137,20 @@
     TTScrollingImagePickerCell *cell = (TTScrollingImagePickerCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     
     if (self.optionViewIsShown) {
-        self.optionViewIsShown = NO;
-        cell.delegate = nil;
-        [cell hideOptionButtons];
+        [self removeEffectFromCell:cell];
     } else {
-        self.optionViewIsShown = YES;
-        cell.delegate = self;
-        [cell showOptionButtons];
+        [self addEffectToCell:cell];
     }
 }
 
 # pragma mark - TTScrollingImagePickerCellDelegate
-- (void) didTapSendButtonInScrollingImagePickerCell {
+- (void) didTapSendButtonInScrollingImagePickerCell:(TTScrollingImagePickerCell *)cell {
     NSLog(@"Send image at index %ld", self.selectedIndex);
     [[NSNotificationCenter defaultCenter] postNotificationName:kTTScrollingUIImagePickerDidChooseImage
                                                         object:nil
                                                       userInfo:@{kTTScrollingUIImagePickerChosenImageKey : [self.imagesArray objectAtIndex:self.selectedIndex]}];
+    [self removeEffectFromCell:cell];
 }
-
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout*)collectionViewLayout
@@ -170,6 +164,19 @@
     CGSize scaledSize = CGSizeApplyAffineTransform(imageAtPath.size, CGAffineTransformMakeScale(scaleFactor, scaleFactor));
     scaledSize.height = MIN(viewHeight, scaledSize.height);
     return scaledSize;
+}
+
+#pragma mark - Helpers
+- (void) removeEffectFromCell:(TTScrollingImagePickerCell *)cell {
+    self.optionViewIsShown = NO;
+    cell.delegate = nil;
+    [cell hideOptionButtons];
+}
+
+- (void) addEffectToCell:(TTScrollingImagePickerCell *)cell {
+    self.optionViewIsShown = YES;
+    cell.delegate = self;
+    [cell showOptionButtons];
 }
 
 @end
