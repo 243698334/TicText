@@ -12,12 +12,12 @@
 
 @protocol TTComposeViewDelegate <NSObject>
 
-- (void)composeViewDidSelectContact:(TTUser *)contact;
+- (void)composeViewDidSelectContact:(TTUser *)contact anonymous:(BOOL)anonymous;
 
 @end
 
 @interface TTComposeView : UIView <UITableViewDelegate, UITableViewDataSource>
 
-@property id<TTComposeViewDelegate> delegate;
+@property (nonatomic, weak) id<TTComposeViewDelegate> delegate;
 
 @end

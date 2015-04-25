@@ -44,13 +44,13 @@
 
 - (void)testProfilePicture {
     // Arrange
-    NSData *someData = UIImagePNGRepresentation([UIImage imageNamed:@"profile"]);
+    NSData *someData = UIImagePNGRepresentation([UIImage imageNamed:@"ProfilePicturePlaceholder"]);
     
     // Act
-    [self.user setProfilePicture:someData];
+    [self.user setProfilePictureData:someData];
     
     // Assert
-    XCTAssertEqualObjects(someData, [self.user profilePicture]);
+    XCTAssertEqualObjects(someData, [self.user profilePictureData]);
 }
 
 - (void)testFriendsSetter {

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E49DDAB1AEB221A0034BCFE /* TTUnreadTicsListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E49DDAA1AEB221A0034BCFE /* TTUnreadTicsListTableViewCell.m */; };
+		0E5F1B2A1AE495FC009DE60A /* TTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5F1B291AE495FC009DE60A /* TTSession.m */; };
+		0E5F1B2D1AE49C05009DE60A /* TTErrorHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5F1B2C1AE49C05009DE60A /* TTErrorHandler.m */; };
+		0E5F1B301AE4E155009DE60A /* TTComposeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5F1B2F1AE4E155009DE60A /* TTComposeTableViewCell.m */; };
 		0E61D4701AAC48C800EF5826 /* TTMessagesViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E61D46F1AAC48C800EF5826 /* TTMessagesViewControllerTests.m */; };
 		0E6AFF7A1AB7F18A00FC69A9 /* TTTicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E6AFF791AB7F18A00FC69A9 /* TTTicTests.m */; };
 		0E6AFF7C1AB7FAAC00FC69A9 /* TTActivityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E6AFF7B1AB7FAAC00FC69A9 /* TTActivityTests.m */; };
@@ -14,7 +18,6 @@
 		0EC584F61A7864AA00025D71 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0EC584F41A7864AA00025D71 /* LaunchScreen.xib */; };
 		0ECE4AF91AE3D5060016A728 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4AF81AE3D5060016A728 /* TTConstants.m */; };
 		0ECE4B021AE3D5220016A728 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4AFB1AE3D5220016A728 /* Reachability.m */; };
-		0ECE4B031AE3D5220016A728 /* TTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4AFD1AE3D5220016A728 /* TTSession.m */; };
 		0ECE4B041AE3D5220016A728 /* TTUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4AFF1AE3D5220016A728 /* TTUtility.m */; };
 		0ECE4B051AE3D5220016A728 /* TTSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B011AE3D5220016A728 /* TTSettings.m */; };
 		0ECE4B101AE3D5330016A728 /* TTActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B071AE3D5330016A728 /* TTActivity.m */; };
@@ -31,8 +34,8 @@
 		0ECE4B2C1AE3D5490016A728 /* TTProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B211AE3D5490016A728 /* TTProfileViewController.m */; };
 		0ECE4B2D1AE3D5490016A728 /* TTSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B231AE3D5490016A728 /* TTSettingsViewController.m */; };
 		0ECE4B2E1AE3D5490016A728 /* TTMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B251AE3D5490016A728 /* TTMessagesViewController.m */; };
-		0ECE4B3E1AE3D56D0016A728 /* TTUnreadTicsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B301AE3D56D0016A728 /* TTUnreadTicsView.m */; };
-		0ECE4B3F1AE3D56D0016A728 /* TTScrollToTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B321AE3D56D0016A728 /* TTScrollToTopView.m */; };
+		0ECE4B3E1AE3D56D0016A728 /* TTUnreadTicsListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B301AE3D56D0016A728 /* TTUnreadTicsListView.m */; };
+		0ECE4B3F1AE3D56D0016A728 /* TTUnreadTicsBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B321AE3D56D0016A728 /* TTUnreadTicsBannerView.m */; };
 		0ECE4B401AE3D56D0016A728 /* TTConversationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B341AE3D56D0016A728 /* TTConversationTableViewCell.m */; };
 		0ECE4B411AE3D56D0016A728 /* TTParallaxHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B361AE3D56D0016A728 /* TTParallaxHeaderView.m */; };
 		0ECE4B421AE3D56D0016A728 /* TTComposeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B381AE3D56D0016A728 /* TTComposeView.m */; };
@@ -69,6 +72,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0E49DDA91AEB221A0034BCFE /* TTUnreadTicsListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTUnreadTicsListTableViewCell.h; sourceTree = "<group>"; };
+		0E49DDAA1AEB221A0034BCFE /* TTUnreadTicsListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUnreadTicsListTableViewCell.m; sourceTree = "<group>"; };
+		0E5F1B281AE495FC009DE60A /* TTSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSession.h; sourceTree = "<group>"; };
+		0E5F1B291AE495FC009DE60A /* TTSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSession.m; sourceTree = "<group>"; };
+		0E5F1B2B1AE49C05009DE60A /* TTErrorHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTErrorHandler.h; sourceTree = "<group>"; };
+		0E5F1B2C1AE49C05009DE60A /* TTErrorHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTErrorHandler.m; sourceTree = "<group>"; };
+		0E5F1B2E1AE4E154009DE60A /* TTComposeTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTComposeTableViewCell.h; sourceTree = "<group>"; };
+		0E5F1B2F1AE4E155009DE60A /* TTComposeTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTComposeTableViewCell.m; sourceTree = "<group>"; };
 		0E61D46F1AAC48C800EF5826 /* TTMessagesViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesViewControllerTests.m; sourceTree = "<group>"; };
 		0E6AFF791AB7F18A00FC69A9 /* TTTicTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTicTests.m; sourceTree = "<group>"; };
 		0E6AFF7B1AB7FAAC00FC69A9 /* TTActivityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTActivityTests.m; sourceTree = "<group>"; };
@@ -82,8 +93,6 @@
 		0ECE4AF81AE3D5060016A728 /* TTConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTConstants.m; sourceTree = "<group>"; };
 		0ECE4AFA1AE3D5220016A728 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		0ECE4AFB1AE3D5220016A728 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
-		0ECE4AFC1AE3D5220016A728 /* TTSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSession.h; sourceTree = "<group>"; };
-		0ECE4AFD1AE3D5220016A728 /* TTSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSession.m; sourceTree = "<group>"; };
 		0ECE4AFE1AE3D5220016A728 /* TTUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTUtility.h; sourceTree = "<group>"; };
 		0ECE4AFF1AE3D5220016A728 /* TTUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUtility.m; sourceTree = "<group>"; };
 		0ECE4B001AE3D5220016A728 /* TTSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSettings.h; sourceTree = "<group>"; };
@@ -115,10 +124,10 @@
 		0ECE4B231AE3D5490016A728 /* TTSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSettingsViewController.m; sourceTree = "<group>"; };
 		0ECE4B241AE3D5490016A728 /* TTMessagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMessagesViewController.h; sourceTree = "<group>"; };
 		0ECE4B251AE3D5490016A728 /* TTMessagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesViewController.m; sourceTree = "<group>"; };
-		0ECE4B2F1AE3D56D0016A728 /* TTUnreadTicsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTUnreadTicsView.h; sourceTree = "<group>"; };
-		0ECE4B301AE3D56D0016A728 /* TTUnreadTicsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUnreadTicsView.m; sourceTree = "<group>"; };
-		0ECE4B311AE3D56D0016A728 /* TTScrollToTopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollToTopView.h; sourceTree = "<group>"; };
-		0ECE4B321AE3D56D0016A728 /* TTScrollToTopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollToTopView.m; sourceTree = "<group>"; };
+		0ECE4B2F1AE3D56D0016A728 /* TTUnreadTicsListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTUnreadTicsListView.h; sourceTree = "<group>"; };
+		0ECE4B301AE3D56D0016A728 /* TTUnreadTicsListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUnreadTicsListView.m; sourceTree = "<group>"; };
+		0ECE4B311AE3D56D0016A728 /* TTUnreadTicsBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTUnreadTicsBannerView.h; sourceTree = "<group>"; };
+		0ECE4B321AE3D56D0016A728 /* TTUnreadTicsBannerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTUnreadTicsBannerView.m; sourceTree = "<group>"; };
 		0ECE4B331AE3D56D0016A728 /* TTConversationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTConversationTableViewCell.h; sourceTree = "<group>"; };
 		0ECE4B341AE3D56D0016A728 /* TTConversationTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTConversationTableViewCell.m; sourceTree = "<group>"; };
 		0ECE4B351AE3D56D0016A728 /* TTParallaxHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTParallaxHeaderView.h; sourceTree = "<group>"; };
@@ -184,23 +193,23 @@
 		0E923B9B1A87192200040522 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0ECE4B151AE3D5490016A728 /* TTRootViewController.h */,
-				0ECE4B161AE3D5490016A728 /* TTRootViewController.m */,
+				0ECE4B1E1AE3D5490016A728 /* TTContactsViewController.h */,
+				0ECE4B1F1AE3D5490016A728 /* TTContactsViewController.m */,
+				0ECE4B1C1AE3D5490016A728 /* TTConversationsViewController.h */,
+				0ECE4B1D1AE3D5490016A728 /* TTConversationsViewController.m */,
+				0ECE4B1A1AE3D5490016A728 /* TTFindFriendsViewController.h */,
+				0ECE4B1B1AE3D5490016A728 /* TTFindFriendsViewController.m */,
 				0ECE4B171AE3D5490016A728 /* TTLogInViewController.h */,
 				0ECE4B181AE3D5490016A728 /* TTLogInViewController.m */,
 				0ECE4B191AE3D5490016A728 /* TTLogInViewController.xib */,
-				0ECE4B1A1AE3D5490016A728 /* TTFindFriendsViewController.h */,
-				0ECE4B1B1AE3D5490016A728 /* TTFindFriendsViewController.m */,
-				0ECE4B1C1AE3D5490016A728 /* TTConversationsViewController.h */,
-				0ECE4B1D1AE3D5490016A728 /* TTConversationsViewController.m */,
-				0ECE4B1E1AE3D5490016A728 /* TTContactsViewController.h */,
-				0ECE4B1F1AE3D5490016A728 /* TTContactsViewController.m */,
-				0ECE4B201AE3D5490016A728 /* TTProfileViewController.h */,
-				0ECE4B211AE3D5490016A728 /* TTProfileViewController.m */,
-				0ECE4B221AE3D5490016A728 /* TTSettingsViewController.h */,
-				0ECE4B231AE3D5490016A728 /* TTSettingsViewController.m */,
 				0ECE4B241AE3D5490016A728 /* TTMessagesViewController.h */,
 				0ECE4B251AE3D5490016A728 /* TTMessagesViewController.m */,
+				0ECE4B201AE3D5490016A728 /* TTProfileViewController.h */,
+				0ECE4B211AE3D5490016A728 /* TTProfileViewController.m */,
+				0ECE4B151AE3D5490016A728 /* TTRootViewController.h */,
+				0ECE4B161AE3D5490016A728 /* TTRootViewController.m */,
+				0ECE4B221AE3D5490016A728 /* TTSettingsViewController.h */,
+				0ECE4B231AE3D5490016A728 /* TTSettingsViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -288,22 +297,26 @@
 		2E402A181A96FE8D00C1C7BF /* Custom UI */ = {
 			isa = PBXGroup;
 			children = (
-				0ECE4B2F1AE3D56D0016A728 /* TTUnreadTicsView.h */,
-				0ECE4B301AE3D56D0016A728 /* TTUnreadTicsView.m */,
-				0ECE4B311AE3D56D0016A728 /* TTScrollToTopView.h */,
-				0ECE4B321AE3D56D0016A728 /* TTScrollToTopView.m */,
-				0ECE4B331AE3D56D0016A728 /* TTConversationTableViewCell.h */,
-				0ECE4B341AE3D56D0016A728 /* TTConversationTableViewCell.m */,
-				0ECE4B351AE3D56D0016A728 /* TTParallaxHeaderView.h */,
-				0ECE4B361AE3D56D0016A728 /* TTParallaxHeaderView.m */,
+				CD9F92831AB8F530006FFE67 /* ExpirationPicker */,
+				0E5F1B2E1AE4E154009DE60A /* TTComposeTableViewCell.h */,
+				0E5F1B2F1AE4E155009DE60A /* TTComposeTableViewCell.m */,
 				0ECE4B371AE3D56D0016A728 /* TTComposeView.h */,
 				0ECE4B381AE3D56D0016A728 /* TTComposeView.m */,
-				0ECE4B391AE3D56D0016A728 /* TTInAppNotificationDesign.json */,
+				0ECE4B331AE3D56D0016A728 /* TTConversationTableViewCell.h */,
+				0ECE4B341AE3D56D0016A728 /* TTConversationTableViewCell.m */,
 				0ECE4B3A1AE3D56D0016A728 /* TTFindFriendsTableViewCell.h */,
 				0ECE4B3B1AE3D56D0016A728 /* TTFindFriendsTableViewCell.m */,
+				0ECE4B391AE3D56D0016A728 /* TTInAppNotificationDesign.json */,
 				0ECE4B3C1AE3D56D0016A728 /* TTMessagesBubbleImage.h */,
 				0ECE4B3D1AE3D56D0016A728 /* TTMessagesBubbleImage.m */,
-				CD9F92831AB8F530006FFE67 /* ExpirationPicker */,
+				0ECE4B351AE3D56D0016A728 /* TTParallaxHeaderView.h */,
+				0ECE4B361AE3D56D0016A728 /* TTParallaxHeaderView.m */,
+				0ECE4B311AE3D56D0016A728 /* TTUnreadTicsBannerView.h */,
+				0ECE4B321AE3D56D0016A728 /* TTUnreadTicsBannerView.m */,
+				0ECE4B2F1AE3D56D0016A728 /* TTUnreadTicsListView.h */,
+				0ECE4B301AE3D56D0016A728 /* TTUnreadTicsListView.m */,
+				0E49DDA91AEB221A0034BCFE /* TTUnreadTicsListTableViewCell.h */,
+				0E49DDAA1AEB221A0034BCFE /* TTUnreadTicsListTableViewCell.m */,
 			);
 			name = "Custom UI";
 			sourceTree = "<group>";
@@ -330,12 +343,14 @@
 			children = (
 				0ECE4AFA1AE3D5220016A728 /* Reachability.h */,
 				0ECE4AFB1AE3D5220016A728 /* Reachability.m */,
-				0ECE4AFC1AE3D5220016A728 /* TTSession.h */,
-				0ECE4AFD1AE3D5220016A728 /* TTSession.m */,
 				0ECE4AFE1AE3D5220016A728 /* TTUtility.h */,
 				0ECE4AFF1AE3D5220016A728 /* TTUtility.m */,
 				0ECE4B001AE3D5220016A728 /* TTSettings.h */,
 				0ECE4B011AE3D5220016A728 /* TTSettings.m */,
+				0E5F1B281AE495FC009DE60A /* TTSession.h */,
+				0E5F1B291AE495FC009DE60A /* TTSession.m */,
+				0E5F1B2B1AE49C05009DE60A /* TTErrorHandler.h */,
+				0E5F1B2C1AE49C05009DE60A /* TTErrorHandler.m */,
 			);
 			name = Service;
 			sourceTree = "<group>";
@@ -607,11 +622,12 @@
 				0ECE4AF91AE3D5060016A728 /* TTConstants.m in Sources */,
 				0ECE4B131AE3D5330016A728 /* TTUserPrivateData.m in Sources */,
 				0ECE4B441AE3D56D0016A728 /* TTFindFriendsTableViewCell.m in Sources */,
+				0E5F1B2A1AE495FC009DE60A /* TTSession.m in Sources */,
 				0ECE4B101AE3D5330016A728 /* TTActivity.m in Sources */,
 				0ECE4B401AE3D56D0016A728 /* TTConversationTableViewCell.m in Sources */,
 				0ECE4B121AE3D5330016A728 /* TTUser.m in Sources */,
+				0E49DDAB1AEB221A0034BCFE /* TTUnreadTicsListTableViewCell.m in Sources */,
 				CD9F92861AB8F552006FFE67 /* TTExpirationPickerCell.m in Sources */,
-				0ECE4B031AE3D5220016A728 /* TTSession.m in Sources */,
 				0ECE4B491AE3D5890016A728 /* AppDelegate.m in Sources */,
 				0ECE4B141AE3D5330016A728 /* TTConversation.m in Sources */,
 				0ECE4B411AE3D56D0016A728 /* TTParallaxHeaderView.m in Sources */,
@@ -619,11 +635,13 @@
 				0ECE4B421AE3D56D0016A728 /* TTComposeView.m in Sources */,
 				0ECE4B2B1AE3D5490016A728 /* TTContactsViewController.m in Sources */,
 				0ECE4B051AE3D5220016A728 /* TTSettings.m in Sources */,
-				0ECE4B3F1AE3D56D0016A728 /* TTScrollToTopView.m in Sources */,
+				0ECE4B3F1AE3D56D0016A728 /* TTUnreadTicsBannerView.m in Sources */,
 				0ECE4B291AE3D5490016A728 /* TTFindFriendsViewController.m in Sources */,
 				0ECE4B021AE3D5220016A728 /* Reachability.m in Sources */,
-				0ECE4B3E1AE3D56D0016A728 /* TTUnreadTicsView.m in Sources */,
+				0ECE4B3E1AE3D56D0016A728 /* TTUnreadTicsListView.m in Sources */,
+				0E5F1B301AE4E155009DE60A /* TTComposeTableViewCell.m in Sources */,
 				0ECE4B041AE3D5220016A728 /* TTUtility.m in Sources */,
+				0E5F1B2D1AE49C05009DE60A /* TTErrorHandler.m in Sources */,
 				0ECE4B2C1AE3D5490016A728 /* TTProfileViewController.m in Sources */,
 				CD4748401AB770DA00A4B8F6 /* TTExpirationDomain.m in Sources */,
 				0ECE4B111AE3D5330016A728 /* TTTic.m in Sources */,

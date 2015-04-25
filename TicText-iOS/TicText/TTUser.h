@@ -14,7 +14,8 @@
 
 @property (nonatomic, strong) NSString *displayName;
 @property (nonatomic, strong) NSString *facebookId;
-@property (nonatomic, strong) NSData *profilePicture;
+@property (nonatomic, strong) PFFile *profilePicture;
+@property (nonatomic, strong) PFFile *profilePictureSmall;
 @property (nonatomic, strong) TTUserPrivateData *privateData;
 
 @end

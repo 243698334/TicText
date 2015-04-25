@@ -7,19 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Parse/Parse.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
-#import <ParseCrashReporting/ParseCrashReporting.h>
-#import "TTConstants.h"
-#import "TTSession.h"
-#import "TTUser.h"
-#import "TTTic.h"
-#import "TTActivity.h"
-#import "TTUserPrivateData.h"
-#import "TTConversation.h"
-
-#import "TTRootViewController.h"
-
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, NSURLConnectionDataDelegate>
 

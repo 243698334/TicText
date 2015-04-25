@@ -7,7 +7,7 @@ var TIC_TIME_LIMIT = "timeLimit";
 var TIC_STATUS = 'status';
 var TIC_STATUS_READ = 'read';
 var TIC_STATUS_EXPIRED = 'expired';
-
+ 
 Parse.Cloud.beforeSave(TIC_CLASS_NAME, function(request, response) {
     Parse.Cloud.useMasterKey();
     var tic = request.object;
@@ -22,7 +22,7 @@ Parse.Cloud.beforeSave(TIC_CLASS_NAME, function(request, response) {
     }
     response.success();
 });
-
+ 
 Parse.Cloud.define("fetchTic", function(request, response) {
     Parse.Cloud.useMasterKey();
     var recipient = request.user;

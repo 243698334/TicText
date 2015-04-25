@@ -29,6 +29,9 @@ NSString * const kTTUserDidLogOutNotification = @"UserDidLogOut";
 // Invalid session
 NSString * const kTTSessionDidBecomeInvalidNotification = @"SessionDidBecomeInvalidNotification";
 
+// User data
+NSString * const kTTUserDataDidBecomeAvailableNotification = @"UserDataDidBecomeAvailableNotification";
+
 // Push notification
 NSString * const kTTApplicationDidReceiveNewTicWhileActiveNotification = @"ApplicationDidReceiveNewTicWhileActiveNotification";
 NSString * const kTTApplicationDidReceiveReadTicWhileActiveNotification = @"ApplicationDidReceiveReadTicWhileActiveNotification";
@@ -38,6 +41,7 @@ NSString * const kTTApplicationDidReceiveNewUserJoinWhileActiveNotification = @"
 NSString * const kTTNotificationUserInfoErrorKey = @"error";
 NSString * const kTTNotificationUserInfoTicIdKey = @"ticId";
 NSString * const kTTNotificationUserInfoSenderUserIdKey = @"senderUserId";
+NSString * const kTTNotificationUserInfoTimeLimitKey = @"timeLimit";
 
 
 #pragma mark - NSError
@@ -51,6 +55,7 @@ NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode = 1;
 NSString * const kTTLocalDatastoreFriendsPinName = @"friends";
 NSString * const kTTLocalDatastoreTicsPinName = @"tics";
 NSString * const kTTLocalDatastoreConversationsPinName = @"conversations";
+NSString * const kTTLocalDatastorePrivateDataPinName = @"privateData";
 
 
 #pragma mark - TTUser
@@ -92,12 +97,14 @@ NSString * const kTTTicFetchTicFunctionFetchTimestampParameter = @"fetchTimestam
 
 // Type values
 NSString * const kTTTicTypeDefault = @"default";
-NSString * const kTTTIcTypeAnonymous = @"anonymous";
+NSString * const kTTTicTypeAnonymous = @"anonymous";
+NSString * const kTTTicTypeDraft = @"draft";
 
 // Status values
 NSString * const kTTTicStatusRead = @"read";
 NSString * const kTTTicStatusUnread = @"unread";
-NSString * const kTTTIcStatusExpired = @"expired";
+NSString * const kTTTicStatusExpired = @"expired";
+NSString * const kTTTicStatusDrafting = @"drafting";
 
 // Content Type values
 NSString * const kTTTicContentTypeText = @"text";
@@ -112,6 +119,7 @@ NSString * const kTTConversationClassName = @"Conversation";
 // Field keys
 NSString * const kTTConversationTypeKey = @"type";
 NSString * const kTTConversationUserIdKey = @"userId";
+NSString * const kTTConversationLastTicKey = @"lastTic";
 
 // Type values
 NSString * const kTTConversationTypeDefault = @"default";

@@ -9,7 +9,9 @@
 #import "TTComposeView.h"
 
 #import <QuartzCore/QuartzCore.h>
+#import "TTUtility.h"
 #import "TTParallaxHeaderView.h"
+#import "TTComposeTableViewCell.h"
 #import "TTUser.h"
 
 @interface TTComposeView ()
@@ -17,8 +19,8 @@
 @property (nonatomic, strong) TTParallaxHeaderView *parallaxHeaderView;
 @property (nonatomic, strong) UITableView *contactsTableView;
 
-@property (nonatomic, strong) NSArray *contacts;
-
+@property (nonatomic, strong) NSArray *friends;
+@property (nonatomic) BOOL anonymous;
 @end
 
 @implementation TTComposeView
@@ -31,17 +33,33 @@
         self.contactsTableView.dataSource = self;
         self.contactsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
         [self.contactsTableView setTableHeaderView:self.parallaxHeaderView];
+        [self.contactsTableView registerClass:[TTComposeTableViewCell class] forCellReuseIdentifier:[TTComposeTableViewCell reuseIdentifier]];
         [self addSubview:self.contactsTableView];
         
-        PFQuery *contactsQuery = [TTUser query];
-        [contactsQuery fromPinWithName:kTTLocalDatastoreFriendsPinName];
-        [contactsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            self.contacts = objects;
-            [self.contactsTableView reloadData];
-        }];
+        self.friends = [TTUser currentUser].privateData.friends;
+        
+//        [TTUser fetchAllIfNeededInBackground:[TTUser currentUser].privateData.friends block:^(NSArray *objects, NSError *error) {
+//            self.friends = objects;
+//            self.anonymous = NO; // TODO: add a toggle on UI to set this property
+//            [self.contactsTableView reloadData];
+//        }];
         [self.parallaxHeaderView refreshBluredImageView];
     }
     return self;
+}
+
+- (void)loadFriendsData {
+    if ([TTUtility isParseReachable]) {
+        [TTUser fetchAllIfNeededInBackground:[TTUser currentUser].privateData.friends block:^(NSArray *objects, NSError *error) {
+            self.friends = objects;
+            self.anonymous = NO; // TODO: add a toggle on UI to set this property
+            [self.contactsTableView reloadData];
+        }];
+    } else {
+        self.friends = [TTUser currentUser].privateData.friends;
+        self.anonymous = NO; // TODO: add a toggle on UI to set this property
+        [self.contactsTableView reloadData];
+    }
 }
 
 - (void)layoutSubviews {
@@ -55,35 +73,20 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (self.delegate) {
-        [self.delegate composeViewDidSelectContact:[self.contacts objectAtIndex:indexPath.row]];
+        [self.delegate composeViewDidSelectContact:[self.friends objectAtIndex:indexPath.row] anonymous:self.anonymous];
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 50;
+    return [TTComposeTableViewCell height];
 }
 
 #pragma mark - UITableViewDataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row >= [self.contacts count]) {
-        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"ComposeTableViewCell"];
-        cell.textLabel.text = @"Someone else";
-        return cell;
-    }
-    
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"ComposeTableViewCell"];
-    // TODO: use Jack's ContactsTableViewCell
-    
-    UIImage *profilePicture = [UIImage imageWithData:((TTUser *)[self.contacts objectAtIndex:indexPath.row]).profilePicture];
-    CGRect imageViewFrame = cell.imageView.frame;
-    cell.imageView.frame = imageViewFrame;
-    cell.imageView.image = profilePicture;
-    cell.imageView.layer.cornerRadius = 25;
-    cell.imageView.clipsToBounds = YES;
-    
-    cell.textLabel.text = ((TTUser *)[self.contacts objectAtIndex:indexPath.row]).displayName;
-    
+    TTUser *currentContact = (TTUser *)[self.friends objectAtIndex:indexPath.row];
+    TTComposeTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[TTComposeTableViewCell reuseIdentifier] forIndexPath:indexPath];
+    [cell updateWithUser:currentContact];
     return cell;
 }
 
@@ -91,7 +94,7 @@
     if (section == 0) {
         return 0;
     }
-    return [self.contacts count];
+    return [self.friends count];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

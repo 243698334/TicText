@@ -12,6 +12,9 @@
 #import "Reachability.h"
 #import "TTUser.h"
 
+static Reachability *internetReachability = nil;
+static Reachability *parseReachability = nil;
+
 @implementation TTUtility
 
 + (void)setupPushNotifications {
@@ -24,10 +27,26 @@
     [[UIApplication sharedApplication] registerForRemoteNotifications];
 }
 
-+ (BOOL)isParseServerReachable {
-    Reachability *parseReachability = [Reachability reachabilityWithHostName:@"api.parse.com"];
-    NetworkStatus parseNetworkStatus = [parseReachability currentReachabilityStatus];
-    return parseNetworkStatus == ReachableViaWiFi || parseNetworkStatus == ReachableViaWWAN || [parseReachability connectionRequired];
++ (void)setupReachabilityMonitors {
+    internetReachability = [Reachability reachabilityForInternetConnection];
+    parseReachability = [Reachability reachabilityWithHostName:@"api.parse.com"];
+    [internetReachability startNotifier];
+}
+
++ (BOOL)isParseReachable {
+    if (parseReachability == nil) {
+        [self setupReachabilityMonitors];
+    }
+    NetworkStatus parseReachabilityStatus = [parseReachability currentReachabilityStatus];
+    return parseReachabilityStatus == ReachableViaWiFi || parseReachabilityStatus == ReachableViaWWAN || [parseReachability connectionRequired];
+}
+
++ (BOOL)isInternetReachable {
+    if (internetReachability == nil) {
+        [self setupReachabilityMonitors];
+    }
+    NetworkStatus internetReachabilityStatus = [internetReachability currentReachabilityStatus];
+    return internetReachabilityStatus == ReachableViaWiFi || internetReachabilityStatus == ReachableViaWWAN;
 }
 
 @end

@@ -12,13 +12,14 @@
 
 #import "TTTestHelper.h"
 #import "TTSession.h"
+#import "TTUtility.h"
 
 @interface TTSessionTests : XCTestCase
 
 @property (nonatomic, strong) id mockSession;
+@property (nonatomic, strong) id mockUtility;
 @property (nonatomic, strong) id mockUser;
 @property (nonatomic, strong) id mockUserPrivateData;
-@property (nonatomic, strong) id mockReachability;
 
 @end
 
@@ -29,14 +30,10 @@
     self.mockSession = OCMPartialMock([[TTSession alloc] init]);
     self.mockUser = OCMClassMock([TTUser class]);
     self.mockUserPrivateData = OCMClassMock([TTUserPrivateData class]);
-    self.mockReachability = OCMClassMock([Reachability class]);
-    OCMStub([self.mockSession sharedSession]).andReturn(self.mockSession);
-    OCMStub([self.mockSession isParseServerReachable]).andReturn(YES);
+    self.mockUtility = OCMClassMock([TTUtility class]);
+    OCMStub([self.mockUtility isParseReachable]).andReturn(YES);
+    OCMStub([self.mockUtility isInternetReachable]).andReturn(YES);
     OCMStub([self.mockUser privateData]).andReturn(self.mockUserPrivateData);
-    OCMStub([self.mockReachability reachabilityForInternetConnection]).andReturn(self.mockReachability);
-    OCMStub([self.mockReachability reachabilityWithHostName:[OCMArg any]]).andReturn(self.mockReachability);
-    OCMStub([self.mockReachability startNotifier]);
-    OCMStub([self.mockReachability currentReachabilityStatus]).andReturn(ReachableViaWiFi);
 }
 
 - (void)testIsValidLastChecked {
@@ -47,7 +44,7 @@
     OCMExpect([self.mockSession isValidLastChecked]);
     
     // Act
-    BOOL result = [[TTSession sharedSession] isValidLastChecked];
+    BOOL result = [TTSession isValidLastChecked];
     
     // Assert
     OCMVerifyAll(self.mockSession);

@@ -32,6 +32,9 @@ extern NSString * const kTTUserDidLogOutNotification;
 // Invalid session
 extern NSString * const kTTSessionDidBecomeInvalidNotification;
 
+// User data
+extern NSString * const kTTUserDataDidBecomeAvailableNotification;
+
 // Push notification
 extern NSString * const kTTApplicationDidReceiveNewTicWhileActiveNotification;
 extern NSString * const kTTApplicationDidReceiveReadTicWhileActiveNotification;
@@ -41,6 +44,7 @@ extern NSString * const kTTApplicationDidReceiveNewUserJoinWhileActiveNotificati
 extern NSString * const kTTNotificationUserInfoErrorKey;
 extern NSString * const kTTNotificationUserInfoTicIdKey;
 extern NSString * const kTTNotificationUserInfoSenderUserIdKey;
+extern NSString * const kTTNotificationUserInfoTimeLimitKey;
 
 
 #pragma mark - NSError
@@ -54,6 +58,7 @@ extern NSUInteger const kTTSessionErrorParseSessionInvalidUUIDCode;
 extern NSString * const kTTLocalDatastoreFriendsPinName;
 extern NSString * const kTTLocalDatastoreTicsPinName;
 extern NSString * const kTTLocalDatastoreConversationsPinName;
+extern NSString * const kTTLocalDatastorePrivateDataPinName;
 
 
 #pragma mark - TTUser
@@ -95,12 +100,14 @@ extern NSString * const kTTTicFetchTicFunctionFetchTimestampParameter;
 
 // Type values
 extern NSString * const kTTTicTypeDefault;
-extern NSString * const kTTTIcTypeAnonymous;
+extern NSString * const kTTTicTypeAnonymous;
+extern NSString * const kTTTicTypeDraft;
 
 // Status values
 extern NSString * const kTTTicStatusRead;
 extern NSString * const kTTTicStatusUnread;
-extern NSString * const kTTTIcStatusExpired;
+extern NSString * const kTTTicStatusExpired;
+extern NSString * const kTTTicStatusDrafting;
 
 // Content Type values
 extern NSString * const kTTTicContentTypeText;
@@ -115,6 +122,7 @@ extern NSString * const kTTConversationClassName;
 // Field keys
 extern NSString * const kTTConversationTypeKey;
 extern NSString * const kTTConversationUserIdKey;
+extern NSString * const kTTConversationLastTicKey;
 
 // Type values
 extern NSString * const kTTConversationTypeDefault;

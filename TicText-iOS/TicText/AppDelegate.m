@@ -8,6 +8,19 @@
 
 #import "AppDelegate.h"
 
+#import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <ParseCrashReporting/ParseCrashReporting.h>
+#import "TTConstants.h"
+#import "TTSession.h"
+#import "TTErrorHandler.h"
+#import "TTUser.h"
+#import "TTTic.h"
+#import "TTActivity.h"
+#import "TTUserPrivateData.h"
+#import "TTConversation.h"
+#import "TTRootViewController.h"
+
 @interface AppDelegate ()
 
 @property (nonatomic, strong) TTRootViewController *rootViewController;
@@ -18,8 +31,7 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application
-didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
@@ -31,18 +43,14 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation {
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
     return [FBAppCall handleOpenURL:url
                   sourceApplication:sourceApplication
                         withSession:[PFFacebookUtils session]];
 }
 
-- (void)application:(UIApplication *)application
-didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
     // Store the deviceToken in the current installation and save it to Parse.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
@@ -52,11 +60,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    [[[UIAlertView alloc] initWithTitle:@"Push Notification Error"
-                                message:error.localizedDescription
-                               delegate:nil
-                      cancelButtonTitle:@"OK"
-                      otherButtonTitles:nil] show];
+    [TTErrorHandler handlePushNotificationError:error inViewController:self.rootViewController];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
@@ -69,9 +73,10 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
         NSString *ticId = [userInfo objectForKey:kTTPushNotificationPayloadTicIdKey];
         NSString *senderUserId = [userInfo objectForKey:kTTPushNotificationPayloadSenderUserIdKey];
+        NSNumber *timeLimit = [userInfo objectForKey:kTTPushNotificationPayloadTimeLimitKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification
                                                             object:nil
-                                                          userInfo:@{kTTNotificationUserInfoTicIdKey : ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId}];
+                                                          userInfo:@{kTTNotificationUserInfoTicIdKey: ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId, kTTNotificationUserInfoTimeLimitKey: timeLimit}];
     }
     
     // TODO: handle push notification
@@ -83,8 +88,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[TTUser currentUser].privateData saveEventually];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -94,7 +98,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     if ([TTUser currentUser]) {
-        [[TTSession sharedSession] validateSessionInBackground];
+        [TTSession validateSessionInBackground];
     }
     [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
 }
@@ -107,9 +111,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
 #pragma mark - ()
 
-- (void)parseInitializationWithUIApplication:(UIApplication *)application
-                               launchOptions:(NSDictionary *)launchOptions {
-    
+- (void)parseInitializationWithUIApplication:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
     [ParseCrashReporting enable];
     
     [TTUser registerSubclass];
@@ -125,7 +127,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
     [PFFacebookUtils initializeFacebook];
     
-    // Track app open
+    [PFUser enableRevocableSessionInBackground];
+    
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     if (application.applicationIconBadgeNumber != 0) {

@@ -9,44 +9,46 @@
 #import "TTConversationTableViewCell.h"
 
 #import <PureLayout/PureLayout.h>
+#import <ParseUI/ParseUI.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "TTUtility.h"
 
 @interface TTConversationTableViewCell ()
 
 @property (nonatomic) BOOL addedConstraints;
 
-@property (nonatomic, strong) UIImageView *profilePictureImageView;
+@property (nonatomic, strong) PFImageView *profilePictureImageView;
 @property (nonatomic, strong) UILabel *displayNameLabel;
 @property (nonatomic, strong) UILabel *lastTicLabel;
 @property (nonatomic, strong) UILabel *timestampLabel;
 
 @end
 
-CGFloat const kCellHeight = 70;
-CGFloat const kPadding = 8;
-CGFloat const kTimestampWidth = 40;
+CGFloat const kConversationTableViewCellHeight = 70;
+CGFloat const kConversationTableViewCellPadding = 8;
+CGFloat const kConversationTableViewCellTimestampWidth = 40;
 
 @implementation TTConversationTableViewCell
 
 + (CGFloat)height {
-    return kCellHeight;
+    return kConversationTableViewCellHeight;
 }
 
 + (NSString *)reuseIdentifier {
     return NSStringFromClass([self class]);
 }
 
-- (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         // Profile picture
-        self.profilePictureImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"profile"]];
+        self.profilePictureImageView = [[PFImageView alloc] init];
         self.profilePictureImageView.translatesAutoresizingMaskIntoConstraints = NO;
         CALayer *profilePictureLayer = self.profilePictureImageView.layer;
         [profilePictureLayer setBorderWidth:2.0];
         [profilePictureLayer setMasksToBounds:YES];
         [profilePictureLayer setBorderColor:[kTTUIPurpleColor CGColor]];
-        [profilePictureLayer setCornerRadius:(kCellHeight - 2 * kPadding) / 2.0];
+        [profilePictureLayer setCornerRadius:(kConversationTableViewCellHeight - 2 * kConversationTableViewCellPadding) / 2.0];
         [self.contentView addSubview:self.profilePictureImageView];
-
         
         // Display name label
         self.displayNameLabel = [[UILabel alloc] init];
@@ -78,24 +80,24 @@ CGFloat const kTimestampWidth = 40;
 - (void)updateConstraints {
     if (!self.addedConstraints) {
         // Profile picture
-        [self.profilePictureImageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(kPadding, kPadding, kPadding, kPadding) excludingEdge:ALEdgeTrailing];
+        [self.profilePictureImageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(kConversationTableViewCellPadding, kConversationTableViewCellPadding, kConversationTableViewCellPadding, kConversationTableViewCellPadding) excludingEdge:ALEdgeTrailing];
         [self.profilePictureImageView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionWidth ofView:self.profilePictureImageView];
         
         // display name
-        [self.displayNameLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.profilePictureImageView withOffset:kPadding];
-        [self.displayNameLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:kPadding];
-        [self.displayNameLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kPadding * 2 + kTimestampWidth];
-        [self.displayNameLabel autoSetDimension:ALDimensionHeight toSize:(kCellHeight - 2 * kPadding) / 2];
+        [self.displayNameLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.profilePictureImageView withOffset:kConversationTableViewCellPadding];
+        [self.displayNameLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:kConversationTableViewCellPadding];
+        [self.displayNameLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kConversationTableViewCellPadding * 2 + kConversationTableViewCellTimestampWidth];
+        [self.displayNameLabel autoSetDimension:ALDimensionHeight toSize:(kConversationTableViewCellHeight - 2 * kConversationTableViewCellPadding) / 2];
         
         // last tic
-        [self.lastTicLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.profilePictureImageView withOffset:kPadding];
-        [self.lastTicLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:kPadding];
-        [self.lastTicLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kPadding];
-        [self.lastTicLabel autoSetDimension:ALDimensionHeight toSize:(kCellHeight - 2 * kPadding) / 2];
+        [self.lastTicLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.profilePictureImageView withOffset:kConversationTableViewCellPadding];
+        [self.lastTicLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:kConversationTableViewCellPadding];
+        [self.lastTicLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kConversationTableViewCellPadding];
+        [self.lastTicLabel autoSetDimension:ALDimensionHeight toSize:(kConversationTableViewCellHeight - 2 * kConversationTableViewCellPadding) / 2];
         
         // timestamp
-        [self.timestampLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kPadding];
-        [self.timestampLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:kPadding];
+        [self.timestampLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:kConversationTableViewCellPadding];
+        [self.timestampLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:kConversationTableViewCellPadding];
         
         self.addedConstraints = YES;
     }
@@ -104,37 +106,50 @@ CGFloat const kTimestampWidth = 40;
 
 - (void)updateWithConversation:(TTConversation *)conversation {
     // update display name and profile picture
-    [conversation.recipient fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        TTUser *recipient = (TTUser *)object;
-        self.profilePictureImageView.image = [UIImage imageWithData:recipient.profilePicture];
+    if ([TTUtility isParseReachable] || conversation.recipient.isDirty) {
+        [conversation.recipient fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            TTUser *recipient = (TTUser *)object;
+            //        self.profilePictureImageView.file = recipient.profilePicture; // TODO: Use the small profile picture
+            //        [self.profilePictureImageView loadInBackground];
+            if (conversation.type == kTTConversationTypeAnonymous) {
+                self.displayNameLabel.text = @"Anonymous"; // TODO generate fake names
+            } else {
+                self.displayNameLabel.text = recipient.displayName;
+                [self.profilePictureImageView sd_setImageWithURL:[NSURL URLWithString:recipient.profilePicture.url] placeholderImage:[UIImage imageNamed:@"ProfilePicturePlaceholder"]];
+            }
+        }];
+    } else {
         if (conversation.type == kTTConversationTypeAnonymous) {
             self.displayNameLabel.text = @"Anonymous"; // TODO generate fake names
+            //self.profilePictureImageView.image = [UIImage imageNamed:@"ProfilePicturePlaceholder"];
+            self.profilePictureImageView.file = conversation.recipient.profilePicture; // TODO: Use the small profile picture
+            [self.profilePictureImageView loadInBackground];
         } else {
-            self.displayNameLabel.text = recipient.displayName;
+            self.displayNameLabel.text = conversation.recipient.displayName;
+            [self.profilePictureImageView sd_setImageWithURL:[NSURL URLWithString:conversation.recipient.profilePicture.url] placeholderImage:[UIImage imageNamed:@"ProfilePicturePlaceholder"]];
         }
-    }];
+    }
     
     // update last tic
-    if (conversation.lastTic == nil) {
-        self.lastTicLabel.text = @"[Draft]"; // TODO concatenate the content of the draft
-    } else {
-        if (conversation.lastTic.status == kTTTicStatusRead) {
-            [conversation.lastTic fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                TTTic *lastTic = (TTTic *)object;
-                if (lastTic.contentType == kTTTicContentTypeText) {
-                    self.lastTicLabel.text = [NSString stringWithUTF8String:[lastTic.content bytes]];
-                } else if (lastTic.contentType == kTTTicContentTypeImage) {
-                    self.lastTicLabel.text = @"[Image]";
-                } else if (lastTic.contentType == kTTTicContentTypeVoice) {
-                    self.lastTicLabel.text = @"[Voice]";
-                }
-            }];
-        } else if (conversation.lastTic.status == kTTTicStatusUnread) {
-            self.lastTicLabel.text = @"[New Tic]";
-            self.lastTicLabel.font = [UIFont boldSystemFontOfSize:self.lastTicLabel.font.pointSize];
-        } else if (conversation.lastTic.status == kTTTIcStatusExpired) {
-            self.lastTicLabel.text = @"[Expired]";
-        }
+    if (conversation.lastTic.status == kTTTicStatusRead) {
+        [conversation.lastTic fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            TTTic *lastTic = (TTTic *)object;
+            if (lastTic.contentType == kTTTicContentTypeText) {
+                self.lastTicLabel.text = [NSString stringWithUTF8String:[lastTic.content bytes]];
+            } else if (lastTic.contentType == kTTTicContentTypeImage) {
+                self.lastTicLabel.text = @"[Image]";
+            } else if (lastTic.contentType == kTTTicContentTypeVoice) {
+                self.lastTicLabel.text = @"[Voice]";
+            }
+        }];
+    } else if (conversation.lastTic.status == kTTTicStatusUnread) {
+        self.lastTicLabel.text = @"[New Tic]";
+        self.lastTicLabel.font = [UIFont boldSystemFontOfSize:self.lastTicLabel.font.pointSize];
+    } else if (conversation.lastTic.status == kTTTicStatusExpired) {
+        self.lastTicLabel.text = @"[Expired]";
+    } else if (conversation.lastTic.status == kTTTicStatusDrafting) {
+        NSString *lastTicContent = [NSString stringWithUTF8String:[conversation.lastTic.content bytes]];
+        self.lastTicLabel.text = [NSString stringWithFormat:@"%@%@", @"[Draft] ", lastTicContent];
     }
     
     // update timestamp

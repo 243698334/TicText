@@ -11,6 +11,7 @@
 #import <AudioToolbox/AudioServices.h>
 #import "TTTic.h"
 #import "TTActivity.h"
+#import "TTUtility.h"
 
 
 @interface TTMessagesViewController ()
@@ -19,6 +20,7 @@
 @property (nonatomic) BOOL isFetchingTic;
 
 @property (nonatomic, strong) TTUser *recipient;
+@property (nonatomic, strong) TTConversation *conversation;
 
 @property (nonatomic, strong) NSMutableArray *tics;
 @property (nonatomic, strong) NSMutableArray *jsqMessages;
@@ -40,6 +42,7 @@
 
 + (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation {
     TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewController];
+    messagesViewController.conversation = conversation;
     messagesViewController.recipient = conversation.recipient;
     return messagesViewController;
 }
@@ -127,6 +130,7 @@
     PFQuery *loadTicHistoryQuery = [PFQuery orQueryWithSubqueries:@[sentTicsQuery, receivedTicsQuery]];
     [loadTicHistoryQuery setLimit:50];
     [loadTicHistoryQuery includeKey:kTTTicSenderKey];
+    [loadTicHistoryQuery whereKey:kTTTicTypeKey notEqualTo:kTTTicTypeDraft];
     [loadTicHistoryQuery orderByAscending:kTTTicSendTimestampKey];
     [loadTicHistoryQuery fromLocalDatastore];
     [loadTicHistoryQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -227,6 +231,11 @@
 #pragma mark - JSQMessagesViewController method overrides
 
 - (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
+    if (![TTUtility isParseReachable] || ![TTUtility isInternetReachable]) {
+        [TSMessage showNotificationInViewController:self title:@"No Internet Connection" subtitle:@"Seems like you don't have a working network connection at this moment." type:TSMessageNotificationTypeError];
+        return;
+    }
+    
     // Play sound
     [JSQSystemSoundPlayer jsq_playMessageSentSound];
     
@@ -270,7 +279,7 @@
         // @TODO: profile picture
     }
     
-    JSQMessagesAvatarImage *testAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"profile"] diameter:kJSQMessagesCollectionViewAvatarSizeDefault];
+    JSQMessagesAvatarImage *testAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"ProfilePicturePlaceholder"] diameter:kJSQMessagesCollectionViewAvatarSizeDefault];
     return testAvatar;
 }
 
@@ -396,7 +405,7 @@
             NSDate *emptyMessageDate = ((JSQMessage *)[self.jsqMessages objectAtIndex:indexPath.item]).date;
             JSQMessage *expiredMessage = [[JSQMessage alloc] initWithSenderId:self.recipient.objectId senderDisplayName:self.recipient.displayName date:emptyMessageDate text:@"Expired"];
             [self.jsqMessages replaceObjectAtIndex:indexPath.item withObject:expiredMessage];
-            unreadTic.status = kTTTIcStatusExpired;
+            unreadTic.status = kTTTicStatusExpired;
         }
         [progressHUD removeFromSuperview];
         [tappedCell.textView setHidden:NO];
