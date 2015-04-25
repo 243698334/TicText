@@ -22,7 +22,6 @@
 		0EA9482D1AA3CF0E00476D4E /* TTMessagesBubbleImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EA9482C1AA3CF0E00476D4E /* TTMessagesBubbleImage.m */; };
 		0EACA86A1A97CDC100B93AAA /* TTConversationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA8691A97CDC100B93AAA /* TTConversationsViewController.m */; };
 		0EACA86D1A97CDDD00B93AAA /* TTContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA86C1A97CDDD00B93AAA /* TTContactsViewController.m */; };
-		0EACA8701A97CDEE00B93AAA /* TTProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA86F1A97CDEE00B93AAA /* TTProfileViewController.m */; };
 		0EACA8731A97CE0D00B93AAA /* TTSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA8721A97CE0D00B93AAA /* TTSettingsViewController.m */; };
 		0EACA8781A99CB8800B93AAA /* TTActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA8751A99CB8800B93AAA /* TTActivity.m */; };
 		0EACA8791A99CB8800B93AAA /* TTTic.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EACA8771A99CB8800B93AAA /* TTTic.m */; };
@@ -34,6 +33,8 @@
 		2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED84A9B1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m */; };
 		2EDE551D1ADCDD400048FB0C /* TTContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDE551C1ADCDD400048FB0C /* TTContactTableViewCell.m */; };
 		2EEEC7991AA93CF300391486 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EEEC7981AA93CF300391486 /* MessageUI.framework */; };
+		2EF4E36E1AEB0C1600E163E4 /* HFStretchableTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF4E36D1AEB0C1600E163E4 /* HFStretchableTableHeaderView.m */; };
+		2EF4E3711AEB0C8900E163E4 /* ProfileHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF4E3701AEB0C8900E163E4 /* ProfileHeaderView.m */; };
 		4C0094CD1B6ED14DA0956A8F /* libPods-TicText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E62ADB5018418278F1D7F35F /* libPods-TicText.a */; };
 		9B6B74E026B95CE6BCD5D096 /* libPods-TicTextTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */; };
 		CD1330D81AB7AA4600F59523 /* TTExpirationDomainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1330D71AB7AA4600F59523 /* TTExpirationDomainTests.swift */; };
@@ -102,8 +103,6 @@
 		0EACA8691A97CDC100B93AAA /* TTConversationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTConversationsViewController.m; sourceTree = "<group>"; };
 		0EACA86B1A97CDDD00B93AAA /* TTContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTContactsViewController.h; sourceTree = "<group>"; };
 		0EACA86C1A97CDDD00B93AAA /* TTContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTContactsViewController.m; sourceTree = "<group>"; };
-		0EACA86E1A97CDEE00B93AAA /* TTProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTProfileViewController.h; sourceTree = "<group>"; };
-		0EACA86F1A97CDEE00B93AAA /* TTProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTProfileViewController.m; sourceTree = "<group>"; };
 		0EACA8711A97CE0D00B93AAA /* TTSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSettingsViewController.h; sourceTree = "<group>"; };
 		0EACA8721A97CE0D00B93AAA /* TTSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSettingsViewController.m; sourceTree = "<group>"; };
 		0EACA8741A99CB8800B93AAA /* TTActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTActivity.h; sourceTree = "<group>"; };
@@ -125,6 +124,10 @@
 		2EDE551B1ADCDD400048FB0C /* TTContactTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTContactTableViewCell.h; sourceTree = "<group>"; };
 		2EDE551C1ADCDD400048FB0C /* TTContactTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTContactTableViewCell.m; sourceTree = "<group>"; };
 		2EEEC7981AA93CF300391486 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		2EF4E36C1AEB0C1600E163E4 /* HFStretchableTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFStretchableTableHeaderView.h; sourceTree = "<group>"; };
+		2EF4E36D1AEB0C1600E163E4 /* HFStretchableTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HFStretchableTableHeaderView.m; sourceTree = "<group>"; };
+		2EF4E36F1AEB0C8900E163E4 /* ProfileHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileHeaderView.h; sourceTree = "<group>"; };
+		2EF4E3701AEB0C8900E163E4 /* ProfileHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileHeaderView.m; sourceTree = "<group>"; };
 		53758F76DA4076374F5E76FF /* Pods-TicText.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicText.release.xcconfig"; path = "Pods/Target Support Files/Pods-TicText/Pods-TicText.release.xcconfig"; sourceTree = "<group>"; };
 		579798160077DEF631AAECA1 /* Pods-TicTextTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicTextTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TicTextTests/Pods-TicTextTests.debug.xcconfig"; sourceTree = "<group>"; };
 		62D5B3A2D5FD007BC1313C3B /* Pods-TicText.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicText.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TicText/Pods-TicText.debug.xcconfig"; sourceTree = "<group>"; };
@@ -210,8 +213,6 @@
 				0EACA8691A97CDC100B93AAA /* TTConversationsViewController.m */,
 				0EACA86B1A97CDDD00B93AAA /* TTContactsViewController.h */,
 				0EACA86C1A97CDDD00B93AAA /* TTContactsViewController.m */,
-				0EACA86E1A97CDEE00B93AAA /* TTProfileViewController.h */,
-				0EACA86F1A97CDEE00B93AAA /* TTProfileViewController.m */,
 				0EACA8711A97CE0D00B93AAA /* TTSettingsViewController.h */,
 				0EACA8721A97CE0D00B93AAA /* TTSettingsViewController.m */,
 				0E0565211A9DEAD500242137 /* TTMessagesViewController.h */,
@@ -303,6 +304,10 @@
 		2E402A181A96FE8D00C1C7BF /* Custom UI */ = {
 			isa = PBXGroup;
 			children = (
+				2EF4E36F1AEB0C8900E163E4 /* ProfileHeaderView.h */,
+				2EF4E3701AEB0C8900E163E4 /* ProfileHeaderView.m */,
+				2EF4E36C1AEB0C1600E163E4 /* HFStretchableTableHeaderView.h */,
+				2EF4E36D1AEB0C1600E163E4 /* HFStretchableTableHeaderView.m */,
 				CDB970891ADB670D0054079B /* MessagesToolbar */,
 				CD9F92831AB8F530006FFE67 /* ExpirationPicker */,
 				0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */,
@@ -654,12 +659,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EF4E36E1AEB0C1600E163E4 /* HFStretchableTableHeaderView.m in Sources */,
 				0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */,
 				CDB970881ADB60A80054079B /* TTMessagesToolbar.m in Sources */,
+				2EF4E3711AEB0C8900E163E4 /* ProfileHeaderView.m in Sources */,
 				CD2CD4FF1AB634D300CFC89F /* TTExpirationPickerController.m in Sources */,
 				0EA9482D1AA3CF0E00476D4E /* TTMessagesBubbleImage.m in Sources */,
 				0EACA8731A97CE0D00B93AAA /* TTSettingsViewController.m in Sources */,
-				0EACA8701A97CDEE00B93AAA /* TTProfileViewController.m in Sources */,
 				0EACA86D1A97CDDD00B93AAA /* TTContactsViewController.m in Sources */,
 				0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */,
 				0EACA86A1A97CDC100B93AAA /* TTConversationsViewController.m in Sources */,

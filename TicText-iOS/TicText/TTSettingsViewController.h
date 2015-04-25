@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <JMStaticContentTableViewController/JMStaticContentTableViewController.h>
 #import <MessageUI/MessageUI.h>
+#import "HFStretchableTableHeaderView.h"
+#import "ProfileHeaderView.h"
 
 #import "TTSession.h"
 

@@ -13,7 +13,10 @@
 #define kFacebookURL @"https://www.facebook.com/pages/TicText/587674271368005"
 #define kFacebookAppURL @"fb://profile/587674271368005"
 
-@interface TTSettingsViewController ()
+@interface TTSettingsViewController () {
+    HFStretchableTableHeaderView *_stretchableTableHeaderView;
+    ProfileHeaderView *headerView;
+}
 
 @property (nonatomic, strong) UISwitch *receiveNewTicNotificationSwitch;
 @property (nonatomic, strong) UISwitch *receiveExpireSoonNotificationSwitch;
@@ -37,6 +40,13 @@
     self.mc.mailComposeDelegate = self;
     self.navigationItem.title = @"Settings";
     self.tableView.scrollEnabled = YES;
+    
+    _stretchableTableHeaderView = [HFStretchableTableHeaderView new];
+    headerView = [[ProfileHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 0.5333 * self.view.bounds.size.width)];
+    _stretchableTableHeaderView = [HFStretchableTableHeaderView new];
+    [_stretchableTableHeaderView stretchHeaderForTableView:self.tableView withView:headerView];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
     
     self.receiveNewTicNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
     self.receiveExpireSoonNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
@@ -169,6 +179,16 @@
     
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [_stretchableTableHeaderView scrollViewDidScroll:scrollView];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [_stretchableTableHeaderView resizeView];
+}
+
 -(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     NSLog(@"HEY");
     [controller dismissViewControllerAnimated:YES completion:nil];
@@ -176,6 +196,62 @@
 
 -(void)changeNotificationPreferences {
     [TTSettings changeNotificationPreferences:self.receiveNewTicNotificationSwitch.on expireSoon:self.receiveExpireSoonNotificationSwitch.on read:self.receiveReadByRecipientNotificationSwitch.on];
+}
+
+-(void)edit {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *name = [UIAlertAction actionWithTitle:@"Edit Name" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+        UIAlertController *changeName = [UIAlertController alertControllerWithTitle:@"Change Name" message:@"What is your new name?" preferredStyle:UIAlertControllerStyleAlert];
+        [changeName addTextFieldWithConfigurationHandler:^(UITextField *textField){
+            textField.placeholder = @"new name";
+            textField.text = [TTUser currentUser].displayName;
+        }];
+        UIAlertAction *change = [UIAlertAction actionWithTitle:@"Change" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+//            UITextField * textField = alertController.textFields[0];
+//            [TTUser currentUser].displayName = textField.text;
+//            [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL success, NSError *err){
+//                [headerView refreshValues];
+//            }];
+        }];
+        
+        UIAlertAction *cancelNameChange = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action){
+            
+        }];
+        
+        [changeName addAction:change];
+        [changeName addAction:cancelNameChange];
+        [self presentViewController:changeName animated:YES completion:nil];
+
+    }];
+    
+    UIAlertAction *profilePicture = [UIAlertAction actionWithTitle:@"Edit Profile Picture" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        UIAlertController *changePicture = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertAction *camera = [UIAlertAction actionWithTitle:@"Take New Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction * alert){
+            
+        }];
+        
+        UIAlertAction *photos = [UIAlertAction actionWithTitle:@"Choose From Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *alert){
+        }];
+        
+        UIAlertAction *cancelPhotos = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+            
+        }];
+        
+        [changePicture addAction:camera];
+        [changePicture addAction:photos];
+        [changePicture addAction:cancelPhotos];
+        [self presentViewController:changePicture animated:YES completion:nil];
+    }];
+    
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action){
+        
+    }];
+    
+    [alertController addAction:name];
+    [alertController addAction:profilePicture];
+    [alertController addAction:cancel];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 

@@ -12,7 +12,6 @@
 #import "TTFindFriendsViewController.h"
 #import "TTConversationsViewController.h"
 #import "TTContactsViewController.h"
-#import "TTProfileViewController.h"
 #import "TTSettingsViewController.h"
 
 @interface TTRootViewController ()
@@ -24,7 +23,6 @@
 @property (nonatomic, strong) TTFindFriendsViewController *findFriendsViewController;
 @property (nonatomic, strong) TTConversationsViewController *conversationsViewController;
 @property (nonatomic, strong) TTContactsViewController *contactsViewController;
-@property (nonatomic, strong) TTProfileViewController *profileViewController;
 @property (nonatomic, strong) TTSettingsViewController *settingsViewController;
 @property (nonatomic, strong) UINavigationController *conversationsNavigationController;
 @property (nonatomic, strong) UINavigationController *contactsNavigationController;
@@ -76,7 +74,6 @@
         [self.navigationController popToRootViewControllerAnimated:YES];
         self.conversationsViewController = nil;
         self.contactsViewController = nil;
-        self.profileViewController = nil;
         self.settingsViewController = nil;
     }];
 }
@@ -93,11 +90,9 @@
 - (void)presentMainUserInterface {
     self.conversationsViewController = [[TTConversationsViewController alloc] init];
     self.contactsViewController = [[TTContactsViewController alloc] init];
-    self.profileViewController = [[TTProfileViewController alloc] init];
     self.settingsViewController = [[TTSettingsViewController alloc] init];
     self.conversationsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.conversationsViewController];
     self.contactsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.contactsViewController];
-    self.profileNavigationController = [[UINavigationController alloc] initWithRootViewController:self.profileViewController];
     self.settingsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.settingsViewController];
     
     UITabBarItem *conversationsTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Tics"
@@ -106,21 +101,17 @@
     UITabBarItem *contactsTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Contacts"
                                                                      image:[UIImage imageNamed:@"ContactsTabBarIcon"]
                                                              selectedImage:[UIImage imageNamed:@"ContactsTabBarIconSelected"]];
-    UITabBarItem *profileTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Me"
-                                                                    image:[UIImage imageNamed:@"MeTabBarIcon"]
-                                                            selectedImage:[UIImage imageNamed:@"MeTabBarIconSelected"]];
+
     UITabBarItem *settingsTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings"
                                                                      image:[UIImage imageNamed:@"SettingsTabBarIcon"]
                                                              selectedImage:[UIImage imageNamed:@"SettingsTabBarIconSelected"]];
     [self.conversationsNavigationController setTabBarItem:conversationsTabBarItem];
     [self.contactsNavigationController setTabBarItem:contactsTabBarItem];
-    [self.profileNavigationController setTabBarItem:profileTabBarItem];
     [self.settingsNavigationController setTabBarItem:settingsTabBarItem];
     
     self.tabBarController = [[UITabBarController alloc] init];
     [self.tabBarController setViewControllers:@[self.conversationsNavigationController,
                                                 self.contactsNavigationController,
-                                                self.profileNavigationController,
                                                 self.settingsNavigationController]];
     [[UITabBar appearance] setSelectedImageTintColor:kTTUIPurpleColor];
     [[UITabBar appearance] setAlpha:1.0];
@@ -149,7 +140,6 @@
         [self.navigationController popToRootViewControllerAnimated:YES];
         self.conversationsViewController = nil;
         self.contactsViewController = nil;
-        self.profileViewController = nil;
         self.settingsViewController = nil;
         [self.progressHUD removeFromSuperview];
     }];
