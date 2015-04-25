@@ -11,6 +11,7 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <TSMessages/TSMessageView.h>
 #import <PureLayout/PureLayout.h>
+#import <AudioToolbox/AudioServices.h>
 #import "TTMessagesViewController.h"
 
 #import "TTUtility.h"
@@ -435,6 +436,7 @@
 }
 
 - (void)applicationDidReceiveNewTicWhileActive:(NSNotification *)notification {
+    AudioServicesPlayAlertSound(1033);
     NSDictionary *newTicNotificationUserInfo = notification.userInfo;
     NSString *unreadTicId = [newTicNotificationUserInfo objectForKey:kTTNotificationUserInfoTicIdKey];
     NSString *senderUserId = [newTicNotificationUserInfo objectForKey:kTTNotificationUserInfoSenderUserIdKey];
