@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTMessagesViewController.h"
 
 @interface CountDownView : UIView
-- (id)initWithFrame:(CGRect)aRect time:(NSTimeInterval)timeLimit;
+- (id)initWithFrame:(CGRect)aRect time:(NSTimeInterval)timeLimit delegate:(TTMessagesViewController *)delegate timeId:(NSDate *)timeId;
 @end

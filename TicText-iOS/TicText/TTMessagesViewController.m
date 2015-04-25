@@ -15,6 +15,7 @@
 #import "TTExpirationDomain.h"
 
 #import "CountDownView.h"
+#import "CustomMessageCell.h"
 
 #define kDefaultExpirationTime 3600
 #define kExpirationTimerIcon @"TicsTabBarIcon"
@@ -23,6 +24,26 @@
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant;
 - (void)jsq_adjustInputToolbarForComposerTextViewContentSizeChange:(CGFloat)dy;
+
+@end
+
+@interface JSQMessagesCollectionViewCellOutgoing (Timeout)
+
+//@property (nonatomic, strong) UIView *extraview;
+- (void)setExtraView:(UIView *) someView;
+
+@end
+
+@implementation JSQMessagesCollectionViewCellOutgoing (Timeout)
+
+- (void)setExtraView:(UIView *) someView {
+    [someView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    someView.frame = self.messageBubbleContainerView.bounds;
+    
+    [self.messageBubbleContainerView addSubview:someView];
+    //[self.messageBubbleContainerView jsq_pinAllEdgesOfSubview:someView];
+    //self.extraview = someView;
+}
 
 @end
 
@@ -377,18 +398,57 @@
 }
 
 - (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    //use the code below to implement adding the timer subview. looks like subclassing is no longer necessary. just add the subview to messageBubbleImageView
+    self.isFetchingTic = YES;
+    TTTic *unreadTic = [self.tics objectAtIndex:indexPath.item];
+    if (![unreadTic.status isEqualToString:kTTTicStatusUnread]) {
+        //return;
+    }
+    
+    NSLog(@"tapped message bubble method invoked.");
+    //CustomMessageCell *tappedCell = (CustomMessageCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    // tappedCell.textView
+    //tappedCell.mediaView = nil;
+    //[tappedCell removeExtraView];
+    //tappedCell.textView = [[JSQMessagesCellTextView alloc] init];
+    //tappedCell.textView.text = @"your secret message";
+    //[tappedCell.textView setHidden:YES];
+    //MBProgressHUD *progressHUD = [[MBProgressHUD alloc] initWithView:tappedCell.messageBubbleImageView];
+//[tappedCell.messageBubbleImageView addSubview:progressHUD];
+    //progressHUD.opacity = 0;
+    //[progressHUD show:YES];
+
+    
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
-    CGRect viewRect = CGRectMake(0, 0, 100, 100);
+    int w = cell.bounds.size.width;
+    int h = cell.bounds.size.height;
+    CGRect viewRect = CGRectMake(-1, -1, w, h);
+    NSLog(@"%d %d", w, h);
+
     TTTic *theTic = [self.tics objectAtIndex:indexPath.item];
-    CountDownView *myView = [[CountDownView alloc] initWithFrame:viewRect time:theTic.timeLimit];
-    myView.layer.borderWidth = 2;
-    myView.layer.cornerRadius = 10;
-    myView.layer.borderColor = [kTTUIPurpleColor CGColor];
-    [cell setMediaView: myView];
+    if (![cell.messageBubbleContainerView viewWithTag:1234]) {
+        CountDownView *myView = [[CountDownView alloc] initWithFrame:viewRect time:theTic.timeLimit delegate:self timeId:theTic.sendTimestamp];
+        [myView setTag:1234];
+        NSLog(@"the countdownview has been created");
+        myView.layer.borderWidth = 2;
+        myView.layer.cornerRadius = 10;
+        myView.layer.borderColor = [kTTUIPurpleColor CGColor];
+        myView.opaque = YES;
+        myView.backgroundColor = [UIColor whiteColor];
+        //[(JSQMessagesCollectionViewCellOutgoing *)cell setExtraView: myView];
+        [cell.messageBubbleContainerView addSubview:myView];
+        //[cell bringSubviewToFront:cell.textView];
+    } else {
+        NSLog(@"the countdownview is reused");
+        CountDownView *myView = (CountDownView *)[cell.messageBubbleContainerView viewWithTag:1234];
+        //[myView setTime:theTime.timeLimit];
+        //[myView setHidden:NO];
+    }
+    //cell.textView.hidden = YES;
     
     JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
     
-    if (!message.isMediaMessage) {
+   /* if (!message.isMediaMessage) {
         
         if ([message.senderId isEqualToString:self.senderId]) {
             cell.textView.textColor = [UIColor blackColor];
@@ -398,7 +458,7 @@
         }
         cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
                                               NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
-    }
+    }*/
     return cell;
 }
 
@@ -445,28 +505,46 @@
 }
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapMessageBubbleAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"tapped message bubble method invoked.");
+
+    
     if (self.isFetchingTic) {
-        return;
+        //return;
     }
     
     self.isFetchingTic = YES;
     TTTic *unreadTic = [self.tics objectAtIndex:indexPath.item];
     if (![unreadTic.status isEqualToString:kTTTicStatusUnread]) {
-        return;
+       // return;
     }
     
-    NSLog(@"tapped message bubble method invoked.");
-    JSQMessagesCollectionViewCell *tappedCell = (JSQMessagesCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    
+    //cell.messageBubbleImageView.subviews;
+    [cell.textView setHidden:NO];
+    //TTTic *theTic = [self.tics objectAtIndex:indexPath.item];
+    //cell.textView.text = theTic.;
+    
+    CountDownView *cdView = (CountDownView *)[cell.messageBubbleContainerView viewWithTag:1234];
+    //NSLog(cdView);
+    [cdView setHidden:YES];
+//    for (UIView *v in cell.messageBubbleImageView.subviews) {
+//        [v removeFromSuperview];
+//    }
+    //NSLog(@"message bubble view must have been removed!");
+    //NSLog(@"tapped message bubble method invoked.");
+    //CustomMessageCell *tappedCell = (CustomMessageCell *)[collectionView cellForItemAtIndexPath:indexPath];
    // tappedCell.textView
-    tappedCell.mediaView = nil;
+    //tappedCell.mediaView = nil;
+    //[tappedCell removeExtraView];
     //tappedCell.textView = [[JSQMessagesCellTextView alloc] init];
     //tappedCell.textView.text = @"your secret message";
-    [tappedCell.textView setHidden:YES];
+    //[tappedCell.textView setHidden:YES];
     //MBProgressHUD *progressHUD = [[MBProgressHUD alloc] initWithView:tappedCell.messageBubbleImageView];
     //[tappedCell.messageBubbleImageView addSubview:progressHUD];
     //progressHUD.opacity = 0;
     //[progressHUD show:YES];
-
+/*
     [TTTic fetchTicInBackgroundWithId:unreadTic.objectId timestamp:[NSDate date] completion:^(TTTic *fetchedTic, NSError *error) {
         if (fetchedTic) {
             [fetchedTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
@@ -485,7 +563,7 @@
         [tappedCell.textView setHidden:NO];
         [self finishReceivingMessageAnimated:YES];
         self.isFetchingTic = NO;
-    }];
+    }];*/
 }
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapCellAtIndexPath:(NSIndexPath *)indexPath touchLocation:(CGPoint)touchLocation {
@@ -532,6 +610,27 @@
         self.expirationTime = expirationTime;
         [self refreshExpirationToolbar:expirationTime];
     }
+}
+
+#pragma mark - CountDownViewDelegate
+- (void)timerIsZero:(NSDate *)timestamp {
+    int counter = 0;
+    for (TTTic *tic in self.tics){
+        if(tic.sendTimestamp == timestamp) {
+            [self.tics removeObjectAtIndex:counter];
+            break;
+        }
+        counter++;
+    }
+    counter = 0;
+    for (JSQMessage *msg in self.jsqMessages) {
+        if(msg.date == timestamp) {
+            [self.jsqMessages removeObjectAtIndex:counter];
+            break;
+        }
+        counter++;
+    }
+    [self.collectionView reloadData];
 }
 
 @end

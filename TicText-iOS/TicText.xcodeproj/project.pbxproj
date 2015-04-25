@@ -34,6 +34,7 @@
 		2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED84A9B1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m */; };
 		2EEEC7991AA93CF300391486 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EEEC7981AA93CF300391486 /* MessageUI.framework */; };
 		4C0094CD1B6ED14DA0956A8F /* libPods-TicText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E62ADB5018418278F1D7F35F /* libPods-TicText.a */; };
+		8F5DEC731AE16F0500F52ACF /* CustomMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F5DEC721AE16F0500F52ACF /* CustomMessageCell.m */; };
 		8F9DDFCF1ADC647000B2D343 /* CountDownView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F9DDFCE1ADC647000B2D343 /* CountDownView.m */; };
 		9B6B74E026B95CE6BCD5D096 /* libPods-TicTextTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */; };
 		CD1330D81AB7AA4600F59523 /* TTExpirationDomainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1330D71AB7AA4600F59523 /* TTExpirationDomainTests.swift */; };
@@ -116,6 +117,8 @@
 		62D5B3A2D5FD007BC1313C3B /* Pods-TicText.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicText.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TicText/Pods-TicText.debug.xcconfig"; sourceTree = "<group>"; };
 		65E0D8574E683EDF0172C6F3 /* Pods-TicTextTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicTextTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TicTextTests/Pods-TicTextTests.release.xcconfig"; sourceTree = "<group>"; };
 		69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicTextTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F5DEC711AE16F0500F52ACF /* CustomMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomMessageCell.h; sourceTree = "<group>"; };
+		8F5DEC721AE16F0500F52ACF /* CustomMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomMessageCell.m; sourceTree = "<group>"; };
 		8F9DDFCD1ADC647000B2D343 /* CountDownView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountDownView.h; sourceTree = "<group>"; };
 		8F9DDFCE1ADC647000B2D343 /* CountDownView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountDownView.m; sourceTree = "<group>"; };
 		CD1330D61AB7AA4500F59523 /* TicTextTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TicTextTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -281,6 +284,8 @@
 				0EA9482C1AA3CF0E00476D4E /* TTMessagesBubbleImage.m */,
 				8F9DDFCD1ADC647000B2D343 /* CountDownView.h */,
 				8F9DDFCE1ADC647000B2D343 /* CountDownView.m */,
+				8F5DEC711AE16F0500F52ACF /* CustomMessageCell.h */,
+				8F5DEC721AE16F0500F52ACF /* CustomMessageCell.m */,
 			);
 			name = "Custom UI";
 			sourceTree = "<group>";
@@ -579,6 +584,7 @@
 				0EACA8731A97CE0D00B93AAA /* TTSettingsViewController.m in Sources */,
 				0EACA8701A97CDEE00B93AAA /* TTProfileViewController.m in Sources */,
 				0EACA86D1A97CDDD00B93AAA /* TTContactsViewController.m in Sources */,
+				8F5DEC731AE16F0500F52ACF /* CustomMessageCell.m in Sources */,
 				0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */,
 				0EACA86A1A97CDC100B93AAA /* TTConversationsViewController.m in Sources */,
 				CD4D57C81A96B740002B5586 /* TTUser.m in Sources */,

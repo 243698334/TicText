@@ -7,19 +7,25 @@
 //
 
 #import "CountDownView.h"
+#import "TTMessagesViewController.h"
 
 @interface CountDownView () {
     UILabel *timerLabel;
     int counter;
+    TTMessagesViewController *delegate;
+    NSDate *dateId;
+    NSTimer *myTimer;
 }
 
 @end
 
 @implementation CountDownView
 
-- (id)initWithFrame:(CGRect)aRect time:(NSTimeInterval)timeLimit {
+- (id)initWithFrame:(CGRect)aRect time:(NSTimeInterval)timeLimit delegate:(TTMessagesViewController *)d timeId: (NSDate *)timeId{
     counter = (int)timeLimit;
+    dateId = timeId;
     self = [super initWithFrame:aRect];
+    delegate = d;
     if (self) {
         timerLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 100, 20)];
         //timerLabel.adjustsFontSizeToFitWidth = YES;
@@ -31,7 +37,7 @@
         timerLabel.text = [NSString stringWithFormat:@"%i", counter];
         [self addSubview:timerLabel];
     
-        [NSTimer scheduledTimerWithTimeInterval:1.0
+        myTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
                                      target:self
                                    selector:@selector(timerAnimate)
                                    userInfo:nil
@@ -41,8 +47,13 @@
 }
 
 -(void)timerAnimate {
-    NSLog(@"timer tick!");
+   // NSLog(@"timer tick!");
     timerLabel.text = [NSString stringWithFormat:@"%i sec", --counter];;
+    if(counter == 0) {
+        [myTimer invalidate];
+        myTimer = nil;
+        [delegate timerIsZero:dateId];
+    }
 }
 
 /*

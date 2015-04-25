@@ -20,5 +20,6 @@
 @property (nonatomic, strong) UILabel *expirationLabel;
 
 + (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;
+- (void)timerIsZero:(NSDate *)timestamp;
 
 @end
