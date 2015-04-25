@@ -20,12 +20,14 @@
 @property (nonatomic, strong) UIButton *imagePickerButton;
 @property (nonatomic, weak) UICollectionView *collectionView;
 @property (nonatomic, strong) NSMutableArray *imagesArray;
-@property (nonatomic, assign) NSInteger selectedIndex;
 @property (nonatomic, strong) TTScrollingLayout *flowLayout;
+@property (nonatomic, assign) NSInteger selectedIndex;
+@property (nonatomic, strong) TTScrollingImagePickerCell *selectedCell;
 
 @property (nonatomic, strong) UIView *optionButtonsView;
 @property (nonatomic, strong) UIButton *sendButton;
 @property (nonatomic) BOOL optionViewIsShown;
+@property (nonatomic, assign) CGFloat lastContentOffset;
 
 @end
 
@@ -143,6 +145,12 @@
     }
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (self.selectedCell) {
+        [self removeEffectFromCell:self.selectedCell];
+    }
+}
+
 # pragma mark - TTScrollingImagePickerCellDelegate
 - (void) didTapSendButtonInScrollingImagePickerCell:(TTScrollingImagePickerCell *)cell {
     NSLog(@"Send image at index %ld", self.selectedIndex);
@@ -171,12 +179,14 @@
     self.optionViewIsShown = NO;
     cell.delegate = nil;
     [cell hideOptionButtons];
+    self.selectedCell = nil;
 }
 
 - (void) addEffectToCell:(TTScrollingImagePickerCell *)cell {
     self.optionViewIsShown = YES;
     cell.delegate = self;
     [cell showOptionButtons];
+    self.selectedCell = cell;
 }
 
 @end
