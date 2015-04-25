@@ -69,11 +69,10 @@
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[collectionView]|" options:0 metrics:nil views:views]];
     
     self.imagePickerButton = [[UIButton alloc] init];
-    [self.imagePickerButton setImage:[UIImage imageNamed:@"ImagePickerIcon"] forState:UIControlStateNormal];
-    CALayer *imagePickerButtonLayer = self.imagePickerButton.layer;
-    [imagePickerButtonLayer setMasksToBounds:YES];
-    [imagePickerButtonLayer setCornerRadius:25];
     self.imagePickerButton.backgroundColor = [UIColor colorWithRed:130.0/255.0 green:100.0/255.0 blue:200.0/255.0 alpha:0.8];
+    [self.imagePickerButton setImage:[UIImage imageNamed:@"ImagePickerIcon"] forState:UIControlStateNormal];
+    [self.imagePickerButton.layer setMasksToBounds:YES];
+    [self.imagePickerButton.layer setCornerRadius:25];
     [self.imagePickerButton addTarget:self
                                action:@selector(didTapImagePickerButton)
                      forControlEvents:UIControlEventTouchUpInside];

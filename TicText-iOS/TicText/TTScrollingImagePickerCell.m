@@ -14,7 +14,6 @@
 
 @interface TTScrollingImagePickerCell ()
 
-@property (nonatomic) BOOL addConstraints;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *optionButtonsView;
 @property (nonatomic, strong) UIButton *sendButton;
@@ -44,7 +43,6 @@
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[imageView]|" options:0 metrics:nil views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]|" options:0 metrics:nil views:views]];
-    
 }
 
 - (void)setImage:(UIImage *)image {
@@ -52,10 +50,17 @@
 }
 
 - (void)showOptionButtons {
+    [self setNeedsUpdateConstraints];
+    
     self.optionButtonsView = [[UIView alloc] initWithFrame:self.contentView.bounds];
     self.optionButtonsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
-    self.sendButton = [[UIButton alloc] init];
+    self.sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    self.sendButton.center = self.superview.center;
+//    CGRect tempFrame = self.sendButton.frame;
+//    tempFrame.size.height = kSendButtonRadius;
+//    tempFrame.size.width = kSendButtonRadius;
+//    self.sendButton.frame = tempFrame;
     self.sendButton.frame = CGRectMake(0, 0, kSendButtonRadius, kSendButtonRadius);
     self.sendButton.titleLabel.text = @"Send";
     self.sendButton.titleLabel.textColor = [UIColor whiteColor];
@@ -92,17 +97,14 @@
 }
 
 - (void)updateConstraints {
-    if (!self.addConstraints) {
-        self.addConstraints = YES;
-        [self.sendButton autoCenterInSuperview];
-    }
-    
+    [self.sendButton autoCenterInSuperview];
     [super updateConstraints];
 }
 
 - (void)prepareForReuse {
     [super prepareForReuse];
     [self setSelected:NO];
+    [self.optionButtonsView removeFromSuperview];
 }
 
 @end
