@@ -60,7 +60,6 @@
     [self.bluredEffectView setFrame:self.optionButtonsView.bounds];
     [self.optionButtonsView addSubview:self.bluredEffectView];
     
-    
     self.sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
 //    self.sendButton.center = self.superview.center;
 //    CGRect tempFrame = self.sendButton.frame;
@@ -94,8 +93,12 @@
 }
 
 - (void)hideOptionButtons {
-    [self.bluredEffectView removeFromSuperview];
-    [self.optionButtonsView removeFromSuperview];
+    [self.contentView addSubview:self.optionButtonsView];
+    [UIView animateWithDuration:0.25 animations:^{
+        self.optionButtonsView.alpha = 0.0;
+    } completion:^(BOOL finished) {
+        [self.optionButtonsView removeFromSuperview];
+    }];
 }
 
 - (void)updateConstraints {
@@ -106,7 +109,6 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     [self setSelected:NO];
-    [self.bluredEffectView removeFromSuperview];
     [self.optionButtonsView removeFromSuperview];
 }
 
