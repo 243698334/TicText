@@ -25,7 +25,7 @@
 
 @property (nonatomic, strong) UIView *optionButtonsView;
 @property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic) BOOL optionViewWillShow;
+@property (nonatomic) BOOL optionViewIsShown;
 
 @end
 
@@ -126,28 +126,26 @@
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-    self.optionViewWillShow = NO;
-    [self toggleSelectionAtIndexPath:indexPath];
+    NSLog(@"deselect at %ld", indexPath.row);
+    TTScrollingImagePickerCell *cell = (TTScrollingImagePickerCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    self.optionViewIsShown = NO;
+    cell.delegate = nil;
+    [cell hideOptionButtons];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    self.optionViewWillShow = YES;
-    [self toggleSelectionAtIndexPath:indexPath];
-}
-
-- (void)toggleSelectionAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"select at %ld", indexPath.row);
     self.selectedIndex = indexPath.row;
-    
     TTScrollingImagePickerCell *cell = (TTScrollingImagePickerCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-        
-    if (self.optionViewWillShow) {
-        NSLog(@"select at %ld", self.selectedIndex);
-        [cell showOptionButtons];
-        cell.delegate = self;
-    } else {
-        NSLog(@"deselect at %ld", self.selectedIndex);
-        [cell hideOptionButtons];
+    
+    if (self.optionViewIsShown) {
+        self.optionViewIsShown = NO;
         cell.delegate = nil;
+        [cell hideOptionButtons];
+    } else {
+        self.optionViewIsShown = YES;
+        cell.delegate = self;
+        [cell showOptionButtons];
     }
 }
 
