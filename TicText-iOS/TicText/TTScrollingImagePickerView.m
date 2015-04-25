@@ -25,7 +25,7 @@
 
 @property (nonatomic, strong) UIView *optionButtonsView;
 @property (nonatomic, strong) UIButton *sendButton;
-@property (nonatomic) BOOL optionViewShown;
+@property (nonatomic) BOOL optionViewWillShow;
 
 @end
 
@@ -79,7 +79,6 @@
     [self addSubview:self.imagePickerButton];
     
     self.addConstraints = NO;
-    self.optionViewShown = NO;
 
     [self setNeedsUpdateConstraints];
 }
@@ -124,15 +123,15 @@
     return cell;
 }
 
-//TODO:override SupplymentaryElement for send button appear
-
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
+    self.optionViewWillShow = NO;
     [self toggleSelectionAtIndexPath:indexPath];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    self.optionViewWillShow = YES;
     [self toggleSelectionAtIndexPath:indexPath];
 }
 
@@ -141,25 +140,23 @@
     
     TTScrollingImagePickerCell *cell = (TTScrollingImagePickerCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
         
-    if (!self.optionViewShown) {
+    if (self.optionViewWillShow) {
+        NSLog(@"select at %ld", self.selectedIndex);
         [cell showOptionButtons];
-        self.optionViewShown = YES;
         cell.delegate = self;
     } else {
+        NSLog(@"deselect at %ld", self.selectedIndex);
         [cell hideOptionButtons];
-        self.optionViewShown = NO;
         cell.delegate = nil;
     }
-    //TODO: Manage internal selection state
-    //blur effect?
 }
 
 # pragma mark - TTScrollingImagePickerCellDelegate
 - (void) didTapSendButtonInScrollingImagePickerCell {
-    NSLog(@"Send image at index %ld", (NSInteger)self.selectedIndex);
+    NSLog(@"Send image at index %ld", self.selectedIndex);
     [[NSNotificationCenter defaultCenter] postNotificationName:kTTScrollingUIImagePickerDidChooseImage
                                                         object:nil
-                                                      userInfo:@{kTTScrollingUIImagePickerChosenImageKey : [self.imagesArray objectAtIndex:(NSInteger)self.selectedIndex]}];
+                                                      userInfo:@{kTTScrollingUIImagePickerChosenImageKey : [self.imagesArray objectAtIndex:self.selectedIndex]}];
 }
 
 

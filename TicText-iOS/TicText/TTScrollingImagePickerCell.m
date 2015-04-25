@@ -17,6 +17,7 @@
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *optionButtonsView;
 @property (nonatomic, strong) UIButton *sendButton;
+@property (nonatomic, strong) UIVisualEffectView *bluredEffectView;
 
 @end
 
@@ -55,6 +56,11 @@
     self.optionButtonsView = [[UIView alloc] initWithFrame:self.contentView.bounds];
     self.optionButtonsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
+    self.bluredEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+    [self.bluredEffectView setFrame:self.optionButtonsView.bounds];
+    [self.optionButtonsView addSubview:self.bluredEffectView];
+    
+    
     self.sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
 //    self.sendButton.center = self.superview.center;
 //    CGRect tempFrame = self.sendButton.frame;
@@ -72,18 +78,13 @@
     [self.optionButtonsView addSubview:self.sendButton];
     [self.optionButtonsView bringSubviewToFront:self.sendButton];
     
+    self.optionButtonsView.alpha = 0.0;
     [self.contentView addSubview:self.optionButtonsView];
-    [self.contentView bringSubviewToFront:self.optionButtonsView];
-
-//    CATransition *transition = [CATransition animation];
-//    transition.duration = 0.25;
-//    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-//    transition.type = kCATransitionReveal;
-//    transition.delegate = self;
-//    [self.contentView addSubview:self.optionButtonsView];
-//    [self.contentView.layer addAnimation:transition forKey:nil];
-    
-    //[self.contentView setNeedsLayout];
+    [UIView animateWithDuration:0.25 animations:^{
+        self.optionButtonsView.alpha = 1.0;
+    } completion:^(BOOL finished) {
+        [self.contentView bringSubviewToFront:self.optionButtonsView];
+    }];
 }
 
 - (void)didTapSendButton {
@@ -93,6 +94,7 @@
 }
 
 - (void)hideOptionButtons {
+    [self.bluredEffectView removeFromSuperview];
     [self.optionButtonsView removeFromSuperview];
 }
 
@@ -104,6 +106,7 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     [self setSelected:NO];
+    [self.bluredEffectView removeFromSuperview];
     [self.optionButtonsView removeFromSuperview];
 }
 
