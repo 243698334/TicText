@@ -438,13 +438,12 @@
     NSDictionary *newTicNotificationUserInfo = notification.userInfo;
     NSString *unreadTicId = [newTicNotificationUserInfo objectForKey:kTTNotificationUserInfoTicIdKey];
     NSString *senderUserId = [newTicNotificationUserInfo objectForKey:kTTNotificationUserInfoSenderUserIdKey];
+    NSDate *sendTimestamp = [newTicNotificationUserInfo objectForKeyedSubscript:kTTNotificationUserInfoSendTimestampKey];
     NSNumber *timeLimit = [newTicNotificationUserInfo objectForKey:kTTNotificationUserInfoTimeLimitKey];
-    
-    NSLog(@"new Tic id: %@, sender id: %@, time limit: %@", unreadTicId, senderUserId, timeLimit);
-    [[[UIAlertView alloc] initWithTitle:@"Unread Tic" message:[NSString stringWithFormat:@"new Tic id: %@, sender id: %@, time limit: %@", unreadTicId, senderUserId, timeLimit] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
     
     TTTic *unreadTic = [TTTic unreadTicWithId:unreadTicId];
     unreadTic.sender = [TTUser objectWithoutDataWithObjectId:senderUserId];
+    unreadTic.sendTimestamp = sendTimestamp;
     unreadTic.timeLimit = [timeLimit doubleValue];
     [self.unreadTics addObject:unreadTic];
     

@@ -44,6 +44,7 @@ extern NSString * const kTTApplicationDidReceiveNewUserJoinWhileActiveNotificati
 extern NSString * const kTTNotificationUserInfoErrorKey;
 extern NSString * const kTTNotificationUserInfoTicIdKey;
 extern NSString * const kTTNotificationUserInfoSenderUserIdKey;
+extern NSString * const kTTNotificationUserInfoSendTimestampKey;
 extern NSString * const kTTNotificationUserInfoTimeLimitKey;
 
 
@@ -149,6 +150,7 @@ extern NSString * const kTTInstallationUserKey;
 extern NSString * const kTTPushNotificationPayloadTypeKey;
 extern NSString * const kTTPushNotificationPayloadTicIdKey;
 extern NSString * const kTTPushNotificationPayloadSenderUserIdKey;
+extern NSString * const kTTPushNotificationPayloadSendTimestampKey;
 extern NSString * const kTTPushNotificationPayloadTimeLimitKey;
 
 // Type values

@@ -73,10 +73,11 @@
     if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
         NSString *ticId = [userInfo objectForKey:kTTPushNotificationPayloadTicIdKey];
         NSString *senderUserId = [userInfo objectForKey:kTTPushNotificationPayloadSenderUserIdKey];
+        NSDate *sendTimestamp = [userInfo objectForKey:kTTPushNotificationPayloadSendTimestampKey];
         NSNumber *timeLimit = [userInfo objectForKey:kTTPushNotificationPayloadTimeLimitKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification
                                                             object:nil
-                                                          userInfo:@{kTTNotificationUserInfoTicIdKey: ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId, kTTNotificationUserInfoTimeLimitKey: timeLimit}];
+                                                          userInfo:@{kTTNotificationUserInfoTicIdKey: ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId, kTTNotificationUserInfoSendTimestampKey: sendTimestamp, kTTNotificationUserInfoTimeLimitKey: timeLimit}];
     }
     
     // TODO: handle push notification

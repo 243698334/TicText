@@ -41,6 +41,7 @@ NSString * const kTTApplicationDidReceiveNewUserJoinWhileActiveNotification = @"
 NSString * const kTTNotificationUserInfoErrorKey = @"error";
 NSString * const kTTNotificationUserInfoTicIdKey = @"ticId";
 NSString * const kTTNotificationUserInfoSenderUserIdKey = @"senderUserId";
+NSString * const kTTNotificationUserInfoSendTimestampKey = @"sendTimestamp";
 NSString * const kTTNotificationUserInfoTimeLimitKey = @"timeLimit";
 
 
@@ -147,6 +148,7 @@ NSString * const kTTInstallationUserKey = @"user";
 NSString * const kTTPushNotificationPayloadTypeKey = @"type";
 NSString * const kTTPushNotificationPayloadTicIdKey = @"ticId";
 NSString * const kTTPushNotificationPayloadSenderUserIdKey = @"senderId";
+NSString * const kTTPushNotificationPayloadSendTimestampKey = @"sendTimestamp";
 NSString * const kTTPushNotificationPayloadTimeLimitKey = @"timeLimit";
 
 // Type values

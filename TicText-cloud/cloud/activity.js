@@ -9,6 +9,7 @@ var ACTIVITY_TIC = 'tic';
 var TIC_SENDER = 'sender';
 var TIC_RECIPIENT = 'recipient';
 var TIC_TIME_LIMIT = 'timeLimit';
+var TIC_SEND_TIMESTAMP = 'sendTimestamp';
 // User constants
 var USER_DISPLAY_NAME = 'displayName';
 var USER_PRIVATE_DATA = 'privateData';
@@ -51,6 +52,7 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
                     payload.ticId = tic.id;
                     payload.senderId = request.user.id;
                     payload.timeLimit = tic.get(TIC_TIME_LIMIT);
+                    payload.sendTimestamp = tic.get(TIC_SEND_TIMESTAMP);
                     console.log("Current push notification payload: ");
                     console.log(payload);
                     Parse.Push.send({
