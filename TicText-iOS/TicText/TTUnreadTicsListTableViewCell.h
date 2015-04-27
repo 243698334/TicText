@@ -17,4 +17,6 @@
 
 - (void)updateWithUnreadTic:(TTTic *)unreadTic;
 
+- (void)updateTimeLeftLabel;
+
 @end

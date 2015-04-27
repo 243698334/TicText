@@ -63,6 +63,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidReceiveNewTicWhileActive:) name:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self hideUnreadTicsListView];
+}
+
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
@@ -92,12 +97,6 @@
     self.unreadTicsBannerView.delegate = self;
     self.unreadTicsBannerView.dataSource = self;
     
-    // unread tics view
-//    self.unreadTicsListView = [[TTUnreadTicsListView alloc] initWithFrame:CGRectMake(0, 54, self.view.bounds.size.width, 44 * self.unreadTics.count)];
-//    self.unreadTicsListView.delegate = self;
-//    self.unreadTicsListView.dataSource = self;
-//    self.unreadTicsListView.clipsToBounds = YES;
-//    self.unreadTicsListView.frame = CGRectMake(0, self.unreadTicsBannerView.bounds.size.height, self.view.bounds.size.height, 0); //Set frame again to shrink to 0.
     self.isUnreadTicsListVisible = NO;
 }
 
@@ -186,42 +185,42 @@
 - (void)showUnreadTicsListView {
     self.isUnreadTicsListVisible = YES;
     [self.unreadTicsBannerView updateTitleWithUnreadTicsListVisibile:self.isUnreadTicsListVisible];
-    self.unreadTicsListView = [[TTUnreadTicsListView alloc] initWithFrame:CGRectMake(0, 44 + 20 + 44, self.view.frame.size.width, self.unreadTics.count * [TTUnreadTicsListTableViewCell height])];
+    
+    self.unreadTicsListView = [[TTUnreadTicsListView alloc] initWithFrame:CGRectMake(0, 44 + 20 + 44, self.view.bounds.size.width, 0)];
     self.unreadTicsListView.delegate = self;
     self.unreadTicsListView.dataSource = self;
+    self.unreadTicsListView.backgroundColor = kTTUIPurpleColor;
+    self.unreadTicsListView.translatesAutoresizingMaskIntoConstraints = YES;
     [self.view addSubview:self.unreadTicsListView];
-    [self.unreadTicsListView expand];
+    [self.view bringSubviewToFront:self.unreadTicsListView];
     
-//
-//    //[self.unreadTicsListView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.conversationsTableView.tableHeaderView];
-//    [UIView animateKeyframesWithDuration:0.2 delay:0 options:UIViewKeyframeAnimationOptionAllowUserInteraction animations:^{
-//        self.unreadTicsListView.frame = CGRectMake(0, 44 + 20 + 44, self.view.frame.size.width, self.unreadTics.count * [TTUnreadTicsListTableViewCell height]);
-//    } completion:^(BOOL finished) {
-//    }];
+    CGRect unreadTicsListViewExpandedFrame = self.unreadTicsListView.frame;
+    unreadTicsListViewExpandedFrame.size.height = [self.unreadTicsListView requiredHeight];
     
-    
-    
-//    CATransition *transition = [CATransition animation];
-//    transition.duration = 0.25;
-//    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-//    transition.type = kCATransitionPush;
-//    transition.subtype = kCATransitionFromBottom;
-//    transition.delegate = self;
-    //[self.view bringSubviewToFront:self.unreadTicsBannerView];
-    //[self.conversationsTableView reloadData];
-    //[self.unreadTicsListView.layer addAnimation:transition forKey:nil];
+    [UIView animateWithDuration:0.25 animations:^{
+        self.unreadTicsListView.frame = unreadTicsListViewExpandedFrame;
+    } completion:^(BOOL finished) {
+        [self.unreadTicsListView reloadData];
+    }];
 }
 
 - (void)hideUnreadTicsListView {
     self.isUnreadTicsListVisible = NO;
     [self.unreadTicsBannerView updateTitleWithUnreadTicsListVisibile:self.isUnreadTicsListVisible];
-    [self.unreadTicsListView collapse];
-    [self.unreadTicsListView removeFromSuperview];
-    //    [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
-//        self.unreadTicsListView.frame = CGRectMake(self.unreadTicsListView.frame.origin.x, self.unreadTicsListView.frame.origin.y - self.unreadTicsListView.frame.size.height, self.unreadTicsListView.frame.size.width, 0);
-//    } completion:^(BOOL finished) {
-//        [self.unreadTicsListView removeFromSuperview];
-//    }];
+    
+    // remove all subviews for the animation
+    for (UIView *currentSubview in self.unreadTicsListView.subviews) {
+        [currentSubview removeFromSuperview];
+    }
+    
+    CGRect unreadTicsListViewCollapsedFrame = self.unreadTicsListView.frame;
+    unreadTicsListViewCollapsedFrame.size.height = 0;
+    
+    [UIView animateWithDuration:0.25 animations:^{
+        self.unreadTicsListView.frame = unreadTicsListViewCollapsedFrame;
+    } completion:^(BOOL finished) {
+        [self.unreadTicsListView removeFromSuperview];
+    }];
 }
 
 #pragma mark - TTUnreadTicsBannerViewDelegate
@@ -248,6 +247,7 @@
     NSLog(@"Selected unread Tic at index: %li", index);
 }
 
+
 #pragma mark - TTUnreadTicsListViewDataSource
 
 - (NSInteger)numberOfRowsInUnreadTicsList {
@@ -255,8 +255,7 @@
 }
 
 - (TTUnreadTicsListTableViewCell *)unreadTicsListView:(TTUnreadTicsListView *)unreadTicsListView cellForRowAtIndex:(NSInteger)index {
-    TTUnreadTicsListTableViewCell *unreadTicsListTableViewCell = [[TTUnreadTicsListTableViewCell alloc] init];
-    unreadTicsListTableViewCell.backgroundColor = kTTUIPurpleColor;
+    TTUnreadTicsListTableViewCell *unreadTicsListTableViewCell = [[TTUnreadTicsListTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[TTUnreadTicsListTableViewCell reuseIdentifier]];
     [unreadTicsListTableViewCell updateWithUnreadTic:[self.unreadTics objectAtIndex:index]];
     return unreadTicsListTableViewCell;
 }
@@ -266,7 +265,6 @@
     [self.unreadTicsBannerView reloadData];
     
     // reload data for unread Tics
-    self.unreadTicsListView.frame = CGRectMake(0, 54, self.view.bounds.size.width, 44 * self.unreadTics.count);
     [self.unreadTicsListView reloadData];
     
     // reload data for conversations
@@ -277,8 +275,9 @@
 #pragma mark - UITableViewDataSource
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    [self hideUnreadTicsListView];
+    if (self.isUnreadTicsListVisible) {
+        [self hideUnreadTicsListView];
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -310,19 +309,6 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//    CGFloat height = 0;
-//    if (self.isUnreadTicsListVisible) {
-//        height = self.unreadTicsBannerView.bounds.size.height;// + self.unreadTicsListView.bounds.size.height;
-//    } else {
-//        height = self.unreadTicsBannerView.bounds.size.height;
-//    }
-//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height)];
-//    NSLog(@"%f", height);
-//    [view addSubview:self.unreadTicsBannerView];
-//    
-//    if (self.isUnreadTicsListVisible) {
-//        //[view addSubview:self.unreadTicsListView];
-//    }
     return self.unreadTicsBannerView;
 }
 

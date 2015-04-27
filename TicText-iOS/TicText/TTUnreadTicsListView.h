@@ -32,12 +32,8 @@
 @property (nonatomic, assign) id<TTUnreadTicsListViewDelegate> delegate;
 @property (nonatomic, assign) id<TTUnreadTicsListViewDataSource> dataSource;
 
+- (CGFloat)requiredHeight;
+
 - (void)reloadData;
-
-- (void)collapse;
-
-- (void)expand;
-
-- (void)toggle;
 
 @end

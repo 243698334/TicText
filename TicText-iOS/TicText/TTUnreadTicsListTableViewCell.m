@@ -13,14 +13,13 @@
 @interface TTUnreadTicsListTableViewCell ()
 
 @property (nonatomic, assign) BOOL addedConstraints;
-@property (nonatomic, strong) UILabel *timerLabel;
-@property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic, strong) UILabel *timeLeftLabel;
 
 @property (nonatomic, strong) TTTic *unreadTic;
 
 @end
 
-CGFloat const kTTUnreadTicsListTableViewCellHeight = 40;
+CGFloat const kTTUnreadTicsListTableViewCellHeight = 36;
 CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
 
 @implementation TTUnreadTicsListTableViewCell
@@ -37,19 +36,23 @@ CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self.addedConstraints = NO;
         
-        self.timerLabel = [[UILabel alloc] init];
-        self.timerLabel.font = [UIFont fontWithName:@"Avenir-Light" size:self.timerLabel.font.pointSize];
-        self.timerLabel.textColor = [UIColor whiteColor];
-        self.timerLabel.textAlignment = NSTextAlignmentRight;
-        [self.contentView addSubview:self.timerLabel];
+        self.backgroundColor = kTTUIPurpleColor;
+        
+        self.timeLeftLabel = [[UILabel alloc] initWithFrame:self.bounds];
+        self.timeLeftLabel.font = [UIFont fontWithName:@"Avenir-Light" size:self.timeLeftLabel.font.pointSize];
+        self.timeLeftLabel.textColor = [UIColor whiteColor];
+        self.timeLeftLabel.textAlignment = NSTextAlignmentCenter;
+        [self.contentView addSubview:self.timeLeftLabel];
+        [self.contentView bringSubviewToFront:self.timeLeftLabel];
+        
+        [self setNeedsUpdateConstraints];
     }
     return self;
 }
 
 - (void)updateConstraints {
     if (!self.addedConstraints) {
-        [self.timerLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(kTTUnreadTicsListTableViewCellPadding, kTTUnreadTicsListTableViewCellPadding, kTTUnreadTicsListTableViewCellPadding, kTTUnreadTicsListTableViewCellPadding) excludingEdge:ALEdgeLeading];
-        
+        [self.timeLeftLabel autoCenterInSuperview];
         self.addedConstraints = YES;
     }
     [super updateConstraints];
@@ -57,10 +60,7 @@ CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
 
 - (void)updateWithUnreadTic:(TTTic *)unreadTic {
     self.unreadTic = unreadTic;
-    if (self.timer != nil) {
-        [self.timer invalidate];
-    }
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTimeLeftLabel) userInfo:nil repeats:YES];
+    [self updateTimeLeftLabel];
 }
 
 - (void)updateTimeLeftLabel {
@@ -72,13 +72,13 @@ CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
     NSInteger secondsLeft = (NSInteger)(timeLeft - 3600 * hoursLeft - 60 * minutesLeft);
     
     if (timeLeft <= 0) {
-        self.timerLabel.text = @"expired";
+        self.timeLeftLabel.text = @"expired";
     } else if (timeLeft < 60) {
-        self.timerLabel.text = [NSString stringWithFormat:@"%lds", secondsLeft];
+        self.timeLeftLabel.text = [NSString stringWithFormat:@"%lds", (long)secondsLeft];
     } else if (timeLeft < 60 * 60) {
-        self.timerLabel.text = [NSString stringWithFormat:@"%ldm %lds", minutesLeft, secondsLeft];
+        self.timeLeftLabel.text = [NSString stringWithFormat:@"%ldm %lds", (long)minutesLeft, (long)secondsLeft];
     } else {
-        self.timerLabel.text = [NSString stringWithFormat:@"%ldh %ldm %lds", hoursLeft, minutesLeft, secondsLeft];
+        self.timeLeftLabel.text = [NSString stringWithFormat:@"%ldh %ldm %lds", hoursLeft, minutesLeft, secondsLeft];
     }
 }
 
