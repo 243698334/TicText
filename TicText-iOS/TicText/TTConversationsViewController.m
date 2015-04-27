@@ -23,17 +23,17 @@
 
 @property (nonatomic, strong) TTMessagesViewController *messagesViewController;
 
-@property (nonatomic, assign) BOOL isUnreadTicsListVisible;
+@property (nonatomic, assign) BOOL isNewTicsDropdownViewVisible;
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
-@property (nonatomic, strong) TTUnreadTicsBannerView *unreadTicsBannerView;
-@property (nonatomic, strong) TTUnreadTicsListView *unreadTicsListView;
+@property (nonatomic, strong) TTNewTicsBannerView *receivedNewTicsBannerView;
+@property (nonatomic, strong) TTNewTicsDropdownView *receivedNewTicsDropdownView;
 @property (nonatomic, strong) TTComposeView *composeView;
 @property (nonatomic, strong) UITableView *conversationsTableView;
 
 @property (nonatomic, strong) NSTimer *updateCellTimer;
 
 @property (nonatomic, strong) NSMutableArray *conversations;
-@property (nonatomic, strong) NSMutableArray *unreadTics;
+@property (nonatomic, strong) NSMutableArray *receivedNewTics;
 
 @end
 
@@ -42,7 +42,62 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.unreadTics = [[NSMutableArray alloc] init];
+    self.receivedNewTics = [[NSMutableArray alloc] init];
+    
+    TTTic *unreadTic1 = [TTTic unreadTicWithId:@"fakeId1"];
+    unreadTic1.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId1"];
+    unreadTic1.sendTimestamp = [NSDate date];
+    unreadTic1.timeLimit = 100;
+    [self.receivedNewTics addObject:unreadTic1];
+    
+    TTTic *unreadTic2 = [TTTic unreadTicWithId:@"fakeId2"];
+    unreadTic2.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
+    unreadTic2.sendTimestamp = [NSDate date];
+    unreadTic2.timeLimit = 150;
+    [self.receivedNewTics addObject:unreadTic2];
+    
+    TTTic *unreadTic3 = [TTTic unreadTicWithId:@"fakeId3"];
+    unreadTic3.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
+    unreadTic3.sendTimestamp = [NSDate date];
+    unreadTic3.timeLimit = 200;
+    [self.receivedNewTics addObject:unreadTic3];
+    
+    TTTic *unreadTic4 = [TTTic unreadTicWithId:@"fakeId4"];
+    unreadTic4.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId4"];
+    unreadTic4.sendTimestamp = [NSDate date];
+    unreadTic4.timeLimit = 2500;
+    [self.receivedNewTics addObject:unreadTic4];
+    
+    TTTic *unreadTic5 = [TTTic unreadTicWithId:@"fakeId5"];
+    unreadTic5.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId5"];
+    unreadTic5.sendTimestamp = [NSDate date];
+    unreadTic5.timeLimit = 3600 * 72;
+    [self.receivedNewTics addObject:unreadTic5];
+    
+    TTTic *unreadTic6 = [TTTic unreadTicWithId:@"fakeId6"];
+    unreadTic6.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
+    unreadTic6.sendTimestamp = [NSDate date];
+    unreadTic6.timeLimit = 4690;
+    [self.receivedNewTics addObject:unreadTic6];
+    
+    TTTic *unreadTic7 = [TTTic unreadTicWithId:@"fakeId7"];
+    unreadTic7.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
+    unreadTic7.sendTimestamp = [NSDate date];
+    unreadTic7.timeLimit = -1;
+    [self.receivedNewTics addObject:unreadTic7];
+    
+    [self.receivedNewTics sortUsingComparator:^NSComparisonResult(TTTic *firstUnreadTic, TTTic *secondUnreadTic) {
+        NSTimeInterval firstUnreadTicTimeLeft = firstUnreadTic.timeLimit - [[NSDate date] timeIntervalSinceDate:firstUnreadTic.sendTimestamp];
+        NSTimeInterval secondUnreadTicTimeLeft = secondUnreadTic.timeLimit - [[NSDate date] timeIntervalSinceDate:secondUnreadTic.sendTimestamp];
+        if (firstUnreadTicTimeLeft < 0) {
+            return NSOrderedAscending;
+        } else if (secondUnreadTicTimeLeft < 0) {
+            return NSOrderedDescending;
+        } else {
+            return firstUnreadTicTimeLeft > secondUnreadTicTimeLeft;
+        }
+    }];
+    
     [self loadInterface];
     
 }
@@ -65,7 +120,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self hideUnreadTicsListView];
+    [self hideNewTicsDropdownView];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -93,11 +148,11 @@
     [self.view addSubview:self.conversationsTableView];
     
     // scroll to top view
-    self.unreadTicsBannerView = [[TTUnreadTicsBannerView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
-    self.unreadTicsBannerView.delegate = self;
-    self.unreadTicsBannerView.dataSource = self;
+    self.receivedNewTicsBannerView = [[TTNewTicsBannerView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, [TTNewTicsBannerView height])];
+    self.receivedNewTicsBannerView.delegate = self;
+    self.receivedNewTicsBannerView.dataSource = self;
     
-    self.isUnreadTicsListVisible = NO;
+    self.isNewTicsDropdownViewVisible = NO;
 }
 
 - (void)loadConversations {
@@ -161,7 +216,7 @@
 
 - (void)showComposeView {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(hideComposeView)];
-    self.composeView = [[TTComposeView alloc] initWithFrame:CGRectMake(0, self.unreadTicsBannerView.bounds.size.height - 20, self.view.frame.size.width, self.view.frame.size.height - 49)];
+    self.composeView = [[TTComposeView alloc] initWithFrame:CGRectMake(0, self.receivedNewTicsBannerView.bounds.size.height - 20, self.view.frame.size.width, self.view.frame.size.height - 49)];
     self.composeView.delegate = self;
     CATransition *transition = [CATransition animation];
     transition.duration = 0.25;
@@ -182,90 +237,98 @@
     }];
 }
 
-- (void)showUnreadTicsListView {
-    self.isUnreadTicsListVisible = YES;
-    [self.unreadTicsBannerView updateTitleWithUnreadTicsListVisibile:self.isUnreadTicsListVisible];
+- (void)showNewTicsDropdownView {
+    self.isNewTicsDropdownViewVisible = YES;
+    [self.receivedNewTicsBannerView updateTitleWithNewTicsDropdownVisibile:self.isNewTicsDropdownViewVisible];
     
-    self.unreadTicsListView = [[TTUnreadTicsListView alloc] initWithFrame:CGRectMake(0, 44 + 20 + 44, self.view.bounds.size.width, 0)];
-    self.unreadTicsListView.delegate = self;
-    self.unreadTicsListView.dataSource = self;
-    self.unreadTicsListView.backgroundColor = kTTUIPurpleColor;
-    self.unreadTicsListView.translatesAutoresizingMaskIntoConstraints = YES;
-    [self.view addSubview:self.unreadTicsListView];
-    [self.view bringSubviewToFront:self.unreadTicsListView];
+    self.receivedNewTicsDropdownView = [[TTNewTicsDropdownView alloc] initWithFrame:CGRectMake(0, [TTNewTicsBannerView height], self.view.bounds.size.width, 0)];
+    self.receivedNewTicsDropdownView.delegate = self;
+    self.receivedNewTicsDropdownView.dataSource = self;
+    self.receivedNewTicsDropdownView.backgroundColor = kTTUIPurpleColor;
+    self.receivedNewTicsDropdownView.translatesAutoresizingMaskIntoConstraints = YES;
+    [self.receivedNewTicsBannerView addSubview:self.receivedNewTicsDropdownView];
     
-    CGRect unreadTicsListViewExpandedFrame = self.unreadTicsListView.frame;
-    unreadTicsListViewExpandedFrame.size.height = [self.unreadTicsListView requiredHeight];
+    CGRect receivedNewTicsDropdownViewExpandedFrame = self.receivedNewTicsDropdownView.frame;
+    receivedNewTicsDropdownViewExpandedFrame.size.height = [TTNewTicsDropdownView height];
+    
+    CGRect receivedNewTicsBannerViewExpandedFrame = self.receivedNewTicsBannerView.frame;
+    receivedNewTicsBannerViewExpandedFrame.size.height = receivedNewTicsBannerViewExpandedFrame.size.height + [TTNewTicsDropdownView height];
     
     [UIView animateWithDuration:0.25 animations:^{
-        self.unreadTicsListView.frame = unreadTicsListViewExpandedFrame;
+        self.receivedNewTicsDropdownView.frame = receivedNewTicsDropdownViewExpandedFrame;
+        self.receivedNewTicsBannerView.frame = receivedNewTicsBannerViewExpandedFrame;
     } completion:^(BOOL finished) {
-        [self.unreadTicsListView reloadData];
+        [self.receivedNewTicsDropdownView reloadData];
     }];
 }
 
-- (void)hideUnreadTicsListView {
-    self.isUnreadTicsListVisible = NO;
-    [self.unreadTicsBannerView updateTitleWithUnreadTicsListVisibile:self.isUnreadTicsListVisible];
+- (void)hideNewTicsDropdownView {
+    self.isNewTicsDropdownViewVisible = NO;
+    [self.receivedNewTicsBannerView updateTitleWithNewTicsDropdownVisibile:self.isNewTicsDropdownViewVisible];
     
     // remove all subviews for the animation
-    for (UIView *currentSubview in self.unreadTicsListView.subviews) {
+    for (UIView *currentSubview in self.receivedNewTicsDropdownView.subviews) {
         [currentSubview removeFromSuperview];
     }
     
-    CGRect unreadTicsListViewCollapsedFrame = self.unreadTicsListView.frame;
-    unreadTicsListViewCollapsedFrame.size.height = 0;
+    CGRect receivedNewTicsDropdownViewCollapsedFrame = self.receivedNewTicsDropdownView.frame;
+    receivedNewTicsDropdownViewCollapsedFrame.size.height = 0;
+    
+    CGRect receivedNewTicsBannerViewCollapsedFrame = self.receivedNewTicsBannerView.frame;
+    receivedNewTicsBannerViewCollapsedFrame.size.height = [TTNewTicsBannerView height];
     
     [UIView animateWithDuration:0.25 animations:^{
-        self.unreadTicsListView.frame = unreadTicsListViewCollapsedFrame;
+        self.receivedNewTicsDropdownView.frame = receivedNewTicsDropdownViewCollapsedFrame;
+        self.receivedNewTicsBannerView.frame = receivedNewTicsBannerViewCollapsedFrame;
     } completion:^(BOOL finished) {
-        [self.unreadTicsListView removeFromSuperview];
+        [self.receivedNewTicsDropdownView removeFromSuperview];
     }];
 }
 
-#pragma mark - TTUnreadTicsBannerViewDelegate
 
-- (void)didTapUnreadTicsBanner {
-    if (self.isUnreadTicsListVisible) {
-        [self hideUnreadTicsListView];
+#pragma mark - TTNewTicsBannerViewDelegate
+
+- (void)didTapNewTicsBanner {
+    if (self.isNewTicsDropdownViewVisible) {
+        [self hideNewTicsDropdownView];
     } else {
-        [self showUnreadTicsListView];
+        [self showNewTicsDropdownView];
     }
 }
 
 
-#pragma mark - TTUnreadTicsBannerViewDataSource
+#pragma mark - TTNewTicsBannerViewDataSource
 
-- (NSInteger)numberOfUnreadTicsInUnreadTicsBannerView {
-    return [self.unreadTics count];
+- (NSInteger)numberOfNewTicsInNewTicsBannerView {
+    return [self.receivedNewTics count];
 }
 
 
-#pragma mark - TTUnreadTicsListViewDelegate
+#pragma mark - TTNewTicsDropdownViewDelegate
 
-- (void)unreadTicsListViewDidSelectUnreadTicAtIndex:(NSInteger)index {
+- (void)receivedNewTicsDropdownViewDidSelectNewTicAtIndex:(NSInteger)index {
     NSLog(@"Selected unread Tic at index: %li", index);
 }
 
 
-#pragma mark - TTUnreadTicsListViewDataSource
+#pragma mark - TTNewTicsDropdownViewDataSource
 
-- (NSInteger)numberOfRowsInUnreadTicsList {
-    return [self.unreadTics count];
+- (NSInteger)numberOfRowsInNewTicsDropdownView {
+    return [self.receivedNewTics count];
 }
 
-- (TTUnreadTicsListTableViewCell *)unreadTicsListView:(TTUnreadTicsListView *)unreadTicsListView cellForRowAtIndex:(NSInteger)index {
-    TTUnreadTicsListTableViewCell *unreadTicsListTableViewCell = [[TTUnreadTicsListTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[TTUnreadTicsListTableViewCell reuseIdentifier]];
-    [unreadTicsListTableViewCell updateWithUnreadTic:[self.unreadTics objectAtIndex:index]];
+- (TTNewTicsDropdownTableViewCell *)unreadTicsListView:(TTNewTicsDropdownView *)unreadTicsListView cellForRowAtIndex:(NSInteger)index {
+    TTNewTicsDropdownTableViewCell *unreadTicsListTableViewCell = [[TTNewTicsDropdownTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[TTNewTicsDropdownTableViewCell reuseIdentifier]];
+    [unreadTicsListTableViewCell updateWithUnreadTic:[self.receivedNewTics objectAtIndex:index]];
     return unreadTicsListTableViewCell;
 }
 
 - (void)reloadDataForViews {
     // reload data for scroll to top view
-    [self.unreadTicsBannerView reloadData];
+    [self.receivedNewTicsBannerView reloadData];
     
-    // reload data for unread Tics
-    [self.unreadTicsListView reloadData];
+    // reload data for new Tics view
+    [self.receivedNewTicsDropdownView reloadData];
     
     // reload data for conversations
     [self.conversationsTableView reloadData];
@@ -275,8 +338,8 @@
 #pragma mark - UITableViewDataSource
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (self.isUnreadTicsListVisible) {
-        [self hideUnreadTicsListView];
+    if (self.isNewTicsDropdownViewVisible) {
+        [self hideNewTicsDropdownView];
     }
 }
 
@@ -309,15 +372,15 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return self.unreadTicsBannerView;
+    return self.receivedNewTicsBannerView;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (self.isUnreadTicsListVisible) {
-        return self.unreadTicsBannerView.bounds.size.height;// + self.unreadTicsListView.bounds.size.height;
+    if (self.isNewTicsDropdownViewVisible) {
+        return self.receivedNewTicsBannerView.bounds.size.height;// + self.unreadTicsListView.bounds.size.height;
     }
     else {
-        return self.unreadTicsBannerView.bounds.size.height;
+        return self.receivedNewTicsBannerView.bounds.size.height;
     }
 }
 
@@ -412,15 +475,6 @@
     }];
 }
 
-
-- (void)hideTable {
-    self.isUnreadTicsListVisible = NO;
-    [self.unreadTicsBannerView updateTitleWithUnreadTicsListVisibile:self.isUnreadTicsListVisible];
-    [UIView animateKeyframesWithDuration:0.2 delay:0 options:UIViewKeyframeAnimationOptionAllowUserInteraction animations:^{
-        self.unreadTicsListView.frame = CGRectMake(0, self.unreadTicsBannerView.bounds.size.height, self.unreadTicsListView.bounds.size.width, 0);
-    } completion:nil];
-}
-
 - (void)applicationDidReceiveNewTicWhileActive:(NSNotification *)notification {
     AudioServicesPlayAlertSound(1033);
     NSDictionary *newTicNotificationUserInfo = notification.userInfo;
@@ -429,11 +483,30 @@
     NSDate *sendTimestamp = [newTicNotificationUserInfo objectForKeyedSubscript:kTTNotificationUserInfoSendTimestampKey];
     NSNumber *timeLimit = [newTicNotificationUserInfo objectForKey:kTTNotificationUserInfoTimeLimitKey];
     
-    TTTic *unreadTic = [TTTic unreadTicWithId:unreadTicId];
-    unreadTic.sender = [TTUser objectWithoutDataWithObjectId:senderUserId];
-    unreadTic.sendTimestamp = sendTimestamp;
-    unreadTic.timeLimit = [timeLimit doubleValue];
-    [self.unreadTics addObject:unreadTic];
+    TTTic *receivedNewTic = [TTTic unreadTicWithId:unreadTicId];
+    receivedNewTic.sender = [TTUser objectWithoutDataWithObjectId:senderUserId];
+    receivedNewTic.sendTimestamp = sendTimestamp;
+    receivedNewTic.timeLimit = [timeLimit doubleValue];
+    [self.receivedNewTics addObject:receivedNewTic];
+    [self.receivedNewTics sortUsingComparator:^NSComparisonResult(TTTic *firstNewTic, TTTic *secondNewTic) {
+        NSTimeInterval firstNewTicTimeLeft = firstNewTic.timeLimit - [[NSDate date] timeIntervalSinceDate:firstNewTic.sendTimestamp];
+        NSTimeInterval secondNewTicTimeLeft = secondNewTic.timeLimit - [[NSDate date] timeIntervalSinceDate:secondNewTic.sendTimestamp];
+        if (firstNewTicTimeLeft <= 0) {
+            firstNewTic.status = kTTTicStatusExpired;
+        }
+        
+        if (secondNewTicTimeLeft <= 0) {
+            secondNewTic.status = kTTTicStatusExpired;
+        }
+        
+        if (firstNewTicTimeLeft < 0) {
+            return NSOrderedAscending;
+        } else if (secondNewTicTimeLeft < 0) {
+            return NSOrderedDescending;
+        } else {
+            return firstNewTicTimeLeft < secondNewTicTimeLeft;
+        }
+    }];
     
     [self performNewTicAnimation];
     [self performSelector:@selector(reloadDataForViews) withObject:nil afterDelay:0.25];
@@ -441,16 +514,17 @@
 
 - (void)performNewTicAnimation {
     [self hideComposeView];
-    [self hideTable];
+    BOOL shouldBringBackNewTicsDropdownView = self.isNewTicsDropdownViewVisible;
+    [self hideNewTicsDropdownView];
     
-    TTUnreadTicsBannerView *animationScrollToTopView = [[TTUnreadTicsBannerView alloc] initWithFrame:self.unreadTicsBannerView.frame];
+    TTNewTicsBannerView *animationScrollToTopView = [[TTNewTicsBannerView alloc] initWithFrame:self.receivedNewTicsBannerView.frame];
     animationScrollToTopView.titleLabel.text = @"";
-    animationScrollToTopView.unreadTicsCountLabel.text = self.unreadTicsBannerView.unreadTicsCountLabel.text;
+    animationScrollToTopView.numberOfNewTicsLabel.text = self.receivedNewTicsBannerView.numberOfNewTicsLabel.text;
     animationScrollToTopView.alpha = 0.0;
-    CGPoint animationUnreadTicsCountLabelInitialCenter = animationScrollToTopView.unreadTicsCountLabel.center;
+    CGPoint animationNewTicsCountLabelInitialCenter = animationScrollToTopView.numberOfNewTicsLabel.center;
     
-    [self.unreadTicsBannerView addSubview:animationScrollToTopView];
-    [self.unreadTicsBannerView bringSubviewToFront:animationScrollToTopView];
+    [self.receivedNewTicsBannerView addSubview:animationScrollToTopView];
+    [self.receivedNewTicsBannerView bringSubviewToFront:animationScrollToTopView];
     
     CGFloat zoomInScale = 1.3;
     CGFloat zoomOutScale = 1 / zoomInScale;
@@ -460,28 +534,31 @@
         animationScrollToTopView.alpha = 1.0;
     } completion:^(BOOL finished) {
         [UIView animateWithDuration:0.25 animations:^{
-            // unread tics count label move to center
-            animationScrollToTopView.unreadTicsCountLabel.center = animationScrollToTopView.center;
+            // new tics count label move to center
+            animationScrollToTopView.numberOfNewTicsLabel.center = animationScrollToTopView.center;
         } completion:^(BOOL finished) {
             [UIView animateWithDuration:0.1 animations:^{
                 // zoom in
-                animationScrollToTopView.unreadTicsCountLabel.transform = CGAffineTransformScale(animationScrollToTopView.unreadTicsCountLabel.transform, zoomInScale, zoomInScale);
+                animationScrollToTopView.numberOfNewTicsLabel.transform = CGAffineTransformScale(animationScrollToTopView.numberOfNewTicsLabel.transform, zoomInScale, zoomInScale);
             } completion:^(BOOL finished) {
                 // update count
-                animationScrollToTopView.unreadTicsCountLabel.text = [NSString stringWithFormat:@"%li", (unsigned long)[self.unreadTics count]];
+                animationScrollToTopView.numberOfNewTicsLabel.text = [NSString stringWithFormat:@"%li", (unsigned long)[self.receivedNewTics count]];
                 [UIView animateWithDuration:0.1 animations:^{
                     // zoom out
-                    animationScrollToTopView.unreadTicsCountLabel.transform = CGAffineTransformScale(animationScrollToTopView.unreadTicsCountLabel.transform, zoomOutScale, zoomOutScale);
+                    animationScrollToTopView.numberOfNewTicsLabel.transform = CGAffineTransformScale(animationScrollToTopView.numberOfNewTicsLabel.transform, zoomOutScale, zoomOutScale);
                 } completion:^(BOOL finished) {
                     [UIView animateWithDuration:0.25 delay:0.5 options:UIViewAnimationOptionAllowUserInteraction animations:^{
                         // move back to initial position
-                        animationScrollToTopView.unreadTicsCountLabel.center = animationUnreadTicsCountLabelInitialCenter;
+                        animationScrollToTopView.numberOfNewTicsLabel.center = animationNewTicsCountLabelInitialCenter;
                     } completion:^(BOOL finished) {
                         [UIView animateWithDuration:0.2 animations:^{
                             // title label fade back in
                             animationScrollToTopView.alpha = 0.0;
                         } completion:^(BOOL finished) {
                             [animationScrollToTopView removeFromSuperview];
+                            if (shouldBringBackNewTicsDropdownView) {
+                                [self showNewTicsDropdownView];
+                            }
                         }];
                     }];
                 }];

@@ -52,7 +52,7 @@ CGFloat const kTTComposeTableViewCellPadding = 3;
         
         // Display name label
         self.displayNameLabel = [[UILabel alloc] init];
-        self.displayNameLabel.font = [UIFont fontWithName:@"Avenir" size:self.displayNameLabel.font.pointSize];
+        self.displayNameLabel.font = [UIFont fontWithName:kTTUIDefaultFont size:self.displayNameLabel.font.pointSize];
         self.displayNameLabel.translatesAutoresizingMaskIntoConstraints = NO;
         [self.contentView addSubview:self.displayNameLabel];
         

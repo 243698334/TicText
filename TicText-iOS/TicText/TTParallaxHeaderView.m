@@ -42,7 +42,7 @@
         self.titleLabel.lineBreakMode = NSLineBreakByCharWrapping;
         self.titleLabel.autoresizingMask = self.imageView.autoresizingMask;
         self.titleLabel.textColor = [UIColor whiteColor];
-        self.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:24];
+        self.titleLabel.font = [UIFont fontWithName:kTTUIDefaultLightFont size:24];
         [self.imageScrollView addSubview:self.titleLabel];
         
         self.bluredImageView = [[UIImageView alloc] initWithFrame:self.imageView.frame];

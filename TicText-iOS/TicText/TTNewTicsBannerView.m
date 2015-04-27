@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 John Arendt. All rights reserved.
 //
 
-#import "TTUnreadTicsBannerView.h"
+#import "TTNewTicsBannerView.h"
 #define kShrunkHeight 44
 #import "TTConstants.h"
 
-@interface TTUnreadTicsBannerView () {
+@interface TTNewTicsBannerView () {
     BOOL _visible;
 }
 
@@ -19,7 +19,13 @@
 
 @end
 
-@implementation TTUnreadTicsBannerView
+CGFloat kTTNewTicsBannerViewHeight = 44;
+
+@implementation TTNewTicsBannerView
+
++ (CGFloat)height {
+    return kTTNewTicsBannerViewHeight;
+}
 
 -(instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -36,14 +42,14 @@
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:self.titleLabel];
         
-        self.unreadTicsCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.bounds.size.width - 50, 10, 30, radius)];
-        self.unreadTicsCountLabel.textColor = kTTUIPurpleColor;
-        self.unreadTicsCountLabel.backgroundColor = [UIColor whiteColor];
-        self.unreadTicsCountLabel.textAlignment = NSTextAlignmentCenter;
-        CALayer *unreadTicsCountLabelLayer = self.unreadTicsCountLabel.layer;
+        self.numberOfNewTicsLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.bounds.size.width - 50, 10, 30, radius)];
+        self.numberOfNewTicsLabel.textColor = kTTUIPurpleColor;
+        self.numberOfNewTicsLabel.backgroundColor = [UIColor whiteColor];
+        self.numberOfNewTicsLabel.textAlignment = NSTextAlignmentCenter;
+        CALayer *unreadTicsCountLabelLayer = self.numberOfNewTicsLabel.layer;
         [unreadTicsCountLabelLayer setMasksToBounds:YES];
         [unreadTicsCountLabelLayer setCornerRadius:12];
-        [self addSubview:self.unreadTicsCountLabel];
+        [self addSubview:self.numberOfNewTicsLabel];
         
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10 + (frame.size.height - kShrunkHeight)/2, radius, radius)];
         iv.image = [UIImage imageNamed:@"TicTextIconLightSmall"];
@@ -59,17 +65,17 @@
 
 - (void)reloadData {
     if (self.dataSource) {
-        NSInteger numberOfUnreadTics = [self.dataSource numberOfUnreadTicsInUnreadTicsBannerView];
-        self.unreadTicsCountLabel.text = [NSString stringWithFormat:@"%li", numberOfUnreadTics];
-        self.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:self.titleLabel.font.pointSize];
+        NSInteger numberOfUnreadTics = [self.dataSource numberOfNewTicsInNewTicsBannerView];
+        self.numberOfNewTicsLabel.text = [NSString stringWithFormat:@"%li", numberOfUnreadTics];
+        self.titleLabel.font = [UIFont fontWithName:kTTUIDefaultLightFont size:self.titleLabel.font.pointSize];
     }
-    [self updateTitleWithUnreadTicsListVisibile:self.isUnreadTicsListVisible];
+    [self updateTitleWithNewTicsDropdownVisibile:self.isUnreadTicsListVisible];
 }
 
-- (void)updateTitleWithUnreadTicsListVisibile:(BOOL)visible {
+- (void)updateTitleWithNewTicsDropdownVisibile:(BOOL)visible {
     self.isUnreadTicsListVisible = visible;
     
-    if (self.dataSource && [self.dataSource numberOfUnreadTicsInUnreadTicsBannerView] == 0) {
+    if (self.dataSource && [self.dataSource numberOfNewTicsInNewTicsBannerView] == 0) {
         self.titleLabel.text = @"You have no new Tics";
         return;
     }
@@ -83,7 +89,7 @@
 
 - (void)buttonPressed {
     if (self.delegate) {
-        [self.delegate didTapUnreadTicsBanner];
+        [self.delegate didTapNewTicsBanner];
     }
 }
 

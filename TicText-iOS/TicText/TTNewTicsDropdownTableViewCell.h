@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "TTTic.h"
 
-@interface TTUnreadTicsListTableViewCell : UITableViewCell
+@interface TTNewTicsDropdownTableViewCell : UITableViewCell
 
 + (CGFloat)height;
 

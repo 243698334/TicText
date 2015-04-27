@@ -52,7 +52,7 @@ CGFloat const kConversationTableViewCellTimestampWidth = 40;
         
         // Display name label
         self.displayNameLabel = [[UILabel alloc] init];
-        self.displayNameLabel.font = [UIFont fontWithName:@"Avenir" size:self.displayNameLabel.font.pointSize];
+        self.displayNameLabel.font = [UIFont fontWithName:kTTUIDefaultFont size:self.displayNameLabel.font.pointSize];
         self.displayNameLabel.translatesAutoresizingMaskIntoConstraints = NO;
         [self.contentView addSubview:self.displayNameLabel];
         
@@ -61,13 +61,13 @@ CGFloat const kConversationTableViewCellTimestampWidth = 40;
         self.lastTicLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.lastTicLabel.lineBreakMode = NSLineBreakByWordWrapping;
         self.lastTicLabel.numberOfLines = 0;
-        self.lastTicLabel.font = [UIFont fontWithName:@"Avenir-Light" size:self.displayNameLabel.font.pointSize - 4];
+        self.lastTicLabel.font = [UIFont fontWithName:kTTUIDefaultLightFont size:self.displayNameLabel.font.pointSize - 4];
         self.lastTicLabel.textColor = [UIColor grayColor];
         [self.contentView addSubview:self.lastTicLabel];
         
         // Timestamp label
         self.timestampLabel = [[UILabel alloc] init];
-        self.timestampLabel.font = [UIFont fontWithName:@"Avenir-Light" size:12];
+        self.timestampLabel.font = [UIFont fontWithName:kTTUIDefaultLightFont size:12];
         self.timestampLabel.textColor = [UIColor grayColor];
         self.translatesAutoresizingMaskIntoConstraints = NO;
         [self.contentView addSubview:self.timestampLabel];

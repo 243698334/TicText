@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#pragma mark - UIColors
+#pragma mark - UI
 extern float const kTTUIPurpleColorRed;
 extern float const kTTUIPurpleColorGreen;
 extern float const kTTUIPurpleColorBlue;
@@ -18,6 +18,11 @@ extern float const kTTUIPurpleColorAlpha;
                                          green:kTTUIPurpleColorGreen/255.0 \
                                           blue:kTTUIPurpleColorBlue/255.0 \
                                          alpha:kTTUIPurpleColorAlpha/255.0]
+
+extern NSString * const kTTUIDefaultFont;
+extern NSString * const kTTUIDefaultLightFont;
+extern NSString * const kTTUIDefaultUltraLightFont;
+
 
 #pragma mark - NSUserDefaults
 extern NSString * const kTTSessionIsValidLastCheckedKey;

@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import "TTUnreadTicsListTableViewCell.h"
+#import "TTNewTicsDropdownTableViewCell.h"
 
 #import <PureLayout/PureLayout.h>
 
-@interface TTUnreadTicsListTableViewCell ()
+@interface TTNewTicsDropdownTableViewCell ()
 
 @property (nonatomic, assign) BOOL addedConstraints;
 @property (nonatomic, strong) UILabel *timeLeftLabel;
@@ -22,7 +22,7 @@
 CGFloat const kTTUnreadTicsListTableViewCellHeight = 36;
 CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
 
-@implementation TTUnreadTicsListTableViewCell
+@implementation TTNewTicsDropdownTableViewCell
 
 + (CGFloat)height {
     return kTTUnreadTicsListTableViewCellHeight;
@@ -39,7 +39,7 @@ CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
         self.backgroundColor = kTTUIPurpleColor;
         
         self.timeLeftLabel = [[UILabel alloc] initWithFrame:self.bounds];
-        self.timeLeftLabel.font = [UIFont fontWithName:@"Avenir-Light" size:self.timeLeftLabel.font.pointSize];
+        self.timeLeftLabel.font = [UIFont fontWithName:kTTUIDefaultLightFont size:self.timeLeftLabel.font.pointSize];
         self.timeLeftLabel.textColor = [UIColor whiteColor];
         self.timeLeftLabel.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:self.timeLeftLabel];

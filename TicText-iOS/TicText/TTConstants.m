@@ -15,6 +15,10 @@ float const kTTUIPurpleColorGreen = 100.0;
 float const kTTUIPurpleColorBlue = 200.0;
 float const kTTUIPurpleColorAlpha = 255.0;
 
+NSString * const kTTUIDefaultFont = @"Avenir";
+NSString * const kTTUIDefaultLightFont = @"Avenir-Light";
+NSString * const kTTUIDefaultUltraLightFont = @"AvenirNext-UltraLight";
+
 
 #pragma mark - NSUserDefaults
 NSString * const kTTSessionIsValidLastCheckedKey = @"SessionIsValidLastCheckedKey";
