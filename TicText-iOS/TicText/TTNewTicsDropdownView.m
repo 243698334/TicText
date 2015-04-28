@@ -27,12 +27,15 @@ CGFloat const kUnreadTicsListViewScrollHintLabelHeight = 20;
 
 @implementation TTNewTicsDropdownView
 
++ (CGFloat)height {
+    return kUnreadTicsListViewMaximumNumberOfRowsShown * [TTNewTicsDropdownTableViewCell height] + kUnreadTicsListViewScrollHintLabelHeight;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         // summary view
         self.summaryView = [[TTNewTicsDropdownSummaryView alloc] initWithFrame:self.bounds];
         self.summaryView.dataSource = self;
-        //self.summaryView.backgroundColor = kTTUIPurpleColor;
         [self addSubview:self.summaryView];
         
         // table view
@@ -40,7 +43,7 @@ CGFloat const kUnreadTicsListViewScrollHintLabelHeight = 20;
         self.unreadTicsTableView.delegate = self;
         self.unreadTicsTableView.dataSource = self;
         self.unreadTicsTableView.clipsToBounds = YES;
-        self.unreadTicsTableView.backgroundColor = kTTUIPurpleColor;
+        self.unreadTicsTableView.backgroundColor = [UIColor clearColor];
         self.unreadTicsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
         [self.unreadTicsTableView registerClass:[TTNewTicsDropdownTableViewCell class] forCellReuseIdentifier:[TTNewTicsDropdownTableViewCell reuseIdentifier]];
         [self.unreadTicsTableView reloadData];
@@ -55,12 +58,11 @@ CGFloat const kUnreadTicsListViewScrollHintLabelHeight = 20;
         self.scrollHintLabel.alpha = 0.0;
         self.isScrollHintLabelVisible = NO;
         [self addSubview:self.scrollHintLabel];
-    }
+        
+        // background image
+        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:[NSString stringWithFormat:@"NewTicsDropdownViewBackground-%@w", @([UIScreen mainScreen].bounds.size.width)]]];
+     }
     return self;
-}
-
-+ (CGFloat)height {
-    return kUnreadTicsListViewMaximumNumberOfRowsShown * [TTNewTicsDropdownTableViewCell height] + kUnreadTicsListViewScrollHintLabelHeight;
 }
 
 - (void)reloadData {
@@ -155,10 +157,16 @@ CGFloat const kUnreadTicsListViewScrollHintLabelHeight = 20;
 #pragma mark - TTUnreadTicsListSummaryViewDataSource
 
 - (NSInteger)numberOfUnreadTics {
-    return 7;
+    if (self.dataSource) {
+        return [self.dataSource numberOfUnreadTicsInNewTicsDropdownView];
+    }
+    return 0;
 }
 
 - (NSInteger)numberOfExpiredTics {
+    if (self.dataSource) {
+        return [self.dataSource numberOfExpiredTicsInNewTicsDropdownView];
+    }
     return 0;
 }
 

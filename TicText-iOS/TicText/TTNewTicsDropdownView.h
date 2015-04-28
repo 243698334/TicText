@@ -25,6 +25,12 @@
 - (NSInteger)numberOfRowsInNewTicsDropdownView;
 
 @required
+- (NSInteger)numberOfUnreadTicsInNewTicsDropdownView;
+
+@required
+- (NSInteger)numberOfExpiredTicsInNewTicsDropdownView;
+
+@required
 - (TTNewTicsDropdownTableViewCell *)unreadTicsListView:(TTNewTicsDropdownView *)unreadTicsListView cellForRowAtIndex:(NSInteger)index;
 
 @end

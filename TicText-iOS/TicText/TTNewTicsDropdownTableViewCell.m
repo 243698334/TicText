@@ -35,13 +35,13 @@ CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self.addedConstraints = NO;
-        
-        self.backgroundColor = kTTUIPurpleColor;
+        self.backgroundColor = [UIColor clearColor];
+        self.contentView.backgroundColor = [UIColor clearColor];
         
         self.timeLeftLabel = [[UILabel alloc] initWithFrame:self.bounds];
         self.timeLeftLabel.font = [UIFont fontWithName:kTTUIDefaultLightFont size:self.timeLeftLabel.font.pointSize];
         self.timeLeftLabel.textColor = [UIColor whiteColor];
-        self.timeLeftLabel.textAlignment = NSTextAlignmentCenter;
+        self.timeLeftLabel.textAlignment = NSTextAlignmentLeft;
         [self.contentView addSubview:self.timeLeftLabel];
         [self.contentView bringSubviewToFront:self.timeLeftLabel];
         
@@ -52,7 +52,8 @@ CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
 
 - (void)updateConstraints {
     if (!self.addedConstraints) {
-        [self.timeLeftLabel autoCenterInSuperview];
+        [self.timeLeftLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeLeft];
+        [self.timeLeftLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self.contentView withMultiplier:0.8];
         self.addedConstraints = YES;
     }
     [super updateConstraints];
@@ -72,13 +73,16 @@ CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
     NSInteger secondsLeft = (NSInteger)(timeLeft - 3600 * hoursLeft - 60 * minutesLeft);
     
     if (timeLeft <= 0) {
-        self.timeLeftLabel.text = @"expired";
+        NSDate *expirationTimestamp = [NSDate dateWithTimeInterval:self.unreadTic.timeLimit sinceDate:self.unreadTic.sendTimestamp];
+        NSDateFormatter *expirationTimestampFormatter = [[NSDateFormatter alloc] init];
+        [expirationTimestampFormatter setDateFormat:@"h:mm a"];
+        self.timeLeftLabel.text = [NSString stringWithFormat:@"expired at %@", [expirationTimestampFormatter stringFromDate:expirationTimestamp]];
     } else if (timeLeft < 60) {
-        self.timeLeftLabel.text = [NSString stringWithFormat:@"%lds", (long)secondsLeft];
+        self.timeLeftLabel.text = [NSString stringWithFormat:@"%lds left", (long)secondsLeft];
     } else if (timeLeft < 60 * 60) {
-        self.timeLeftLabel.text = [NSString stringWithFormat:@"%ldm %lds", (long)minutesLeft, (long)secondsLeft];
+        self.timeLeftLabel.text = [NSString stringWithFormat:@"%ldm %lds left", (long)minutesLeft, (long)secondsLeft];
     } else {
-        self.timeLeftLabel.text = [NSString stringWithFormat:@"%ldh %ldm %lds", hoursLeft, minutesLeft, secondsLeft];
+        self.timeLeftLabel.text = [NSString stringWithFormat:@"%ldh %ldm %lds left", hoursLeft, minutesLeft, secondsLeft];
     }
 }
 

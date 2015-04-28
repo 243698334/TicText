@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+#import "TTComposeTableViewCell.h"
 #import "TTUser.h"
 
 @protocol TTComposeViewDelegate <NSObject>
@@ -16,8 +17,16 @@
 
 @end
 
+@protocol TTComposeViewDataSource <NSObject>
+
+//- (TTComposeTableViewCell *)
+
+@end
+
 @interface TTComposeView : UIView <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, weak) id<TTComposeViewDelegate> delegate;
+
+- (void)reloadData;
 
 @end

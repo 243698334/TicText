@@ -52,6 +52,7 @@ CGFloat const kConversationTableViewCellTimestampWidth = 40;
         
         // Display name label
         self.displayNameLabel = [[UILabel alloc] init];
+        self.displayNameLabel.textColor = kTTUIPurpleColor;
         self.displayNameLabel.font = [UIFont fontWithName:kTTUIDefaultFont size:self.displayNameLabel.font.pointSize];
         self.displayNameLabel.translatesAutoresizingMaskIntoConstraints = NO;
         [self.contentView addSubview:self.displayNameLabel];

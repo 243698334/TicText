@@ -31,6 +31,7 @@
 @property (nonatomic, strong) UITableView *conversationsTableView;
 
 @property (nonatomic, strong) NSTimer *updateCellTimer;
+@property (nonatomic, strong) UISwipeGestureRecognizer *swipeGestureRecognizer;
 
 @property (nonatomic, strong) NSMutableArray *conversations;
 @property (nonatomic, strong) NSMutableArray *receivedNewTics;
@@ -99,7 +100,24 @@
     }];
     
     [self loadInterface];
+    self.swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipeVerticallyWithGestureRecognizer:)];
+    self.swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown;
+    [self.conversationsTableView addGestureRecognizer:self.swipeGestureRecognizer];
     
+}
+
+- (void)didSwipeVerticallyWithGestureRecognizer:(UISwipeGestureRecognizer *)swipeGestureRecognizer {
+    if (self.isNewTicsDropdownViewVisible) {
+        if ([swipeGestureRecognizer locationInView:self.view].y > [TTNewTicsDropdownView height] + [TTNewTicsBannerView height]) {
+            [self hideNewTicsDropdownView];
+            NSLog(@"hi");
+        }
+    }
+    NSLog(@"didSwipeVerticallyWithGestureRecognizer");
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -216,22 +234,29 @@
 
 - (void)showComposeView {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(hideComposeView)];
-    self.composeView = [[TTComposeView alloc] initWithFrame:CGRectMake(0, self.receivedNewTicsBannerView.bounds.size.height - 20, self.view.frame.size.width, self.view.frame.size.height - 49)];
+    self.composeView = [[TTComposeView alloc] initWithFrame:CGRectMake(0, -(self.view.bounds.size.height - 49 - 44 - 20), self.view.bounds.size.width, self.view.bounds.size.height - 49)];
     self.composeView.delegate = self;
-    CATransition *transition = [CATransition animation];
-    transition.duration = 0.25;
-    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    transition.type = kCATransitionPush;
-    transition.subtype = kCATransitionFromBottom;
-    transition.delegate = self;
+    self.composeView.translatesAutoresizingMaskIntoConstraints = YES;
     [self.view addSubview:self.composeView];
-    [self.composeView.layer addAnimation:transition forKey:nil];
+    
+    CGRect composeViewExpandedFrame = self.composeView.frame;
+    composeViewExpandedFrame.origin.y = 64;
+    
+    [UIView animateWithDuration:0.25 animations:^{
+        self.composeView.frame = composeViewExpandedFrame;
+    } completion:^(BOOL finished) {
+        [self.composeView reloadData];
+    }];
 }
 
 - (void)hideComposeView {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(showComposeView)];
+    
+    CGRect composeViewCollapsedFrame = self.composeView.frame;
+    composeViewCollapsedFrame.origin.y = composeViewCollapsedFrame.origin.y - composeViewCollapsedFrame.size.height;
+    
     [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
-        self.composeView.frame = CGRectMake(self.composeView.frame.origin.x, self.composeView.frame.origin.y - self.composeView.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
+        self.composeView.frame = composeViewCollapsedFrame;
     } completion:^(BOOL finished) {
         [self.composeView removeFromSuperview];
     }];
@@ -244,9 +269,9 @@
     self.receivedNewTicsDropdownView = [[TTNewTicsDropdownView alloc] initWithFrame:CGRectMake(0, [TTNewTicsBannerView height], self.view.bounds.size.width, 0)];
     self.receivedNewTicsDropdownView.delegate = self;
     self.receivedNewTicsDropdownView.dataSource = self;
-    self.receivedNewTicsDropdownView.backgroundColor = kTTUIPurpleColor;
     self.receivedNewTicsDropdownView.translatesAutoresizingMaskIntoConstraints = YES;
     [self.receivedNewTicsBannerView addSubview:self.receivedNewTicsDropdownView];
+    [self.receivedNewTicsBannerView bringSubviewToFront:self.receivedNewTicsDropdownView];
     
     CGRect receivedNewTicsDropdownViewExpandedFrame = self.receivedNewTicsDropdownView.frame;
     receivedNewTicsDropdownViewExpandedFrame.size.height = [TTNewTicsDropdownView height];
@@ -285,6 +310,17 @@
     }];
 }
 
+- (void)reloadDataForViews {
+    // reload data for scroll to top view
+    [self.receivedNewTicsBannerView reloadData];
+    
+    // reload data for new Tics view
+    [self.receivedNewTicsDropdownView reloadData];
+    
+    // reload data for conversations
+    [self.conversationsTableView reloadData];
+}
+
 
 #pragma mark - TTNewTicsBannerViewDelegate
 
@@ -308,6 +344,7 @@
 
 - (void)receivedNewTicsDropdownViewDidSelectNewTicAtIndex:(NSInteger)index {
     NSLog(@"Selected unread Tic at index: %li", index);
+    TTTic *selectedNewTic = [self.receivedNewTics objectAtIndex:index];
 }
 
 
@@ -317,21 +354,18 @@
     return [self.receivedNewTics count];
 }
 
+- (NSInteger)numberOfUnreadTicsInNewTicsDropdownView {
+    return 6;
+}
+
+- (NSInteger)numberOfExpiredTicsInNewTicsDropdownView {
+    return 1;
+}
+
 - (TTNewTicsDropdownTableViewCell *)unreadTicsListView:(TTNewTicsDropdownView *)unreadTicsListView cellForRowAtIndex:(NSInteger)index {
     TTNewTicsDropdownTableViewCell *unreadTicsListTableViewCell = [[TTNewTicsDropdownTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[TTNewTicsDropdownTableViewCell reuseIdentifier]];
     [unreadTicsListTableViewCell updateWithUnreadTic:[self.receivedNewTics objectAtIndex:index]];
     return unreadTicsListTableViewCell;
-}
-
-- (void)reloadDataForViews {
-    // reload data for scroll to top view
-    [self.receivedNewTicsBannerView reloadData];
-    
-    // reload data for new Tics view
-    [self.receivedNewTicsDropdownView reloadData];
-    
-    // reload data for conversations
-    [self.conversationsTableView reloadData];
 }
 
 
@@ -340,7 +374,9 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.isNewTicsDropdownViewVisible) {
         [self hideNewTicsDropdownView];
+
     }
+    //NSLog(@"scrollViewDidScroll");
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

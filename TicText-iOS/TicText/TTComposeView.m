@@ -9,12 +9,15 @@
 #import "TTComposeView.h"
 
 #import <QuartzCore/QuartzCore.h>
+#import <PureLayout/PureLayout.h>
 #import "TTUtility.h"
 #import "TTParallaxHeaderView.h"
 #import "TTComposeTableViewCell.h"
 #import "TTUser.h"
 
 @interface TTComposeView ()
+
+@property (nonatomic, assign) BOOL addedConstraints;
 
 @property (nonatomic, strong) TTParallaxHeaderView *parallaxHeaderView;
 @property (nonatomic, strong) UITableView *contactsTableView;
@@ -27,8 +30,10 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+        self.addedConstraints = NO;
+        
         self.parallaxHeaderView = [[TTParallaxHeaderView alloc] initWithTitle:@"Start Ticing with your friends" image:[UIImage imageNamed:@"ComposeHeader"] size:CGSizeMake(self.frame.size.width, self.frame.size.width * 0.375)];
-        self.contactsTableView = [[UITableView alloc] initWithFrame:self.frame style:UITableViewStyleGrouped];
+        self.contactsTableView = [[UITableView alloc] initWithFrame:self.bounds style:UITableViewStyleGrouped];
         self.contactsTableView.delegate = self;
         self.contactsTableView.dataSource = self;
         self.contactsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -60,6 +65,18 @@
         self.anonymous = NO; // TODO: add a toggle on UI to set this property
         [self.contactsTableView reloadData];
     }
+}
+
+- (void)reloadData {
+    [self setNeedsUpdateConstraints];
+}
+
+- (void)updateConstraints {
+    if (!self.addedConstraints) {
+        [self.contactsTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+        self.addedConstraints = YES;
+    }
+    [super updateConstraints];
 }
 
 - (void)layoutSubviews {
