@@ -63,8 +63,8 @@
 		CDB970881ADB60A80054079B /* TTMessagesToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB970871ADB60A80054079B /* TTMessagesToolbar.m */; };
 		CDB9708C1ADB6FFB0054079B /* TTMessagesToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB9708B1ADB6FFB0054079B /* TTMessagesToolbarItem.m */; };
 		CDB970901ADB78840054079B /* TTTextToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB9708F1ADB78840054079B /* TTTextToolbarItem.m */; };
+		F92A039E1AF0350D00D3D138 /* UIImage+SquareImage.m in Sources */ = {isa = PBXBuildFile; fileRef = F92A039D1AF0350D00D3D138 /* UIImage+SquareImage.m */; };
 		F984314B1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F984314A1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m */; };
-		F984314E1AE18A4600EA66F5 /* TTScrollingLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F984314D1AE18A4600EA66F5 /* TTScrollingLayout.m */; };
 		F98431511AE18A5500EA66F5 /* TTScrollingImagePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = F98431501AE18A5500EA66F5 /* TTScrollingImagePickerView.m */; };
 		F984315A1AE1A70E00EA66F5 /* TTImageToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F98431591AE1A70E00EA66F5 /* TTImageToolbarItem.m */; };
 /* End PBXBuildFile section */
@@ -177,10 +177,10 @@
 		CDB9708E1ADB78840054079B /* TTTextToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTextToolbarItem.h; sourceTree = "<group>"; };
 		CDB9708F1ADB78840054079B /* TTTextToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTextToolbarItem.m; sourceTree = "<group>"; };
 		E62ADB5018418278F1D7F35F /* libPods-TicText.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicText.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F92A039C1AF0350D00D3D138 /* UIImage+SquareImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+SquareImage.h"; sourceTree = "<group>"; };
+		F92A039D1AF0350D00D3D138 /* UIImage+SquareImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SquareImage.m"; sourceTree = "<group>"; };
 		F98431491AE18A3300EA66F5 /* TTScrollingImagePickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollingImagePickerCell.h; sourceTree = "<group>"; };
 		F984314A1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingImagePickerCell.m; sourceTree = "<group>"; };
-		F984314C1AE18A4600EA66F5 /* TTScrollingLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollingLayout.h; sourceTree = "<group>"; };
-		F984314D1AE18A4600EA66F5 /* TTScrollingLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingLayout.m; sourceTree = "<group>"; };
 		F984314F1AE18A5500EA66F5 /* TTScrollingImagePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollingImagePickerView.h; sourceTree = "<group>"; };
 		F98431501AE18A5500EA66F5 /* TTScrollingImagePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingImagePickerView.m; sourceTree = "<group>"; };
 		F98431581AE1A70E00EA66F5 /* TTImageToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTImageToolbarItem.h; sourceTree = "<group>"; };
@@ -434,6 +434,8 @@
 				CD47483F1AB770DA00A4B8F6 /* TTExpirationDomain.m */,
 				CDB970821ADB572D0054079B /* UIView+Screenshot.h */,
 				CDB970831ADB572D0054079B /* UIView+Screenshot.m */,
+				F92A039C1AF0350D00D3D138 /* UIImage+SquareImage.h */,
+				F92A039D1AF0350D00D3D138 /* UIImage+SquareImage.m */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -505,8 +507,6 @@
 				F98431501AE18A5500EA66F5 /* TTScrollingImagePickerView.m */,
 				F98431491AE18A3300EA66F5 /* TTScrollingImagePickerCell.h */,
 				F984314A1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m */,
-				F984314C1AE18A4600EA66F5 /* TTScrollingLayout.h */,
-				F984314D1AE18A4600EA66F5 /* TTScrollingLayout.m */,
 			);
 			name = ScollImagePicker;
 			sourceTree = "<group>";
@@ -682,7 +682,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F984314E1AE18A4600EA66F5 /* TTScrollingLayout.m in Sources */,
 				0E68055F1A85306F00C013D2 /* TTConstants.m in Sources */,
 				CDB970881ADB60A80054079B /* TTMessagesToolbar.m in Sources */,
 				CD2CD4FF1AB634D300CFC89F /* TTExpirationPickerController.m in Sources */,
@@ -705,6 +704,7 @@
 				CD9F92861AB8F552006FFE67 /* TTExpirationPickerCell.m in Sources */,
 				2EDE551D1ADCDD400048FB0C /* TTContactTableViewCell.m in Sources */,
 				CD935B681A98E9FA0017325C /* TTUtility.m in Sources */,
+				F92A039E1AF0350D00D3D138 /* UIImage+SquareImage.m in Sources */,
 				0E0565231A9DEAD500242137 /* TTMessagesViewController.m in Sources */,
 				0EACA8791A99CB8800B93AAA /* TTTic.m in Sources */,
 				0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */,

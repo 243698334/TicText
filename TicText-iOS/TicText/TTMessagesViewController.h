@@ -20,7 +20,7 @@
 #define kDefaultExpirationTime      3600
 #define kMessagesToolbarHeight      44.0f
 
-@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, TSMessageViewProtocol, TTMessagesToolbarDelegate>
+@interface TTMessagesViewController : JSQMessagesViewController <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, TSMessageViewProtocol, TTMessagesToolbarDelegate, TTScrollingImagePickerViewDelegate>
 
 @property (nonatomic, strong) TTMessagesToolbar *messagesToolbar;
 @property (nonatomic, strong) UIView *toolbarContentView;

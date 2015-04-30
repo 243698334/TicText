@@ -8,7 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TTScrollingImagePickerView : UIView 
+@class TTScrollingImagePickerView;
+
+@protocol TTScrollingImagePickerViewDelegate <NSObject>
+
+- (void)needLoadMoreImagesForScrollingImagePicker:(TTScrollingImagePickerView *)scrollingImagePickerView ;
+
+@end
+
+@interface TTScrollingImagePickerView : UIView
+
+@property (nonatomic, assign) id<TTScrollingImagePickerViewDelegate> delegate;
 
 - (void)setImages:(NSArray *)images;
 

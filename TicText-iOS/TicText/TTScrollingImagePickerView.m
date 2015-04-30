@@ -9,18 +9,19 @@
 #import "TTScrollingImagePickerView.h"
 
 #import <PureLayout/PureLayout.h>
-#import "TTScrollingLayout.h"
 #import "TTScrollingImagePickerCell.h"
 
 #define kImageSpacing 2.0
 
 @interface TTScrollingImagePickerView () <UICollectionViewDataSource, UICollectionViewDelegate, TTScrollingImagePickerCellDelegate>
 
-@property (nonatomic) BOOL addConstraints;
+@property (nonatomic, assign) BOOL addConstraints;
+@property (nonatomic, assign) BOOL isLoading;
+@property (nonatomic, assign) BOOL needLoadMoreImages;
 @property (nonatomic, strong) UIButton *imagePickerButton;
-@property (nonatomic, weak) UICollectionView *collectionView;
+@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSMutableArray *imagesArray;
-@property (nonatomic, strong) TTScrollingLayout *flowLayout;
+@property (nonatomic, strong) UICollectionViewFlowLayout *flowLayout;
 @property (nonatomic, assign) NSInteger selectedIndex;
 @property (nonatomic, strong) TTScrollingImagePickerCell *selectedCell;
 
@@ -42,36 +43,29 @@
 }
 
 - (void)setup {
-    [self setClipsToBounds:YES];
-    
-    TTScrollingLayout *flow = [[TTScrollingLayout alloc] init];
-    flow.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    flow.minimumInteritemSpacing = kImageSpacing;
-    self.flowLayout = flow;
-    
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:flow];
-    collectionView.translatesAutoresizingMaskIntoConstraints = NO;
-    collectionView.delegate = self;
-    collectionView.dataSource = self;
-    collectionView.allowsMultipleSelection = NO;
-    collectionView.allowsSelection = YES;
-    collectionView.showsHorizontalScrollIndicator = NO;
-    collectionView.collectionViewLayout = flow;
-    [collectionView registerClass:[TTScrollingImagePickerCell class] forCellWithReuseIdentifier:@"Cell"];
-
-    [self addSubview:collectionView];
-    self.collectionView = collectionView;
-    
-    self.collectionView.backgroundColor = [UIColor whiteColor];
+    self.clipsToBounds = YES;
     self.backgroundColor = [UIColor clearColor];
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(collectionView);
+    self.flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    self.flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    self.flowLayout.minimumInteritemSpacing = kImageSpacing;
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[collectionView]|" options:0 metrics:nil views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[collectionView]|" options:0 metrics:nil views:views]];
+    self.collectionView = [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:self.flowLayout];
+    self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+    self.collectionView.delegate = self;
+    self.collectionView.dataSource = self;
+    self.collectionView.allowsMultipleSelection = NO;
+    self.collectionView.allowsSelection = YES;
+    self.collectionView.showsHorizontalScrollIndicator = NO;
+    self.collectionView.collectionViewLayout = self.flowLayout;
+    [self.collectionView registerClass:[TTScrollingImagePickerCell class] forCellWithReuseIdentifier:@"Cell"];
+    [self addSubview:self.collectionView];
+    
     
     self.imagePickerButton = [[UIButton alloc] init];
-    self.imagePickerButton.backgroundColor = [UIColor colorWithRed:130.0/255.0 green:100.0/255.0 blue:200.0/255.0 alpha:0.8];
+    [self.imagePickerButton setBackgroundColor:kTTUIPurpleColor];
+    [self.imagePickerButton setAlpha:0.8];
     [self.imagePickerButton setImage:[UIImage imageNamed:@"ImagePickerIcon"] forState:UIControlStateNormal];
     [self.imagePickerButton.layer setMasksToBounds:YES];
     [self.imagePickerButton.layer setCornerRadius:25];
@@ -80,19 +74,21 @@
                      forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.imagePickerButton];
     
+    self.needLoadMoreImages = YES;
+    
     self.addConstraints = NO;
-
     [self setNeedsUpdateConstraints];
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-//    self.flowLayout.estimatedItemSize = CGSizeMake(1, self.collectionView.frame.size.height);
 }
 
 - (void)updateConstraints {
     if (!self.addConstraints) {
         self.addConstraints = YES;
+        [self.collectionView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+        [self.collectionView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:self];
         [self.imagePickerButton autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self withOffset:-5 relation:NSLayoutRelationEqual];
         [self.imagePickerButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:self withOffset:5 relation:NSLayoutRelationEqual];
         [self.imagePickerButton autoSetDimension:ALDimensionHeight toSize:50];
@@ -107,9 +103,9 @@
 }
 
 - (void)setImages:(NSMutableArray *)images {
-    self.imagesArray = [images copy];
-    
+    self.imagesArray = images;
     [self.collectionView reloadData];
+    self.isLoading = NO;
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -148,6 +144,15 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.selectedCell) {
         [self removeEffectFromCell:self.selectedCell];
+    }
+    // reach the right end of the scrollView
+    if (scrollView.contentOffset.x + scrollView.frame.size.width >= scrollView.contentSize.width) {
+        if (!self.isLoading) {
+            self.isLoading = YES;
+            if (self.delegate) {
+                [self.delegate needLoadMoreImagesForScrollingImagePicker:self];
+            }
+        }
     }
 }
 

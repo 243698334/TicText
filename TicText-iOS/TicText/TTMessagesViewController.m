@@ -10,11 +10,15 @@
 
 #import <AudioToolbox/AudioServices.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <JSQMessagesViewController/JSQMessagesKeyboardController.h>
+
 #import "TTTic.h"
 #import "TTActivity.h"
 
 #import "TTExpirationDomain.h"
 #import "UIView+Screenshot.h"
+#import "UIImage+SquareImage.h"
 
 #import "TTMessagesToolbarItem.h"
 #import "TTTextToolbarItem.h"
@@ -22,7 +26,6 @@
 #import "TTAnonymousToolbarItem.h"
 #import "TTExpirationToolbarItem.h"
 
-#import <JSQMessagesViewController/JSQMessagesKeyboardController.h>
 
 @interface JSQMessagesViewController (PrivateMethods)
 
@@ -56,6 +59,8 @@
 
 @property (nonatomic, strong) NSMutableArray *tics;
 @property (nonatomic, strong) NSMutableArray *jsqMessages;
+
+@property (nonatomic, strong) NSMutableArray *imagesFromCameraRoll;
 
 // @TODO: need customization
 @property (nonatomic, strong) JSQMessagesBubbleImage *outgoingBubbleImageData;
@@ -723,13 +728,65 @@
         [self setInputToolbarHiddenState:NO];
     } else {
         [self setInputToolbarHiddenState:YES];
-//        [self shouldStartPhotoLibraryWithTarget:self canEdit:YES];
+    }
+    
+    if ([item isKindOfClass:[TTImageToolbarItem class]]) {
+        [self loadImagesFromCameraRollWithAmount:5 inScrollingImagePickerView:((TTImageToolbarItem *)item).scrollingImagePickerView];
+        ((TTImageToolbarItem *)item).scrollingImagePickerView.delegate = self;
     }
     
     [self removeCurrentToolbarContentView];
     [self setupToolbarContentView:item.contentView];
     
     NSLog(@"TTMessagesViewController-messagesToolbar: Item shown with class: %@", item.class);
+}
+
+#pragma mark - TTScrollingImagePickerViewDelegate
+
+- (void)needLoadMoreImagesForScrollingImagePicker:(TTScrollingImagePickerView *)scrollingImagePickerView {
+    [self loadImagesFromCameraRollWithAmount:5 inScrollingImagePickerView:scrollingImagePickerView];
+}
+
+- (void)loadImagesFromCameraRollWithAmount:(NSInteger)amount inScrollingImagePickerView:(TTScrollingImagePickerView *)scrollingImagePickerView {
+    if (self.imagesFromCameraRoll == nil) {
+        self.imagesFromCameraRoll = [[NSMutableArray alloc] init];
+    }
+    
+    self.progressHUD = [MBProgressHUD showHUDAddedTo:scrollingImagePickerView animated:YES];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [[[ALAssetsLibrary alloc] init] enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+            if (group) {
+                [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+                NSUInteger lastIndex = [self.imagesFromCameraRoll count];
+                [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                    if (result) {
+                        if(index >= lastIndex && index < amount + lastIndex) {
+                            UIImage *image = [UIImage imageWithCGImage:[[result defaultRepresentation] fullScreenImage]];
+                            [self.imagesFromCameraRoll addObject:[UIImage squareImageWithImage:image scaledToSize:300]];
+                            NSLog(@"------------Loading Images #%ld -------------", index);
+                        }
+                    } else {
+                        *stop = YES;
+                        NSLog(@"------------Finished Loading Images-------------");
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [scrollingImagePickerView setImages:self.imagesFromCameraRoll];
+                            [self.progressHUD removeFromSuperview];
+                        });
+                    
+                    }
+                }];
+            }
+        } failureBlock:^(NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [TSMessage showNotificationWithTitle:@"Permission Denied"
+                                            subtitle:@"Please allow TicText to access your Camera Roll."
+                                                type:TSMessageNotificationTypeError];
+            });
+            
+        }];
+    });
+
 }
 
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar willHideItem:(TTMessagesToolbarItem *)item {
