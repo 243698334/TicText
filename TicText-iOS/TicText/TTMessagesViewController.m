@@ -26,6 +26,7 @@
 #import "TTAnonymousToolbarItem.h"
 #import "TTExpirationToolbarItem.h"
 
+#define kImageLoadAmount 10
 
 @interface JSQMessagesViewController (PrivateMethods)
 
@@ -731,7 +732,7 @@
     }
     
     if ([item isKindOfClass:[TTImageToolbarItem class]]) {
-        [self loadImagesFromCameraRollWithAmount:5 inScrollingImagePickerView:((TTImageToolbarItem *)item).scrollingImagePickerView];
+        [self loadImagesFromCameraRollWithAmount:kImageLoadAmount inScrollingImagePickerView:((TTImageToolbarItem *)item).scrollingImagePickerView];
         ((TTImageToolbarItem *)item).scrollingImagePickerView.delegate = self;
     }
     
@@ -744,7 +745,7 @@
 #pragma mark - TTScrollingImagePickerViewDelegate
 
 - (void)needLoadMoreImagesForScrollingImagePicker:(TTScrollingImagePickerView *)scrollingImagePickerView {
-    [self loadImagesFromCameraRollWithAmount:5 inScrollingImagePickerView:scrollingImagePickerView];
+    [self loadImagesFromCameraRollWithAmount:kImageLoadAmount inScrollingImagePickerView:scrollingImagePickerView];
 }
 
 - (void)loadImagesFromCameraRollWithAmount:(NSInteger)amount inScrollingImagePickerView:(TTScrollingImagePickerView *)scrollingImagePickerView {
