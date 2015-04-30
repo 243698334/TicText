@@ -759,10 +759,15 @@
         [[[ALAssetsLibrary alloc] init] enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
             if (group) {
                 [group setAssetsFilter:[ALAssetsFilter allPhotos]];
-                NSUInteger lastIndex = [self.imagesFromCameraRoll count];
-                [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                NSUInteger lastIndex = group.numberOfAssets - [self.imagesFromCameraRoll count];
+                [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
                     if (result) {
-                        if(index >= lastIndex && index < amount + lastIndex) {
+                        NSInteger lo = lastIndex - amount;
+                        NSInteger hi = lastIndex;
+                        if (lo < 0) {
+                            lo = 0;
+                        }
+                        if (index >= lo && index < hi) {
                             UIImage *image = [UIImage imageWithCGImage:[[result defaultRepresentation] fullScreenImage]];
                             [self.imagesFromCameraRoll addObject:[UIImage squareImageWithImage:image scaledToSize:300]];
                             NSLog(@"------------Loading Images #%ld -------------", index);
