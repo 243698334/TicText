@@ -13,7 +13,7 @@
 #import <PureLayout/PureLayout.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 
-#define scaledSize 300
+#define scaledSize 150
 
 @interface TTImageToolbarItem ()
 
