@@ -13,9 +13,8 @@
 @interface TTNewTicsDropdownTableViewCell ()
 
 @property (nonatomic, assign) BOOL addedConstraints;
-@property (nonatomic, strong) UILabel *timeLeftLabel;
-
-@property (nonatomic, strong) TTTic *unreadTic;
+@property (nonatomic, strong) UIImageView *bulletImageView;
+@property (nonatomic, strong) UILabel *titleLabel;
 
 @end
 
@@ -38,12 +37,15 @@ CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
         self.backgroundColor = [UIColor clearColor];
         self.contentView.backgroundColor = [UIColor clearColor];
         
-        self.timeLeftLabel = [[UILabel alloc] initWithFrame:self.bounds];
-        self.timeLeftLabel.font = [UIFont fontWithName:kTTUIDefaultLightFont size:self.timeLeftLabel.font.pointSize];
-        self.timeLeftLabel.textColor = [UIColor whiteColor];
-        self.timeLeftLabel.textAlignment = NSTextAlignmentLeft;
-        [self.contentView addSubview:self.timeLeftLabel];
-        [self.contentView bringSubviewToFront:self.timeLeftLabel];
+        self.bulletImageView = [[UIImageView alloc] init];
+        [self.contentView addSubview:self.bulletImageView];
+        
+        self.titleLabel = [[UILabel alloc] initWithFrame:self.bounds];
+        self.titleLabel.font = [UIFont fontWithName:kTTUIDefaultLightFont size:self.titleLabel.font.pointSize];
+        self.titleLabel.textColor = [UIColor whiteColor];
+        self.titleLabel.textAlignment = NSTextAlignmentLeft;
+        [self.contentView addSubview:self.titleLabel];
+        [self.contentView bringSubviewToFront:self.titleLabel];
         
         [self setNeedsUpdateConstraints];
     }
@@ -52,38 +54,67 @@ CGFloat const kTTUnreadTicsListTableViewCellPadding = 3;
 
 - (void)updateConstraints {
     if (!self.addedConstraints) {
-        [self.timeLeftLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeLeft];
-        [self.timeLeftLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self.contentView withMultiplier:0.8];
+        [self.bulletImageView autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:self.contentView];
+        [self.bulletImageView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionWidth ofView:self.bulletImageView];
+        
+        [self.titleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeLeft];
+        [self.titleLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self.contentView withMultiplier:0.8];
         self.addedConstraints = YES;
     }
     [super updateConstraints];
 }
 
-- (void)updateWithUnreadTic:(TTTic *)unreadTic {
-    self.unreadTic = unreadTic;
-    [self updateTimeLeftLabel];
+- (void)updateCellWithSendTimestamp:(NSDate *)sendTimestamp timeLimit:(NSTimeInterval)timeLimit {
+    [self updateTitleLabelWithSendTimestamp:sendTimestamp timeLimit:timeLimit];
+    [self updateAccessoryViewWithSendTimestamp:sendTimestamp timeLimit:timeLimit];
 }
 
-- (void)updateTimeLeftLabel {
-    NSTimeInterval timePassed = [[NSDate date] timeIntervalSinceDate:self.unreadTic.sendTimestamp];
-    NSTimeInterval timeLeft = self.unreadTic.timeLimit - timePassed;
+- (void)updateCellWithNumberOfTicsFromSameSender:(NSInteger)numberOfNewTics {
+    [self updateTitleLabelWithNumberOfTicsFromSameSender:numberOfNewTics];
+    [self updateAccessoryViewWithNumberOfTicsFromSameSender:numberOfNewTics];
+}
+
+
+- (void)updateTitleLabelWithSendTimestamp:(NSDate *)sendTimestamp timeLimit:(NSTimeInterval)timeLimit {
+    NSTimeInterval timePassed = [[NSDate date] timeIntervalSinceDate:sendTimestamp];
+    NSTimeInterval timeLeft = timeLimit - timePassed;
     
     NSInteger hoursLeft = (NSInteger)(timeLeft / 3600);
     NSInteger minutesLeft = (NSInteger)(timeLeft - 3600 * hoursLeft) / 60;
     NSInteger secondsLeft = (NSInteger)(timeLeft - 3600 * hoursLeft - 60 * minutesLeft);
     
     if (timeLeft <= 0) {
-        NSDate *expirationTimestamp = [NSDate dateWithTimeInterval:self.unreadTic.timeLimit sinceDate:self.unreadTic.sendTimestamp];
+        NSDate *expirationTimestamp = [NSDate dateWithTimeInterval:timeLimit sinceDate:sendTimestamp];
         NSDateFormatter *expirationTimestampFormatter = [[NSDateFormatter alloc] init];
         [expirationTimestampFormatter setDateFormat:@"h:mm a"];
-        self.timeLeftLabel.text = [NSString stringWithFormat:@"expired at %@", [expirationTimestampFormatter stringFromDate:expirationTimestamp]];
+        self.titleLabel.text = [NSString stringWithFormat:@"expired at %@", [expirationTimestampFormatter stringFromDate:expirationTimestamp]];
+        self.titleLabel.textColor = [UIColor lightGrayColor];
     } else if (timeLeft < 60) {
-        self.timeLeftLabel.text = [NSString stringWithFormat:@"%lds left", (long)secondsLeft];
+        self.titleLabel.text = [NSString stringWithFormat:@"%lis left", secondsLeft];
     } else if (timeLeft < 60 * 60) {
-        self.timeLeftLabel.text = [NSString stringWithFormat:@"%ldm %lds left", (long)minutesLeft, (long)secondsLeft];
+        self.titleLabel.text = [NSString stringWithFormat:@"%lim %lis left", minutesLeft, secondsLeft];
     } else {
-        self.timeLeftLabel.text = [NSString stringWithFormat:@"%ldh %ldm %lds left", hoursLeft, minutesLeft, secondsLeft];
+        self.titleLabel.text = [NSString stringWithFormat:@"%lih %lim %lis left", hoursLeft, minutesLeft, secondsLeft];
     }
+}
+
+- (void)updateTitleLabelWithNumberOfTicsFromSameSender:(NSInteger)numberOfNewTics {
+    self.titleLabel.text = [NSString stringWithFormat:@"%li Tic%@ from same sender", numberOfNewTics, numberOfNewTics > 1 ? @"s" : @""];
+}
+
+- (void)updateAccessoryViewWithSendTimestamp:(NSDate *)sendTimestamp timeLimit:(NSTimeInterval)timeLimit {
+    NSTimeInterval timePassed = [[NSDate date] timeIntervalSinceDate:sendTimestamp];
+    NSTimeInterval timeLeft = timeLimit - timePassed;
+    
+    if (timeLeft <= 0) {
+        self.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"NewTicsDropdownTableViewCellAccessoryViewIconExpired"]];
+    } else {
+        self.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"NewTicsDropdownTableViewCellAccessoryViewIconUnread"]];
+    }
+}
+
+- (void)updateAccessoryViewWithNumberOfTicsFromSameSender:(NSInteger)numberOfNewTics {
+    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 }
 
 @end

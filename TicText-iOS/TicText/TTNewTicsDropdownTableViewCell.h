@@ -15,8 +15,8 @@
 
 + (NSString *)reuseIdentifier;
 
-- (void)updateWithUnreadTic:(TTTic *)unreadTic;
+- (void)updateCellWithSendTimestamp:(NSDate *)sendTimestamp timeLimit:(NSTimeInterval)timeLimit;
 
-- (void)updateTimeLeftLabel;
+- (void)updateCellWithNumberOfTicsFromSameSender:(NSInteger)numberOfNewTics;
 
 @end

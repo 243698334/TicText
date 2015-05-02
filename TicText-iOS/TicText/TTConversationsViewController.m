@@ -30,11 +30,15 @@
 @property (nonatomic, strong) TTComposeView *composeView;
 @property (nonatomic, strong) UITableView *conversationsTableView;
 
-@property (nonatomic, strong) NSTimer *updateCellTimer;
-@property (nonatomic, strong) UISwipeGestureRecognizer *swipeGestureRecognizer;
+@property (nonatomic, strong) NSTimer *updateVisibleConversationCellsTimer;
+@property (nonatomic, strong) NSTimer *updateVisibleNewTicCellsTimer;
 
 @property (nonatomic, strong) NSMutableArray *conversations;
-@property (nonatomic, strong) NSMutableArray *receivedNewTics;
+
+// properties for New Tics Dropdown View
+@property (nonatomic, strong) NSMutableDictionary *receivedNewTicsDictionary;
+@property (nonatomic, strong) NSArray *receivedNewTicsSortedKeys;
+@property (nonatomic, strong) NSString *receivedNewTicsDropdownViewSelectedSenderId;
 
 @end
 
@@ -43,96 +47,86 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.receivedNewTics = [[NSMutableArray alloc] init];
+    self.receivedNewTicsDictionary = [[NSMutableDictionary alloc] init];
     
     TTTic *unreadTic1 = [TTTic unreadTicWithId:@"fakeId1"];
     unreadTic1.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId1"];
     unreadTic1.sendTimestamp = [NSDate date];
-    unreadTic1.timeLimit = 100;
-    [self.receivedNewTics addObject:unreadTic1];
+    unreadTic1.timeLimit = 10;
+    [self storeNewTic:unreadTic1];
     
     TTTic *unreadTic2 = [TTTic unreadTicWithId:@"fakeId2"];
     unreadTic2.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
     unreadTic2.sendTimestamp = [NSDate date];
     unreadTic2.timeLimit = 150;
-    [self.receivedNewTics addObject:unreadTic2];
+    [self storeNewTic:unreadTic2];
     
     TTTic *unreadTic3 = [TTTic unreadTicWithId:@"fakeId3"];
     unreadTic3.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
     unreadTic3.sendTimestamp = [NSDate date];
     unreadTic3.timeLimit = 200;
-    [self.receivedNewTics addObject:unreadTic3];
+    [self storeNewTic:unreadTic3];
     
     TTTic *unreadTic4 = [TTTic unreadTicWithId:@"fakeId4"];
     unreadTic4.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId4"];
     unreadTic4.sendTimestamp = [NSDate date];
     unreadTic4.timeLimit = 2500;
-    [self.receivedNewTics addObject:unreadTic4];
+    [self storeNewTic:unreadTic4];
     
     TTTic *unreadTic5 = [TTTic unreadTicWithId:@"fakeId5"];
     unreadTic5.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId5"];
     unreadTic5.sendTimestamp = [NSDate date];
     unreadTic5.timeLimit = 3600 * 72;
-    [self.receivedNewTics addObject:unreadTic5];
+    [self storeNewTic:unreadTic5];
     
     TTTic *unreadTic6 = [TTTic unreadTicWithId:@"fakeId6"];
     unreadTic6.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
     unreadTic6.sendTimestamp = [NSDate date];
     unreadTic6.timeLimit = 4690;
-    [self.receivedNewTics addObject:unreadTic6];
+    [self storeNewTic:unreadTic6];
     
     TTTic *unreadTic7 = [TTTic unreadTicWithId:@"fakeId7"];
     unreadTic7.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
     unreadTic7.sendTimestamp = [NSDate date];
     unreadTic7.timeLimit = -1;
-    [self.receivedNewTics addObject:unreadTic7];
+    [self storeNewTic:unreadTic7];
     
-    [self.receivedNewTics sortUsingComparator:^NSComparisonResult(TTTic *firstUnreadTic, TTTic *secondUnreadTic) {
-        NSTimeInterval firstUnreadTicTimeLeft = firstUnreadTic.timeLimit - [[NSDate date] timeIntervalSinceDate:firstUnreadTic.sendTimestamp];
-        NSTimeInterval secondUnreadTicTimeLeft = secondUnreadTic.timeLimit - [[NSDate date] timeIntervalSinceDate:secondUnreadTic.sendTimestamp];
-        if (firstUnreadTicTimeLeft < 0) {
-            return NSOrderedAscending;
-        } else if (secondUnreadTicTimeLeft < 0) {
-            return NSOrderedDescending;
-        } else {
-            return firstUnreadTicTimeLeft > secondUnreadTicTimeLeft;
-        }
-    }];
+    TTTic *unreadTic8 = [TTTic unreadTicWithId:@"fakeId8"];
+    unreadTic8.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId9"];
+    unreadTic8.sendTimestamp = [NSDate date];
+    unreadTic8.timeLimit = -1;
+    [self storeNewTic:unreadTic8];
+    
+    TTTic *unreadTic9 = [TTTic unreadTicWithId:@"fakeIdp"];
+    unreadTic9.sender = [TTUser objectWithoutDataWithObjectId:@"unreadTic9"];
+    unreadTic9.sendTimestamp = [NSDate date];
+    unreadTic9.timeLimit = -1;
+    [self storeNewTic:unreadTic9];
+    
+    TTTic *unreadTic10 = [TTTic unreadTicWithId:@"fakeIdd"];
+    unreadTic10.sender = [TTUser objectWithoutDataWithObjectId:@"unreadTic10"];
+    unreadTic10.sendTimestamp = [NSDate date];
+    unreadTic10.timeLimit = -1;
+    [self storeNewTic:unreadTic10];
+    
+    NSLog(@"sender Ids: %@", self.receivedNewTicsSortedKeys);
     
     [self loadInterface];
-    self.swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipeVerticallyWithGestureRecognizer:)];
-    self.swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown;
-    [self.conversationsTableView addGestureRecognizer:self.swipeGestureRecognizer];
-    
-}
-
-- (void)didSwipeVerticallyWithGestureRecognizer:(UISwipeGestureRecognizer *)swipeGestureRecognizer {
-    if (self.isNewTicsDropdownViewVisible) {
-        if ([swipeGestureRecognizer locationInView:self.view].y > [TTNewTicsDropdownView height] + [TTNewTicsBannerView height]) {
-            [self hideNewTicsDropdownView];
-            NSLog(@"hi");
-        }
-    }
-    NSLog(@"didSwipeVerticallyWithGestureRecognizer");
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self loadConversations];
-    if (self.updateCellTimer != nil) {
-        [self.updateCellTimer invalidate];
+    if (self.updateVisibleConversationCellsTimer != nil) {
+        [self.updateVisibleConversationCellsTimer invalidate];
     }
-    self.updateCellTimer = [NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(updateVisibleCells) userInfo:nil repeats:YES];
+    self.updateVisibleConversationCellsTimer = [NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(updateVisibleConversationCells) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self reloadDataForViews];
-    [self updateVisibleCells];
+    [self updateVisibleConversationCells];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidReceiveNewTicWhileActive:) name:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
 }
 
@@ -152,25 +146,25 @@
 
 - (void)loadInterface {
     // navigation bar
+    self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.title = @"TicText";
-    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(showComposeView)];
     
-    // set up tableview
-    self.conversationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height) style:UITableViewStylePlain];
+    // new Tics banner view
+    self.isNewTicsDropdownViewVisible = NO;
+    self.receivedNewTicsBannerView = [[TTNewTicsBannerView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, [TTNewTicsBannerView height])];
+    self.receivedNewTicsBannerView.delegate = self;
+    self.receivedNewTicsBannerView.dataSource = self;
+    [self.view addSubview:self.receivedNewTicsBannerView];
+    
+    // conversations table view
+    self.conversationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, [TTNewTicsBannerView height], self.view.bounds.size.width, self.view.bounds.size.height) style:UITableViewStylePlain];
     self.conversationsTableView.delegate = self;
     self.conversationsTableView.dataSource = self;
     self.conversationsTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     self.conversationsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.conversationsTableView registerClass:[TTConversationTableViewCell class] forCellReuseIdentifier:[TTConversationTableViewCell reuseIdentifier]];
     [self.view addSubview:self.conversationsTableView];
-    
-    // scroll to top view
-    self.receivedNewTicsBannerView = [[TTNewTicsBannerView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, [TTNewTicsBannerView height])];
-    self.receivedNewTicsBannerView.delegate = self;
-    self.receivedNewTicsBannerView.dataSource = self;
-    
-    self.isNewTicsDropdownViewVisible = NO;
 }
 
 - (void)loadConversations {
@@ -205,7 +199,7 @@
     }];
 }
 
-- (void)updateVisibleCells {
+- (void)updateVisibleConversationCells {
     NSArray *indexPathsArray = [self.conversationsTableView indexPathsForVisibleRows];
     for (NSIndexPath *indexPath in indexPathsArray) {
         TTConversation *currentConversation = [self.conversations objectAtIndex:indexPath.row];
@@ -232,15 +226,19 @@
     }
 }
 
+- (void)updateVisibleNewTicCells {
+    
+}
+
 - (void)showComposeView {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(hideComposeView)];
-    self.composeView = [[TTComposeView alloc] initWithFrame:CGRectMake(0, -(self.view.bounds.size.height - 49 - 44 - 20), self.view.bounds.size.width, self.view.bounds.size.height - 49)];
+    self.composeView = [[TTComposeView alloc] initWithFrame:CGRectMake(0, -self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - 49)];
     self.composeView.delegate = self;
     self.composeView.translatesAutoresizingMaskIntoConstraints = YES;
     [self.view addSubview:self.composeView];
     
     CGRect composeViewExpandedFrame = self.composeView.frame;
-    composeViewExpandedFrame.origin.y = 64;
+    composeViewExpandedFrame.origin.y = 0;
     
     [UIView animateWithDuration:0.25 animations:^{
         self.composeView.frame = composeViewExpandedFrame;
@@ -270,20 +268,16 @@
     self.receivedNewTicsDropdownView.delegate = self;
     self.receivedNewTicsDropdownView.dataSource = self;
     self.receivedNewTicsDropdownView.translatesAutoresizingMaskIntoConstraints = YES;
-    [self.receivedNewTicsBannerView addSubview:self.receivedNewTicsDropdownView];
-    [self.receivedNewTicsBannerView bringSubviewToFront:self.receivedNewTicsDropdownView];
+    [self.view addSubview:self.receivedNewTicsDropdownView];
     
     CGRect receivedNewTicsDropdownViewExpandedFrame = self.receivedNewTicsDropdownView.frame;
-    receivedNewTicsDropdownViewExpandedFrame.size.height = [TTNewTicsDropdownView height];
-    
-    CGRect receivedNewTicsBannerViewExpandedFrame = self.receivedNewTicsBannerView.frame;
-    receivedNewTicsBannerViewExpandedFrame.size.height = receivedNewTicsBannerViewExpandedFrame.size.height + [TTNewTicsDropdownView height];
+    receivedNewTicsDropdownViewExpandedFrame.size.height = [TTNewTicsDropdownView initialHeight];
     
     [UIView animateWithDuration:0.25 animations:^{
         self.receivedNewTicsDropdownView.frame = receivedNewTicsDropdownViewExpandedFrame;
-        self.receivedNewTicsBannerView.frame = receivedNewTicsBannerViewExpandedFrame;
     } completion:^(BOOL finished) {
         [self.receivedNewTicsDropdownView reloadData];
+        self.updateVisibleNewTicCellsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateVisibleNewTicCells) userInfo:nil repeats:YES];
     }];
 }
 
@@ -336,37 +330,116 @@
 #pragma mark - TTNewTicsBannerViewDataSource
 
 - (NSInteger)numberOfNewTicsInNewTicsBannerView {
-    return [self.receivedNewTics count];
+    return [self.receivedNewTicsDictionary count];
 }
 
 
 #pragma mark - TTNewTicsDropdownViewDelegate
 
-- (void)receivedNewTicsDropdownViewDidSelectNewTicAtIndex:(NSInteger)index {
-    NSLog(@"Selected unread Tic at index: %li", index);
-    TTTic *selectedNewTic = [self.receivedNewTics objectAtIndex:index];
+- (BOOL)tableView:(UITableView *)tableView shouldShowTicsFromSameSenderWhenNewTicsDropdownViewDidSelectRowAtIndex:(NSInteger)index {
+    if (tableView.tag == kTTNewTicsDropdownViewAllNewTicsTableViewTag) {
+        NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:[self.receivedNewTicsSortedKeys objectAtIndex:index]];
+        if ([receivedNewTicsFromCurrentSender count] > 1) {
+            self.receivedNewTicsDropdownViewSelectedSenderId = [self.receivedNewTicsSortedKeys objectAtIndex:index];
+            return YES;
+        } else {
+            TTTic *currentTic = [receivedNewTicsFromCurrentSender firstObject];
+            NSLog(@"Should open current new Tic at index %li", index);
+            return NO;
+        }
+    }
+    
+    if (tableView.tag == kTTNewTicsDropdownViewSameSenderNewTicsTableViewTag) {
+        NSMutableArray *receivedNewTicsFromSelectedSender = [self.receivedNewTicsDictionary objectForKey:self.receivedNewTicsDropdownViewSelectedSenderId];
+        TTTic *currentTic = [receivedNewTicsFromSelectedSender objectAtIndex:index];
+        
+        return NO;
+    }
+    
+    return NO;
 }
 
+- (void)newTicsDropdownViewDidTapBackButton {
+    self.receivedNewTicsDropdownViewSelectedSenderId = nil;
+}
+
+- (void)newTicsDropdownViewDidTapClearAllExpiredTicsButton {
+    
+}
 
 #pragma mark - TTNewTicsDropdownViewDataSource
 
-- (NSInteger)numberOfRowsInNewTicsDropdownView {
-    return [self.receivedNewTics count];
+- (NSInteger)numberOfRowsInNewTicsDropdownViewTableView:(UITableView *)tableView {
+    if (tableView.tag == kTTNewTicsDropdownViewAllNewTicsTableViewTag) {
+        return [self.receivedNewTicsDictionary count];
+    }
+    
+    if (tableView.tag == kTTNewTicsDropdownViewSameSenderNewTicsTableViewTag) {
+        if (self.receivedNewTicsDropdownViewSelectedSenderId) {
+            return [[self.receivedNewTicsDictionary objectForKey:self.receivedNewTicsDropdownViewSelectedSenderId] count];
+        }
+    }
+    
+    return 0;
 }
 
 - (NSInteger)numberOfUnreadTicsInNewTicsDropdownView {
-    return 6;
+    NSInteger numberOfUnreadTics = 0;
+    for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
+        NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
+        for (TTTic *currentTic in receivedNewTicsFromCurrentSender) {
+            if (currentTic.status == kTTTicStatusUnread) {
+                numberOfUnreadTics++;
+            }
+        }
+    }
+    return numberOfUnreadTics;
 }
 
 - (NSInteger)numberOfExpiredTicsInNewTicsDropdownView {
-    return 1;
+    NSInteger numberOfExpiredTics = 0;
+    for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
+        NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
+        for (TTTic *currentTic in receivedNewTicsFromCurrentSender) {
+            if (currentTic.status == kTTTicStatusExpired) {
+                numberOfExpiredTics++;
+            }
+        }
+    }
+    return numberOfExpiredTics;
 }
 
-- (TTNewTicsDropdownTableViewCell *)unreadTicsListView:(TTNewTicsDropdownView *)unreadTicsListView cellForRowAtIndex:(NSInteger)index {
-    TTNewTicsDropdownTableViewCell *unreadTicsListTableViewCell = [[TTNewTicsDropdownTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[TTNewTicsDropdownTableViewCell reuseIdentifier]];
-    [unreadTicsListTableViewCell updateWithUnreadTic:[self.receivedNewTics objectAtIndex:index]];
-    return unreadTicsListTableViewCell;
+- (TTNewTicsDropdownTableViewCell *)tableView:(UITableView *)tableView cellForRowInNewTicsDropdownViewAtIndex:(NSInteger)index {
+    TTNewTicsDropdownTableViewCell *receivedNewTicsDropdownTableViewCell = [[TTNewTicsDropdownTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[TTNewTicsDropdownTableViewCell reuseIdentifier]];
+    
+    if (tableView.tag == kTTNewTicsDropdownViewAllNewTicsTableViewTag) {
+        NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:[self.receivedNewTicsSortedKeys objectAtIndex:index]];
+        if ([receivedNewTicsFromCurrentSender count] > 1) {
+            [receivedNewTicsDropdownTableViewCell updateCellWithNumberOfTicsFromSameSender:[receivedNewTicsFromCurrentSender count]];
+        } else {
+            TTTic *currentTic = [receivedNewTicsFromCurrentSender firstObject];
+            NSTimeInterval currentTicTimeLeft = currentTic.timeLimit - [[NSDate date] timeIntervalSinceDate:currentTic.sendTimestamp];
+            if (currentTicTimeLeft <= 1) {
+                currentTic.status = kTTTicStatusExpired;
+            }
+            [receivedNewTicsDropdownTableViewCell updateCellWithSendTimestamp:currentTic.sendTimestamp timeLimit:currentTic.timeLimit];
+        }
+    }
+    
+    if (tableView.tag == kTTNewTicsDropdownViewSameSenderNewTicsTableViewTag) {
+        NSMutableArray *receivedNewTicsFromSelectedSender = [self.receivedNewTicsDictionary objectForKey:self.receivedNewTicsDropdownViewSelectedSenderId];
+        TTTic *currentTic = [receivedNewTicsFromSelectedSender objectAtIndex:index];
+        NSTimeInterval currentTicTimeLeft = currentTic.timeLimit - [[NSDate date] timeIntervalSinceDate:currentTic.sendTimestamp];
+        if (currentTicTimeLeft <= 1) {
+            currentTic.status = kTTTicStatusExpired;
+        }
+        [receivedNewTicsDropdownTableViewCell updateCellWithSendTimestamp:currentTic.sendTimestamp timeLimit:currentTic.timeLimit];
+    }
+    return receivedNewTicsDropdownTableViewCell;
 }
+
+
+
 
 
 #pragma mark - UITableViewDataSource
@@ -405,19 +478,6 @@
     TTConversationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[TTConversationTableViewCell reuseIdentifier] forIndexPath:indexPath];
     [cell updateWithConversation:currentConversation];
     return cell;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return self.receivedNewTicsBannerView;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (self.isNewTicsDropdownViewVisible) {
-        return self.receivedNewTicsBannerView.bounds.size.height;// + self.unreadTicsListView.bounds.size.height;
-    }
-    else {
-        return self.receivedNewTicsBannerView.bounds.size.height;
-    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -523,29 +583,40 @@
     receivedNewTic.sender = [TTUser objectWithoutDataWithObjectId:senderUserId];
     receivedNewTic.sendTimestamp = sendTimestamp;
     receivedNewTic.timeLimit = [timeLimit doubleValue];
-    [self.receivedNewTics addObject:receivedNewTic];
-    [self.receivedNewTics sortUsingComparator:^NSComparisonResult(TTTic *firstNewTic, TTTic *secondNewTic) {
-        NSTimeInterval firstNewTicTimeLeft = firstNewTic.timeLimit - [[NSDate date] timeIntervalSinceDate:firstNewTic.sendTimestamp];
-        NSTimeInterval secondNewTicTimeLeft = secondNewTic.timeLimit - [[NSDate date] timeIntervalSinceDate:secondNewTic.sendTimestamp];
-        if (firstNewTicTimeLeft <= 0) {
-            firstNewTic.status = kTTTicStatusExpired;
-        }
-        
-        if (secondNewTicTimeLeft <= 0) {
-            secondNewTic.status = kTTTicStatusExpired;
-        }
-        
-        if (firstNewTicTimeLeft < 0) {
-            return NSOrderedAscending;
-        } else if (secondNewTicTimeLeft < 0) {
-            return NSOrderedDescending;
-        } else {
-            return firstNewTicTimeLeft < secondNewTicTimeLeft;
-        }
-    }];
     
+    [self storeNewTic:receivedNewTic];
     [self performNewTicAnimation];
     [self performSelector:@selector(reloadDataForViews) withObject:nil afterDelay:0.25];
+}
+
+- (void)storeNewTic:(TTTic *)receivedNewTic {
+    NSMutableArray *receivedNewTicsFromSameSender = [self.receivedNewTicsDictionary objectForKey:receivedNewTic.sender.objectId];
+    if (receivedNewTicsFromSameSender == nil) {
+        receivedNewTicsFromSameSender = [[NSMutableArray alloc] initWithObjects:receivedNewTic, nil];
+        [self.receivedNewTicsDictionary setObject:receivedNewTicsFromSameSender forKey:receivedNewTic.sender.objectId];
+    } else {
+        [receivedNewTicsFromSameSender addObject:receivedNewTic];
+    }
+    
+    self.receivedNewTicsSortedKeys = [self.receivedNewTicsDictionary keysSortedByValueUsingComparator:^NSComparisonResult(NSMutableArray *ticsFromFirstSender, NSMutableArray *ticsFromSecondSender) {
+        NSTimeInterval leastTimeLeftFromFirstSender = ((TTTic *)[ticsFromFirstSender firstObject]).timeLimit - [[NSDate date] timeIntervalSinceDate:((TTTic *)[ticsFromFirstSender firstObject]).sendTimestamp];
+        for (TTTic *currentTicFromFirstSender in ticsFromFirstSender) {
+            NSTimeInterval currentTicTimeLeftFromFirstSender = currentTicFromFirstSender.timeLimit - [[NSDate date] timeIntervalSinceDate:currentTicFromFirstSender.sendTimestamp];
+            if (currentTicTimeLeftFromFirstSender < leastTimeLeftFromFirstSender) {
+                leastTimeLeftFromFirstSender = currentTicTimeLeftFromFirstSender;
+            }
+        }
+        
+        NSTimeInterval leastTimeLeftFromSecondSender = ((TTTic *)[ticsFromSecondSender firstObject]).timeLimit - [[NSDate date] timeIntervalSinceDate:((TTTic *)[ticsFromSecondSender firstObject]).sendTimestamp];
+        for (TTTic *currentTicFromSecondSender in ticsFromSecondSender) {
+            NSTimeInterval currentTicTimeLeftFromSecondSender = currentTicFromSecondSender.timeLimit - [[NSDate date] timeIntervalSinceDate:currentTicFromSecondSender.sendTimestamp];
+            if (currentTicTimeLeftFromSecondSender < leastTimeLeftFromSecondSender) {
+                leastTimeLeftFromSecondSender = currentTicTimeLeftFromSecondSender;
+            }
+        }
+        
+        return leastTimeLeftFromFirstSender > leastTimeLeftFromSecondSender;
+    }];
 }
 
 - (void)performNewTicAnimation {
@@ -578,7 +649,7 @@
                 animationScrollToTopView.numberOfNewTicsLabel.transform = CGAffineTransformScale(animationScrollToTopView.numberOfNewTicsLabel.transform, zoomInScale, zoomInScale);
             } completion:^(BOOL finished) {
                 // update count
-                animationScrollToTopView.numberOfNewTicsLabel.text = [NSString stringWithFormat:@"%li", (unsigned long)[self.receivedNewTics count]];
+                animationScrollToTopView.numberOfNewTicsLabel.text = [NSString stringWithFormat:@"%li", (unsigned long)[self.receivedNewTicsDictionary count]];
                 [UIView animateWithDuration:0.1 animations:^{
                     // zoom out
                     animationScrollToTopView.numberOfNewTicsLabel.transform = CGAffineTransformScale(animationScrollToTopView.numberOfNewTicsLabel.transform, zoomOutScale, zoomOutScale);

@@ -9,20 +9,25 @@
 #import <UIKit/UIKit.h>
 
 #import "TTNewTicsDropdownSummaryView.h"
+#import "TTNewTicsDropdownButtonsView.h"
 #import "TTNewTicsDropdownTableViewCell.h"
 
 @class TTNewTicsDropdownView;
 
-@protocol TTUnreadTicsListViewDelegate <NSObject>
+@protocol TTNewTicsDropdownViewDelegate <NSObject>
 
-- (void)receivedNewTicsDropdownViewDidSelectNewTicAtIndex:(NSInteger)index;
+- (BOOL)tableView:(UITableView *)tableView shouldShowTicsFromSameSenderWhenNewTicsDropdownViewDidSelectRowAtIndex:(NSInteger)index;
+
+- (void)newTicsDropdownViewDidTapBackButton;
+
+- (void)newTicsDropdownViewDidTapClearAllExpiredTicsButton;
 
 @end
 
-@protocol TTUnreadTicsListViewDataSource <NSObject>
+@protocol TTNewTicsDropdownViewDataSource <NSObject>
 
 @required
-- (NSInteger)numberOfRowsInNewTicsDropdownView;
+- (NSInteger)numberOfRowsInNewTicsDropdownViewTableView:(UITableView *)tableView;
 
 @required
 - (NSInteger)numberOfUnreadTicsInNewTicsDropdownView;
@@ -31,16 +36,21 @@
 - (NSInteger)numberOfExpiredTicsInNewTicsDropdownView;
 
 @required
-- (TTNewTicsDropdownTableViewCell *)unreadTicsListView:(TTNewTicsDropdownView *)unreadTicsListView cellForRowAtIndex:(NSInteger)index;
+- (TTNewTicsDropdownTableViewCell *)tableView:(UITableView *)tableView cellForRowInNewTicsDropdownViewAtIndex:(NSInteger)index;
 
 @end
 
-@interface TTNewTicsDropdownView : UIView <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, TTNewTicsDropdownSummaryViewDataSource>
+extern NSInteger const kTTNewTicsDropdownViewAllNewTicsTableViewTag;
+extern NSInteger const kTTNewTicsDropdownViewSameSenderNewTicsTableViewTag;
 
-@property (nonatomic, assign) id<TTUnreadTicsListViewDelegate> delegate;
-@property (nonatomic, assign) id<TTUnreadTicsListViewDataSource> dataSource;
+@interface TTNewTicsDropdownView : UIView <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, TTNewTicsDropdownSummaryViewDataSource, TTNewTicsDropdownButtonsViewDelegate>
 
-+ (CGFloat)height;
+@property (nonatomic, assign) id<TTNewTicsDropdownViewDelegate> delegate;
+@property (nonatomic, assign) id<TTNewTicsDropdownViewDataSource> dataSource;
+
++ (CGFloat)initialHeight;
+
++ (CGFloat)fullViewHeight;
 
 - (void)reloadData;
 

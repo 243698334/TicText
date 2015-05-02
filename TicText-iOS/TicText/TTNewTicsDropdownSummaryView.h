@@ -20,8 +20,11 @@
 
 @interface TTNewTicsDropdownSummaryView : UIView
 
+@property (nonatomic, assign) BOOL isShowingLandscapeLayout;
 @property (nonatomic, assign) id<TTNewTicsDropdownSummaryViewDataSource> dataSource;
 
 - (void)reloadData;
+
+- (void)updateFrames;
 
 @end

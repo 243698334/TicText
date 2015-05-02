@@ -15,6 +15,7 @@
 		0E61D4701AAC48C800EF5826 /* TTMessagesViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E61D46F1AAC48C800EF5826 /* TTMessagesViewControllerTests.m */; };
 		0E6AFF7A1AB7F18A00FC69A9 /* TTTicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E6AFF791AB7F18A00FC69A9 /* TTTicTests.m */; };
 		0E6AFF7C1AB7FAAC00FC69A9 /* TTActivityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E6AFF7B1AB7FAAC00FC69A9 /* TTActivityTests.m */; };
+		0E74EC531AF43A5E001E253F /* TTNewTicsDropdownButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E74EC521AF43A5E001E253F /* TTNewTicsDropdownButtonsView.m */; };
 		0EC584E81A7864AA00025D71 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC584E71A7864AA00025D71 /* main.m */; };
 		0EC584F61A7864AA00025D71 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0EC584F41A7864AA00025D71 /* LaunchScreen.xib */; };
 		0ECE4AF91AE3D5060016A728 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4AF81AE3D5060016A728 /* TTConstants.m */; };
@@ -86,6 +87,8 @@
 		0E61D46F1AAC48C800EF5826 /* TTMessagesViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesViewControllerTests.m; sourceTree = "<group>"; };
 		0E6AFF791AB7F18A00FC69A9 /* TTTicTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTicTests.m; sourceTree = "<group>"; };
 		0E6AFF7B1AB7FAAC00FC69A9 /* TTActivityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTActivityTests.m; sourceTree = "<group>"; };
+		0E74EC511AF43A5E001E253F /* TTNewTicsDropdownButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTNewTicsDropdownButtonsView.h; sourceTree = "<group>"; };
+		0E74EC521AF43A5E001E253F /* TTNewTicsDropdownButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTNewTicsDropdownButtonsView.m; sourceTree = "<group>"; };
 		0EC584E21A7864AA00025D71 /* TicText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TicText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC584E61A7864AA00025D71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0EC584E71A7864AA00025D71 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -322,6 +325,8 @@
 				0E49DDAA1AEB221A0034BCFE /* TTNewTicsDropdownTableViewCell.m */,
 				0E2039611AEE3075006E89E1 /* TTNewTicsDropdownSummaryView.h */,
 				0E2039621AEE3075006E89E1 /* TTNewTicsDropdownSummaryView.m */,
+				0E74EC511AF43A5E001E253F /* TTNewTicsDropdownButtonsView.h */,
+				0E74EC521AF43A5E001E253F /* TTNewTicsDropdownButtonsView.m */,
 			);
 			name = "Custom UI";
 			sourceTree = "<group>";
@@ -620,6 +625,7 @@
 			files = (
 				0ECE4B2E1AE3D5490016A728 /* TTMessagesViewController.m in Sources */,
 				0ECE4B451AE3D56D0016A728 /* TTMessagesBubbleImage.m in Sources */,
+				0E74EC531AF43A5E001E253F /* TTNewTicsDropdownButtonsView.m in Sources */,
 				0ECE4B261AE3D5490016A728 /* TTRootViewController.m in Sources */,
 				0ECE4B2A1AE3D5490016A728 /* TTConversationsViewController.m in Sources */,
 				0ECE4B2D1AE3D5490016A728 /* TTSettingsViewController.m in Sources */,

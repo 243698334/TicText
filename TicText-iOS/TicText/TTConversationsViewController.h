@@ -13,7 +13,7 @@
 #import "TTComposeView.h"
 #import "TTConversationTableViewCell.h"
 
-@interface TTConversationsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, TTNewTicsBannerViewDelegate, TTNewTicsBannerViewDataSource, TTUnreadTicsListViewDelegate, TTUnreadTicsListViewDataSource, TTComposeViewDelegate>
+@interface TTConversationsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, TTNewTicsBannerViewDelegate, TTNewTicsBannerViewDataSource, TTNewTicsDropdownViewDelegate, TTNewTicsDropdownViewDataSource, TTComposeViewDelegate>
 
 - (BOOL)isMessagesViewControllerPresented;
 
