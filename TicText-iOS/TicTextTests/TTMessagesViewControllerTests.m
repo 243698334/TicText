@@ -43,6 +43,9 @@
 - (void)setInputToolbarHiddenState:(BOOL)hidden;
 - (UIWindow *)frontWindow;
 
+- (TTTic *)createTicWithMessegeText:(NSString *)text mediaContent:(id)mediaContent senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date;
+- (void)sendTicWithMediaContent:(TTTic *)tic;
+
 @end
 
 @interface TTMessagesViewControllerTests : XCTestCase
@@ -683,6 +686,20 @@
     // Assert
     OCMVerifyAll(mockMessagesToolbar);
     XCTAssertEqual([self.mockMessagesViewController messagesToolbar].selectedIndex, kTTMessagesToolbarSelectedItemNone);
+}
+
+- (void)testSendImageFromScrollingImagePickerView {
+    // Arrange
+    OCMStub([self.mockMessagesViewController createTicWithMessegeText:[OCMArg any] mediaContent:[OCMArg any] senderId:[OCMArg any] senderDisplayName:[OCMArg any] date:[OCMArg any]]).andReturn([TTTic object]);
+    OCMExpect([self.mockMessagesViewController sendTicWithMediaContent:[OCMArg isKindOfClass:[TTTic class]]]);
+    
+    // Act
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTScrollingUIImagePickerDidChooseImage
+                                                        object:nil
+                                                      userInfo:@{kTTScrollingUIImagePickerChosenImageKey : [OCMArg isKindOfClass:[UIImage class]]} ];
+    
+    // Assert
+    OCMVerifyAll(self.mockMessagesViewController);
 }
 
 @end
