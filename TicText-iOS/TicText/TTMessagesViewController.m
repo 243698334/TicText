@@ -14,8 +14,7 @@
 
 #import "TTExpirationDomain.h"
 
-#import "CountDownView.h"
-#import "CustomMessageCell.h"
+#import "TTCountDownView.h"
 
 #define kDefaultExpirationTime 3600
 #define kExpirationTimerIcon @"TicsTabBarIcon"
@@ -434,7 +433,7 @@
         NSTimeInterval timeLeft =  theTic.timeLimit + theTic.sendTimestamp.timeIntervalSinceNow;
         //NSLog(@"%d", theTic.sendTimestamp.timeIntervalSinceNow);
         //if (timeLeft > 0) {
-            CountDownView *myView = [[CountDownView alloc] initWithFrame:viewRect time:timeLeft delegate:self timeId:theTic.sendTimestamp];
+            TTCountDownView *myView = [[TTCountDownView alloc] initWithFrame:viewRect time:timeLeft delegate:self timeId:theTic.sendTimestamp];
             [myView setTag:1234];
             NSLog(@"the countdownview has been created");
             myView.layer.borderWidth = 2;
@@ -535,18 +534,29 @@
     
     //cell.textView.text = theTic.;
     
-    CountDownView *cdView = (CountDownView *)[cell.messageBubbleContainerView viewWithTag:1234];
+    TTCountDownView *cdView = (TTCountDownView *)[cell.messageBubbleContainerView viewWithTag:1234];
     //NSLog(cdView);
     NSTimeInterval timeLeft =  theTic.timeLimit + theTic.sendTimestamp.timeIntervalSinceNow;
     if(timeLeft > 0) {
         [cell.textView setHidden:NO];
         [cdView setHidden:YES];
-        theTic.status = kTTTicStatusRead;
+        //theTic.status = kTTTicStatusRead;
         
-        //[TTTic fetchTicInBackgroundWithId:theTic.objectId timestamp:theTic.sendTimestamp completion:^(TTTic *fetchedTic, NSError *error) {
-          //
-        //}];
-        [theTic saveInBackground];
+        [TTTic fetchTicInBackgroundWithId:theTic.objectId timestamp:theTic.sendTimestamp completion:^(TTTic *fetchedTic, NSError *error) {
+            if (fetchedTic) {
+                NSLog(@"fetchedTic is not null");
+                NSString *myString = [[NSString alloc] initWithData:fetchedTic.content encoding:NSUTF8StringEncoding];
+                NSLog(@" is dirty ? %d", fetchedTic.isDirty);
+                fetchedTic.status = kTTTicStatusRead;
+                NSLog(@" is dirty ? %d", fetchedTic.isDirty);
+                [fetchedTic saveEventually];
+            }
+            //fetchedTic.status = kTTTicStatusRead;
+            //[fetchedTic saveEventually];
+        }];
+        //[theTic saveInBackground];
+        //TTTic *testTic = [TTTic object];
+//        [testTic saveEventually];
 
         NSLog(@"The status of the tic should have been updated to StatusRead");
     }

@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import "CountDownView.h"
+#import "TTCountDownView.h"
 #import "TTMessagesViewController.h"
 #import <PureLayout/PureLayout.h>
 
-@interface CountDownView () {
+@interface TTCountDownView () {
     UILabel *timerLabel;
     int counter;
     TTMessagesViewController *delegate;
@@ -21,7 +21,7 @@
 
 @end
 
-@implementation CountDownView
+@implementation TTCountDownView
 
 - (id)initWithFrame:(CGRect)aRect time:(NSTimeInterval)timeLimit delegate:(TTMessagesViewController *)d timeId: (NSDate *)timeId{
     counter = (int)timeLimit;
