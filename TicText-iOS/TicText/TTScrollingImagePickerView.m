@@ -59,7 +59,7 @@
     self.collectionView.allowsSelection = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.collectionViewLayout = self.flowLayout;
-    [self.collectionView registerClass:[TTScrollingImagePickerCell class] forCellWithReuseIdentifier:@"Cell"];
+    [self.collectionView registerClass:[TTScrollingImagePickerCell class] forCellWithReuseIdentifier:@"ScrollingImagePickerCellToBeReused"];
     [self addSubview:self.collectionView];
     
     
@@ -115,7 +115,7 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    TTScrollingImagePickerCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
+    TTScrollingImagePickerCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"ScrollingImagePickerCellToBeReused"
                                                                                       forIndexPath:indexPath];
     [cell setImage:[self.imagesArray objectAtIndex:indexPath.row]];
     return cell;
