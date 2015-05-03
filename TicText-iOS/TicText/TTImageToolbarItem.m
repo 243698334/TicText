@@ -17,21 +17,17 @@
 
 @interface TTImageToolbarItem ()
 
-@property (nonatomic) BOOL addConstraints;
-
 @property (nonatomic) NSMutableArray *imagesFromCameraRoll;
 
-@property (nonatomic, strong) UIButton *imagePickerButton;
-@property (nonatomic, strong) MBProgressHUD *progressHUD;
 @end
 
 @implementation TTImageToolbarItem
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self setImage:[UIImage imageNamed:@"MeTabBarIcon"] forState:UIControlStateNormal];
-        [self setImage:[UIImage imageNamed:@"MeTabBarIconSelected"] forState:UIControlStateSelected];
-        [self setImage:[UIImage imageNamed:@"MeTabBarIconSelected"] forState:UIControlStateHighlighted];
+        [self setImage:[UIImage imageNamed:@"PhotoIcon"] forState:UIControlStateNormal];
+        [self setImage:[UIImage imageNamed:@"PhotoIconSelected"] forState:UIControlStateSelected];
+        [self setImage:[UIImage imageNamed:@"PhotoIconSelected"] forState:UIControlStateHighlighted];
         
         self.scrollingImagePickerView = [[TTScrollingImagePickerView alloc] init];
         self.scrollingImagePickerView.backgroundColor = [UIColor whiteColor];
