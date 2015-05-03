@@ -10,6 +10,6 @@
 
 @interface UIImage (SquareImage)
 
-+ (UIImage *)squareImageWithImage:(UIImage *)image scaledToSize:(CGFloat)newSize;
++ (UIImage *)squareImageWithImage:(UIImage *)image scaledToSize:(CGFloat)size;
 
 @end

@@ -25,9 +25,9 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self setImage:[UIImage imageNamed:@"PhotoIcon"] forState:UIControlStateNormal];
-        [self setImage:[UIImage imageNamed:@"PhotoIconSelected"] forState:UIControlStateSelected];
-        [self setImage:[UIImage imageNamed:@"PhotoIconSelected"] forState:UIControlStateHighlighted];
+        [self setImage:[UIImage imageNamed:@"ImageToolbarItemPhotoIcon"] forState:UIControlStateNormal];
+        [self setImage:[UIImage imageNamed:@"ImageToolbarItemPhotoIconSelected"] forState:UIControlStateSelected];
+        [self setImage:[UIImage imageNamed:@"ImageToolbarItemPhotoIconSelected"] forState:UIControlStateHighlighted];
         
         self.scrollingImagePickerView = [[TTScrollingImagePickerView alloc] init];
         self.scrollingImagePickerView.backgroundColor = [UIColor whiteColor];

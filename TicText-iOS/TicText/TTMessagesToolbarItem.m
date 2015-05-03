@@ -14,7 +14,6 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self setTitle:@"" forState:UIControlStateNormal];
         [self setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         [self setTitleColor:kTTUIPurpleColor forState:UIControlStateHighlighted];
         [self setTitleColor:kTTUIPurpleColor forState:UIControlStateSelected];

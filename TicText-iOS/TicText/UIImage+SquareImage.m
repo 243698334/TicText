@@ -10,38 +10,26 @@
 
 @implementation UIImage (SquareImage)
 
-+ (UIImage *)squareImageWithImage:(UIImage *)image scaledToSize:(CGFloat)newSize {
-    CGAffineTransform scaleTransform;
-    CGPoint origin;
++ (UIImage *)squareImageWithImage:(UIImage *)image scaledToSize:(CGFloat)size {
+    CGPoint origin = CGPointZero;
+    CGFloat scaleRatio = 0;
     
     if (image.size.width > image.size.height) {
-        CGFloat scaleRatio = newSize / image.size.height;
-        scaleTransform = CGAffineTransformMakeScale(scaleRatio, scaleRatio);
-        
-        origin = CGPointMake(-(image.size.width - image.size.height) / 2.0f, 0);
+        scaleRatio = size / image.size.height;
+        origin = CGPointMake(-(image.size.width - image.size.height) / 2, 0);
     } else {
-        CGFloat scaleRatio = newSize / image.size.width;
-        scaleTransform = CGAffineTransformMakeScale(scaleRatio, scaleRatio);
-        
-        origin = CGPointMake(0, -(image.size.height - image.size.width) / 2.0f);
+        scaleRatio = size / image.size.width;
+        origin = CGPointMake(0, -(image.size.height - image.size.width) / 2);
     }
+    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scaleRatio, scaleRatio);
     
-    CGSize size = CGSizeMake(newSize, newSize);
-    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
-        UIGraphicsBeginImageContextWithOptions(size, YES, 0);
-    } else {
-        UIGraphicsBeginImageContext(size);
-    }
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(size, size), YES, 0);
     
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextConcatCTM(context, scaleTransform);
-    
+    CGContextConcatCTM(UIGraphicsGetCurrentContext(), scaleTransform);
     [image drawAtPoint:origin];
-    
     image = UIGraphicsGetImageFromCurrentImageContext();
     
     UIGraphicsEndImageContext();
-    
     return image;
 }
 
