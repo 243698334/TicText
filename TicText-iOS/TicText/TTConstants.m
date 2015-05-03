@@ -15,6 +15,10 @@ float const kTTUIPurpleColorGreen = 100.0;
 float const kTTUIPurpleColorBlue = 200.0;
 float const kTTUIPurpleColorAlpha = 255.0;
 
+float const kTTUILightPurpleColorRed = 165.0;
+float const kTTUILightPurpleColorGreen = 140.0;
+float const kTTUILightPurpleColorBlue = 222.0;
+float const kTTUILightPurpleColorAlpha = 255.0;
 
 #pragma mark - NSUserDefaults
 NSString * const kTTSessionIsValidLastCheckedKey = @"SessionIsValidLastCheckedKey";
@@ -39,6 +43,16 @@ NSString * const kTTNotificationUserInfoErrorKey = @"error";
 NSString * const kTTNotificationUserInfoTicIdKey = @"ticId";
 NSString * const kTTNotificationUserInfoSenderUserIdKey = @"senderUserId";
 
+// UI Events
+NSString * const kTTScrollingImagePickerDidTapImagePickerButton = @"ScrollingImagePickerDidTapImagePickerButton";
+NSString * const kTTUIImagePickerDidDismissEvent = @"kTTUIImagePickerDidDismissEvent";
+NSString * const kTTScrollingUIImagePickerDidChooseImage = @"kTTUIImagePickerDidChooseImage";
+
+// UI Events Keys
+NSString * const kTTScrollingUIImagePickerChosenImageKey = @"kTTScrollingUIImagePickerChosenImageKey";
+
+// App Events
+NSString * const kTTApplicationDidBecomeActive = @"kTTApplicationDidBecomeActive";
 
 #pragma mark - NSError
 NSString * const kTTSessionErrorDomain = @"SessionError";

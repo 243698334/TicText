@@ -20,7 +20,7 @@
 @property (nonatomic, strong) NSDate *receiveTimestamp;
 @property (nonatomic, strong) TTUser *sender;
 @property (nonatomic, strong) TTUser *recipient;
-@property (nonatomic) BOOL read;
+@property (nonatomic, strong) PFFile *mediaContent;
 
 + (instancetype)unreadTicWithId:(NSString*)objectId;
 
