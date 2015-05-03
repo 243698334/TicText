@@ -9,18 +9,24 @@
 #import "TTMessagesViewController.h"
 
 #import <AudioToolbox/AudioServices.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <JSQMessagesViewController/JSQMessagesKeyboardController.h>
+
 #import "TTTic.h"
 #import "TTActivity.h"
 
 #import "TTExpirationDomain.h"
 #import "UIView+Screenshot.h"
+#import "UIImage+SquareImage.h"
 
 #import "TTMessagesToolbarItem.h"
 #import "TTTextToolbarItem.h"
+#import "TTImageToolbarItem.h"
 #import "TTAnonymousToolbarItem.h"
 #import "TTExpirationToolbarItem.h"
 
-#import <JSQMessagesViewController/JSQMessagesKeyboardController.h>
+#define kImageLoadAmount 10
 
 @interface JSQMessagesViewController (PrivateMethods)
 
@@ -54,6 +60,8 @@
 
 @property (nonatomic, strong) NSMutableArray *tics;
 @property (nonatomic, strong) NSMutableArray *jsqMessages;
+
+@property (nonatomic, strong) NSMutableArray *imagesFromCameraRoll;
 
 // @TODO: need customization
 @property (nonatomic, strong) JSQMessagesBubbleImage *outgoingBubbleImageData;
@@ -110,6 +118,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNewTic:) name:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willShowPhotoLibrary) name:kTTScrollingImagePickerDidTapImagePickerButton object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPickImageFromScrollingImagePickerWithObject:) name:kTTScrollingUIImagePickerDidChooseImage object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -224,7 +234,7 @@
     UIWindow *frontWindow = [self frontWindow];
     CGFloat originY = self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant;
     CGRect frame = CGRectMake(0, originY,
-                              self.view.frame.size.width, self.view.frame.size.height - originY);
+                              self.view.frame.size.width, self.keyboardController.currentKeyboardFrame.size.height);
     
     return [frontWindow convertRect:frame fromView:self.view];
 }
@@ -238,16 +248,28 @@
     
     // Arrange background view
     self.toolbarContentView = view;
-    [frontWindow addSubview:self.toolbarContentView];
-    [frontWindow bringSubviewToFront:self.toolbarContentView];
+    CGRect frame = [self toolbarContentViewFrame];
+    frame.origin.y = [UIScreen mainScreen].bounds.size.height;
+    self.toolbarContentView.frame = frame;
     
-    [self.toolbarContentView setFrame:[self toolbarContentViewFrame]];
+    [frontWindow addSubview:self.toolbarContentView];
+    
+    [UIView animateWithDuration:0.25 animations:^{
+        self.toolbarContentView.frame = [self toolbarContentViewFrame];
+    } completion:^(BOOL finished) {
+        if (finished ) {
+            [frontWindow bringSubviewToFront:self.toolbarContentView];
+        }
+    }];
 }
 
 - (void)updateCustomUI {
     [self.inputToolbar setFrame:[self inputToolbarFrame]];
     [self.messagesToolbar setFrame:[self messagesToolbarFrame]];
     [self.toolbarContentView setFrame:[self toolbarContentViewFrame]];
+    [UIView animateWithDuration:0 animations:^{ // Fixes Auto Layout resize "jaggedness"
+        [self.toolbarContentView layoutIfNeeded];
+    }];
 }
 
 - (void)jsq_setToolbarBottomLayoutGuideConstant:(CGFloat)constant {
@@ -328,6 +350,52 @@
     }];
 }
 
+- (TTTic *)createTicWithMessegeText:(NSString *)text mediaContent:(id)mediaContent senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
+    // Play sound
+    [JSQSystemSoundPlayer jsq_playMessageSentSound];
+    
+    // New JSQMessage
+    JSQMessage *newJSQMessage = nil;
+    
+    // New Tic and anonymous status
+    NSString *ticType = kTTTicTypeDefault;
+    if (self.isAnonymous) {
+        ticType = kTTTIcTypeAnonymous;
+    }
+    TTTic *newTic = nil;
+    
+    // Tic can't contain both text and media content
+    if (text) {
+        newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
+                                           senderDisplayName:senderDisplayName
+                                                        date:date
+                                                        text:text];
+        newTic = [self ticWithMessage:newJSQMessage mediaFile:nil];
+    } else {
+        // Media Item
+        JSQPhotoMediaItem *mediaItem = nil;
+        PFFile *file = nil;
+        
+        if ([mediaContent isKindOfClass:[UIImage class]]) {
+            mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:(UIImage *)mediaContent];
+            mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:senderId];
+            file = [PFFile fileWithData:UIImageJPEGRepresentation((UIImage *)mediaContent, 0.6)];
+        }
+        newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
+                                           senderDisplayName:senderDisplayName
+                                                        date:date
+                                                       media:mediaItem];
+        newTic = [self ticWithMessage:newJSQMessage mediaFile:file];
+    }
+    
+    // Add to local array
+    [self.tics addObject:newTic];
+    [self.jsqMessages addObject:newJSQMessage];
+    
+    [self finishSendingMessageAnimated:YES];
+    return newTic;
+}
+
 - (void)sendTic:(TTTic *)tic {
     [tic saveEventually:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
@@ -345,24 +413,39 @@
     }];
 }
 
+- (void)sendTicWithMediaContent:(TTTic *)tic {
+    [tic saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            TTActivity *sendTicActivity = [TTActivity activityWithType:kTTActivityTypeSendTic tic:tic];
+            [sendTicActivity saveEventually:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    NSLog(@"Activity saved. ");
+                } else {
+                    NSLog(@"Failed to save Activity, error: %@", error);
+                }
+            }];
+        } else {
+            [TSMessage showNotificationInViewController:self
+                                                  title:@"Connection Error"
+                                               subtitle:@"Unable to send media content."
+                                                   type:TSMessageNotificationTypeError];
+            // TODO:provide resend option?
+        }
+    }];
+}
+
+- (void)didPickImageFromScrollingImagePickerWithObject:(NSNotification *)notification {
+    TTTic *newTic = [self createTicWithMessegeText:nil mediaContent:[[notification userInfo] objectForKey:kTTScrollingUIImagePickerChosenImageKey] senderId:self.senderId senderDisplayName:self.senderDisplayName date:[NSDate date]];
+    
+    [self sendTicWithMediaContent:newTic];
+}
+
 #pragma mark - JSQMessagesViewController method overrides
 
 - (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
-    // Play sound
-    [JSQSystemSoundPlayer jsq_playMessageSentSound];
-    
-    // New JSQMessage
-    JSQMessage *newJSQMessage = [[JSQMessage alloc] initWithSenderId:self.senderId senderDisplayName:self.senderDisplayName date:date text:text];
-    
-    // New Tic
-    TTTic *newTic = [self ticWithMessage:newJSQMessage];
-    [newTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
-    
-    // Add to local array
-    [self.tics addObject:newTic];
-    [self.jsqMessages addObject:newJSQMessage];
-    
-    [self finishSendingMessageAnimated:YES];
+
+    TTTic *newTic = [self createTicWithMessegeText:text mediaContent:nil senderId:self.senderId senderDisplayName:self.senderDisplayName date:date];
+
     [self sendTic:newTic];
 }
 
@@ -499,8 +582,11 @@
     
     JSQMessagesCollectionViewCell *tappedCell = (JSQMessagesCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [tappedCell.textView setHidden:YES];
-    MBProgressHUD *progressHUD = [[MBProgressHUD alloc] initWithView:tappedCell.messageBubbleImageView];
-    [tappedCell.messageBubbleImageView addSubview:progressHUD];
+    [tappedCell.mediaView setHidden:YES];
+//    MBProgressHUD *progressHUD = [[MBProgressHUD alloc] initWithView:tappedCell.messageBubbleImageView];
+//    [tappedCell.messageBubbleImageView addSubview:progressHUD];
+    MBProgressHUD *progressHUD = [[MBProgressHUD alloc] initWithView:tappedCell.messageBubbleContainerView];
+    [tappedCell.messageBubbleContainerView addSubview:progressHUD];
     progressHUD.opacity = 0;
     [progressHUD show:YES];
 
@@ -520,6 +606,7 @@
         }
         [progressHUD removeFromSuperview];
         [tappedCell.textView setHidden:NO];
+        [tappedCell.mediaView setHidden:NO];
         [self finishReceivingMessageAnimated:YES];
         self.isFetchingTic = NO;
     }];
@@ -531,7 +618,7 @@
 
 #pragma mark - TTMessagesViewController
 
-- (TTTic *)ticWithMessage:(JSQMessage *)message {
+- (TTTic *)ticWithMessage:(JSQMessage *)message mediaFile:(PFFile *)mediaFile {
     TTTic *newTic = [TTTic object];
     newTic.type = (self.isAnonymous) ? kTTTIcTypeAnonymous : kTTTicTypeDefault;
     newTic.sender = [TTUser currentUser];
@@ -541,8 +628,12 @@
     newTic.receiveTimestamp = nil;
     newTic.status = kTTTicStatusUnread;
     if (message.isMediaMessage) {
-        // @TODO: determine media type?
-        newTic.contentType = nil;
+        // image
+        newTic.contentType = kTTTicContentTypeImage;
+        newTic.mediaContent = mediaFile;
+        
+        // TODO:voice
+        
         newTic.content = nil;
     } else {
         newTic.contentType = kTTTicContentTypeText;
@@ -553,7 +644,29 @@
 
 - (JSQMessage *)jsqMessageWithTic:(TTTic *)tic {
     TTUser *sender = tic.sender;
-    return [[JSQMessage alloc] initWithSenderId:sender.objectId senderDisplayName:sender.displayName date:tic.sendTimestamp text:[NSString stringWithUTF8String:[tic.content bytes]]];
+    PFFile *mediaContent = tic.mediaContent;
+
+    if (mediaContent) {
+        // TODO:classify more media types
+        JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:nil];
+        mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:self.senderId];
+        
+        [mediaContent getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
+             if (error) {
+                 [TSMessage showNotificationInViewController:self
+                                                       title:@"Connection Error"
+                                                    subtitle:@"Unable to fetch media content."
+                                                        type:TSMessageNotificationTypeError];
+             } else {
+                 mediaItem.image = [UIImage imageWithData:imageData];
+                 [self.collectionView reloadData];
+             }
+         }];
+        
+        return [[JSQMessage alloc] initWithSenderId:sender.objectId senderDisplayName:sender.displayName date:tic.sendTimestamp media:mediaItem];
+    } else {
+        return [[JSQMessage alloc] initWithSenderId:sender.objectId senderDisplayName:sender.displayName date:tic.sendTimestamp text:[NSString stringWithUTF8String:[tic.content bytes]]];
+    }
 }
 
 #pragma mark - TSMessageView
@@ -618,10 +731,68 @@
         [self setInputToolbarHiddenState:YES];
     }
     
+    if ([item isKindOfClass:[TTImageToolbarItem class]]) {
+        [self loadImagesFromCameraRollWithAmount:kImageLoadAmount inScrollingImagePickerView:((TTImageToolbarItem *)item).scrollingImagePickerView];
+        ((TTImageToolbarItem *)item).scrollingImagePickerView.delegate = self;
+    }
+    
     [self removeCurrentToolbarContentView];
     [self setupToolbarContentView:item.contentView];
     
     NSLog(@"TTMessagesViewController-messagesToolbar: Item shown with class: %@", item.class);
+}
+
+#pragma mark - TTScrollingImagePickerViewDelegate
+
+- (void)needLoadMoreImagesForScrollingImagePicker:(TTScrollingImagePickerView *)scrollingImagePickerView {
+    [self loadImagesFromCameraRollWithAmount:kImageLoadAmount inScrollingImagePickerView:scrollingImagePickerView];
+}
+
+- (void)loadImagesFromCameraRollWithAmount:(NSInteger)amount inScrollingImagePickerView:(TTScrollingImagePickerView *)scrollingImagePickerView {
+    if (self.imagesFromCameraRoll == nil) {
+        self.imagesFromCameraRoll = [[NSMutableArray alloc] init];
+    }
+    
+    self.progressHUD = [MBProgressHUD showHUDAddedTo:scrollingImagePickerView animated:YES];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [[[ALAssetsLibrary alloc] init] enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+            if (group) {
+                [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+                NSUInteger lastIndex = group.numberOfAssets - [self.imagesFromCameraRoll count];
+                [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                    if (result) {
+                        NSInteger lo = lastIndex - amount;
+                        NSInteger hi = lastIndex;
+                        if (lo < 0) {
+                            lo = 0;
+                        }
+                        if (index >= lo && index < hi) {
+                            UIImage *image = [UIImage imageWithCGImage:[[result defaultRepresentation] fullScreenImage]];
+                            [self.imagesFromCameraRoll addObject:[UIImage squareImageWithImage:image scaledToSize:300]];
+                            NSLog(@"------------Loading Images #%ld -------------", index);
+                        }
+                    } else {
+                        *stop = YES;
+                        NSLog(@"------------Finished Loading Images-------------");
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [scrollingImagePickerView setImages:self.imagesFromCameraRoll];
+                            [self.progressHUD removeFromSuperview];
+                        });
+                    
+                    }
+                }];
+            }
+        } failureBlock:^(NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [TSMessage showNotificationWithTitle:@"Permission Denied"
+                                            subtitle:@"Please allow TicText to access your Camera Roll."
+                                                type:TSMessageNotificationTypeError];
+            });
+            
+        }];
+    });
+
 }
 
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar willHideItem:(TTMessagesToolbarItem *)item {
@@ -646,10 +817,60 @@
 
 #pragma mark - TextView Delegate
 #define kTTMessagesViewControllerToolbarItemDeselectOnKeyboardHideDelay 0.4
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    [super textViewDidBeginEditing:textView];
+}
+
 - (void)textViewDidEndEditing:(UITextView *)textView {
     [super textViewDidEndEditing:textView];
     
-    [self deselectCurrentToolbarItem];
+    if (self.presentedViewController == nil) {
+        [self deselectCurrentToolbarItem]; // only hide when we intentionally dismiss the keyboard
+    }
+}
+
+#pragma mark - UIImagePicker
+- (void)willShowPhotoLibrary {
+    if (([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary] == NO
+         && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum] == NO)) {
+        [TSMessage showNotificationWithTitle:@"Permission Denied"
+                                    subtitle:@"Please allow TicText to access your Camera Roll."
+                                        type:TSMessageNotificationTypeError];
+    }
+    
+    NSString *type = (NSString *)kUTTypeImage;
+    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]
+        && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary] containsObject:type]) {
+        imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePickerController.mediaTypes = [NSArray arrayWithObject:type];
+    } else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]
+               && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum] containsObject:type]) {
+        imagePickerController.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+        imagePickerController.mediaTypes = [NSArray arrayWithObject:type];
+    } else {
+        [TSMessage showNotificationWithTitle:@"Permission Denied"
+                                    subtitle:@"Please allow TicText to access your Camera Roll."
+                                        type:TSMessageNotificationTypeError];
+    }
+    
+    imagePickerController.allowsEditing = YES;
+    imagePickerController.delegate = self;
+    [self presentViewController:imagePickerController animated:YES completion:nil];
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage *picture = [info objectForKey:UIImagePickerControllerEditedImage];
+    
+    if (picture != nil) {
+        TTTic *newTic = [self createTicWithMessegeText:nil mediaContent:picture senderId:self.senderId senderDisplayName:self.senderDisplayName date:[NSDate date]];
+
+        [self sendTicWithMediaContent:newTic];
+    }
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Helper Methods

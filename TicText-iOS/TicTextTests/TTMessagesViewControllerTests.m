@@ -43,6 +43,9 @@
 - (void)setInputToolbarHiddenState:(BOOL)hidden;
 - (UIWindow *)frontWindow;
 
+- (TTTic *)createTicWithMessegeText:(NSString *)text mediaContent:(id)mediaContent senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date;
+- (void)sendTicWithMediaContent:(TTTic *)tic;
+
 @end
 
 @interface TTMessagesViewControllerTests : XCTestCase
@@ -288,7 +291,7 @@
     CGFloat expectedOriginY = vc.view.frame.size.height - 120;
     CGRect expected = CGRectMake(0, expectedOriginY,
                                  vc.view.frame.size.width,
-                                 vc.view.frame.size.height - expectedOriginY);
+                                 vc.keyboardController.currentKeyboardFrame.size.height);
     expected = [window convertRect:expected fromView:vc.view];
     
     XCTAssertTrue(CGRectEqualToRect(result, expected));
@@ -398,7 +401,7 @@
     vc.expirationTime = 1234;
     
     // Act
-    TTTic *result = [vc ticWithMessage:nil];
+    TTTic *result = [vc ticWithMessage:nil mediaFile:nil];
     
     // Assert
     XCTAssertEqual(result.recipient, recipientUser);
@@ -416,7 +419,7 @@
     vc.expirationTime = 1234;
     
     // Act
-    TTTic *result = [vc ticWithMessage:nil];
+    TTTic *result = [vc ticWithMessage:nil mediaFile:nil];
     
     // Assert
     XCTAssertEqual(result.recipient, recipientUser);
@@ -434,7 +437,7 @@
     vc.expirationTime = 12;
     
     // Act
-    TTTic *result = [vc ticWithMessage:nil];
+    TTTic *result = [vc ticWithMessage:nil mediaFile:nil];
     
     // Assert
     XCTAssertEqual(result.recipient, recipientUser);
@@ -455,7 +458,7 @@
     XCTAssertFalse(someMessage.isMediaMessage);
     
     // Act
-    TTTic *result = [vc ticWithMessage:someMessage];
+    TTTic *result = [vc ticWithMessage:someMessage mediaFile:nil];
     
     // Assert
     XCTAssertEqual(result.recipient, recipientUser);
@@ -683,6 +686,20 @@
     // Assert
     OCMVerifyAll(mockMessagesToolbar);
     XCTAssertEqual([self.mockMessagesViewController messagesToolbar].selectedIndex, kTTMessagesToolbarSelectedItemNone);
+}
+
+- (void)testSendImageFromScrollingImagePickerView {
+    // Arrange
+    OCMStub([self.mockMessagesViewController createTicWithMessegeText:[OCMArg any] mediaContent:[OCMArg any] senderId:[OCMArg any] senderDisplayName:[OCMArg any] date:[OCMArg any]]).andReturn([TTTic object]);
+    OCMExpect([self.mockMessagesViewController sendTicWithMediaContent:[OCMArg isKindOfClass:[TTTic class]]]);
+    
+    // Act
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTScrollingUIImagePickerDidChooseImage
+                                                        object:nil
+                                                      userInfo:@{kTTScrollingUIImagePickerChosenImageKey : [OCMArg isKindOfClass:[UIImage class]]} ];
+    
+    // Assert
+    OCMVerifyAll(self.mockMessagesViewController);
 }
 
 @end

@@ -63,6 +63,10 @@
 		CDB970881ADB60A80054079B /* TTMessagesToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB970871ADB60A80054079B /* TTMessagesToolbar.m */; };
 		CDB9708C1ADB6FFB0054079B /* TTMessagesToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB9708B1ADB6FFB0054079B /* TTMessagesToolbarItem.m */; };
 		CDB970901ADB78840054079B /* TTTextToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB9708F1ADB78840054079B /* TTTextToolbarItem.m */; };
+		F92A039E1AF0350D00D3D138 /* UIImage+SquareImage.m in Sources */ = {isa = PBXBuildFile; fileRef = F92A039D1AF0350D00D3D138 /* UIImage+SquareImage.m */; };
+		F984314B1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F984314A1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m */; };
+		F98431511AE18A5500EA66F5 /* TTScrollingImagePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = F98431501AE18A5500EA66F5 /* TTScrollingImagePickerView.m */; };
+		F984315A1AE1A70E00EA66F5 /* TTImageToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F98431591AE1A70E00EA66F5 /* TTImageToolbarItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -173,6 +177,14 @@
 		CDB9708E1ADB78840054079B /* TTTextToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTextToolbarItem.h; sourceTree = "<group>"; };
 		CDB9708F1ADB78840054079B /* TTTextToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTextToolbarItem.m; sourceTree = "<group>"; };
 		E62ADB5018418278F1D7F35F /* libPods-TicText.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicText.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F92A039C1AF0350D00D3D138 /* UIImage+SquareImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+SquareImage.h"; sourceTree = "<group>"; };
+		F92A039D1AF0350D00D3D138 /* UIImage+SquareImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SquareImage.m"; sourceTree = "<group>"; };
+		F98431491AE18A3300EA66F5 /* TTScrollingImagePickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollingImagePickerCell.h; sourceTree = "<group>"; };
+		F984314A1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingImagePickerCell.m; sourceTree = "<group>"; };
+		F984314F1AE18A5500EA66F5 /* TTScrollingImagePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollingImagePickerView.h; sourceTree = "<group>"; };
+		F98431501AE18A5500EA66F5 /* TTScrollingImagePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingImagePickerView.m; sourceTree = "<group>"; };
+		F98431581AE1A70E00EA66F5 /* TTImageToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTImageToolbarItem.h; sourceTree = "<group>"; };
+		F98431591AE1A70E00EA66F5 /* TTImageToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTImageToolbarItem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -304,6 +316,7 @@
 			isa = PBXGroup;
 			children = (
 				CDB970891ADB670D0054079B /* MessagesToolbar */,
+				F98431421AE1876100EA66F5 /* ScollImagePicker */,
 				CD9F92831AB8F530006FFE67 /* ExpirationPicker */,
 				0E61D46A1AA5B08D00EF5826 /* TTInAppNotificationDesign.json */,
 				2E402A151A96FE8900C1C7BF /* TTFindFriendsTableViewCell.h */,
@@ -421,6 +434,8 @@
 				CD47483F1AB770DA00A4B8F6 /* TTExpirationDomain.m */,
 				CDB970821ADB572D0054079B /* UIView+Screenshot.h */,
 				CDB970831ADB572D0054079B /* UIView+Screenshot.m */,
+				F92A039C1AF0350D00D3D138 /* UIImage+SquareImage.h */,
+				F92A039D1AF0350D00D3D138 /* UIImage+SquareImage.m */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -468,6 +483,8 @@
 				CD8C0AB91ADCA0F400EA9874 /* TTAnonymousToolbarItem.m */,
 				CD8C0ABB1ADCA12800EA9874 /* TTExpirationToolbarItem.h */,
 				CD8C0ABC1ADCA12800EA9874 /* TTExpirationToolbarItem.m */,
+				F98431581AE1A70E00EA66F5 /* TTImageToolbarItem.h */,
+				F98431591AE1A70E00EA66F5 /* TTImageToolbarItem.m */,
 			);
 			name = ToolbarItems;
 			sourceTree = "<group>";
@@ -481,6 +498,17 @@
 				65E0D8574E683EDF0172C6F3 /* Pods-TicTextTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		F98431421AE1876100EA66F5 /* ScollImagePicker */ = {
+			isa = PBXGroup;
+			children = (
+				F984314F1AE18A5500EA66F5 /* TTScrollingImagePickerView.h */,
+				F98431501AE18A5500EA66F5 /* TTScrollingImagePickerView.m */,
+				F98431491AE18A3300EA66F5 /* TTScrollingImagePickerCell.h */,
+				F984314A1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m */,
+			);
+			name = ScollImagePicker;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -536,11 +564,11 @@
 				TargetAttributes = {
 					0EC584E11A7864AA00025D71 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 35RV9RPQY7;
+						DevelopmentTeam = L26MMJT3VJ;
 					};
 					0EC584FA1A7864AA00025D71 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 35RV9RPQY7;
+						DevelopmentTeam = H87QWL564H;
 						TestTargetID = 0EC584E11A7864AA00025D71;
 					};
 				};
@@ -661,6 +689,7 @@
 				0EACA8731A97CE0D00B93AAA /* TTSettingsViewController.m in Sources */,
 				0EACA8701A97CDEE00B93AAA /* TTProfileViewController.m in Sources */,
 				0EACA86D1A97CDDD00B93AAA /* TTContactsViewController.m in Sources */,
+				F984315A1AE1A70E00EA66F5 /* TTImageToolbarItem.m in Sources */,
 				0E00AA331A91AF2F00EE246D /* TTFindFriendsViewController.m in Sources */,
 				0EACA86A1A97CDC100B93AAA /* TTConversationsViewController.m in Sources */,
 				CD8C0ABA1ADCA0F400EA9874 /* TTAnonymousToolbarItem.m in Sources */,
@@ -668,15 +697,18 @@
 				CD4D57C81A96B740002B5586 /* TTUser.m in Sources */,
 				CD4D57C21A96A5A6002B5586 /* TTSession.m in Sources */,
 				0E0F657E1A8C0645003CB363 /* TTRootViewController.m in Sources */,
+				F98431511AE18A5500EA66F5 /* TTScrollingImagePickerView.m in Sources */,
 				CDB9708C1ADB6FFB0054079B /* TTMessagesToolbarItem.m in Sources */,
 				CD8C0ABD1ADCA12800EA9874 /* TTExpirationToolbarItem.m in Sources */,
 				0E6AFF781AB66DFF00FC69A9 /* Reachability.m in Sources */,
 				CD9F92861AB8F552006FFE67 /* TTExpirationPickerCell.m in Sources */,
 				2EDE551D1ADCDD400048FB0C /* TTContactTableViewCell.m in Sources */,
 				CD935B681A98E9FA0017325C /* TTUtility.m in Sources */,
+				F92A039E1AF0350D00D3D138 /* UIImage+SquareImage.m in Sources */,
 				0E0565231A9DEAD500242137 /* TTMessagesViewController.m in Sources */,
 				0EACA8791A99CB8800B93AAA /* TTTic.m in Sources */,
 				0E00AA301A919B6D00EE246D /* TTLogInViewController.m in Sources */,
+				F984314B1AE18A3300EA66F5 /* TTScrollingImagePickerCell.m in Sources */,
 				0EC584EB1A7864AA00025D71 /* AppDelegate.m in Sources */,
 				2E402A171A96FE8900C1C7BF /* TTFindFriendsTableViewCell.m in Sources */,
 				0E6AFF721AB4C99500FC69A9 /* TTUserPrivateData.m in Sources */,
@@ -866,6 +898,7 @@
 				INFOPLIST_FILE = TicTextTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "TicTextTests/TicTextTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TicText.app/TicText";
@@ -888,6 +921,7 @@
 				INFOPLIST_FILE = TicTextTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "TicTextTests/TicTextTests-Bridging-Header.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TicText.app/TicText";
 			};
