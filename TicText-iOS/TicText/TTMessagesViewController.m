@@ -379,7 +379,7 @@
         if ([mediaContent isKindOfClass:[UIImage class]]) {
             mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:(UIImage *)mediaContent];
             mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:senderId];
-            file = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation((UIImage *)mediaContent, 0.6)];
+            file = [PFFile fileWithData:UIImageJPEGRepresentation((UIImage *)mediaContent, 0.6)];
         }
         newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
                                            senderDisplayName:senderDisplayName
