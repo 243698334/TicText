@@ -40,7 +40,7 @@
     // Arrange
     id mockUserDefaults = OCMClassMock([NSUserDefaults class]);
     OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
-    OCMStub([mockUserDefaults boolForKey:kTTSessionIsValidLastCheckedKey]).andReturn(NO);
+    OCMStub([mockUserDefaults boolForKey:kTTUserDefaultsSessionIsValidLastCheckedKey]).andReturn(NO);
     OCMExpect([self.mockSession isValidLastChecked]);
     
     // Act
@@ -62,7 +62,7 @@
     // Parse local session INVALID (user not logged in)
     OCMStub([self.mockUser currentUser]).andReturn(nil);
     OCMExpect([mockNotificationCenter postNotificationName:kTTSessionDidBecomeInvalidNotification object:nil]);
-    OCMExpect([mockUserDefaults setBool:NO forKey:kTTSessionIsValidLastCheckedKey]);
+    OCMExpect([mockUserDefaults setBool:NO forKey:kTTUserDefaultsSessionIsValidLastCheckedKey]);
     
     // Act
     [[TTSession sharedSession] validateSessionInBackground];
@@ -83,7 +83,7 @@
         NSError *error = [userInfo objectForKey:kTTNotificationUserInfoErrorKey];
         return [error.domain isEqualToString:kTTSessionErrorDomain] && error.code == kTTSessionErrorParseSessionFetchFailureCode;
     }]]);
-    OCMExpect([mockUserDefaults setBool:NO forKey:kTTSessionIsValidLastCheckedKey]);
+    OCMExpect([mockUserDefaults setBool:NO forKey:kTTUserDefaultsSessionIsValidLastCheckedKey]);
     
     // Parse local session VALID
     OCMStub([self.mockUser currentUser]).andReturn(self.mockUser);
@@ -115,7 +115,7 @@
         NSError *error = [userInfo objectForKey:kTTNotificationUserInfoErrorKey];
         return [error.domain isEqualToString:kTTSessionErrorDomain] && error.code == kTTSessionErrorParseSessionInvalidUUIDCode;
     }]]);
-    OCMExpect([mockUserDefaults setBool:NO forKey:kTTSessionIsValidLastCheckedKey]);
+    OCMExpect([mockUserDefaults setBool:NO forKey:kTTUserDefaultsSessionIsValidLastCheckedKey]);
     
     // Parse local session VALID
     OCMStub([self.mockUser currentUser]).andReturn(self.mockUser);
@@ -142,7 +142,7 @@
     id mockUserDefaults = OCMClassMock([NSUserDefaults class]);
     OCMStub([mockNotificationCenter defaultCenter]).andReturn(mockNotificationCenter);
     OCMStub([mockUserDefaults standardUserDefaults]).andReturn(mockUserDefaults);
-    OCMExpect([mockUserDefaults setBool:YES forKey:kTTSessionIsValidLastCheckedKey]);
+    OCMExpect([mockUserDefaults setBool:YES forKey:kTTUserDefaultsSessionIsValidLastCheckedKey]);
     
     // Parse local session VALID
     OCMStub([self.mockUser currentUser]).andReturn(self.mockUser);

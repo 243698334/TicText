@@ -36,9 +36,9 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     [self parseInitializationWithUIApplication:application launchOptions:launchOptions];
-    [self handlePush:launchOptions];
     [self setupColorScheme];
     [self setupNavigationController];
+    [self handlePushNotificationsWithUIApplication:application launchOptions:launchOptions];
     
     return YES;
 }
@@ -67,20 +67,10 @@
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
         // Track app opens due to a push notification being acknowledged while the app wasn't active.
         [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
+        [self performSelector:@selector(postNotificationForNewTicWithUserInfo:) withObject:userInfo afterDelay:0.5];
+    } else {
+        [self postNotificationForNewTicWithUserInfo:userInfo];
     }
-    
-    // Push notification received while the app is active
-    if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
-        NSString *ticId = [userInfo objectForKey:kTTPushNotificationPayloadTicIdKey];
-        NSString *senderUserId = [userInfo objectForKey:kTTPushNotificationPayloadSenderUserIdKey];
-        NSDate *sendTimestamp = [userInfo objectForKey:kTTPushNotificationPayloadSendTimestampKey];
-        NSNumber *timeLimit = [userInfo objectForKey:kTTPushNotificationPayloadTimeLimitKey];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification
-                                                            object:nil
-                                                          userInfo:@{kTTNotificationUserInfoTicIdKey: ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId, kTTNotificationUserInfoSendTimestampKey: sendTimestamp, kTTNotificationUserInfoTimeLimitKey: timeLimit}];
-    }
-    
-    // TODO: handle push notification
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -134,6 +124,7 @@
     
     if (application.applicationIconBadgeNumber != 0) {
         application.applicationIconBadgeNumber = 0;
+        [PFInstallation currentInstallation].badge = 0;
         [[PFInstallation currentInstallation] saveInBackground];
     }
 }
@@ -158,8 +149,26 @@
     [self.window makeKeyAndVisible];
 }
 
-- (void)handlePush:(NSDictionary *)launchOptions {
-    
+- (void)handlePushNotificationsWithUIApplication:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
+    NSDictionary *pushNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (pushNotificationPayload != nil || application.applicationIconBadgeNumber != 0) {
+        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey];
+    } else {
+        [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey];
+    }
+}
+
+- (void)postNotificationForNewTicWithUserInfo:(NSDictionary *)userInfo {
+    // Push notification received while the app is active
+    if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
+        NSString *ticId = [userInfo objectForKey:kTTPushNotificationPayloadTicIdKey];
+        NSString *senderUserId = [userInfo objectForKey:kTTPushNotificationPayloadSenderUserIdKey];
+        NSDate *sendTimestamp = [userInfo objectForKey:kTTPushNotificationPayloadSendTimestampKey];
+        NSNumber *timeLimit = [userInfo objectForKey:kTTPushNotificationPayloadTimeLimitKey];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification
+                                                            object:nil
+                                                          userInfo:@{kTTNotificationUserInfoTicIdKey: ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId, kTTNotificationUserInfoSendTimestampKey: sendTimestamp, kTTNotificationUserInfoTimeLimitKey: timeLimit}];
+    }
 }
 
 @end

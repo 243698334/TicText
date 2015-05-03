@@ -3,10 +3,12 @@ var TIC_SENDER = 'sender';
 var TIC_RECIPIENT = 'recipient';
 var TIC_SEND_TIMESTAMP = 'sendTimestamp';
 var TIC_RECEIVE_TIMESTAMP = 'receiveTimestamp';
-var TIC_TIME_LIMIT = "timeLimit";
+var TIC_TIME_LIMIT = 'timeLimit';
 var TIC_STATUS = 'status';
 var TIC_STATUS_READ = 'read';
+var TIC_STATUS_UNREAD = 'unread';
 var TIC_STATUS_EXPIRED = 'expired';
+var TIC_STATUS_DRAFTING = 'drafting';
  
 Parse.Cloud.beforeSave(TIC_CLASS_NAME, function(request, response) {
     Parse.Cloud.useMasterKey();
@@ -51,6 +53,35 @@ Parse.Cloud.define("fetchTic", function(request, response) {
                 tic.save(TIC_STATUS, TIC_STATUS_EXPIRED);
                 response.error("Tic expired");
             }
+        }, 
+        error: function(error) {
+            response.error(error);
+        }
+    });
+});
+
+Parse.Cloud.define("retrieveNewTics", function(request, response) {
+    Parse.Cloud.useMasterKey();
+    var recipient = request.user;
+    var unreadTicsQuery = new Parse.Query(TIC_CLASS_NAME);
+    unreadTicsQuery.equalTo(TIC_STATUS, TIC_STATUS_UNREAD);
+    var expiredTicsQuery = new Parse.Query(TIC_CLASS_NAME);
+    expiredTicsQuery.equalTo(TIC_STATUS, TIC_STATUS_EXPIRED);
+    var newTicsQuery = new Parse.Query.or(unreadTicsQuery, expiredTicsQuery);
+    newTicsQuery.equalTo(TIC_RECIPIENT, recipient);
+    newTicsQuery.find({
+        success: function(tics) {
+            var results = new Array();
+            for (var i = 0; i < tics.length; i++) {
+                var currentTic = tics[i];
+                var currentTicEssentialInformation = new Object();
+                currentTicEssentialInformation.ticId = currentTic.id;
+                currentTicEssentialInformation.senderUserId = currentTic.get(TIC_SENDER).id;
+                currentTicEssentialInformation.sendTimestamp = currentTic.get(TIC_SEND_TIMESTAMP);
+                currentTicEssentialInformation.timeLimit = currentTic.get(TIC_TIME_LIMIT);
+                results.push(currentTicEssentialInformation);
+            }
+            response.success(results);
         }, 
         error: function(error) {
             response.error(error);

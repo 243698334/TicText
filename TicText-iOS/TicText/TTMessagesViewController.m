@@ -279,7 +279,7 @@
         // @TODO: profile picture
     }
     
-    JSQMessagesAvatarImage *testAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"ProfilePicturePlaceholder"] diameter:kJSQMessagesCollectionViewAvatarSizeDefault];
+    JSQMessagesAvatarImage *testAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"ProfilePicturePlaceHolder"] diameter:kJSQMessagesCollectionViewAvatarSizeDefault];
     return testAvatar;
 }
 

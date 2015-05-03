@@ -24,10 +24,6 @@
 @property (nonatomic, strong) UILabel *scrollHintLabel;
 @property (nonatomic, strong) UIButton *showMoreButton;
 
-@property (nonatomic, strong) NSTimer *updateCellTimer;
-
-@property (nonatomic, strong) NSMutableArray *summaryViewConstraints;
-
 @end
 
 NSInteger const kTTNewTicsDropdownViewAllNewTicsTableViewTag = 0;
@@ -114,31 +110,19 @@ CGFloat const kNewTicsDropdownViewShowMoreButtonHeight = 20;
 
 - (void)reloadData {
     if (self.dataSource) {
-        if (self.isShowingTicsFromSameSender) {
-            if ([self.dataSource numberOfRowsInNewTicsDropdownViewTableView:self.sameSenderNewTicsTableView] > kNewTicsDropdownViewMaximumNumberOfRowsShown) {
-                self.isScrollHintLabelVisible = YES;
-                self.scrollHintLabel.alpha = 1.0;
-            }
-        } else {
-            if ([self.dataSource numberOfRowsInNewTicsDropdownViewTableView:self.allNewTicsTableView] > kNewTicsDropdownViewMaximumNumberOfRowsShown) {
-                self.isScrollHintLabelVisible = YES;
-                self.scrollHintLabel.alpha = 1.0;
-            }
-        }
-        
-        if (self.updateCellTimer == nil) {
-            self.updateCellTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTableViewCells) userInfo:nil repeats:YES];
-        }
-        [self updateTableViewCells];
-        [self.summaryView reloadData];
+        [self updateScrollHintLabelVisibility];
+        [self reloadViewContents];
     }
 }
 
-- (void)updateTableViewCells {
-    [self.allNewTicsTableView reloadData];
-    if (self.isShowingTicsFromSameSender) {
-        [self.sameSenderNewTicsTableView reloadData];
-    }
+- (void)reloadViewContents {
+    [UIView transitionWithView:self duration:0.25 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+        [self.allNewTicsTableView reloadData];
+        if (self.isShowingTicsFromSameSender) {
+            [self.sameSenderNewTicsTableView reloadData];
+        }
+        [self.summaryView reloadData];
+    } completion:nil];
 }
 
 - (void)showFullDropdownView {
@@ -269,6 +253,13 @@ CGFloat const kNewTicsDropdownViewShowMoreButtonHeight = 20;
                 }];
             }
         }
+    } else {
+        if (self.isScrollHintLabelVisible) {
+            self.isScrollHintLabelVisible = NO;
+            [UIView animateWithDuration:0.25 animations:^{
+                self.scrollHintLabel.alpha = 0.0;
+            }];
+        }
     }
 }
 
@@ -298,6 +289,7 @@ CGFloat const kNewTicsDropdownViewShowMoreButtonHeight = 20;
     return [TTNewTicsDropdownTableViewCell height];
 }
 
+
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -305,8 +297,8 @@ CGFloat const kNewTicsDropdownViewShowMoreButtonHeight = 20;
     if (self.delegate) {
         if ([self.delegate tableView:tableView shouldShowTicsFromSameSenderWhenNewTicsDropdownViewDidSelectRowAtIndex:indexPath.row]) {
             self.isShowingTicsFromSameSender = YES;
+            self.buttonsView.isShowingTicsFromSameSender = YES;
             if (self.isShowingFullView) {
-                self.buttonsView.isShowingTicsFromSameSender = YES;
                 [self showSameSenderNewTicsTableView];
                 [UIView animateWithDuration:0.25 animations:^{
                     [self.buttonsView updateFrames];
@@ -314,7 +306,10 @@ CGFloat const kNewTicsDropdownViewShowMoreButtonHeight = 20;
             } else {
                 [self showFullDropdownView];
             }
-            NSLog(@"Dropdown view: show new table view");
+            self.buttonsView.isShowingTicsFromSameSender = YES;
+            [UIView animateWithDuration:0.25 animations:^{
+                [self.buttonsView updateFrames];
+            }];
         } else {
             NSLog(@"Dropdown view: show tic");
         }

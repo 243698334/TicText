@@ -507,6 +507,11 @@
 					0EC584E11A7864AA00025D71 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = H87QWL564H;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+						};
 					};
 					0EC584FA1A7864AA00025D71 = {
 						CreatedOnToolsVersion = 6.1.1;

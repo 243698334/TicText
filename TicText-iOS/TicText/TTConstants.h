@@ -25,7 +25,8 @@ extern NSString * const kTTUIDefaultUltraLightFont;
 
 
 #pragma mark - NSUserDefaults
-extern NSString * const kTTSessionIsValidLastCheckedKey;
+extern NSString * const kTTUserDefaultsSessionIsValidLastCheckedKey;
+extern NSString * const kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey;
 
 
 #pragma mark - NSNotification
@@ -103,6 +104,7 @@ extern NSString * const kTTTicContentKey;
 extern NSString * const kTTTicFetchTicFunction;
 extern NSString * const kTTTicFetchTicFunctionTicIdParameter;
 extern NSString * const kTTTicFetchTicFunctionFetchTimestampParameter;
+extern NSString * const kTTTicRetrieveNewTicsFunction;
 
 // Type values
 extern NSString * const kTTTicTypeDefault;

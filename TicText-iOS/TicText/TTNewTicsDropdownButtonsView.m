@@ -23,18 +23,20 @@
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         self.backButton = [[UIButton alloc] initWithFrame:CGRectMake(self.bounds.size.width * (1 + 0.4), 3, self.bounds.size.width * 0.4, self.bounds.size.height - 3)];
-        self.backButton.titleLabel.textColor = [UIColor whiteColor];
         self.backButton.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.backButton.titleLabel.font = [UIFont fontWithName:kTTUIDefaultLightFont size:16];
         [self.backButton setTitle:@"back" forState:UIControlStateNormal];
+        [self.backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [self.backButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
         [self.backButton addTarget:self action:@selector(didTapBackButton) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.backButton];
         
         self.clearAllExpiredTicsButton = [[UIButton alloc] initWithFrame:CGRectMake(self.bounds.size.width * 0.2, 3, self.bounds.size.width * 0.6, self.bounds.size.height - 3)];
-        self.clearAllExpiredTicsButton.titleLabel.textColor = [UIColor whiteColor];
         self.clearAllExpiredTicsButton.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.clearAllExpiredTicsButton.titleLabel.font = [UIFont fontWithName:kTTUIDefaultLightFont size:16];
         [self.clearAllExpiredTicsButton setTitle:@"clear all expired Tics" forState:UIControlStateNormal];
+        [self.clearAllExpiredTicsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [self.clearAllExpiredTicsButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
         [self.clearAllExpiredTicsButton addTarget:self action:@selector(didTapClearAllExpiredTicsButton) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.clearAllExpiredTicsButton];
         

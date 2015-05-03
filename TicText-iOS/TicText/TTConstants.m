@@ -21,7 +21,8 @@ NSString * const kTTUIDefaultUltraLightFont = @"AvenirNext-UltraLight";
 
 
 #pragma mark - NSUserDefaults
-NSString * const kTTSessionIsValidLastCheckedKey = @"SessionIsValidLastCheckedKey";
+NSString * const kTTUserDefaultsSessionIsValidLastCheckedKey = @"SessionIsValidLastCheckedKey";
+NSString * const kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey = @"UserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey";
 
 
 #pragma mark - NSNotification
@@ -99,6 +100,7 @@ NSString * const kTTTicContentKey = @"content";
 NSString * const kTTTicFetchTicFunction = @"fetchTic";
 NSString * const kTTTicFetchTicFunctionTicIdParameter = @"ticId";
 NSString * const kTTTicFetchTicFunctionFetchTimestampParameter = @"fetchTimestamp";
+NSString * const kTTTicRetrieveNewTicsFunction = @"retrieveNewTics";
 
 // Type values
 NSString * const kTTTicTypeDefault = @"default";

@@ -39,7 +39,7 @@ static BOOL isValidating = NO;
             } else {
                 [self syncExistingUserDataWithBlock:resultBlock];
             }
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTSessionIsValidLastCheckedKey];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTUserDefaultsSessionIsValidLastCheckedKey];
         }
     }];
 }
@@ -47,7 +47,7 @@ static BOOL isValidating = NO;
 + (void)logOutWithBlock:(nonnull void (^)(NSError * __nullable error))resultBlock {
     // Stop monitoring Reachability changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTSessionIsValidLastCheckedKey];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTUserDefaultsSessionIsValidLastCheckedKey];
     
     [TTUser logOutInBackgroundWithBlock:^(NSError *error) {
         [[PFFacebookUtils session] closeAndClearTokenInformation];
@@ -79,7 +79,7 @@ static BOOL isValidating = NO;
     
     // Check if user is logged out
     if (![TTUser currentUser]) {
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTSessionIsValidLastCheckedKey];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTUserDefaultsSessionIsValidLastCheckedKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:kTTSessionDidBecomeInvalidNotification object:nil];
         isValidating = NO;
         return;
@@ -88,20 +88,20 @@ static BOOL isValidating = NO;
     // Validate Parse session
     [self getCurrentSessionInBackgroundWithBlock:^(PFSession *session, NSError *error) {
         if (error) {
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTSessionIsValidLastCheckedKey];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTUserDefaultsSessionIsValidLastCheckedKey];
             [[NSNotificationCenter defaultCenter] postNotificationName:kTTSessionDidBecomeInvalidNotification object:nil userInfo:[NSDictionary dictionaryWithObject:error forKey:kTTNotificationUserInfoErrorKey]];
             [TTErrorHandler handleParseSessionError:error inViewController:nil];
         } else {
             [[TTUser currentUser] fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                 [[TTUser currentUser].privateData fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                     if ([[TTUser currentUser].privateData.activeDeviceIdentifier isEqualToString:[UIDevice currentDevice].identifierForVendor.UUIDString]) {
-                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTSessionIsValidLastCheckedKey];
+                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kTTUserDefaultsSessionIsValidLastCheckedKey];
                     } else {
                         NSDictionary *uuidErrorUserInfo = @{NSLocalizedDescriptionKey: @"Invalid Session",
                                                             NSLocalizedFailureReasonErrorKey: @"Your account has been logged in with another device.",
                                                             NSLocalizedRecoverySuggestionErrorKey: @"Consider turn on 2-step verification or TicText password."};
                         NSError *uuidError = [NSError errorWithDomain:kTTSessionErrorDomain code:kTTSessionErrorParseSessionInvalidUUIDCode userInfo:uuidErrorUserInfo];
-                        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTSessionIsValidLastCheckedKey];
+                        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kTTUserDefaultsSessionIsValidLastCheckedKey];
                         [[NSNotificationCenter defaultCenter] postNotificationName:kTTSessionDidBecomeInvalidNotification object:nil userInfo:@{kTTNotificationUserInfoErrorKey: uuidError}];
                         [TTErrorHandler handleParseSessionError:uuidError inViewController:nil];
                     }
@@ -114,7 +114,7 @@ static BOOL isValidating = NO;
 }
 
 + (BOOL)isValidLastChecked {
-    return [[NSUserDefaults standardUserDefaults] boolForKey:kTTSessionIsValidLastCheckedKey];
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kTTUserDefaultsSessionIsValidLastCheckedKey];
 }
 
 + (void)reachabilityDidChange:(NSNotification *)notification {

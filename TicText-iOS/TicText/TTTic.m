@@ -36,5 +36,18 @@
     }];
 }
 
++ (void)retrieveNewTicsInBackgroundWithBlock:(void (^)(NSArray *receivedNewTics, NSError *error))completion {
+    [PFCloud callFunctionInBackground:kTTTicRetrieveNewTicsFunction withParameters:nil block:^(id object, NSError *error) {
+        if (error) {
+            if (completion) {
+                completion(nil, error);
+            }
+        } else {
+            if (completion) {
+                completion(object, nil);
+            }
+        }
+    }];
+}
 
 @end
