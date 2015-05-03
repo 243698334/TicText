@@ -8,6 +8,7 @@
 
 #import "CountDownView.h"
 #import "TTMessagesViewController.h"
+#import <PureLayout/PureLayout.h>
 
 @interface CountDownView () {
     UILabel *timerLabel;
@@ -15,6 +16,7 @@
     TTMessagesViewController *delegate;
     NSDate *dateId;
     NSTimer *myTimer;
+    BOOL addConstraints;
 }
 
 @end
@@ -36,12 +38,17 @@
         [timerLabel setFont:[UIFont fontWithName: @"Trebuchet MS" size: 10.0f]];
         timerLabel.text = [NSString stringWithFormat:@"%i", counter];
         [self addSubview:timerLabel];
-    
-        myTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+        
+        if(timeLimit > 0) {
+            myTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
                                      target:self
                                    selector:@selector(timerAnimate)
                                    userInfo:nil
                                     repeats:YES];
+        } else {
+            timerLabel.text = @"Message expired";
+        }
+        [self setNeedsUpdateConstraints];
     }
     return self;
 }
@@ -52,8 +59,21 @@
     if(counter == 0) {
         [myTimer invalidate];
         myTimer = nil;
-        [delegate timerIsZero:dateId];
+        //[delegate timerIsZero:dateId];
+        timerLabel.text = @"Message expired";
     }
+}
+
+
+-(void) updateConstraints {
+    if(!addConstraints) {
+        addConstraints = TRUE;
+        [self autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.superview];
+        [self autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:self.superview];
+        [self autoPinEdge:ALEdgeRight toEdge:ALEdgeRight ofView:self.superview];
+        [self autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.superview];
+    }
+    [super updateConstraints];
 }
 
 /*

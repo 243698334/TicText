@@ -424,29 +424,39 @@
     int h = cell.bounds.size.height;
     CGRect viewRect = CGRectMake(-1, -1, w, h);
     NSLog(@"%d %d", w, h);
-
     TTTic *theTic = [self.tics objectAtIndex:indexPath.item];
+    if (theTic.status == kTTTicStatusRead) {
+        NSLog(@"The tic has been read before that's why it just should show the message.");
+        return cell;
+    }
     if (![cell.messageBubbleContainerView viewWithTag:1234]) {
-        CountDownView *myView = [[CountDownView alloc] initWithFrame:viewRect time:theTic.timeLimit delegate:self timeId:theTic.sendTimestamp];
-        [myView setTag:1234];
-        NSLog(@"the countdownview has been created");
-        myView.layer.borderWidth = 2;
-        myView.layer.cornerRadius = 10;
-        myView.layer.borderColor = [kTTUIPurpleColor CGColor];
-        myView.opaque = YES;
-        myView.backgroundColor = [UIColor whiteColor];
-        //[(JSQMessagesCollectionViewCellOutgoing *)cell setExtraView: myView];
-        [cell.messageBubbleContainerView addSubview:myView];
-        //[cell bringSubviewToFront:cell.textView];
+        //NSTimeInterval currTime = [[NSDate date] timeIntervalSince1970];
+        NSTimeInterval timeLeft =  theTic.timeLimit + theTic.sendTimestamp.timeIntervalSinceNow;
+        //NSLog(@"%d", theTic.sendTimestamp.timeIntervalSinceNow);
+        //if (timeLeft > 0) {
+            CountDownView *myView = [[CountDownView alloc] initWithFrame:viewRect time:timeLeft delegate:self timeId:theTic.sendTimestamp];
+            [myView setTag:1234];
+            NSLog(@"the countdownview has been created");
+            myView.layer.borderWidth = 2;
+            myView.layer.cornerRadius = 10;
+            myView.layer.borderColor = [kTTUIPurpleColor CGColor];
+            myView.opaque = YES;
+            myView.backgroundColor = [UIColor whiteColor];
+            //[(JSQMessagesCollectionViewCellOutgoing *)cell setExtraView: myView];
+            [cell.messageBubbleContainerView addSubview:myView];
+            //[cell bringSubviewToFront:cell.textView];
+        //} else {
+            //[self timerIsZero:theTic.sendTimestamp];
+       // }
     } else {
         NSLog(@"the countdownview is reused");
-        CountDownView *myView = (CountDownView *)[cell.messageBubbleContainerView viewWithTag:1234];
+        //CountDownView *myView = (CountDownView *)[cell.messageBubbleContainerView viewWithTag:1234];
         //[myView setTime:theTime.timeLimit];
         //[myView setHidden:NO];
     }
     //cell.textView.hidden = YES;
     
-    JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
+    //JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
     
    /* if (!message.isMediaMessage) {
         
@@ -520,14 +530,26 @@
     
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     
-    //cell.messageBubbleImageView.subviews;
-    [cell.textView setHidden:NO];
-    //TTTic *theTic = [self.tics objectAtIndex:indexPath.item];
+    
+    TTTic *theTic = [self.tics objectAtIndex:indexPath.item];
+    
     //cell.textView.text = theTic.;
     
     CountDownView *cdView = (CountDownView *)[cell.messageBubbleContainerView viewWithTag:1234];
     //NSLog(cdView);
-    [cdView setHidden:YES];
+    NSTimeInterval timeLeft =  theTic.timeLimit + theTic.sendTimestamp.timeIntervalSinceNow;
+    if(timeLeft > 0) {
+        [cell.textView setHidden:NO];
+        [cdView setHidden:YES];
+        theTic.status = kTTTicStatusRead;
+        
+        //[TTTic fetchTicInBackgroundWithId:theTic.objectId timestamp:theTic.sendTimestamp completion:^(TTTic *fetchedTic, NSError *error) {
+          //
+        //}];
+        [theTic saveInBackground];
+
+        NSLog(@"The status of the tic should have been updated to StatusRead");
+    }
 //    for (UIView *v in cell.messageBubbleImageView.subviews) {
 //        [v removeFromSuperview];
 //    }
