@@ -1,6 +1,8 @@
-(make use of HW2 and HW3) - (5 points)
+TicText is an iOS application built with Apple's Cocoa Touch framework, Facebook's Parse framework, and many other modules provided through CocoaPods (a dependency manager). The application, when joined with these frameworks, compose our entire infrastructure from front end to back end.
 
-Keep your documentation short and to the point. If you are using a framework, you don't need to describe the framework in detail. Instead focus on the big picture. For instance, if you are using a web framework, then you should just explain the metaphor behind it (eg., "Web Framework X is based on the Model-View-Controller pattern. Our models follow the Active Record pattern to interface with the database. ...").
+In the front end, the Cocoa Touch framework provides us with many inherent design patterns, such as Model-View-Controller and Chain of Responsibility for touch input, that trivialize most device interactions and let us focus on the application. The Parse framework enables our models to easily implement the Active Record pattern and provides out-of-the-box data caching.
+
+In the back end, the Parse framework eliminates the tedious work of designing a schema and setting up an Apple push notification server. Hence, the entirety of our back end code is composed of triggers and stored procedures written in JavaScript.
 
 \begin{enumerate}
 	\item Include multiple UML diagrams to show the important parts of your system (you must have UML diagrams).
@@ -9,7 +11,16 @@ Keep your documentation short and to the point. If you are using a framework, yo
 	\item Describe how the choice of the framework influence the design of your system.
 \end{enumerate}
 
-Check out Figure \ref{us1_sequence}!!
+\noindent When a user uses TicText, they will interact with several major workflows:
+\begin{enumerate}
+	\item Onboarding (Sign up/Log in through Facebook + Find Friends)
+	\item Viewing conversations and new Tics
+	\item Viewing a single conversation
+	\item Composing a new Tic
+	\item Receiving a new Tic
+\end{enumerate}
+
+Check out Figure \ref{fig:us1_sequence}!!
 
 \renewcommand\listfigurename{List of Diagrams}
 \listoffigures
