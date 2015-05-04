@@ -175,6 +175,7 @@ extern NSString * const kTTConversationClassName;
 extern NSString * const kTTConversationTypeKey;
 extern NSString * const kTTConversationUserIdKey;
 extern NSString * const kTTConversationLastTicKey;
+extern NSString * const kTTConversationRecipientKey;
 
 // Type values
 extern NSString * const kTTConversationTypeDefault;

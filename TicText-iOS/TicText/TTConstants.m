@@ -160,6 +160,7 @@ NSString * const kTTConversationClassName = @"Conversation";
 NSString * const kTTConversationTypeKey = @"type";
 NSString * const kTTConversationUserIdKey = @"userId";
 NSString * const kTTConversationLastTicKey = @"lastTic";
+NSString * const kTTConversationRecipientKey = @"recipient";
 
 // Type values
 NSString * const kTTConversationTypeDefault = @"default";

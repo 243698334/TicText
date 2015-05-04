@@ -410,7 +410,7 @@
                     TTUser *recipient = (TTUser *)object;
                     PFQuery *conversationQuery = [TTConversation query];
                     [conversationQuery includeKey:kTTConversationLastTicKey];
-                    [conversationQuery whereKey:kTTConversationUserIdKey equalTo:recipient.objectId];
+                    [conversationQuery whereKey:kTTConversationRecipientKey equalTo:recipient];
                     [conversationQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                         if (error) {
                             [TTErrorHandler handleParseSessionError:error inViewController:self];
@@ -461,7 +461,7 @@
                 TTUser *recipient = (TTUser *)object;
                 PFQuery *conversationQuery = [TTConversation query];
                 [conversationQuery includeKey:kTTConversationLastTicKey];
-                [conversationQuery whereKey:kTTConversationUserIdKey equalTo:recipient.objectId];
+                [conversationQuery whereKey:kTTConversationRecipientKey equalTo:recipient];
                 [conversationQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                     if (error) {
                         [TTErrorHandler handleParseSessionError:error inViewController:self];
