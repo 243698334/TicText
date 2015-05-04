@@ -7,7 +7,10 @@
 //
 
 #import "TTFindFriendsTableViewCell.h"
-#define kStockProfileImage @"profile"
+
+#import <ParseUI/ParseUI.h>
+
+#define kStockProfileImage @"ProfilePicturePlaceholder"
 #define kCellWidth self.bounds.size.width
 #define kCellHeight self.bounds.size.height
 
@@ -29,7 +32,7 @@
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
-        self.pictures = [[NSMutableArray alloc] initWithObjects:[[UIImageView alloc] init], [[UIImageView alloc] init], [[UIImageView alloc] init], nil];
+        self.pictures = [[NSMutableArray alloc] initWithObjects:[[PFImageView alloc] init], [[PFImageView alloc] init], [[PFImageView alloc] init], nil];
         
         self.backgroundColor = [UIColor clearColor];
         [self addSubview: self.pictures[0]];
@@ -42,7 +45,7 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 
@@ -59,22 +62,15 @@
     [[friends objectAtIndex:0] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *err) {
         if(!err) {
             TTUser *user = (TTUser *)object;
-            __block NSData *data;
-            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
-            dispatch_async(queue, ^{
-                data = [user profilePicture];
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    if(data){
-                        ((UIImageView *)self.pictures[imageIndex]).image = [UIImage imageWithData:data];
-                    }
-                });
-            });
+            PFImageView *currentImageView = (PFImageView *)self.pictures[imageIndex];
+            currentImageView.file = user.profilePicture; // TODO: Use small profile picture.
+            [currentImageView loadInBackground];
             
             [friends removeObjectAtIndex:0];
             [self setFriends:friends imageIndex:imageIndex+1];
         }
     }];
-
+    
 }
 
 #pragma mark - view creators

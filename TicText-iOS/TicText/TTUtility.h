@@ -11,7 +11,12 @@
 // An assortment of miscellaneous tools that are not big enough to merit their own class.
 @interface TTUtility : NSObject
 
-// Prompts the user to register their device for push notifications.
 + (void)setupPushNotifications;
+
++ (void)setupReachabilityMonitors;
+
++ (BOOL)isParseReachable;
+
++ (BOOL)isInternetReachable;
 
 @end

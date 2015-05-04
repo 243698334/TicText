@@ -19,7 +19,7 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 
@@ -54,7 +54,7 @@
     self.nameLabel.text = user.displayName;
     
     self.createTicButtton.frame = CGRectMake(self.bounds.size.width - 40 , 7, self.bounds.size.height - 14, self.bounds.size.height - 14);
-
+    
     //if the profile picture needs to be loaded from parse, it does so here
     //if not, it fetches it from the cache and puts it in the main view
     [user fetchInBackgroundWithBlock:^(PFObject *object, NSError *err) {
@@ -62,7 +62,7 @@
         __block NSData *data;
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
         dispatch_async(queue, ^{
-            data = [user profilePicture];
+            data = [user.profilePicture getData];
             dispatch_sync(dispatch_get_main_queue(), ^{
                 if(data){
                     self.profileImageView.image = [UIImage imageWithData:data];

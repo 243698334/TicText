@@ -1,9 +1,9 @@
 var USER_FACEBOOK_ID = 'facebookId';
-
+ 
 var USER_PRIVATE_DATA_CLASS_NAME = 'UserPrivateData';
 var USER_PRIVATE_DATA_FRIENDS = 'friends';
 var USER_PRIVATE_DATA_FACEBOOK_FRIENDS = 'facebookFriends';
-
+ 
 Parse.Cloud.beforeSave(USER_PRIVATE_DATA_CLASS_NAME, function(request, response) {
     Parse.Cloud.useMasterKey();
     var userPrivateData = request.object;

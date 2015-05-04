@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TTConversationsViewController : UIViewController
+#import "TTNewTicsBannerView.h"
+#import "TTNewTicsDropdownView.h"
+#import "TTComposeView.h"
+#import "TTConversationTableViewCell.h"
+
+@interface TTConversationsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, TTNewTicsBannerViewDelegate, TTNewTicsBannerViewDataSource, TTNewTicsDropdownViewDelegate, TTNewTicsDropdownViewDataSource, TTComposeViewDelegate>
+
+- (BOOL)isMessagesViewControllerPresented;
 
 @end

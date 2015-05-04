@@ -82,61 +82,66 @@
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
 @property (nonatomic) BOOL isFetchingTic;
 
+@property (nonatomic, strong) TTConversation *conversation;
+@property (nonatomic, strong) TTUser *recipient;
 @property (nonatomic, strong) NSMutableArray *tics;
 @property (nonatomic, strong) NSMutableArray *jsqMessages;
 
+// image picker view
 @property (nonatomic, strong) NSMutableArray *imagesFromCameraRoll;
 
-// @TODO: need customization
 @property (nonatomic, strong) JSQMessagesBubbleImage *outgoingBubbleImageData;
 @property (nonatomic, strong) JSQMessagesBubbleImage *incomingBubbleImageData;
 @property (nonatomic, strong) JSQMessagesBubbleImageFactory *bubbleFactory;
+
 @end
 
 @implementation TTMessagesViewController
 
-+ (instancetype)messagesViewController {
-    TTMessagesViewController *viewController = [super messagesViewController];
-    
-    viewController.view.backgroundColor = [UIColor grayColor];
-    viewController.navigationItem.title = @"Some Dialog";
-    viewController.hidesBottomBarWhenPushed = YES;
-
-    viewController.inputToolbar.contentView.leftBarButtonItem = nil;
-    viewController.inputToolbar.contentView.backgroundColor = [UIColor whiteColor];
-    viewController.inputToolbar.contentView.rightBarButtonItem.tintColor = kTTUIPurpleColor;
-    
-    viewController.expirationTime = kDefaultExpirationTime; // @TODO Load from user settings
-    [viewController setupMessagesToolbar];
-    
-    return viewController;
++ (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient {
+    TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewController];
+    messagesViewController.recipient = recipient;
+    return messagesViewController;
 }
 
-+ (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient {
-    TTMessagesViewController *messagesViewController = [self messagesViewController];
-    messagesViewController.recipient = recipient;
++ (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation {
+    TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewController];
+    messagesViewController.recipient = conversation.recipient;
+    messagesViewController.conversation = conversation;
+    return messagesViewController;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
     
-    messagesViewController.navigationItem.title = messagesViewController.recipient.displayName; // this is called before self.recipient is set
+    self.navigationItem.title = self.recipient.displayName;
     
-    messagesViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:messagesViewController action:@selector(confirmCleanTicHistory)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(confirmCleanTicHistory)];
+    self.view.backgroundColor = [UIColor grayColor];
     
-    [TSMessage setDelegate:messagesViewController];
+    self.inputToolbar.contentView.leftBarButtonItem = nil;
+    self.inputToolbar.contentView.backgroundColor = [UIColor whiteColor];
+    self.inputToolbar.contentView.rightBarButtonItem.tintColor = kTTUIPurpleColor;
+    
+    self.expirationTime = kDefaultExpirationTime; // @TODO Load from user settings
+    [self setupMessagesToolbar];
+    
+    
+    [TSMessage setDelegate:self];
     [TSMessage addCustomDesignFromFileWithName:@"TTInAppNotificationDesign.json"];
     
-    messagesViewController.senderId = [[TTUser currentUser].objectId copy];
-    messagesViewController.senderDisplayName = [[TTUser currentUser].displayName copy];
+    self.senderId = [[TTUser currentUser].objectId copy];
+    self.senderDisplayName = [[TTUser currentUser].displayName copy];
     
-    messagesViewController.tics = [[NSMutableArray alloc] init];
-    messagesViewController.jsqMessages = [[NSMutableArray alloc] init];
+    self.tics = [[NSMutableArray alloc] init];
+    self.jsqMessages = [[NSMutableArray alloc] init];
     
-    messagesViewController.isFetchingTic = NO;
-    messagesViewController.bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
-    messagesViewController.outgoingBubbleImageData = [messagesViewController.bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
-    messagesViewController.incomingBubbleImageData = [messagesViewController.bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
+    self.isFetchingTic = NO;
+    self.bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
+    self.outgoingBubbleImageData = [self.bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    self.incomingBubbleImageData = [self.bubbleFactory incomingMessagesBubbleImageWithColor:kTTUIPurpleColor];
     
-    [messagesViewController loadTicHistory];
-    
-    return messagesViewController;
+    [self loadTicHistory];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -148,6 +153,17 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    if (self.conversation.lastTic.type == kTTTicTypeDraft && self.messagesToolbar.selectedIndex == kTTMessagesToolbarSelectedItemNone) {
+        [self.inputToolbar.contentView.textView becomeFirstResponder];
+        [self.messagesToolbar selectItemAtIndex:0];
+        NSString *draftTicContent = [NSString stringWithUTF8String:[self.conversation.lastTic.content bytes]];
+        if ([draftTicContent isEqualToString:@"[Empty]"]) {
+            draftTicContent = @"";
+        }
+        self.inputToolbar.contentView.textView.text = draftTicContent;
+    }
+    
     self.collectionView.collectionViewLayout.springinessEnabled = NO;
     [self jsq_setToolbarBottomLayoutGuideConstant:0];
     
@@ -160,13 +176,42 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [TSMessage dismissActiveNotification];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self updateCurrentConversation];
 }
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     
     [self updateCustomUI];
+}
+
+- (void)updateCurrentConversation {
+    TTTic *draftTic = [TTTic object];
+    draftTic.status = kTTTicStatusDrafting;
+    draftTic.type = kTTTicTypeDraft;
+    draftTic.sendTimestamp = draftTic.receiveTimestamp = [NSDate date];
+    draftTic.sender = [TTUser currentUser];
+    draftTic.recipient = self.recipient;
+    draftTic.ACL = [PFACL ACLWithUser:[TTUser currentUser]];
+
+    if ([self.inputToolbar.contentView.textView.text length] > 0) {
+        if (self.conversation.lastTic == nil || self.conversation.lastTic.type != kTTTicTypeDraft) {
+            draftTic.content = [self.inputToolbar.contentView.textView.text dataUsingEncoding:NSUTF8StringEncoding];
+            self.conversation.lastTic = draftTic;
+        } else {
+            self.conversation.lastTic.content = [self.inputToolbar.contentView.textView.text dataUsingEncoding:NSUTF8StringEncoding];
+        }
+    } else {
+        if ([self.tics count] > 0) {
+            self.conversation.lastTic = [self.tics lastObject];
+        } else {
+            draftTic.content = [@"[Empty]" dataUsingEncoding:NSUTF8StringEncoding];
+            self.conversation.lastTic = draftTic;
+        }
+    }
+    [self.conversation saveEventually];
 }
 
 - (void)didReceiveNewTic:(NSNotification *)notification {
@@ -219,12 +264,16 @@
                                                subtitle:@"We are unable to load your Tic history. "
                                                    type:TSMessageNotificationTypeError];
         } else {
+            NSInteger loadedTicsCount = 0;
             for (TTTic *tic in objects) {
-                JSQMessage *jsqMessage = [self jsqMessageWithTic:tic];
-                [self.tics addObject:tic];
-                [self.jsqMessages addObject:jsqMessage];
+                if (![tic.status isEqualToString:kTTTicStatusDrafting]) {
+                    JSQMessage *jsqMessage = [self jsqMessageWithTic:tic];
+                    [self.tics addObject:tic];
+                    [self.jsqMessages addObject:jsqMessage];
+                    loadedTicsCount++;
+                }
             }
-            if ([objects count] > 0) {
+            if (loadedTicsCount > 0) {
                 [self finishReceivingMessageAnimated:YES];
             }
         }
@@ -243,7 +292,7 @@
     if (self.messagesToolbar.selectedIndex == 0) {
         CGFloat originY = self.view.frame.size.height - self.realToolbarBottomLayoutGuideConstrant - kMessagesToolbarHeight - self.inputToolbar.frame.size.height;
         return CGRectMake(0, originY,
-                      self.inputToolbar.frame.size.width, self.inputToolbar.frame.size.height);
+                          self.inputToolbar.frame.size.width, self.inputToolbar.frame.size.height);
     } else {
         return [self messagesToolbarFrame];
     }
@@ -318,7 +367,9 @@
     [self updateCustomUI];
 }
 
+
 #pragma mark - Helpers
+
 - (void)confirmCleanTicHistory {
     [TSMessage showNotificationInViewController:self
                                           title:@"Clean Tic History"
@@ -384,7 +435,7 @@
     // New Tic and anonymous status
     NSString *ticType = kTTTicTypeDefault;
     if (self.isAnonymous) {
-        ticType = kTTTIcTypeAnonymous;
+        ticType = kTTTicTypeAnonymous;
     }
     TTTic *newTic = nil;
     
@@ -402,7 +453,7 @@
         
         if ([mediaContent isKindOfClass:[UIImage class]]) {
             mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:(UIImage *)mediaContent];
-            mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:senderId];
+            mediaItem.appliesMediaViewMaskAsOutgoing = YES;
             file = [PFFile fileWithData:UIImageJPEGRepresentation((UIImage *)mediaContent, 0.6)];
         }
         newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
@@ -467,9 +518,7 @@
 #pragma mark - JSQMessagesViewController method overrides
 
 - (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
-
     TTTic *newTic = [self createTicWithMessegeText:text mediaContent:nil senderId:self.senderId senderDisplayName:self.senderDisplayName date:date];
-
     [self sendTic:newTic];
 }
 
@@ -490,16 +539,13 @@
 }
 
 - (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
-    JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
+    JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];    
     if ([message.senderId isEqualToString:self.senderId]) {
-        // @TODO: profile picture
+        return [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageWithData:[[TTUser currentUser].profilePicture getData]] diameter:kJSQMessagesCollectionViewAvatarSizeDefault];
     }
     else {
-        // @TODO: profile picture
+        return [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageWithData:[self.recipient.profilePicture getData]] diameter:kJSQMessagesCollectionViewAvatarSizeDefault];
     }
-    
-    JSQMessagesAvatarImage *testAvatar = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"profile"] diameter:kJSQMessagesCollectionViewAvatarSizeDefault];
-    return testAvatar;
 }
 
 - (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
@@ -713,27 +759,6 @@
     //[tappedCell.messageBubbleImageView addSubview:progressHUD];
     //progressHUD.opacity = 0;
     //[progressHUD show:YES];
-/*
-    [TTTic fetchTicInBackgroundWithId:unreadTic.objectId timestamp:[NSDate date] completion:^(TTTic *fetchedTic, NSError *error) {
-        if (fetchedTic) {
-            [fetchedTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
-            fetchedTic.status = kTTTicStatusRead;
-            JSQMessage *fetchedJSQMessage = [self jsqMessageWithTic:fetchedTic];
-            [self.tics replaceObjectAtIndex:indexPath.item withObject:fetchedTic];
-            [self.jsqMessages replaceObjectAtIndex:indexPath.item withObject:fetchedJSQMessage];
-        } else {
-            [TSMessage showNotificationInViewController:self title:@"You are too late!" subtitle:@"This Tic has already expired. " type:TSMessageNotificationTypeWarning];
-            NSDate *emptyMessageDate = ((JSQMessage *)[self.jsqMessages objectAtIndex:indexPath.item]).date;
-            JSQMessage *expiredMessage = [[JSQMessage alloc] initWithSenderId:self.recipient.objectId senderDisplayName:self.recipient.displayName date:emptyMessageDate text:@"Expired"];
-            [self.jsqMessages replaceObjectAtIndex:indexPath.item withObject:expiredMessage];
-            unreadTic.status = kTTTIcStatusExpired;
-        }
-        //[progressHUD removeFromSuperview];
-        [tappedCell.textView setHidden:NO];
-        [tappedCell.mediaView setHidden:NO];
-        [self finishReceivingMessageAnimated:YES];
-        self.isFetchingTic = NO;
-    }];*/
 }
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapCellAtIndexPath:(NSIndexPath *)indexPath touchLocation:(CGPoint)touchLocation {
@@ -745,7 +770,7 @@
 
 - (TTTic *)ticWithMessage:(JSQMessage *)message mediaFile:(PFFile *)mediaFile {
     TTTic *newTic = [TTTic object];
-    newTic.type = (self.isAnonymous) ? kTTTIcTypeAnonymous : kTTTicTypeDefault;
+    newTic.type = (self.isAnonymous) ? kTTTicTypeAnonymous : kTTTicTypeDefault;
     newTic.sender = [TTUser currentUser];
     newTic.recipient = self.recipient;
     newTic.timeLimit = self.expirationTime;
@@ -770,23 +795,23 @@
 - (JSQMessage *)jsqMessageWithTic:(TTTic *)tic {
     TTUser *sender = tic.sender;
     PFFile *mediaContent = tic.mediaContent;
-
+    
     if (mediaContent) {
         // TODO:classify more media types
         JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:nil];
-        mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:self.senderId];
+        mediaItem.appliesMediaViewMaskAsOutgoing = NO;
         
         [mediaContent getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-             if (error) {
-                 [TSMessage showNotificationInViewController:self
-                                                       title:@"Connection Error"
-                                                    subtitle:@"Unable to fetch media content."
-                                                        type:TSMessageNotificationTypeError];
-             } else {
-                 mediaItem.image = [UIImage imageWithData:imageData];
-                 [self.collectionView reloadData];
-             }
-         }];
+            if (error) {
+                [TSMessage showNotificationInViewController:self
+                                                      title:@"Connection Error"
+                                                   subtitle:@"Unable to fetch media content."
+                                                       type:TSMessageNotificationTypeError];
+            } else {
+                mediaItem.image = [UIImage imageWithData:imageData];
+                [self.collectionView reloadData];
+            }
+        }];
         
         return [[JSQMessage alloc] initWithSenderId:sender.objectId senderDisplayName:sender.displayName date:tic.sendTimestamp media:mediaItem];
     } else {
@@ -904,7 +929,7 @@
                             [scrollingImagePickerView setImages:self.imagesFromCameraRoll];
                             [self.progressHUD removeFromSuperview];
                         });
-                    
+                        
                     }
                 }];
             }
@@ -917,7 +942,7 @@
             
         }];
     });
-
+    
 }
 
 - (void)messagesToolbar:(TTMessagesToolbar *)toolbar willHideItem:(TTMessagesToolbarItem *)item {
@@ -1012,7 +1037,7 @@
     
     if (picture != nil) {
         TTTic *newTic = [self createTicWithMessegeText:nil mediaContent:picture senderId:self.senderId senderDisplayName:self.senderDisplayName date:[NSDate date]];
-
+        
         [self sendTicWithMediaContent:newTic];
     }
     
