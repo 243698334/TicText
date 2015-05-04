@@ -13,10 +13,8 @@ In software development, investors and stakeholders want to see visible results 
 % Version Control
 To improve team efficiency and facilitate grading, the University of Illinois instructors require students to use Subversion: a program (more accurately “a lifestyle choice”) that helps software developers maintain and track all changes to, or version, a code repository. An alternative versional control system to Subversion is Git. The biggest difference between Git and Subversion is how collaboration is organized. Subversion uses centralized remote repositories, which means that each collaborator syncs every change with a single master repository over the Internet. Git, on the other hand, uses decentralized repositories. In decentralized repositories, there is no single master repository and each collaborator’s local repository is autonomous. Because each local repository is autonomous, collaborators can reliably commit changes to their local repository even without an Internet connection. These changes can then be, when an Internet connection becomes available, pushed and pulled to and from other collaborators. This workflow makes Git’s reliability far superior to Subversion. Both Subversion and Git let collaborators create branches to pivot development for a specific feature, but Git further augments collaboration through a different feature: repository forks. When a collaborator forks a repository, they create an isolated copy of the original repository. In this new isolated repository, collaborators can create, delete, and commit changes to branches without worrying about conflicting with another collaborator. In case something goes awry, projects using Git commonly designate a stable branch on the main repository to guarantee a safe point to revert. For a project that wants to maximize efficiency, Git offers our project unparalleled autonomy, reliability, and safety.
 
-% Code Review
+% Code Review/Iterative Development
 While each collaborator using Git has a local copy of the main repository, many projects backup their repository to a remote service, such as Github, and designate their repository on Github as their main repository. Don’t be fooled–Github is more than just a service to host a remote Git repository; its website provides many tools to enhance efficiency.  One of these tools is the pull request: a proven, efficient, and convenient practice to submitting, review, and merge collections of changes. Pull requests are similar to formal code reviews, a process software development teams use to ensure code quality in incoming changes. Prior to completing a feature, the submitter submits their changes for a formal code review where they receive critique and feedback from other developers. Often a feature must go through many iterations in this stage before becoming “production ready.”
-
-% Iterative Development
 
 \subsection{Our process}
 % Pair Programming
@@ -28,10 +26,8 @@ Our project uses XCode's native XCTest framework for unit testing, OCMock for co
 % Version Control
 Our project hopes to improve efficiency adjustments to our project’s software development method by versioning our code with Git instead of Subversion.
 
-% Code Review
+% Code Review/Iterative Development
 While Github doesn’t natively facilitate formal code reviews, we self-impose a rule that each pull request must be reviewed and approved by two other team members before merging. Reviewers can use Github’s web interface to review and comment on the pull request, its files, and even individual lines of code. 
-
-% Iterative Development
 
 % Refactoring
 Following Agile Software Development methodology, we are always refactoring the codebase. We refactor while coding, while writing tests, and while revisiting code when implementing a new feature.
