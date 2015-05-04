@@ -95,6 +95,11 @@
     self.backgroundImageView.alpha = difference/100;
 }
 
+/**
+ * Refreshes the view after something on TTUser is changed 
+ *
+ **/
+
 -(void)refreshValues {
     TTUser *user = [TTUser currentUser];
     self.nameLabel.text = user.displayName;
