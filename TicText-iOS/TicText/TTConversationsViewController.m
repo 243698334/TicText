@@ -144,14 +144,38 @@
     [receivedNewTicsQuery whereKey:kTTNewTicRecipientUserIdKey equalTo:[TTUser currentUser].objectId];
     [receivedNewTicsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
-            for (TTNewTic *currentNewTic in objects) {
-                [self storeNewTic:currentNewTic];
+            for (TTNewTic *currentReceivedNewTic in objects) {
+                BOOL isReceivedNewTicDuplicate = NO;
+                for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
+                    if (isReceivedNewTicDuplicate) {
+                        break;
+                    }
+                    NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
+                    for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
+                        if ([currentNewTic.ticId isEqualToString:currentReceivedNewTic.ticId]) {
+                            isReceivedNewTicDuplicate = YES;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!isReceivedNewTicDuplicate) {
+                    [self storeNewTic:currentReceivedNewTic];
+                }
             }
         }
         
         if ([[[NSUserDefaults standardUserDefaults] objectForKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey] isEqual:@YES]) {
             [TTNewTic retrieveNewTicsInBackgroundWithBlock:^(NSArray *receivedNewTics, NSError *error) {
-                for (TTNewTic *currentReceivedNewTic in receivedNewTics) {
+                for (NSDictionary *currentReceivedNewTicDictionary in receivedNewTics) {
+                    TTNewTic *currentReceivedNewTic = [TTNewTic object];
+                    currentReceivedNewTic.ticId = [currentReceivedNewTicDictionary objectForKey:kTTNewTicTicIdKey];
+                    currentReceivedNewTic.status = [currentReceivedNewTicDictionary objectForKey:kTTNewTicStatusKey];
+                    currentReceivedNewTic.senderUserId = [currentReceivedNewTicDictionary objectForKey:kTTNewTicSenderUserIdKey];
+                    currentReceivedNewTic.recipientUserId = [currentReceivedNewTicDictionary objectForKey:kTTNewTicRecipientUserIdKey];
+                    currentReceivedNewTic.sendTimestamp = [currentReceivedNewTicDictionary objectForKey:kTTNewTicSendTimestampKey];
+                    currentReceivedNewTic.timeLimit = [[currentReceivedNewTicDictionary objectForKey:kTTNewTicTimeLimitKey] doubleValue];
+                    
                     BOOL isReceivedNewTicDuplicate = NO;
                     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
                         if (isReceivedNewTicDuplicate) {
@@ -159,7 +183,7 @@
                         }
                         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
                         for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
-                            if (currentNewTic.objectId == currentReceivedNewTic.ticId) {
+                            if ([currentNewTic.ticId isEqualToString:currentReceivedNewTic.ticId]) {
                                 isReceivedNewTicDuplicate = YES;
                                 break;
                             }
@@ -378,20 +402,104 @@
             self.receivedNewTicsDropdownViewSelectedSenderId = [self.receivedNewTicsSortedKeys objectAtIndex:index];
             return YES;
         } else {
-            TTNewTic *currentTic = [receivedNewTicsFromCurrentSender firstObject];
-            
-            NSLog(@"Should open current new Tic at index %li", index);
+            TTNewTic *currentNewTic = [receivedNewTicsFromCurrentSender firstObject];
+            [[TTUser query] getObjectInBackgroundWithId:currentNewTic.senderUserId block:^(PFObject *object, NSError *error) {
+                if (error) {
+                    [TTErrorHandler handleParseSessionError:error inViewController:self];
+                } else {
+                    TTUser *recipient = (TTUser *)object;
+                    PFQuery *conversationQuery = [TTConversation query];
+                    [conversationQuery includeKey:kTTConversationLastTicKey];
+                    [conversationQuery whereKey:kTTConversationUserIdKey equalTo:recipient.objectId];
+                    [conversationQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                        if (error) {
+                            [TTErrorHandler handleParseSessionError:error inViewController:self];
+                        } else {
+                            TTConversation *currentConversation = nil;
+                            if (object != nil) {
+                                currentConversation = (TTConversation *)object;
+                            } else {
+                                TTTic *draftTic = [TTTic object];
+                                draftTic.status = kTTTicStatusDrafting;
+                                draftTic.type = kTTTicTypeDraft;
+                                draftTic.sendTimestamp = draftTic.receiveTimestamp = [NSDate date];
+                                draftTic.sender = [TTUser currentUser];
+                                draftTic.recipient = recipient;
+                                draftTic.content = [@"[Empty]" dataUsingEncoding:NSUTF8StringEncoding];
+                                draftTic.ACL = [PFACL ACLWithUser:[TTUser currentUser]];
+                                TTConversation *newConversation = [TTConversation object];
+                                newConversation.type = kTTConversationTypeDefault;
+                                newConversation.recipient = recipient;
+                                newConversation.lastTic = draftTic;
+                                newConversation.userId = [TTUser currentUser].objectId;
+                                [draftTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
+                                [newConversation pinInBackgroundWithName:kTTLocalDatastoreConversationsPinName block:^(BOOL succeeded, NSError *error) {
+                                    [newConversation saveEventually];
+                                }];
+                                currentConversation = newConversation;
+                            }
+                            [self hideNewTicsDropdownView];
+                            self.messagesViewController = [TTMessagesViewController messagesViewControllerWithConversation:currentConversation];
+                            self.messagesViewController.hidesBottomBarWhenPushed = YES;
+                            self.messagesViewController.isKeyboardFirstResponder = YES;
+                            [self.navigationController pushViewController:self.messagesViewController animated:YES];
+                        }
+                    }];
+                }
+            }];
             return NO;
         }
     }
     
     if (tableView.tag == kTTNewTicsDropdownViewSameSenderNewTicsTableViewTag) {
         NSMutableArray *receivedNewTicsFromSelectedSender = [self.receivedNewTicsDictionary objectForKey:self.receivedNewTicsDropdownViewSelectedSenderId];
-        TTNewTic *currentTic = [receivedNewTicsFromSelectedSender objectAtIndex:index];
-        
+        TTNewTic *currentNewTic = [receivedNewTicsFromSelectedSender objectAtIndex:index];
+        [[TTUser query] getObjectInBackgroundWithId:currentNewTic.senderUserId block:^(PFObject *object, NSError *error) {
+            if (error) {
+                [TTErrorHandler handleParseSessionError:error inViewController:self];
+            } else {
+                TTUser *recipient = (TTUser *)object;
+                PFQuery *conversationQuery = [TTConversation query];
+                [conversationQuery includeKey:kTTConversationLastTicKey];
+                [conversationQuery whereKey:kTTConversationUserIdKey equalTo:recipient.objectId];
+                [conversationQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                    if (error) {
+                        [TTErrorHandler handleParseSessionError:error inViewController:self];
+                    } else {
+                        TTConversation *currentConversation = nil;
+                        if (object != nil) {
+                            currentConversation = (TTConversation *)object;
+                        } else {
+                            TTTic *draftTic = [TTTic object];
+                            draftTic.status = kTTTicStatusDrafting;
+                            draftTic.type = kTTTicTypeDraft;
+                            draftTic.sendTimestamp = draftTic.receiveTimestamp = [NSDate date];
+                            draftTic.sender = [TTUser currentUser];
+                            draftTic.recipient = recipient;
+                            draftTic.content = [@"[Empty]" dataUsingEncoding:NSUTF8StringEncoding];
+                            draftTic.ACL = [PFACL ACLWithUser:[TTUser currentUser]];
+                            TTConversation *newConversation = [TTConversation object];
+                            newConversation.type = kTTConversationTypeDefault;
+                            newConversation.recipient = recipient;
+                            newConversation.lastTic = draftTic;
+                            newConversation.userId = [TTUser currentUser].objectId;
+                            [draftTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
+                            [newConversation pinInBackgroundWithName:kTTLocalDatastoreConversationsPinName block:^(BOOL succeeded, NSError *error) {
+                                [newConversation saveEventually];
+                            }];
+                            currentConversation = newConversation;
+                        }
+                        [self hideNewTicsDropdownView];
+                        self.messagesViewController = [TTMessagesViewController messagesViewControllerWithConversation:currentConversation];
+                        self.messagesViewController.hidesBottomBarWhenPushed = YES;
+                        self.messagesViewController.isKeyboardFirstResponder = YES;
+                        [self.navigationController pushViewController:self.messagesViewController animated:YES];
+                    }
+                }];
+            }
+        }];
         return NO;
     }
-    
     return NO;
 }
 
@@ -402,10 +510,10 @@
 - (void)newTicsDropdownViewDidTapClearAllExpiredTicsButton {
     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
-        for (TTTic *currentTic in receivedNewTicsFromCurrentSender) {
-            if (currentTic.status == kTTTicStatusExpired) {
-                [receivedNewTicsFromCurrentSender removeObject:currentTic];
-                [currentTic unpinInBackground];
+        for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
+            if ([currentNewTic.status isEqualToString:kTTNewTicStatusExpired]) {
+                [receivedNewTicsFromCurrentSender removeObject:currentNewTic];
+                [currentNewTic unpinInBackground];
             }
         }
         if ([receivedNewTicsFromCurrentSender count] == 0) {
@@ -437,8 +545,8 @@
     NSInteger numberOfUnreadTics = 0;
     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
-        for (TTTic *currentTic in receivedNewTicsFromCurrentSender) {
-            if (currentTic.status == kTTTicStatusUnread) {
+        for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
+            if ([currentNewTic.status isEqualToString:kTTNewTicStatusUnread]) {
                 numberOfUnreadTics++;
             }
         }
@@ -450,8 +558,8 @@
     NSInteger numberOfExpiredTics = 0;
     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
-        for (TTTic *currentTic in receivedNewTicsFromCurrentSender) {
-            if (currentTic.status == kTTTicStatusExpired) {
+        for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
+            if ([currentNewTic.status isEqualToString:kTTNewTicStatusExpired]) {
                 numberOfExpiredTics++;
             }
         }
@@ -494,7 +602,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.isNewTicsDropdownViewVisible) {
         [self hideNewTicsDropdownView];
-
+        
     }
     //NSLog(@"scrollViewDidScroll");
 }
@@ -558,8 +666,8 @@
             [self.conversations sortUsingComparator:^NSComparisonResult(TTConversation *firstConversation, TTConversation *secondConversation) {
                 TTTic *firstTic = firstConversation.lastTic;
                 TTTic *secondTic = secondConversation.lastTic;
-                NSDate *firstLastActivityTimestamp = firstTic.status == kTTTicStatusRead ? firstTic.receiveTimestamp : firstTic.sendTimestamp;
-                NSDate *secondLastActivityTimestamp = secondTic.status == kTTTicStatusRead ? secondTic.receiveTimestamp : secondTic.sendTimestamp;
+                NSDate *firstLastActivityTimestamp = [firstTic.status isEqualToString:kTTTicStatusRead] ? firstTic.receiveTimestamp : firstTic.sendTimestamp;
+                NSDate *secondLastActivityTimestamp = [secondTic.status isEqualToString:kTTTicStatusRead] ? secondTic.receiveTimestamp : secondTic.sendTimestamp;
                 return [secondLastActivityTimestamp compare:firstLastActivityTimestamp];
             }];
             
@@ -685,4 +793,5 @@
         }];
     }];
 }
+
 @end
