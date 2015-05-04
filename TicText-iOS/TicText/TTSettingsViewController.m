@@ -13,15 +13,14 @@
 #define kFacebookURL @"https://www.facebook.com/pages/TicText/587674271368005"
 #define kFacebookAppURL @"fb://profile/587674271368005"
 
-@interface TTSettingsViewController () {
-    HFStretchableTableHeaderView *_stretchableTableHeaderView;
-    ProfileHeaderView *headerView;
-}
+@interface TTSettingsViewController ()
 
 @property (nonatomic, strong) UISwitch *receiveNewTicNotificationSwitch;
 @property (nonatomic, strong) UISwitch *receiveExpireSoonNotificationSwitch;
 @property (nonatomic, strong) UISwitch *receiveReadByRecipientNotificationSwitch;
 @property (nonatomic, strong) MFMailComposeViewController *mc;
+@property (nonatomic, strong) HFStretchableTableHeaderView *stretchableTableHeaderView;
+@property (nonatomic, strong) ProfileHeaderView *headerView;
 
 @end
 
@@ -41,10 +40,10 @@
     self.navigationItem.title = @"Settings";
     self.tableView.scrollEnabled = YES;
     
-    _stretchableTableHeaderView = [HFStretchableTableHeaderView new];
-    headerView = [[ProfileHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 0.5333 * self.view.bounds.size.width)];
-    _stretchableTableHeaderView = [HFStretchableTableHeaderView new];
-    [_stretchableTableHeaderView stretchHeaderForTableView:self.tableView withView:headerView];
+    self.stretchableTableHeaderView = [[HFStretchableTableHeaderView alloc] init];
+    self.headerView = [[ProfileHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 0.5333 * self.view.bounds.size.width)];
+    self.stretchableTableHeaderView = [[HFStretchableTableHeaderView alloc] init];
+    [self.stretchableTableHeaderView stretchHeaderForTableView:self.tableView withView:self.headerView];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
     
@@ -181,12 +180,12 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [_stretchableTableHeaderView scrollViewDidScroll:scrollView];
+    [self.stretchableTableHeaderView scrollViewDidScroll:scrollView];
 }
 
 - (void)viewDidLayoutSubviews
 {
-    [_stretchableTableHeaderView resizeView];
+    [self.stretchableTableHeaderView resizeView];
 }
 
 -(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
@@ -212,7 +211,7 @@
             _user.displayName = textField.text;
             [_user saveInBackgroundWithBlock:^(BOOL success, NSError *err){
                 if(success) {
-                    [headerView refreshValues];
+                    [self.headerView refreshValues];
                 }
             }];
         }];
@@ -285,7 +284,7 @@
             [self presentViewController:controller animated:YES completion:nil];
         }
     }];
-    [headerView refreshValues];
+    [self.headerView refreshValues];
     [self dismissViewControllerAnimated:YES completion:nil];
     
 }

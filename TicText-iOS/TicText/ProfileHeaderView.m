@@ -5,6 +5,10 @@
 //  Created by Jack Arendt on 4/24/15.
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
+//  ProfileHeaderView shows the user's name and profile picture
+//  scrolling the tableview to a negative content offset brings
+//  up a larger version of the image, and the original picture
+//  and name disappear the farther down you scroll
 
 #import "ProfileHeaderView.h"
 
