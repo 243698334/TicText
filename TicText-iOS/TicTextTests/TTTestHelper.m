@@ -17,7 +17,7 @@
     user.objectId = @"fakeUserId";
     user.facebookId = @"fakeFacebookId";
     user.displayName = @"tkatzenbaer";
-    user.profilePicture = [NSData data]; // @TODO - replace with actual data
+    user.profilePicture = [PFFile fileWithData:[NSData data]]; // @TODO - replace with actual data
     
     TTUserPrivateData *privateData = [TTUserPrivateData object];
     privateData.objectId = @"fakeUserPrivateDataId";

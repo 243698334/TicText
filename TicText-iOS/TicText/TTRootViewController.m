@@ -8,6 +8,14 @@
 
 #import "TTRootViewController.h"
 
+#import <Parse/Parse.h>
+#import <MBProgressHUD/MBProgressHUD.h>
+#import <TSMessages/TSMessage.h>
+#import "TTConstants.h"
+#import "TTSession.h"
+#import "TTUtility.h"
+#import "TTErrorHandler.h"
+
 #import "TTLogInViewController.h"
 #import "TTFindFriendsViewController.h"
 #import "TTConversationsViewController.h"
@@ -17,7 +25,7 @@
 @interface TTRootViewController ()
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
-@property (nonatomic) BOOL sessionIsInvalid;
+@property (nonatomic) BOOL sessionIsValid;
 
 @property (nonatomic, strong) TTLogInViewController *logInViewController;
 @property (nonatomic, strong) TTFindFriendsViewController *findFriendsViewController;
@@ -39,9 +47,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.sessionIsInvalid = YES;
+    self.sessionIsValid = NO;
     self.view.backgroundColor = kTTUIPurpleColor;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidReceiveNewTicWhileActive:) name:kTTApplicationDidReceiveNewTicWhileActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDataDidBecomeAvailable:) name:kTTUserDataDidBecomeAvailableNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionDidBecomeInvalid:) name:kTTSessionDidBecomeInvalidNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInViewControllerDidFinishLogIn) name:kTTLogInViewControllerDidFinishLogInNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInViewControllerDidFinishSignUp) name:kTTLogInViewControllerDidFinishSignUpNotification object:nil];
@@ -50,32 +60,61 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[TTSession sharedSession] validateSessionInBackground];
-    if ([[TTSession sharedSession] isValidLastChecked]) {
-        [[TTSession sharedSession] fetchAndPinAllFriendsInBackground];
-        [self presentMainUserInterface];
+    [TTSession validateSessionInBackground];
+    if ([TTSession isValidLastChecked]) {
+        self.sessionIsValid = YES;
+        [TTSession syncFriendsDataInBackground];
+        [self fetchOrUpdateUserData];
     } else {
+        self.sessionIsValid = NO;
         [self presentLogInViewControllerAnimated:YES];
     }
 }
 
 #pragma mark - TTRootViewController
 
-- (void)sessionDidBecomeInvalid:(NSNotification *)notification {
-    if (!self.sessionIsInvalid) {
-        return;
+- (void)fetchOrUpdateUserData {
+    if ([[TTUser currentUser] isDataAvailable] && [[TTUser currentUser].privateData isDataAvailable]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTTUserDataDidBecomeAvailableNotification object:nil];
+        [[TTUser currentUser] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            [[TTUser currentUser].privateData fetchIfNeededInBackground];
+        }];
+    } else {
+        NSLog(@"Current user availability: %@", [TTUser currentUser].isDataAvailable ? @"YES" : @"NO");
+        NSLog(@"Current user private data availability: %@", [TTUser currentUser].privateData.isDataAvailable ? @"YES" : @"NO");
+        // Must synchromously prepare all data before proceed.
+        if (![TTUtility isParseReachable] || ![TTUtility isInternetReachable]) {
+            NSLog(@"Parse is not reachable. Query from local datastore. ");
+            PFQuery *userPrivateDataQuery = [TTUserPrivateData query];
+            [userPrivateDataQuery fromPinWithName:kTTLocalDatastorePrivateDataPinName];
+            [userPrivateDataQuery whereKey:kTTUserPrivateDataUserIdKey equalTo:[TTUser currentUser].objectId];
+            [userPrivateDataQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                [TTUser currentUser].privateData = (TTUserPrivateData *)object;
+                PFQuery *friendsQuery = [TTUser query];
+                [friendsQuery fromPinWithName:kTTLocalDatastoreFriendsPinName];
+                NSMutableArray *friendIds = [[NSMutableArray alloc] init];
+                for (TTUser *currentFriend in [TTUser currentUser].privateData.friends) {
+                    [friendIds addObject:currentFriend.objectId];
+                }
+                [friendsQuery whereKey:@"objectId" containedIn:friendIds];
+                [friendsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                    [TTUser currentUser].privateData.friends = objects;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kTTUserDataDidBecomeAvailableNotification object:nil];
+                }];
+            }];
+        } else {
+            [[TTUser currentUser] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                [[TTUser currentUser].privateData fetchIfNeededInBackground];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kTTUserDataDidBecomeAvailableNotification object:nil];
+            }];
+        }
     }
-    self.sessionIsInvalid = NO;
-    NSError *error = [[notification userInfo] objectForKey:kTTNotificationUserInfoErrorKey];
-    if (error) {
-        [self handleError:error];
-    }
-    [[TTSession sharedSession] logOut:^{
+    /*[[TTSession sharedSession] logOut:^{
         [self.navigationController popToRootViewControllerAnimated:YES];
         self.conversationsViewController = nil;
         self.contactsViewController = nil;
         self.settingsViewController = nil;
-    }];
+    }];*/
 }
 
 - (void)presentLogInViewControllerAnimated:(BOOL)animated {
@@ -120,7 +159,7 @@
 
 
 - (void)logInViewControllerDidFinishLogIn {
-    self.sessionIsInvalid = YES;
+    self.sessionIsValid = YES;
     [self.logInViewController dismissViewControllerAnimated:YES completion:nil];
     [self presentMainUserInterface];
     [TTUtility setupPushNotifications];
@@ -134,9 +173,9 @@
 }
 
 - (void)userDidLogOut {
-    self.sessionIsInvalid = NO;
+    self.sessionIsValid = NO;
     self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [[TTSession sharedSession] logOut:^{
+    [TTSession logOutWithBlock:^(NSError *error) {
         [self.navigationController popToRootViewControllerAnimated:YES];
         self.conversationsViewController = nil;
         self.contactsViewController = nil;
@@ -145,28 +184,53 @@
     }];
 }
 
-- (void)handleError:(NSError *)error {
-    if ([FBErrorUtility shouldNotifyUserForError:error]) {
-        [self showAlertViewWithErrorTitle:@"Something went wrong" errorMessage:[FBErrorUtility userMessageForError:error]];
-    } else {
-        if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
-            // log in cancelled
-            NSLog(@"Log in cancelled error: %@", error);
-            [self showAlertViewWithErrorTitle:@"Login cancelled" errorMessage:@"Please log back in with Facebook. "];
-        } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryAuthenticationReopenSession) {
-            // invalid session
-            NSLog(@"Invalid session error: %@", error);
-            [self showAlertViewWithErrorTitle:@"Session Error" errorMessage:@"Your current session is no longer valid. Please log in agian. "];
-        } else {
-            NSLog(@"Other error: %@", error);
-            [self showAlertViewWithErrorTitle:@"Invalid session" errorMessage:@"You have been logged out. "];
-        }
+- (void)userDataDidBecomeAvailable:(NSNotification *)notification {
+    [self presentMainUserInterface];
+}
+
+- (void)sessionDidBecomeInvalid:(NSNotification *)notification {
+    if (self.sessionIsValid == NO) {
+        return;
     }
+    self.sessionIsValid = NO;
+    NSError *error = [[notification userInfo] objectForKey:kTTNotificationUserInfoErrorKey];
+    if (error) {
+        [TTErrorHandler handleParseSessionError:error inViewController:self];
+    }
+    [TTSession logOutWithBlock:^(NSError *error) {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+        self.conversationsViewController = nil;
+        self.contactsViewController = nil;
+        //self.profileViewController = nil;
+        self.settingsViewController = nil;
+    }];
 }
 
-- (void)showAlertViewWithErrorTitle:(NSString *)title errorMessage:(NSString *)message {
-    [[[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+- (void)applicationDidReceiveNewTicWhileActive:(NSNotification *)notification {
+    if (self.conversationsViewController.isViewLoaded && self.conversationsViewController.view.window) {
+        // conversation view controller is presented
+        return;
+    }
+    
+    if (self.conversationsViewController.isMessagesViewControllerPresented) {
+        // messages view controller is presented
+        return;
+    }
+    
+    [TSMessage showNotificationInViewController:self.tabBarController
+                                          title:@"Someone just sent you a Tic."
+                                       subtitle:@"TAP HERE to see your unread Tics and conversations."
+                                          image:[UIImage imageNamed:@"TicInAppNotificationIcon"]
+                                           type:TSMessageNotificationTypeWarning
+                                       duration:TSMessageNotificationDurationAutomatic
+                                       callback:^(void) {
+                                           self.tabBarController.selectedViewController = self.conversationsNavigationController;
+                                           [TSMessage dismissActiveNotification];
+                                       }
+                                    buttonTitle:nil
+                                 buttonCallback:nil
+                                     atPosition:TSMessageNotificationPositionNavBarOverlay
+                           canBeDismissedByUser:YES];
 }
-
 
 @end

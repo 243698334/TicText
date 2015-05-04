@@ -1,51 +1,46 @@
 //
-//  TTSession.h
+//  TTSessionNew.h
 //  TicText
 //
-//  Created by Terrence K on 2/19/15.
+//  Created by Kevin Yufei Chen on 4/19/15.
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
 #import <Parse/Parse.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
-#import "Reachability.h"
-#import "TTUser.h"
-#import "TTActivity.h"
 
-@class TTUser;
+@interface TTSession : PFSession
 
-// A utility class to handle the management of the User's session.
-@interface TTSession : NSObject
+/*!
+ @abstract Start the log in process.
+ @discussion Should be called within an async queue.
+ @param resultBlock The result block for the caller to handle errors and other completion calls.
+ */
++ (void)logInWithBlock:(nonnull void (^)(BOOL isNewUser, NSError * __nullable error))resultBlock;
 
-// Getter for the singleton instance of this class.
-+ (TTSession *)sharedSession;
+/*!
+ @abstract Start the log out process.
+ @param resultBlock The result block for the caller to handle errors and other completion calls.
+ */
++ (void)logOutWithBlock:(nonnull void (^)(NSError * __nullable error))resultBlock;
 
-// The result of the latest session validation, cached in NSUserDefaults
-- (BOOL)isValidLastChecked;
+/*!
+ @abstract Asynchromously validate the currerent session.
+ @discussion This method will post a `kTTSessionDidBecomeInvalidNotification` when an invalid session is detected. 
+ @discussion It will also store the result of the lastest validation to NSUserDefaults.
+ */
++ (void)validateSessionInBackground;
 
-// Return if Parse service is reachable at this moment.
-- (BOOL)isParseServerReachable;
+/*!
+ @abstract Get the result of the latest validation status.
+ @discussion The result is based on the boolean value stored in NSUserDefaults.
+ @return A boolean value indicating if the session was valid last checked.
+ */
++ (BOOL)isValidLastChecked;
 
-// Asynchronously validates the current session. Post Parse/Facebook SessionDidBecomeInvalid notification if invalid.
-- (void)validateSessionInBackground;
-
-// Prompts the user to authenticate through Facebook, then
-- (void)logIn:(void (^)(BOOL isNewUser, NSError *error))completion;
-
-// Logs the user out.
-- (void)logOut:(void (^)(void))completion;
-
-@end
-
-@interface TTSession (FBSync)
-
-// Syncs the User's profile, friend list, and profile picture with a single save call.
-- (void)syncForNewUser:(void (^)(NSError *error))completion;
-
-// Syncs the User's friend list and upload the current active device's identifier
-- (void)syncForExistingUser:(void (^)(NSError *error))completion;
-
-// Fetch the public data of all the user's friends.
-- (void)fetchAndPinAllFriendsInBackground;
+/*!
+ @abstract Asynchromously sync all friends of the current user.
+ @discussion This will not download the profile pictures until loaded somewhere else.
+ */
++ (void)syncFriendsDataInBackground;
 
 @end
