@@ -256,7 +256,7 @@
     [loadTicHistoryQuery setLimit:50];
     [loadTicHistoryQuery includeKey:kTTTicSenderKey];
     [loadTicHistoryQuery orderByAscending:kTTTicSendTimestampKey];
-    [loadTicHistoryQuery fromLocalDatastore];
+    //[loadTicHistoryQuery fromLocalDatastore];
     [loadTicHistoryQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             [TSMessage showNotificationInViewController:self
@@ -601,14 +601,26 @@
     //progressHUD.opacity = 0;
     //[progressHUD show:YES];
 
-    
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
+    JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
+    if (!message.isMediaMessage) {
+        
+        if ([message.senderId isEqualToString:self.senderId]) {
+            cell.textView.textColor = [UIColor blackColor];
+        }
+        else {
+            cell.textView.textColor = [UIColor whiteColor];
+        }
+        cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
+                                              NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
+    }
+    
     int w = cell.bounds.size.width;
     int h = cell.bounds.size.height;
     CGRect viewRect = CGRectMake(-1, -1, w, h);
     NSLog(@"%d %d", w, h);
     TTTic *theTic = [self.tics objectAtIndex:indexPath.item];
-    if (theTic.status == kTTTicStatusRead) {
+    if ([theTic.status isEqualToString:kTTTicStatusRead]) {
         NSLog(@"The tic has been read before that's why it just should show the message.");
         return cell;
     }
@@ -639,19 +651,6 @@
     }
     //cell.textView.hidden = YES;
     
-    //JSQMessage *message = [self.jsqMessages objectAtIndex:indexPath.item];
-    
-   /* if (!message.isMediaMessage) {
-        
-        if ([message.senderId isEqualToString:self.senderId]) {
-            cell.textView.textColor = [UIColor blackColor];
-        }
-        else {
-            cell.textView.textColor = [UIColor whiteColor];
-        }
-        cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
-                                              NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
-    }*/
     return cell;
 }
 
