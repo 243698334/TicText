@@ -151,7 +151,15 @@
         
         if ([[[NSUserDefaults standardUserDefaults] objectForKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey] isEqual:@YES]) {
             [TTNewTic retrieveNewTicsInBackgroundWithBlock:^(NSArray *receivedNewTics, NSError *error) {
-                for (TTNewTic *currentReceivedNewTic in receivedNewTics) {
+                for (NSDictionary *currentReceivedNewTicDictionary in receivedNewTics) {
+                    TTNewTic *currentReceivedNewTic = [TTNewTic object];
+                    currentReceivedNewTic.ticId = [currentReceivedNewTicDictionary objectForKey:kTTNewTicTicIdKey];
+                    currentReceivedNewTic.status = [currentReceivedNewTicDictionary objectForKey:kTTNewTicStatusKey];
+                    currentReceivedNewTic.senderUserId = [currentReceivedNewTicDictionary objectForKey:kTTNewTicSenderUserIdKey];
+                    currentReceivedNewTic.recipientUserId = [currentReceivedNewTicDictionary objectForKey:kTTNewTicRecipientUserIdKey];
+                    currentReceivedNewTic.sendTimestamp = [currentReceivedNewTicDictionary objectForKey:kTTNewTicSendTimestampKey];
+                    currentReceivedNewTic.timeLimit = [[currentReceivedNewTicDictionary objectForKey:kTTNewTicTimeLimitKey] doubleValue];
+                    
                     BOOL isReceivedNewTicDuplicate = NO;
                     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
                         if (isReceivedNewTicDuplicate) {

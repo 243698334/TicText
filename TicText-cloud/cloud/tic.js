@@ -84,24 +84,27 @@ Parse.Cloud.define("retrieveNewTics", function(request, response) {
             var results = new Array();
             for (var i = 0; i < tics.length; i++) {
                 var currentTic = tics[i];
-                var currentNewTic = new Parse.Object();
-                currentNewTic.set(NEW_TIC_TIC_ID, currentTic.id);
-                currentNewTic.set(NEW_TIC_SENDER_USER_ID, currentTic.get(TIC_SENDER).id);
-                currentNewTic.set(NEW_TIC_RECIPIENT_USER_ID, currentTic.get(TIC_RECIPIENT).id);
-                currentNewTic.set(NEW_TIC_SEND_TIMESTAMP, currentTic.get(TIC_SEND_TIMESTAMP));
-                currentNewTic.set(NEW_TIC_TIME_LIMIT, currentTic.get(TIC_TIME_LIMIT));
-                currentNewTic.set(NEW_TIC_STATUS, NEW_TIC_STATUS_UNREAD);
-                var currentNewTicACL = new Parse.ACL();
-                currentNewTicACL.setReadAccess(currentNewTic.get(NEW_TIC_RECIPIENT_USER_ID), true);
-                currentNewTic.setACL(currentNewTicACL);
-                results.push(currentNewTic);
+                // var currentNewTic = new Parse.Object(NEW_TIC_CLASS_NAME);
+                // currentNewTic.set(NEW_TIC_TIC_ID, currentTic.id);
+                // currentNewTic.set(NEW_TIC_SENDER_USER_ID, currentTic.get(TIC_SENDER).id);
+                // currentNewTic.set(NEW_TIC_RECIPIENT_USER_ID, currentTic.get(TIC_RECIPIENT).id);
+                // currentNewTic.set(NEW_TIC_SEND_TIMESTAMP, currentTic.get(TIC_SEND_TIMESTAMP));
+                // currentNewTic.set(NEW_TIC_TIME_LIMIT, currentTic.get(TIC_TIME_LIMIT));
+                // currentNewTic.set(NEW_TIC_STATUS, NEW_TIC_STATUS_UNREAD);
+                // var currentNewTicACL = new Parse.ACL();
+                // currentNewTicACL.setReadAccess(currentNewTic.get(NEW_TIC_RECIPIENT_USER_ID), true);
+                // currentNewTic.setACL(currentNewTicACL);
+                // currentNewTic.save();
+                // results.push(currentNewTic);
 
-                // var currentTicEssentialInformation = new Object();
-                // currentTicEssentialInformation.ticId = currentTic.id;
-                // currentTicEssentialInformation.senderUserId = currentTic.get(TIC_SENDER).id;
-                // currentTicEssentialInformation.sendTimestamp = currentTic.get(TIC_SEND_TIMESTAMP);
-                // currentTicEssentialInformation.timeLimit = currentTic.get(TIC_TIME_LIMIT);
-                // results.push(currentTicEssentialInformation);
+                var currentTicEssentialInformation = new Object();
+                currentTicEssentialInformation.ticId = currentTic.id;
+                currentTicEssentialInformation.status = NEW_TIC_STATUS_UNREAD;
+                currentTicEssentialInformation.senderUserId = currentTic.get(TIC_SENDER).id;
+                currentTicEssentialInformation.recipientUserId = currentTic.get(TIC_RECIPIENT).id;
+                currentTicEssentialInformation.sendTimestamp = currentTic.get(TIC_SEND_TIMESTAMP);
+                currentTicEssentialInformation.timeLimit = currentTic.get(TIC_TIME_LIMIT);
+                results.push(currentTicEssentialInformation);
             }
             response.success(results);
         }, 
