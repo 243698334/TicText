@@ -207,11 +207,14 @@
             textField.text = [TTUser currentUser].displayName;
         }];
         UIAlertAction *change = [UIAlertAction actionWithTitle:@"Change" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
-//            UITextField * textField = alertController.textFields[0];
-//            [TTUser currentUser].displayName = textField.text;
-//            [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL success, NSError *err){
-//                [headerView refreshValues];
-//            }];
+            UITextField * textField = changeName.textFields.firstObject;
+            TTUser *_user = [TTUser currentUser];
+            _user.displayName = textField.text;
+            [_user saveInBackgroundWithBlock:^(BOOL success, NSError *err){
+                if(success) {
+                    [headerView refreshValues];
+                }
+            }];
         }];
         
         UIAlertAction *cancelNameChange = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action){
@@ -227,10 +230,19 @@
     UIAlertAction *profilePicture = [UIAlertAction actionWithTitle:@"Edit Profile Picture" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
         UIAlertController *changePicture = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         UIAlertAction *camera = [UIAlertAction actionWithTitle:@"Take New Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction * alert){
-            
+            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+            picker.delegate = self;
+            picker.allowsEditing = YES;
+            picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+            [self presentViewController:picker animated:YES completion:NULL];
         }];
         
         UIAlertAction *photos = [UIAlertAction actionWithTitle:@"Choose From Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *alert){
+            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+            picker.delegate = self;
+            picker.allowsEditing = YES;
+            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            [self presentViewController:picker animated:YES completion:NULL];
         }];
         
         UIAlertAction *cancelPhotos = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
@@ -252,6 +264,34 @@
     [alertController addAction:cancel];
     
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage *image =  (UIImage*) [info objectForKey:UIImagePickerControllerOriginalImage];
+    TTUser * _user = [TTUser currentUser];
+    [_user setProfilePicture:UIImageJPEGRepresentation(image, 0.8)];
+    [_user saveInBackgroundWithBlock:^(BOOL success, NSError *error) {
+        if(success) {
+            UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Save Successful!" message:nil preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *dismiss = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel handler:nil];
+            [controller addAction:dismiss];
+            [self presentViewController:controller animated:YES completion:nil];
+        }
+        else {
+            UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Something went wrong" message:@"Your picture could not be saved." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *dismiss = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel handler:nil];
+            [controller addAction:dismiss];
+            [self presentViewController:controller animated:YES completion:nil];
+        }
+    }];
+    [headerView refreshValues];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

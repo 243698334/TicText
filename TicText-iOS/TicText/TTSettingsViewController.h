@@ -14,6 +14,6 @@
 
 #import "TTSession.h"
 
-@interface TTSettingsViewController : JMStaticContentTableViewController <MFMailComposeViewControllerDelegate, UINavigationControllerDelegate>
+@interface TTSettingsViewController : JMStaticContentTableViewController <MFMailComposeViewControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @end
