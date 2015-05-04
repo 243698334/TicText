@@ -54,12 +54,12 @@
         
         TTUser *user = [TTUser currentUser];
         self.nameLabel.text = user.displayName;
-        __block NSData *data;
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
         dispatch_async(queue, ^{
-            data = [user profilePicture];
+            PFFile *file = [user profilePicture];
+            NSData *data = [file getData];
             dispatch_sync(dispatch_get_main_queue(), ^{
-                if(data){
+                if(file && data){
                     self.profileImageView.image = [UIImage imageWithData:data];
                     self.backgroundImageView.image = [UIImage imageWithData:data];
                 }
