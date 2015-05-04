@@ -19,6 +19,8 @@
 #import "TTActivity.h"
 #import "TTUserPrivateData.h"
 #import "TTConversation.h"
+#import "TTNewTic.h"
+
 #import "TTRootViewController.h"
 
 @interface AppDelegate ()
@@ -111,6 +113,7 @@
     [TTActivity registerSubclass];
     [TTUserPrivateData registerSubclass];
     [TTConversation registerSubclass];
+    [TTNewTic registerSubclass];
     
     [Parse enableLocalDatastore];
     

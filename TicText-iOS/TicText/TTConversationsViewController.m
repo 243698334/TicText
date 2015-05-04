@@ -17,6 +17,7 @@
 #import "TTUtility.h"
 #import "TTUser.h"
 #import "TTConversation.h"
+#import "TTNewTic.h"
 #import "TTErrorHandler.h"
 
 @interface TTConversationsViewController ()
@@ -48,67 +49,6 @@
     [super viewDidLoad];
     
     self.receivedNewTicsDictionary = [[NSMutableDictionary alloc] init];
-//    
-//    TTTic *unreadTic1 = [TTTic unreadTicWithId:@"fakeId1"];
-//    unreadTic1.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId1"];
-//    unreadTic1.sendTimestamp = [NSDate date];
-//    unreadTic1.timeLimit = 10;
-//    [self storeNewTic:unreadTic1];
-//    
-//    TTTic *unreadTic2 = [TTTic unreadTicWithId:@"fakeId2"];
-//    unreadTic2.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
-//    unreadTic2.sendTimestamp = [NSDate date];
-//    unreadTic2.timeLimit = 150;
-//    [self storeNewTic:unreadTic2];
-//    
-//    TTTic *unreadTic3 = [TTTic unreadTicWithId:@"fakeId3"];
-//    unreadTic3.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
-//    unreadTic3.sendTimestamp = [NSDate date];
-//    unreadTic3.timeLimit = 200;
-//    [self storeNewTic:unreadTic3];
-//    
-//    TTTic *unreadTic4 = [TTTic unreadTicWithId:@"fakeId4"];
-//    unreadTic4.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId4"];
-//    unreadTic4.sendTimestamp = [NSDate date];
-//    unreadTic4.timeLimit = 2500;
-//    [self storeNewTic:unreadTic4];
-//    
-//    TTTic *unreadTic5 = [TTTic unreadTicWithId:@"fakeId5"];
-//    unreadTic5.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId5"];
-//    unreadTic5.sendTimestamp = [NSDate date];
-//    unreadTic5.timeLimit = 3600 * 72;
-//    [self storeNewTic:unreadTic5];
-//    
-//    TTTic *unreadTic6 = [TTTic unreadTicWithId:@"fakeId6"];
-//    unreadTic6.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
-//    unreadTic6.sendTimestamp = [NSDate date];
-//    unreadTic6.timeLimit = 4690;
-//    [self storeNewTic:unreadTic6];
-//    
-//    TTTic *unreadTic7 = [TTTic unreadTicWithId:@"fakeId7"];
-//    unreadTic7.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId2"];
-//    unreadTic7.sendTimestamp = [NSDate date];
-//    unreadTic7.timeLimit = -1;
-//    [self storeNewTic:unreadTic7];
-//    
-//    TTTic *unreadTic8 = [TTTic unreadTicWithId:@"fakeId8"];
-//    unreadTic8.sender = [TTUser objectWithoutDataWithObjectId:@"fakeId9"];
-//    unreadTic8.sendTimestamp = [NSDate date];
-//    unreadTic8.timeLimit = -1;
-//    [self storeNewTic:unreadTic8];
-//    
-//    TTTic *unreadTic9 = [TTTic unreadTicWithId:@"fakeIdp"];
-//    unreadTic9.sender = [TTUser objectWithoutDataWithObjectId:@"unreadTic9"];
-//    unreadTic9.sendTimestamp = [NSDate date];
-//    unreadTic9.timeLimit = -1;
-//    [self storeNewTic:unreadTic9];
-//    
-//    TTTic *unreadTic10 = [TTTic unreadTicWithId:@"fakeIdd"];
-//    unreadTic10.sender = [TTUser objectWithoutDataWithObjectId:@"unreadTic10"];
-//    unreadTic10.sendTimestamp = [NSDate date];
-//    unreadTic10.timeLimit = -1;
-//    [self storeNewTic:unreadTic10];
-    
     [self loadInterface];
 }
 
@@ -199,39 +139,46 @@
 }
 
 - (void)loadNewTics {
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey] isEqual:@YES]) {
-        [TTTic retrieveNewTicsInBackgroundWithBlock:^(NSArray *receivedNewTics, NSError *error) {
-            for (NSDictionary *currentTicEssentialInformation in receivedNewTics) {
-                NSString *ticId = [currentTicEssentialInformation objectForKey:kTTNotificationUserInfoTicIdKey];
-                NSString *senderUserId = [currentTicEssentialInformation objectForKey:kTTNotificationUserInfoSenderUserIdKey];
-                NSDate *sendTimestamp = [currentTicEssentialInformation objectForKey:kTTNotificationUserInfoSendTimestampKey];
-                NSNumber *timeLimit = [currentTicEssentialInformation objectForKey:kTTNotificationUserInfoTimeLimitKey];
-                
-                TTTic *receivedNewTic = [TTTic unreadTicWithId:ticId];
-                receivedNewTic.sender = [TTUser objectWithoutDataWithObjectId:senderUserId];
-                receivedNewTic.timeLimit = [timeLimit doubleValue];
-                receivedNewTic.sendTimestamp = sendTimestamp;
-                
-                BOOL isReceivedNewTicDuplicate = NO;
-                for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
-                    if (isReceivedNewTicDuplicate) {
-                        break;
-                    }
-                    NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
-                    for (TTTic *currentTic in receivedNewTicsFromCurrentSender) {
-                        if (currentTic.objectId == ticId) {
-                            isReceivedNewTicDuplicate = YES;
+    PFQuery *receivedNewTicsQuery = [TTNewTic query];
+    [receivedNewTicsQuery fromPinWithName:kTTLocalDatastoreNewTicsPinName];
+    [receivedNewTicsQuery whereKey:kTTNewTicRecipientUserIdKey equalTo:[TTUser currentUser].objectId];
+    [receivedNewTicsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            for (TTNewTic *currentNewTic in objects) {
+                [self storeNewTic:currentNewTic];
+            }
+        }
+        
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey] isEqual:@YES]) {
+            [TTNewTic retrieveNewTicsInBackgroundWithBlock:^(NSArray *receivedNewTics, NSError *error) {
+                for (TTNewTic *currentReceivedNewTic in receivedNewTics) {
+                    BOOL isReceivedNewTicDuplicate = NO;
+                    for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
+                        if (isReceivedNewTicDuplicate) {
                             break;
                         }
+                        NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
+                        for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
+                            if (currentNewTic.objectId == currentReceivedNewTic.ticId) {
+                                isReceivedNewTicDuplicate = YES;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!isReceivedNewTicDuplicate) {
+                        [self storeNewTic:currentReceivedNewTic];
                     }
                 }
-                
-                if (!isReceivedNewTicDuplicate) {
-                    [self storeNewTic:receivedNewTic];
-                }
-            }
-        }];
-    }
+                [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey];
+                [self.receivedNewTicsDropdownView reloadData];
+                [self.receivedNewTicsBannerView reloadData];
+            }];
+        } else {
+            [self.receivedNewTicsDropdownView reloadData];
+            [self.receivedNewTicsBannerView reloadData];
+        }
+    }];
 }
 
 - (void)updateVisibleConversationCells {
@@ -431,7 +378,8 @@
             self.receivedNewTicsDropdownViewSelectedSenderId = [self.receivedNewTicsSortedKeys objectAtIndex:index];
             return YES;
         } else {
-            TTTic *currentTic = [receivedNewTicsFromCurrentSender firstObject];
+            TTNewTic *currentTic = [receivedNewTicsFromCurrentSender firstObject];
+            
             NSLog(@"Should open current new Tic at index %li", index);
             return NO;
         }
@@ -439,7 +387,7 @@
     
     if (tableView.tag == kTTNewTicsDropdownViewSameSenderNewTicsTableViewTag) {
         NSMutableArray *receivedNewTicsFromSelectedSender = [self.receivedNewTicsDictionary objectForKey:self.receivedNewTicsDropdownViewSelectedSenderId];
-        TTTic *currentTic = [receivedNewTicsFromSelectedSender objectAtIndex:index];
+        TTNewTic *currentTic = [receivedNewTicsFromSelectedSender objectAtIndex:index];
         
         return NO;
     }
@@ -457,6 +405,7 @@
         for (TTTic *currentTic in receivedNewTicsFromCurrentSender) {
             if (currentTic.status == kTTTicStatusExpired) {
                 [receivedNewTicsFromCurrentSender removeObject:currentTic];
+                [currentTic unpinInBackground];
             }
         }
         if ([receivedNewTicsFromCurrentSender count] == 0) {
@@ -518,23 +467,23 @@
         if ([receivedNewTicsFromCurrentSender count] > 1) {
             [receivedNewTicsDropdownTableViewCell updateCellWithNumberOfTicsFromSameSender:[receivedNewTicsFromCurrentSender count]];
         } else {
-            TTTic *currentTic = [receivedNewTicsFromCurrentSender firstObject];
-            NSTimeInterval currentTicTimeLeft = currentTic.timeLimit - [[NSDate date] timeIntervalSinceDate:currentTic.sendTimestamp];
-            if (currentTicTimeLeft <= 1) {
-                currentTic.status = kTTTicStatusExpired;
+            TTNewTic *currentNewTic = [receivedNewTicsFromCurrentSender firstObject];
+            NSTimeInterval currentTicTimeLeft = currentNewTic.timeLimit - [[NSDate date] timeIntervalSinceDate:currentNewTic.sendTimestamp];
+            if ((NSInteger)currentTicTimeLeft < 1) {
+                currentNewTic.status = kTTNewTicStatusExpired;
             }
-            [receivedNewTicsDropdownTableViewCell updateCellWithSendTimestamp:currentTic.sendTimestamp timeLimit:currentTic.timeLimit];
+            [receivedNewTicsDropdownTableViewCell updateCellWithSendTimestamp:currentNewTic.sendTimestamp timeLimit:currentNewTic.timeLimit];
         }
     }
     
     if (tableView.tag == kTTNewTicsDropdownViewSameSenderNewTicsTableViewTag) {
         NSMutableArray *receivedNewTicsFromSelectedSender = [self.receivedNewTicsDictionary objectForKey:self.receivedNewTicsDropdownViewSelectedSenderId];
-        TTTic *currentTic = [receivedNewTicsFromSelectedSender objectAtIndex:index];
-        NSTimeInterval currentTicTimeLeft = currentTic.timeLimit - [[NSDate date] timeIntervalSinceDate:currentTic.sendTimestamp];
-        if (currentTicTimeLeft <= 1) {
-            currentTic.status = kTTTicStatusExpired;
+        TTNewTic *currentNewTic = [receivedNewTicsFromSelectedSender objectAtIndex:index];
+        NSTimeInterval currentTicTimeLeft = currentNewTic.timeLimit - [[NSDate date] timeIntervalSinceDate:currentNewTic.sendTimestamp];
+        if ((NSInteger)currentTicTimeLeft < 1) {
+            currentNewTic.status = kTTNewTicStatusExpired;
         }
-        [receivedNewTicsDropdownTableViewCell updateCellWithSendTimestamp:currentTic.sendTimestamp timeLimit:currentTic.timeLimit];
+        [receivedNewTicsDropdownTableViewCell updateCellWithSendTimestamp:currentNewTic.sendTimestamp timeLimit:currentNewTic.timeLimit];
     }
     return receivedNewTicsDropdownTableViewCell;
 }
@@ -592,8 +541,6 @@
     }
 }
 
-
-
 - (void)loadConversationsInBackgroundFromLocal:(BOOL)isLocalQuery completion:(void (^)(BOOL conversationsDidLoad, NSError *error))completion {
     PFQuery *conversationsQuery = [TTConversation query];
     if (isLocalQuery) {
@@ -623,13 +570,8 @@
     }];
 }
 
-
-
-
 - (void)applicationDidReceiveNewTicWhileActive:(NSNotification *)notification {
     AudioServicesPlayAlertSound(1033);
-    
-
     
     NSDictionary *newTicNotificationUserInfo = notification.userInfo;
     NSString *unreadTicId = [newTicNotificationUserInfo objectForKey:kTTNotificationUserInfoTicIdKey];
@@ -637,24 +579,30 @@
     NSString *sendTimestampString = [newTicNotificationUserInfo objectForKey:kTTNotificationUserInfoSendTimestampKey];
     NSNumber *timeLimit = [newTicNotificationUserInfo objectForKey:kTTNotificationUserInfoTimeLimitKey];
     
-    TTTic *receivedNewTic = [TTTic unreadTicWithId:unreadTicId];
-    receivedNewTic.sender = [TTUser objectWithoutDataWithObjectId:senderUserId];
-    receivedNewTic.timeLimit = [timeLimit doubleValue];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    
+    TTNewTic *receivedNewTic = [TTNewTic object];
+    receivedNewTic.ticId = unreadTicId;
+    receivedNewTic.senderUserId = senderUserId;
+    receivedNewTic.recipientUserId = [TTUser currentUser].objectId;
     receivedNewTic.sendTimestamp = [dateFormatter dateFromString:sendTimestampString];
+    receivedNewTic.timeLimit = [timeLimit doubleValue];
     
     [self storeNewTic:receivedNewTic];
     [self performNewTicAnimation];
     [self performSelector:@selector(reloadDataForViews) withObject:nil afterDelay:0.25];
 }
 
-- (void)storeNewTic:(TTTic *)receivedNewTic {
-    NSMutableArray *receivedNewTicsFromSameSender = [self.receivedNewTicsDictionary objectForKey:receivedNewTic.sender.objectId];
+- (void)storeNewTic:(TTNewTic *)receivedNewTic {
+    [receivedNewTic pinInBackgroundWithName:kTTLocalDatastoreNewTicsPinName block:^(BOOL succeeded, NSError *error) {
+        [receivedNewTic saveEventually];
+    }];
+    NSMutableArray *receivedNewTicsFromSameSender = [self.receivedNewTicsDictionary objectForKey:receivedNewTic.senderUserId];
     if (receivedNewTicsFromSameSender == nil) {
         receivedNewTicsFromSameSender = [[NSMutableArray alloc] initWithObjects:receivedNewTic, nil];
-        [self.receivedNewTicsDictionary setObject:receivedNewTicsFromSameSender forKey:receivedNewTic.sender.objectId];
+        [self.receivedNewTicsDictionary setObject:receivedNewTicsFromSameSender forKey:receivedNewTic.senderUserId];
     } else {
         [receivedNewTicsFromSameSender addObject:receivedNewTic];
     }
@@ -663,17 +611,17 @@
 
 - (void)sortNewTicsDictionary {
     self.receivedNewTicsSortedKeys = [self.receivedNewTicsDictionary keysSortedByValueUsingComparator:^NSComparisonResult(NSMutableArray *ticsFromFirstSender, NSMutableArray *ticsFromSecondSender) {
-        NSTimeInterval leastTimeLeftFromFirstSender = ((TTTic *)[ticsFromFirstSender firstObject]).timeLimit - [[NSDate date] timeIntervalSinceDate:((TTTic *)[ticsFromFirstSender firstObject]).sendTimestamp];
-        for (TTTic *currentTicFromFirstSender in ticsFromFirstSender) {
-            NSTimeInterval currentTicTimeLeftFromFirstSender = currentTicFromFirstSender.timeLimit - [[NSDate date] timeIntervalSinceDate:currentTicFromFirstSender.sendTimestamp];
+        NSTimeInterval leastTimeLeftFromFirstSender = ((TTNewTic *)[ticsFromFirstSender firstObject]).timeLimit - [[NSDate date] timeIntervalSinceDate:((TTNewTic *)[ticsFromFirstSender firstObject]).sendTimestamp];
+        for (TTNewTic *currentNewTicFromFirstSender in ticsFromFirstSender) {
+            NSTimeInterval currentTicTimeLeftFromFirstSender = currentNewTicFromFirstSender.timeLimit - [[NSDate date] timeIntervalSinceDate:currentNewTicFromFirstSender.sendTimestamp];
             if (currentTicTimeLeftFromFirstSender < leastTimeLeftFromFirstSender) {
                 leastTimeLeftFromFirstSender = currentTicTimeLeftFromFirstSender;
             }
         }
         
-        NSTimeInterval leastTimeLeftFromSecondSender = ((TTTic *)[ticsFromSecondSender firstObject]).timeLimit - [[NSDate date] timeIntervalSinceDate:((TTTic *)[ticsFromSecondSender firstObject]).sendTimestamp];
-        for (TTTic *currentTicFromSecondSender in ticsFromSecondSender) {
-            NSTimeInterval currentTicTimeLeftFromSecondSender = currentTicFromSecondSender.timeLimit - [[NSDate date] timeIntervalSinceDate:currentTicFromSecondSender.sendTimestamp];
+        NSTimeInterval leastTimeLeftFromSecondSender = ((TTNewTic *)[ticsFromSecondSender firstObject]).timeLimit - [[NSDate date] timeIntervalSinceDate:((TTNewTic *)[ticsFromSecondSender firstObject]).sendTimestamp];
+        for (TTNewTic *currentNewTicFromSecondSender in ticsFromSecondSender) {
+            NSTimeInterval currentTicTimeLeftFromSecondSender = currentNewTicFromSecondSender.timeLimit - [[NSDate date] timeIntervalSinceDate:currentNewTicFromSecondSender.sendTimestamp];
             if (currentTicTimeLeftFromSecondSender < leastTimeLeftFromSecondSender) {
                 leastTimeLeftFromSecondSender = currentTicTimeLeftFromSecondSender;
             }

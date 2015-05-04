@@ -92,6 +92,7 @@ extern NSString * const kTTLocalDatastoreFriendsPinName;
 extern NSString * const kTTLocalDatastoreTicsPinName;
 extern NSString * const kTTLocalDatastoreConversationsPinName;
 extern NSString * const kTTLocalDatastorePrivateDataPinName;
+extern NSString * const kTTLocalDatastoreNewTicsPinName;
 
 
 #pragma mark - TTUser
@@ -147,6 +148,23 @@ extern NSString * const kTTTicStatusDrafting;
 extern NSString * const kTTTicContentTypeText;
 extern NSString * const kTTTicContentTypeImage;
 extern NSString * const kTTTicContentTypeVoice;
+
+
+#pragma mark - TTNewTic
+// Class name
+extern NSString * const kTTNewTicClassName;
+
+// Field keys
+extern NSString * const kTTNewTicTicIdKey;
+extern NSString * const kTTNewTicStatusKey;
+extern NSString * const kTTNewTicSenderUserIdKey;
+extern NSString * const kTTNewTicRecipientUserIdKey;
+extern NSString * const kTTNewTicSendTimestampKey;
+extern NSString * const kTTNewTicTimeLimitKey;
+
+// Status values
+extern NSString * const kTTNewTicStatusUnread;
+extern NSString * const kTTNewTicStatusExpired;
 
 
 #pragma mark - TTConversation
