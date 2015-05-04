@@ -27,7 +27,9 @@
 }
 
 + (void)handleParseSessionError:(NSError *)error inViewController:(UIViewController *)viewController {
-    [TSMessage showNotificationInViewController:viewController ? viewController : [TSMessage defaultViewController] title:@"Invalid Session" subtitle:error.localizedDescription type:TSMessageNotificationTypeError];
+    if (error.code == kPFErrorInvalidSessionToken) {
+        [TSMessage showNotificationInViewController:viewController ? viewController : [TSMessage defaultViewController] title:@"Invalid Session" subtitle:error.localizedDescription type:TSMessageNotificationTypeError];
+    }
 }
 
 @end
