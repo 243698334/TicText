@@ -410,10 +410,10 @@
 - (void)newTicsDropdownViewDidTapClearAllExpiredTicsButton {
     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
-        for (TTTic *currentTic in receivedNewTicsFromCurrentSender) {
-            if (currentTic.status == kTTTicStatusExpired) {
-                [receivedNewTicsFromCurrentSender removeObject:currentTic];
-                [currentTic unpinInBackground];
+        for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
+            if (currentNewTic.status == kTTNewTicStatusExpired) {
+                [receivedNewTicsFromCurrentSender removeObject:currentNewTic];
+                [currentNewTic unpinInBackground];
             }
         }
         if ([receivedNewTicsFromCurrentSender count] == 0) {
@@ -445,8 +445,8 @@
     NSInteger numberOfUnreadTics = 0;
     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
-        for (TTTic *currentTic in receivedNewTicsFromCurrentSender) {
-            if (currentTic.status == kTTTicStatusUnread) {
+        for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
+            if (currentNewTic.status == kTTNewTicStatusUnread) {
                 numberOfUnreadTics++;
             }
         }
@@ -458,8 +458,8 @@
     NSInteger numberOfExpiredTics = 0;
     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
-        for (TTTic *currentTic in receivedNewTicsFromCurrentSender) {
-            if (currentTic.status == kTTTicStatusExpired) {
+        for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
+            if (currentNewTic.status == kTTNewTicStatusExpired) {
                 numberOfExpiredTics++;
             }
         }
