@@ -8,6 +8,8 @@
 
 #import "TTLogInViewController.h"
 
+#import "TTSession.h"
+
 @interface TTLogInViewController ()
 
 @property (nonatomic, strong) MBProgressHUD *progressHUD;
@@ -20,7 +22,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = kTTUIPurpleColor;    
+    self.view.backgroundColor = kTTUIPurpleColor;
     self.facebookLogInView.readPermissions = kTTFacebookPermissions;
 }
 
@@ -30,42 +32,20 @@
 - (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView {
     // Show loading indicator until login is finished
     self.progressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [[TTSession sharedSession] logIn:^(BOOL isNewUser, NSError *error) {
-        if (error) {
-            NSString *errorMessage = nil;
-            if (!error) {
-                errorMessage = @"Uh oh. The user cancelled the Facebook login.";
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [TTSession logInWithBlock:^(BOOL isNewUser, NSError *error) {
+            if (error) {
+                [[[UIAlertView alloc] initWithTitle:@"Log In Failed" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
             } else {
-                errorMessage = [error localizedDescription];
+                if (isNewUser) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kTTLogInViewControllerDidFinishSignUpNotification object:nil];
+                } else {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kTTLogInViewControllerDidFinishLogInNotification object:nil];
+                }
+                [self.progressHUD removeFromSuperview];
             }
-            [[[UIAlertView alloc] initWithTitle:@"Log In Error" message:errorMessage delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil] show];
-        } else {
-            if (isNewUser) {
-                // New user sign up
-                [[TTSession sharedSession] syncForNewUser:^(NSError *error) {
-                    if (error != nil) {
-                        NSLog(@"Sign up error: %@", error);
-                        NSString *errorMessage = @"Uh oh. Unable to create your account. Please try again later.";
-                        [[[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:errorMessage delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil] show];
-                    } else {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kTTLogInViewControllerDidFinishSignUpNotification object:nil];
-                    }
-                    [self.progressHUD removeFromSuperview];
-                }];
-            } else {
-                // Existing user log in                 
-                [[TTSession sharedSession] syncForExistingUser:^(NSError *error) {
-                    if (error != nil) {
-                        NSString *errorMessage = @"Uh oh. Unable to refresh your profile. Please try again later.";
-                        [[[UIAlertView alloc] initWithTitle:@"Log In Error" message:errorMessage delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil] show];
-                    } else {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kTTLogInViewControllerDidFinishLogInNotification object:nil];
-                    }
-                    [self.progressHUD removeFromSuperview];
-                }];
-            }
-        }
-    }];
+        }];
+    });
 }
 
 @end

@@ -16,6 +16,8 @@
 #import "TTScrollingImagePickerView.h"
 #import "TTUser.h"
 #import "TTTic.h"
+#import "TTConversation.h"
+
 
 #define kDefaultExpirationTime      3600
 #define kMessagesToolbarHeight      44.0f
@@ -25,11 +27,13 @@
 @property (nonatomic, strong) TTMessagesToolbar *messagesToolbar;
 @property (nonatomic, strong) UIView *toolbarContentView;
 
-@property (nonatomic, strong) TTUser *recipient;
-@property (nonatomic) NSTimeInterval expirationTime;
-@property (nonatomic) BOOL isAnonymous;
+@property (nonatomic, assign) NSTimeInterval expirationTime;
+@property (nonatomic, assign) BOOL isAnonymous;
+@property (nonatomic, assign) BOOL isKeyboardFirstResponder;
 
 + (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;
++ (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation;
+
 - (TTTic *)ticWithMessage:(JSQMessage *)message mediaFile:(PFFile *)mediaFile;
 - (void)deselectCurrentToolbarItem;
 

@@ -8,6 +8,21 @@
 
 #import "AppDelegate.h"
 
+#import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <ParseCrashReporting/ParseCrashReporting.h>
+#import "TTConstants.h"
+#import "TTSession.h"
+#import "TTErrorHandler.h"
+#import "TTUser.h"
+#import "TTTic.h"
+#import "TTActivity.h"
+#import "TTUserPrivateData.h"
+#import "TTConversation.h"
+#import "TTNewTic.h"
+
+#import "TTRootViewController.h"
+
 @interface AppDelegate ()
 
 @property (nonatomic, strong) TTRootViewController *rootViewController;
@@ -18,31 +33,26 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application
-        didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-
+    
     [self parseInitializationWithUIApplication:application launchOptions:launchOptions];
-    [self handlePush:launchOptions];
     [self setupColorScheme];
     [self setupNavigationController];
+    [self handlePushNotificationsWithUIApplication:application launchOptions:launchOptions];
     
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation {
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
     return [FBAppCall handleOpenURL:url
                   sourceApplication:sourceApplication
                         withSession:[PFFacebookUtils session]];
 }
 
-- (void)application:(UIApplication *)application
-        didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
     // Store the deviceToken in the current installation and save it to Parse.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
@@ -52,29 +62,17 @@
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    [[[UIAlertView alloc] initWithTitle:@"Push Notification Error"
-                                message:error.localizedDescription
-                               delegate:nil
-                      cancelButtonTitle:@"OK"
-                      otherButtonTitles:nil] show];
+    [TTErrorHandler handlePushNotificationError:error inViewController:self.rootViewController];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
         // Track app opens due to a push notification being acknowledged while the app wasn't active.
         [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
+        [self performSelector:@selector(postNotificationForNewTicWithUserInfo:) withObject:userInfo afterDelay:0.5];
+    } else {
+        [self postNotificationForNewTicWithUserInfo:userInfo];
     }
-    
-    // Push notification received while the app is active
-    if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
-        NSString *ticId = [userInfo objectForKey:kTTPushNotificationPayloadTicIdKey];
-        NSString *senderUserId = [userInfo objectForKey:kTTPushNotificationPayloadSenderUserId];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification
-                                                            object:nil
-                                                          userInfo:@{kTTNotificationUserInfoTicIdKey : ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId}];
-    }
-    
-    // TODO: handle push notification
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -83,8 +81,7 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[TTUser currentUser].privateData saveEventually];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -94,7 +91,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     if ([TTUser currentUser]) {
-        [[TTSession sharedSession] validateSessionInBackground];
+        [TTSession validateSessionInBackground];
     }
     [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
     [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidBecomeActive object:nil];
@@ -108,16 +105,15 @@
 
 #pragma mark - ()
 
-- (void)parseInitializationWithUIApplication:(UIApplication *)application
-                               launchOptions:(NSDictionary *)launchOptions {
-    
+- (void)parseInitializationWithUIApplication:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
     [ParseCrashReporting enable];
     
     [TTUser registerSubclass];
     [TTTic registerSubclass];
     [TTActivity registerSubclass];
     [TTUserPrivateData registerSubclass];
-    
+    [TTConversation registerSubclass];
+    [TTNewTic registerSubclass];
     
     [Parse enableLocalDatastore];
     
@@ -126,13 +122,10 @@
     
     [PFFacebookUtils initializeFacebook];
     
-    // Track app open
+    [PFUser enableRevocableSessionInBackground];
+    
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    if (application.applicationIconBadgeNumber != 0) {
-        application.applicationIconBadgeNumber = 0;
-        [[PFInstallation currentInstallation] saveInBackground];
-    }
 }
 
 - (void)setupColorScheme {
@@ -155,8 +148,29 @@
     [self.window makeKeyAndVisible];
 }
 
-- (void)handlePush:(NSDictionary *)launchOptions {
-    
+- (void)handlePushNotificationsWithUIApplication:(UIApplication *)application launchOptions:(NSDictionary *)launchOptions {
+    NSDictionary *pushNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (pushNotificationPayload != nil || application.applicationIconBadgeNumber != 0) {
+        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey];
+        application.applicationIconBadgeNumber = 0;
+        [PFInstallation currentInstallation].badge = 0;
+        [[PFInstallation currentInstallation] saveInBackground];
+    } else {
+        [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey];
+    }
+}
+
+- (void)postNotificationForNewTicWithUserInfo:(NSDictionary *)userInfo {
+    // Push notification received while the app is active
+    if ([[userInfo objectForKey:kTTPushNotificationPayloadTypeKey] isEqualToString:kTTPushNotificationPayloadTypeNewTic]) {
+        NSString *ticId = [userInfo objectForKey:kTTPushNotificationPayloadTicIdKey];
+        NSString *senderUserId = [userInfo objectForKey:kTTPushNotificationPayloadSenderUserIdKey];
+        NSDate *sendTimestamp = [userInfo objectForKey:kTTPushNotificationPayloadSendTimestampKey];
+        NSNumber *timeLimit = [userInfo objectForKey:kTTPushNotificationPayloadTimeLimitKey];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidReceiveNewTicWhileActiveNotification
+                                                            object:nil
+                                                          userInfo:@{kTTNotificationUserInfoTicIdKey: ticId, kTTNotificationUserInfoSenderUserIdKey: senderUserId, kTTNotificationUserInfoSendTimestampKey: sendTimestamp, kTTNotificationUserInfoTimeLimitKey: timeLimit}];
+    }
 }
 
 @end

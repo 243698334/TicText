@@ -6,6 +6,8 @@ target 'TicText' do
   pod 'ParseFacebookUtils'
   pod 'ParseCrashReporting'
   pod 'Facebook-iOS-SDK'
+  pod 'SDWebImage'
+  pod 'ParseUI'
   pod 'MBProgressHUD'
   pod 'JSQMessagesViewController'
   pod 'JMStaticContentTableViewController'

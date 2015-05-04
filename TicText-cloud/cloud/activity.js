@@ -8,13 +8,15 @@ var ACTIVITY_TIC = 'tic';
 // Tic constants
 var TIC_SENDER = 'sender';
 var TIC_RECIPIENT = 'recipient';
+var TIC_TIME_LIMIT = 'timeLimit';
+var TIC_SEND_TIMESTAMP = 'sendTimestamp';
 // User constants
 var USER_DISPLAY_NAME = 'displayName';
 var USER_PRIVATE_DATA = 'privateData';
 var USER_PRIVATE_DATA_FRIENDS = 'friends';
 // Installation constants
 var INSTALLATION_USER = 'user';
-
+ 
 Parse.Cloud.beforeSave(ACTIVITY_CLASS_NAME, function(request, response) {
     Parse.Cloud.useMasterKey();
     var activity = request.object;
@@ -34,7 +36,7 @@ Parse.Cloud.beforeSave(ACTIVITY_CLASS_NAME, function(request, response) {
             response.error("Invalid activity type [" + activityType + "]");
     }
 });
-
+ 
 Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
     Parse.Cloud.useMasterKey();
     var activity = request.object;
@@ -47,8 +49,10 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
                 success: function(tic) {
                     var recipient = tic.get(TIC_RECIPIENT);
                     installationQuery.equalTo(INSTALLATION_USER, recipient);
-                    payload.tid = tic.id;
-                    payload.sid = request.user.id;
+                    payload.ticId = tic.id;
+                    payload.senderId = request.user.id;
+                    payload.timeLimit = tic.get(TIC_TIME_LIMIT);
+                    payload.sendTimestamp = tic.get(TIC_SEND_TIMESTAMP);
                     console.log("Current push notification payload: ");
                     console.log(payload);
                     Parse.Push.send({
@@ -117,7 +121,7 @@ Parse.Cloud.afterSave(ACTIVITY_CLASS_NAME, function(request) {
             break;
     }
 });
-
+ 
 var pushNotificationPayload = function(request) {
     var currentUserDisplayName = request.user.get(USER_DISPLAY_NAME);
     var activityType = request.object.get(ACTIVITY_TYPE);
@@ -127,19 +131,19 @@ var pushNotificationPayload = function(request) {
                 alert: "Someone just sent you a Tic. ", 
                 badge: "Increment", 
                 sound: "default", 
-                t: "nt"
+                type: "nt"
             }; 
         case ACTIVITY_TYPE_READ:
             return {
-                alert: currentUserDisplayName + "just read the your Tic. ",
+                alert: currentUserDisplayName + " just read the your Tic. ",
                 sound: "default", 
-                t: "rt"
+                type: "rt"
             };
         case ACTIVITY_TYPE_NEW_USER_JOIN:
             return {
                 alert: "Your Facebook friend (" + currentUserDisplayName + ") just joined TicText. ", 
                 sound: "default", 
-                t: "nf"
+                type: "nf"
             };
         default: 
             return null;

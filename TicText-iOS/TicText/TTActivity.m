@@ -24,7 +24,7 @@
 }
 
 + (NSString *)parseClassName {
-    return kTTActivityClassKey;
+    return kTTActivityClassName;
 }
 
 @end

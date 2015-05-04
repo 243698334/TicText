@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 #import "TTUserPrivateData.h"
 
@@ -14,7 +13,8 @@
 
 @property (nonatomic, strong) NSString *displayName;
 @property (nonatomic, strong) NSString *facebookId;
-@property (nonatomic, strong) NSData *profilePicture;
+@property (nonatomic, strong) PFFile *profilePicture;
+@property (nonatomic, strong) PFFile *profilePictureSmall;
 @property (nonatomic, strong) TTUserPrivateData *privateData;
 
 @end
