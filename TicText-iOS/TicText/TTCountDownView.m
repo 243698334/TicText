@@ -1,5 +1,5 @@
 //
-//  CountDownView.m
+//  TTCountDownView.m
 //  TicText
 //
 //  Created by Georgy Petukhov on 4/13/15.
@@ -53,6 +53,8 @@
     return self;
 }
 
+
+//animating the timer. every second the label showing seconds would change.
 -(void)timerAnimate {
    // NSLog(@"timer tick!");
     timerLabel.text = [NSString stringWithFormat:@"%i sec", --counter];;
@@ -65,6 +67,7 @@
 }
 
 
+//this method has to be implemented because we are using PureLayout framework.
 -(void) updateConstraints {
     if(!addConstraints) {
         addConstraints = TRUE;
@@ -76,13 +79,6 @@
     [super updateConstraints];
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 
 @end
