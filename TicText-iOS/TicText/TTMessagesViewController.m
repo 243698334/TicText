@@ -152,6 +152,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [TSMessage dismissActiveNotification];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self updateCurrentConversation];
 }

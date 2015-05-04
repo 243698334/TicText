@@ -126,11 +126,6 @@
     
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    if (application.applicationIconBadgeNumber != 0) {
-        application.applicationIconBadgeNumber = 0;
-        [PFInstallation currentInstallation].badge = 0;
-        [[PFInstallation currentInstallation] saveInBackground];
-    }
 }
 
 - (void)setupColorScheme {
@@ -157,6 +152,9 @@
     NSDictionary *pushNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (pushNotificationPayload != nil || application.applicationIconBadgeNumber != 0) {
         [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey];
+        application.applicationIconBadgeNumber = 0;
+        [PFInstallation currentInstallation].badge = 0;
+        [[PFInstallation currentInstallation] saveInBackground];
     } else {
         [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey];
     }
