@@ -28,6 +28,7 @@
 		0E83719C1AF67DE10070EBEA /* TTExpirationToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371961AF67DE10070EBEA /* TTExpirationToolbarItem.m */; };
 		0E83719D1AF67DE10070EBEA /* TTImageToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371981AF67DE10070EBEA /* TTImageToolbarItem.m */; };
 		0E83719E1AF67DE10070EBEA /* TTTextToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E83719A1AF67DE10070EBEA /* TTTextToolbarItem.m */; };
+		0E8371A41AF6F7C90070EBEA /* TTContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371A31AF6F7C90070EBEA /* TTContactTableViewCell.m */; };
 		0EC584E81A7864AA00025D71 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC584E71A7864AA00025D71 /* main.m */; };
 		0EC584F61A7864AA00025D71 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0EC584F41A7864AA00025D71 /* LaunchScreen.xib */; };
 		0ECE4AF91AE3D5060016A728 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4AF81AE3D5060016A728 /* TTConstants.m */; };
@@ -123,6 +124,8 @@
 		0E8371981AF67DE10070EBEA /* TTImageToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTImageToolbarItem.m; sourceTree = "<group>"; };
 		0E8371991AF67DE10070EBEA /* TTTextToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTextToolbarItem.h; sourceTree = "<group>"; };
 		0E83719A1AF67DE10070EBEA /* TTTextToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTextToolbarItem.m; sourceTree = "<group>"; };
+		0E8371A21AF6F7C90070EBEA /* TTContactTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTContactTableViewCell.h; sourceTree = "<group>"; };
+		0E8371A31AF6F7C90070EBEA /* TTContactTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTContactTableViewCell.m; sourceTree = "<group>"; };
 		0EC584E21A7864AA00025D71 /* TicText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TicText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC584E61A7864AA00025D71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0EC584E71A7864AA00025D71 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -404,6 +407,8 @@
 				0ECE4B301AE3D56D0016A728 /* TTNewTicsDropdownView.m */,
 				0ECE4B351AE3D56D0016A728 /* TTParallaxHeaderView.h */,
 				0ECE4B361AE3D56D0016A728 /* TTParallaxHeaderView.m */,
+				0E8371A21AF6F7C90070EBEA /* TTContactTableViewCell.h */,
+				0E8371A31AF6F7C90070EBEA /* TTContactTableViewCell.m */,
 			);
 			name = "Custom UI";
 			sourceTree = "<group>";
@@ -742,6 +747,7 @@
 				0E83719E1AF67DE10070EBEA /* TTTextToolbarItem.m in Sources */,
 				0ECE4B421AE3D56D0016A728 /* TTComposeView.m in Sources */,
 				0E8371881AF67C5E0070EBEA /* TTScrollingImagePickerView.m in Sources */,
+				0E8371A41AF6F7C90070EBEA /* TTContactTableViewCell.m in Sources */,
 				0ECE4B051AE3D5220016A728 /* TTSettings.m in Sources */,
 				0ECE4B3F1AE3D56D0016A728 /* TTNewTicsBannerView.m in Sources */,
 				0ECE4B291AE3D5490016A728 /* TTFindFriendsViewController.m in Sources */,
