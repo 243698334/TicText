@@ -13,15 +13,14 @@
 #define kFacebookURL @"https://www.facebook.com/pages/TicText/587674271368005"
 #define kFacebookAppURL @"fb://profile/587674271368005"
 
-@interface TTSettingsViewController () {
-    HFStretchableTableHeaderView *_stretchableTableHeaderView;
-    ProfileHeaderView *headerView;
-}
+@interface TTSettingsViewController ()
 
 @property (nonatomic, strong) UISwitch *receiveNewTicNotificationSwitch;
 @property (nonatomic, strong) UISwitch *receiveExpireSoonNotificationSwitch;
 @property (nonatomic, strong) UISwitch *receiveReadByRecipientNotificationSwitch;
 @property (nonatomic, strong) MFMailComposeViewController *mc;
+@property (nonatomic, strong) HFStretchableTableHeaderView *stretchableTableHeaderView;
+@property (nonatomic, strong) ProfileHeaderView *headerView;
 
 @end
 
@@ -41,10 +40,10 @@
     self.navigationItem.title = @"Settings";
     self.tableView.scrollEnabled = YES;
     
-    _stretchableTableHeaderView = [HFStretchableTableHeaderView new];
-    headerView = [[ProfileHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 0.5333 * self.view.bounds.size.width)];
-    _stretchableTableHeaderView = [HFStretchableTableHeaderView new];
-    [_stretchableTableHeaderView stretchHeaderForTableView:self.tableView withView:headerView];
+    self.stretchableTableHeaderView = [[HFStretchableTableHeaderView alloc] init];
+    self.headerView = [[ProfileHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 0.5333 * self.view.bounds.size.width)];
+    self.stretchableTableHeaderView = [[HFStretchableTableHeaderView alloc] init];
+    [self.stretchableTableHeaderView stretchHeaderForTableView:self.tableView withView:self.headerView];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
     
@@ -181,12 +180,12 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [_stretchableTableHeaderView scrollViewDidScroll:scrollView];
+    [self.stretchableTableHeaderView scrollViewDidScroll:scrollView];
 }
 
 - (void)viewDidLayoutSubviews
 {
-    [_stretchableTableHeaderView resizeView];
+    [self.stretchableTableHeaderView resizeView];
 }
 
 -(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
@@ -207,11 +206,14 @@
             textField.text = [TTUser currentUser].displayName;
         }];
         UIAlertAction *change = [UIAlertAction actionWithTitle:@"Change" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
-//            UITextField * textField = alertController.textFields[0];
-//            [TTUser currentUser].displayName = textField.text;
-//            [[TTUser currentUser] saveInBackgroundWithBlock:^(BOOL success, NSError *err){
-//                [headerView refreshValues];
-//            }];
+            UITextField * textField = changeName.textFields.firstObject;
+            TTUser *_user = [TTUser currentUser];
+            _user.displayName = textField.text;
+            [_user saveInBackgroundWithBlock:^(BOOL success, NSError *err){
+                if(success) {
+                    [self.headerView refreshValues];
+                }
+            }];
         }];
         
         UIAlertAction *cancelNameChange = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action){
@@ -227,10 +229,19 @@
     UIAlertAction *profilePicture = [UIAlertAction actionWithTitle:@"Edit Profile Picture" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
         UIAlertController *changePicture = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         UIAlertAction *camera = [UIAlertAction actionWithTitle:@"Take New Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction * alert){
-            
+            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+            picker.delegate = self;
+            picker.allowsEditing = YES;
+            picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+            [self presentViewController:picker animated:YES completion:NULL];
         }];
         
         UIAlertAction *photos = [UIAlertAction actionWithTitle:@"Choose From Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *alert){
+            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+            picker.delegate = self;
+            picker.allowsEditing = YES;
+            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            [self presentViewController:picker animated:YES completion:NULL];
         }];
         
         UIAlertAction *cancelPhotos = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
@@ -252,6 +263,34 @@
     [alertController addAction:cancel];
     
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage *image =  (UIImage*) [info objectForKey:UIImagePickerControllerOriginalImage];
+    TTUser * _user = [TTUser currentUser];
+    [_user setProfilePicture:UIImageJPEGRepresentation(image, 0.8)];
+    [_user saveInBackgroundWithBlock:^(BOOL success, NSError *error) {
+        if(success) {
+            UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Save Successful!" message:nil preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *dismiss = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel handler:nil];
+            [controller addAction:dismiss];
+            [self presentViewController:controller animated:YES completion:nil];
+        }
+        else {
+            UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Something went wrong" message:@"Your picture could not be saved." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *dismiss = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel handler:nil];
+            [controller addAction:dismiss];
+            [self presentViewController:controller animated:YES completion:nil];
+        }
+    }];
+    [self.headerView refreshValues];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

@@ -2,6 +2,7 @@
 //  StretchableTableHeaderView.m
 //  StretchableTableHeaderView
 //
+//  Created by Hendrik Frahmann
 
 #import "HFStretchableTableHeaderView.h"
 
