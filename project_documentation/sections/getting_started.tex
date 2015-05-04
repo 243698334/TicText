@@ -1,0 +1,31 @@
+\subsection{Prerequisites}
+\begin{itemize}
+	\item Xcode 6, preferably the latest version
+	\item iOS 7
+\end{itemize}
+
+\subsection{Setting up your Xcode project}
+\begin{enumerate}
+	\item After downloading the latest copy of the repository, install all project dependencies from CocoaPods by running,
+		\begin{verbatim}
+		cd TicText-iOS
+		pod install
+		\end{verbatim}
+	\item Open the Xcode workspace at \verb|TicText-iOS/TicText.xcworkspace|.
+	\item Set up a, or ask permissions to our development, TicText app on Parse.
+	\item Copy the environment's application id and client key into \verb|AppDelegate.m|:
+		\begin{verbatim}
+		[Parse setApplicationId:@"APPLICATION_ID" clientKey:@"CLIENT_KEY"];
+		\end{verbatim}
+	\item Finally, select the \verb|TicText| target and go to \verb|Build Phases|. Under \verb|Upload Symbol Files|, update line 3 to point to your Cloud Code folder, if any. If you're not using Cloud Code, feel free to remove the \verb|Upload Symbol Files| section.
+\end{enumerate}
+
+\subsection{Configuring TicText's Facebook integration}
+\begin{enumerate}
+	\item Set up a, or ask permission to our development, Facebook app at \url{http://developers.facebook.com/apps}.
+	\item Set up a URL scheme for \verb|fbFACEBOOK_APP_ID|, where \verb|FACEBOOK_APP_ID| is your Facebook app's id.
+	\item Add your Facebook app id to \verb|Info.plist| in the \verb|FacebookAppID| key.
+\end{enumerate}
+
+\subsection{Cloud Code}
+Add your Parse app id and master key to \verb|TicText-iOS/CloudCode/config/global.json|, then type \verb|parse deploy| from the command line at \verb|TicText-cloud|. See the \href{https://parse.com/docs/cloud_code_guide#clt}{Cloud Code Guide} for more information about the \verb|parse| CLI.
