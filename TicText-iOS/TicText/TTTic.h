@@ -26,6 +26,4 @@
 
 + (void)fetchTicInBackgroundWithId:(NSString *)ticId timestamp:(NSDate *)fetchTimestamp completion:(void (^)(TTTic *fetchedTic, NSError *error))completion;
 
-+ (void)retrieveNewTicsInBackgroundWithBlock:(void (^)(NSArray *receivedNewTics, NSError *error))completion;
-
 @end

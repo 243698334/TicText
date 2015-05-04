@@ -152,6 +152,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [TSMessage dismissActiveNotification];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self updateCurrentConversation];
 }
@@ -428,7 +429,7 @@
         
         if ([mediaContent isKindOfClass:[UIImage class]]) {
             mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:(UIImage *)mediaContent];
-            mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:senderId];
+            mediaItem.appliesMediaViewMaskAsOutgoing = YES;
             file = [PFFile fileWithData:UIImageJPEGRepresentation((UIImage *)mediaContent, 0.6)];
         }
         newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
@@ -694,7 +695,7 @@
     if (mediaContent) {
         // TODO:classify more media types
         JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:nil];
-        mediaItem.appliesMediaViewMaskAsOutgoing = [[TTUser currentUser].objectId isEqualToString:self.senderId];
+        mediaItem.appliesMediaViewMaskAsOutgoing = NO;
         
         [mediaContent getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
             if (error) {

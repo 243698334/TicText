@@ -77,6 +77,7 @@ NSString * const kTTLocalDatastoreFriendsPinName = @"friends";
 NSString * const kTTLocalDatastoreTicsPinName = @"tics";
 NSString * const kTTLocalDatastoreConversationsPinName = @"conversations";
 NSString * const kTTLocalDatastorePrivateDataPinName = @"privateData";
+NSString * const kTTLocalDatastoreNewTicsPinName = @"newTics";
 
 
 #pragma mark - TTUser
@@ -132,6 +133,23 @@ NSString * const kTTTicStatusDrafting = @"drafting";
 NSString * const kTTTicContentTypeText = @"text";
 NSString * const kTTTicContentTypeImage = @"image";
 NSString * const kTTTicContentTypeVoice = @"voice";
+
+
+#pragma mark - TTNewTic
+// Class name
+NSString * const kTTNewTicClassName = @"NewTic";
+
+// Field keys
+NSString * const kTTNewTicTicIdKey = @"ticId";
+NSString * const kTTNewTicStatusKey = @"status";
+NSString * const kTTNewTicSenderUserIdKey = @"senderUserId";
+NSString * const kTTNewTicRecipientUserIdKey = @"recipientUserId";
+NSString * const kTTNewTicSendTimestampKey = @"sendTimestamp";
+NSString * const kTTNewTicTimeLimitKey = @"timeLimit";
+
+// Status values
+NSString * const kTTNewTicStatusUnread = @"unread";
+NSString * const kTTNewTicStatusExpired = @"expired";
 
 
 #pragma mark - TTConversation

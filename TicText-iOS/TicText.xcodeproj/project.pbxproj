@@ -29,6 +29,7 @@
 		0E83719D1AF67DE10070EBEA /* TTImageToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371981AF67DE10070EBEA /* TTImageToolbarItem.m */; };
 		0E83719E1AF67DE10070EBEA /* TTTextToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E83719A1AF67DE10070EBEA /* TTTextToolbarItem.m */; };
 		0E8371A41AF6F7C90070EBEA /* TTContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371A31AF6F7C90070EBEA /* TTContactTableViewCell.m */; };
+		0E8371A71AF70B0C0070EBEA /* TTNewTic.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371A61AF70B0C0070EBEA /* TTNewTic.m */; };
 		0EC584E81A7864AA00025D71 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC584E71A7864AA00025D71 /* main.m */; };
 		0EC584F61A7864AA00025D71 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0EC584F41A7864AA00025D71 /* LaunchScreen.xib */; };
 		0ECE4AF91AE3D5060016A728 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4AF81AE3D5060016A728 /* TTConstants.m */; };
@@ -126,6 +127,8 @@
 		0E83719A1AF67DE10070EBEA /* TTTextToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTextToolbarItem.m; sourceTree = "<group>"; };
 		0E8371A21AF6F7C90070EBEA /* TTContactTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTContactTableViewCell.h; sourceTree = "<group>"; };
 		0E8371A31AF6F7C90070EBEA /* TTContactTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTContactTableViewCell.m; sourceTree = "<group>"; };
+		0E8371A51AF70B0B0070EBEA /* TTNewTic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTNewTic.h; sourceTree = "<group>"; };
+		0E8371A61AF70B0C0070EBEA /* TTNewTic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTNewTic.m; sourceTree = "<group>"; };
 		0EC584E21A7864AA00025D71 /* TicText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TicText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC584E61A7864AA00025D71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0EC584E71A7864AA00025D71 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -460,6 +463,8 @@
 				0ECE4B0D1AE3D5330016A728 /* TTUserPrivateData.m */,
 				0ECE4B0E1AE3D5330016A728 /* TTConversation.h */,
 				0ECE4B0F1AE3D5330016A728 /* TTConversation.m */,
+				0E8371A51AF70B0B0070EBEA /* TTNewTic.h */,
+				0E8371A61AF70B0C0070EBEA /* TTNewTic.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -760,6 +765,7 @@
 				CD4748401AB770DA00A4B8F6 /* TTExpirationDomain.m in Sources */,
 				0E83719C1AF67DE10070EBEA /* TTExpirationToolbarItem.m in Sources */,
 				0ECE4B111AE3D5330016A728 /* TTTic.m in Sources */,
+				0E8371A71AF70B0C0070EBEA /* TTNewTic.m in Sources */,
 				0EC584E81A7864AA00025D71 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

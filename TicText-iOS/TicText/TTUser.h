@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Kevin Yufei Chen. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 #import "TTUserPrivateData.h"
 

@@ -19,6 +19,8 @@
 #import "TTActivity.h"
 #import "TTUserPrivateData.h"
 #import "TTConversation.h"
+#import "TTNewTic.h"
+
 #import "TTRootViewController.h"
 
 @interface AppDelegate ()
@@ -111,6 +113,7 @@
     [TTActivity registerSubclass];
     [TTUserPrivateData registerSubclass];
     [TTConversation registerSubclass];
+    [TTNewTic registerSubclass];
     
     [Parse enableLocalDatastore];
     
@@ -123,11 +126,6 @@
     
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    if (application.applicationIconBadgeNumber != 0) {
-        application.applicationIconBadgeNumber = 0;
-        [PFInstallation currentInstallation].badge = 0;
-        [[PFInstallation currentInstallation] saveInBackground];
-    }
 }
 
 - (void)setupColorScheme {
@@ -154,6 +152,9 @@
     NSDictionary *pushNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (pushNotificationPayload != nil || application.applicationIconBadgeNumber != 0) {
         [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey];
+        application.applicationIconBadgeNumber = 0;
+        [PFInstallation currentInstallation].badge = 0;
+        [[PFInstallation currentInstallation] saveInBackground];
     } else {
         [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey];
     }

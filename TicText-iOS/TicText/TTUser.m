@@ -8,20 +8,8 @@
 
 #import "TTUser.h"
 
-#import "TTSession.h"
-#import <Parse/PFObject+Subclass.h>
-
 @implementation TTUser
 
 @dynamic displayName, facebookId, profilePicture, profilePictureSmall, privateData;
-
-//- (void)setProfilePictureData:(NSData *)data {
-//    PFFile *file = [PFFile fileWithData:data];
-//    self[kTTUserProfilePictureKey] = file;
-//}
-//
-//- (NSData *)profilePictureData {
-//    return [(PFFile *)[self objectForKey:kTTUserProfilePictureKey] getData];
-//}
 
 @end
