@@ -59,7 +59,7 @@
 // @Remark: For some reason, these tests require you to be signed in because the |loadTicHistory| method in |TTMessagesViewController| calls |TTUser.currentUser| and then sets it in a |PFQuery|.
 @implementation TTMessagesViewControllerTests
 
-- (void)setUp {
+/*- (void)setUp {
     [super setUp];
     self.mockRecipient = OCMClassMock([TTUser class]);
     OCMStub([self.mockRecipient objectId]).andReturn(@"fakeUserId");
@@ -689,7 +689,6 @@
     XCTAssertEqual([self.mockMessagesViewController messagesToolbar].selectedIndex, kTTMessagesToolbarSelectedItemNone);
 }
 
-- (void)testSendImageFromScrollingImagePickerView {
 //    // Arrange
 //    OCMStub([self.mockMessagesViewController createTicWithMessegeText:[OCMArg any] mediaContent:[OCMArg any] senderId:[OCMArg any] senderDisplayName:[OCMArg any] date:[OCMArg any]]).andReturn([TTTic object]);
 //    OCMExpect([self.mockMessagesViewController sendTicWithMediaContent:[OCMArg isKindOfClass:[TTTic class]]]);
@@ -702,5 +701,6 @@
 //    // Assert
 //    OCMVerifyAll(self.mockMessagesViewController);
 }
+
 
 @end

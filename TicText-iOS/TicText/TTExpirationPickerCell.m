@@ -18,7 +18,7 @@
 }
 
 #define kTextLabelFontSize 24.0f
-#define kUnitsLabelFontSize 12.0f
+#define kUnitsLabelFontSize 10.0f
 #define kLabelWidthInset (4.0f)
 #define kLabelHeightInset (4.0f)
 - (void)setupView {

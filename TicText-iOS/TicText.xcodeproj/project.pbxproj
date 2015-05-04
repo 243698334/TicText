@@ -62,6 +62,7 @@
 		2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED84A9B1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m */; };
 		2EEEC7991AA93CF300391486 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EEEC7981AA93CF300391486 /* MessageUI.framework */; };
 		4C0094CD1B6ED14DA0956A8F /* libPods-TicText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E62ADB5018418278F1D7F35F /* libPods-TicText.a */; };
+		8FD9B4AF1AF7362000DBF6EA /* TTCountDownView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FD9B4AE1AF7362000DBF6EA /* TTCountDownView.m */; };
 		9B6B74E026B95CE6BCD5D096 /* libPods-TicTextTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */; };
 		CD1330D81AB7AA4600F59523 /* TTExpirationDomainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1330D71AB7AA4600F59523 /* TTExpirationDomainTests.swift */; };
 		CD1330DE1AB7CA7800F59523 /* TTExpirationPickerControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1330DD1AB7CA7800F59523 /* TTExpirationPickerControllerTests.swift */; };
@@ -195,6 +196,8 @@
 		62D5B3A2D5FD007BC1313C3B /* Pods-TicText.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicText.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TicText/Pods-TicText.debug.xcconfig"; sourceTree = "<group>"; };
 		65E0D8574E683EDF0172C6F3 /* Pods-TicTextTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicTextTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TicTextTests/Pods-TicTextTests.release.xcconfig"; sourceTree = "<group>"; };
 		69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicTextTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FD9B4AD1AF7362000DBF6EA /* TTCountDownView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTCountDownView.h; sourceTree = "<group>"; };
+		8FD9B4AE1AF7362000DBF6EA /* TTCountDownView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTCountDownView.m; sourceTree = "<group>"; };
 		CD1330D61AB7AA4500F59523 /* TicTextTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TicTextTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		CD1330D71AB7AA4600F59523 /* TTExpirationDomainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTExpirationDomainTests.swift; sourceTree = "<group>"; };
 		CD1330DD1AB7CA7800F59523 /* TTExpirationPickerControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTExpirationPickerControllerTests.swift; sourceTree = "<group>"; };
@@ -393,6 +396,8 @@
 				0E83718A1AF67C7B0070EBEA /* TTContactsViewController.m */,
 				0ECE4B331AE3D56D0016A728 /* TTConversationTableViewCell.h */,
 				0ECE4B341AE3D56D0016A728 /* TTConversationTableViewCell.m */,
+				8FD9B4AD1AF7362000DBF6EA /* TTCountDownView.h */,
+				8FD9B4AE1AF7362000DBF6EA /* TTCountDownView.m */,
 				0ECE4B3A1AE3D56D0016A728 /* TTFindFriendsTableViewCell.h */,
 				0ECE4B3B1AE3D56D0016A728 /* TTFindFriendsTableViewCell.m */,
 				0ECE4B391AE3D56D0016A728 /* TTInAppNotificationDesign.json */,
@@ -752,6 +757,7 @@
 				0E83719E1AF67DE10070EBEA /* TTTextToolbarItem.m in Sources */,
 				0ECE4B421AE3D56D0016A728 /* TTComposeView.m in Sources */,
 				0E8371881AF67C5E0070EBEA /* TTScrollingImagePickerView.m in Sources */,
+				8FD9B4AF1AF7362000DBF6EA /* TTCountDownView.m in Sources */,
 				0E8371A41AF6F7C90070EBEA /* TTContactTableViewCell.m in Sources */,
 				0ECE4B051AE3D5220016A728 /* TTSettings.m in Sources */,
 				0ECE4B3F1AE3D56D0016A728 /* TTNewTicsBannerView.m in Sources */,
@@ -828,7 +834,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -849,6 +855,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "fce94118-4cd8-45d3-80d7-c3a426e42a9a";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -870,7 +877,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -884,6 +891,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "fce94118-4cd8-45d3-80d7-c3a426e42a9a";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -902,7 +910,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fce94118-4cd8-45d3-80d7-c3a426e42a9a";
 			};
 			name = Debug;
 		};
@@ -919,7 +927,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "fce94118-4cd8-45d3-80d7-c3a426e42a9a";
 			};
 			name = Release;
 		};
