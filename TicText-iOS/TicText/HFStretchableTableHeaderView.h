@@ -2,6 +2,7 @@
 //  StretchableTableHeaderView.h
 //  StretchableTableHeaderView
 //
+//  Created by Hendrik Frahmann
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
