@@ -39,10 +39,10 @@
 
 - (void)testSessionDidBecomeInvalid {
     // Arrange
-    id mockSession = OCMPartialMock([TTSession sharedSession]);
+    id mockSession = OCMPartialMock([[TTSession alloc] init]);
     OCMStub([mockSession sharedSession]).andReturn(mockSession);
-    OCMExpect([mockSession logOut:[OCMArg isKindOfClass:NSClassFromString(@"NSBlock")]]);
-    OCMStub([mockSession logOut:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
+    OCMExpect([mockSession logOutWithBlock:[OCMArg isKindOfClass:NSClassFromString(@"NSBlock")]]);
+    OCMStub([mockSession logOutWithBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
         void (^logOutBlock)() = nil;
         [invocation getArgument:&logOutBlock atIndex:2];
         logOutBlock();
@@ -102,10 +102,10 @@
 
 - (void)testUserDidLogOut {
     // Arrange
-    id mockSession = OCMPartialMock([TTSession sharedSession]);
+    id mockSession = OCMPartialMock([[TTSession alloc] init]);
     OCMStub([mockSession sharedSession]).andReturn(mockSession);
-    OCMExpect([mockSession logOut:[OCMArg isKindOfClass:NSClassFromString(@"NSBlock")]]);
-    OCMStub([mockSession logOut:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
+    OCMExpect([mockSession logOutWithBlock:[OCMArg isKindOfClass:NSClassFromString(@"NSBlock")]]);
+    OCMStub([mockSession logOutWithBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
         void (^logOutBlock)() = nil;
         [invocation getArgument:&logOutBlock atIndex:2];
         logOutBlock();

@@ -24,7 +24,7 @@ class TTExpirationDomainTests: XCTestCase {
     
     func testExpirationUnitsClassAccessor() {
         let sharedArray = TTExpirationDomain.sharedDomain().expirationUnits as! [TTExpirationUnit]
-        let classArray = TTExpirationDomain.expirationUnits()as! [TTExpirationUnit]
+        let classArray = TTExpirationDomain.expirationUnits() as! [TTExpirationUnit]
         XCTAssertEqual(sharedArray, classArray, "Class method expirationUnits does not return the same array as the singleton's expirationUnits property.")
     }
     

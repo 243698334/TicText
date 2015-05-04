@@ -16,6 +16,18 @@
 		0E6AFF7A1AB7F18A00FC69A9 /* TTTicTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E6AFF791AB7F18A00FC69A9 /* TTTicTests.m */; };
 		0E6AFF7C1AB7FAAC00FC69A9 /* TTActivityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E6AFF7B1AB7FAAC00FC69A9 /* TTActivityTests.m */; };
 		0E74EC531AF43A5E001E253F /* TTNewTicsDropdownButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E74EC521AF43A5E001E253F /* TTNewTicsDropdownButtonsView.m */; };
+		0E83717E1AF67C0F0070EBEA /* TTMessagesToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E83717B1AF67C0F0070EBEA /* TTMessagesToolbar.m */; };
+		0E83717F1AF67C0F0070EBEA /* TTMessagesToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E83717D1AF67C0F0070EBEA /* TTMessagesToolbarItem.m */; };
+		0E8371811AF67C200070EBEA /* InstalledToolbarItems.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0E8371801AF67C200070EBEA /* InstalledToolbarItems.plist */; };
+		0E8371871AF67C5E0070EBEA /* TTScrollingImagePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371841AF67C5E0070EBEA /* TTScrollingImagePickerCell.m */; };
+		0E8371881AF67C5E0070EBEA /* TTScrollingImagePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371861AF67C5E0070EBEA /* TTScrollingImagePickerView.m */; };
+		0E83718B1AF67C7B0070EBEA /* TTContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E83718A1AF67C7B0070EBEA /* TTContactsViewController.m */; };
+		0E8371901AF67CC00070EBEA /* UIImage+SquareImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E83718D1AF67CC00070EBEA /* UIImage+SquareImage.m */; };
+		0E8371911AF67CC00070EBEA /* UIView+Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E83718F1AF67CC00070EBEA /* UIView+Screenshot.m */; };
+		0E83719B1AF67DE10070EBEA /* TTAnonymousToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371941AF67DE10070EBEA /* TTAnonymousToolbarItem.m */; };
+		0E83719C1AF67DE10070EBEA /* TTExpirationToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371961AF67DE10070EBEA /* TTExpirationToolbarItem.m */; };
+		0E83719D1AF67DE10070EBEA /* TTImageToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E8371981AF67DE10070EBEA /* TTImageToolbarItem.m */; };
+		0E83719E1AF67DE10070EBEA /* TTTextToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E83719A1AF67DE10070EBEA /* TTTextToolbarItem.m */; };
 		0EC584E81A7864AA00025D71 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EC584E71A7864AA00025D71 /* main.m */; };
 		0EC584F61A7864AA00025D71 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0EC584F41A7864AA00025D71 /* LaunchScreen.xib */; };
 		0ECE4AF91AE3D5060016A728 /* TTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4AF81AE3D5060016A728 /* TTConstants.m */; };
@@ -32,7 +44,6 @@
 		0ECE4B281AE3D5490016A728 /* TTLogInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0ECE4B191AE3D5490016A728 /* TTLogInViewController.xib */; };
 		0ECE4B291AE3D5490016A728 /* TTFindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B1B1AE3D5490016A728 /* TTFindFriendsViewController.m */; };
 		0ECE4B2A1AE3D5490016A728 /* TTConversationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B1D1AE3D5490016A728 /* TTConversationsViewController.m */; };
-		0ECE4B2B1AE3D5490016A728 /* TTContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B1F1AE3D5490016A728 /* TTContactsViewController.m */; };
 		0ECE4B2C1AE3D5490016A728 /* TTProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B211AE3D5490016A728 /* TTProfileViewController.m */; };
 		0ECE4B2D1AE3D5490016A728 /* TTSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B231AE3D5490016A728 /* TTSettingsViewController.m */; };
 		0ECE4B2E1AE3D5490016A728 /* TTMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B251AE3D5490016A728 /* TTMessagesViewController.m */; };
@@ -89,6 +100,29 @@
 		0E6AFF7B1AB7FAAC00FC69A9 /* TTActivityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTActivityTests.m; sourceTree = "<group>"; };
 		0E74EC511AF43A5E001E253F /* TTNewTicsDropdownButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTNewTicsDropdownButtonsView.h; sourceTree = "<group>"; };
 		0E74EC521AF43A5E001E253F /* TTNewTicsDropdownButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTNewTicsDropdownButtonsView.m; sourceTree = "<group>"; };
+		0E83717A1AF67C0F0070EBEA /* TTMessagesToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMessagesToolbar.h; sourceTree = "<group>"; };
+		0E83717B1AF67C0F0070EBEA /* TTMessagesToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesToolbar.m; sourceTree = "<group>"; };
+		0E83717C1AF67C0F0070EBEA /* TTMessagesToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMessagesToolbarItem.h; sourceTree = "<group>"; };
+		0E83717D1AF67C0F0070EBEA /* TTMessagesToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMessagesToolbarItem.m; sourceTree = "<group>"; };
+		0E8371801AF67C200070EBEA /* InstalledToolbarItems.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InstalledToolbarItems.plist; sourceTree = "<group>"; };
+		0E8371831AF67C5E0070EBEA /* TTScrollingImagePickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollingImagePickerCell.h; sourceTree = "<group>"; };
+		0E8371841AF67C5E0070EBEA /* TTScrollingImagePickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingImagePickerCell.m; sourceTree = "<group>"; };
+		0E8371851AF67C5E0070EBEA /* TTScrollingImagePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTScrollingImagePickerView.h; sourceTree = "<group>"; };
+		0E8371861AF67C5E0070EBEA /* TTScrollingImagePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTScrollingImagePickerView.m; sourceTree = "<group>"; };
+		0E8371891AF67C7B0070EBEA /* TTContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTContactsViewController.h; sourceTree = "<group>"; };
+		0E83718A1AF67C7B0070EBEA /* TTContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTContactsViewController.m; sourceTree = "<group>"; };
+		0E83718C1AF67CC00070EBEA /* UIImage+SquareImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+SquareImage.h"; sourceTree = "<group>"; };
+		0E83718D1AF67CC00070EBEA /* UIImage+SquareImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SquareImage.m"; sourceTree = "<group>"; };
+		0E83718E1AF67CC00070EBEA /* UIView+Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Screenshot.h"; sourceTree = "<group>"; };
+		0E83718F1AF67CC00070EBEA /* UIView+Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Screenshot.m"; sourceTree = "<group>"; };
+		0E8371931AF67DE10070EBEA /* TTAnonymousToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTAnonymousToolbarItem.h; sourceTree = "<group>"; };
+		0E8371941AF67DE10070EBEA /* TTAnonymousToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTAnonymousToolbarItem.m; sourceTree = "<group>"; };
+		0E8371951AF67DE10070EBEA /* TTExpirationToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTExpirationToolbarItem.h; sourceTree = "<group>"; };
+		0E8371961AF67DE10070EBEA /* TTExpirationToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTExpirationToolbarItem.m; sourceTree = "<group>"; };
+		0E8371971AF67DE10070EBEA /* TTImageToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTImageToolbarItem.h; sourceTree = "<group>"; };
+		0E8371981AF67DE10070EBEA /* TTImageToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTImageToolbarItem.m; sourceTree = "<group>"; };
+		0E8371991AF67DE10070EBEA /* TTTextToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTextToolbarItem.h; sourceTree = "<group>"; };
+		0E83719A1AF67DE10070EBEA /* TTTextToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTextToolbarItem.m; sourceTree = "<group>"; };
 		0EC584E21A7864AA00025D71 /* TicText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TicText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC584E61A7864AA00025D71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0EC584E71A7864AA00025D71 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -196,6 +230,45 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0E8371791AF67BE50070EBEA /* MessagesToolbar */ = {
+			isa = PBXGroup;
+			children = (
+				0E8371801AF67C200070EBEA /* InstalledToolbarItems.plist */,
+				0E8371921AF67DA10070EBEA /* ToolbarItems */,
+				0E83717A1AF67C0F0070EBEA /* TTMessagesToolbar.h */,
+				0E83717B1AF67C0F0070EBEA /* TTMessagesToolbar.m */,
+				0E83717C1AF67C0F0070EBEA /* TTMessagesToolbarItem.h */,
+				0E83717D1AF67C0F0070EBEA /* TTMessagesToolbarItem.m */,
+			);
+			name = MessagesToolbar;
+			sourceTree = "<group>";
+		};
+		0E8371821AF67C280070EBEA /* ScrollingImagePicker */ = {
+			isa = PBXGroup;
+			children = (
+				0E8371831AF67C5E0070EBEA /* TTScrollingImagePickerCell.h */,
+				0E8371841AF67C5E0070EBEA /* TTScrollingImagePickerCell.m */,
+				0E8371851AF67C5E0070EBEA /* TTScrollingImagePickerView.h */,
+				0E8371861AF67C5E0070EBEA /* TTScrollingImagePickerView.m */,
+			);
+			name = ScrollingImagePicker;
+			sourceTree = "<group>";
+		};
+		0E8371921AF67DA10070EBEA /* ToolbarItems */ = {
+			isa = PBXGroup;
+			children = (
+				0E8371931AF67DE10070EBEA /* TTAnonymousToolbarItem.h */,
+				0E8371941AF67DE10070EBEA /* TTAnonymousToolbarItem.m */,
+				0E8371951AF67DE10070EBEA /* TTExpirationToolbarItem.h */,
+				0E8371961AF67DE10070EBEA /* TTExpirationToolbarItem.m */,
+				0E8371971AF67DE10070EBEA /* TTImageToolbarItem.h */,
+				0E8371981AF67DE10070EBEA /* TTImageToolbarItem.m */,
+				0E8371991AF67DE10070EBEA /* TTTextToolbarItem.h */,
+				0E83719A1AF67DE10070EBEA /* TTTextToolbarItem.m */,
+			);
+			name = ToolbarItems;
+			sourceTree = "<group>";
+		};
 		0E923B9B1A87192200040522 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -304,10 +377,14 @@
 			isa = PBXGroup;
 			children = (
 				CD9F92831AB8F530006FFE67 /* ExpirationPicker */,
+				0E8371791AF67BE50070EBEA /* MessagesToolbar */,
+				0E8371821AF67C280070EBEA /* ScrollingImagePicker */,
 				0E5F1B2E1AE4E154009DE60A /* TTComposeTableViewCell.h */,
 				0E5F1B2F1AE4E155009DE60A /* TTComposeTableViewCell.m */,
 				0ECE4B371AE3D56D0016A728 /* TTComposeView.h */,
 				0ECE4B381AE3D56D0016A728 /* TTComposeView.m */,
+				0E8371891AF67C7B0070EBEA /* TTContactsViewController.h */,
+				0E83718A1AF67C7B0070EBEA /* TTContactsViewController.m */,
 				0ECE4B331AE3D56D0016A728 /* TTConversationTableViewCell.h */,
 				0ECE4B341AE3D56D0016A728 /* TTConversationTableViewCell.m */,
 				0ECE4B3A1AE3D56D0016A728 /* TTFindFriendsTableViewCell.h */,
@@ -315,18 +392,18 @@
 				0ECE4B391AE3D56D0016A728 /* TTInAppNotificationDesign.json */,
 				0ECE4B3C1AE3D56D0016A728 /* TTMessagesBubbleImage.h */,
 				0ECE4B3D1AE3D56D0016A728 /* TTMessagesBubbleImage.m */,
-				0ECE4B351AE3D56D0016A728 /* TTParallaxHeaderView.h */,
-				0ECE4B361AE3D56D0016A728 /* TTParallaxHeaderView.m */,
 				0ECE4B311AE3D56D0016A728 /* TTNewTicsBannerView.h */,
 				0ECE4B321AE3D56D0016A728 /* TTNewTicsBannerView.m */,
-				0ECE4B2F1AE3D56D0016A728 /* TTNewTicsDropdownView.h */,
-				0ECE4B301AE3D56D0016A728 /* TTNewTicsDropdownView.m */,
-				0E49DDA91AEB221A0034BCFE /* TTNewTicsDropdownTableViewCell.h */,
-				0E49DDAA1AEB221A0034BCFE /* TTNewTicsDropdownTableViewCell.m */,
-				0E2039611AEE3075006E89E1 /* TTNewTicsDropdownSummaryView.h */,
-				0E2039621AEE3075006E89E1 /* TTNewTicsDropdownSummaryView.m */,
 				0E74EC511AF43A5E001E253F /* TTNewTicsDropdownButtonsView.h */,
 				0E74EC521AF43A5E001E253F /* TTNewTicsDropdownButtonsView.m */,
+				0E2039611AEE3075006E89E1 /* TTNewTicsDropdownSummaryView.h */,
+				0E2039621AEE3075006E89E1 /* TTNewTicsDropdownSummaryView.m */,
+				0E49DDA91AEB221A0034BCFE /* TTNewTicsDropdownTableViewCell.h */,
+				0E49DDAA1AEB221A0034BCFE /* TTNewTicsDropdownTableViewCell.m */,
+				0ECE4B2F1AE3D56D0016A728 /* TTNewTicsDropdownView.h */,
+				0ECE4B301AE3D56D0016A728 /* TTNewTicsDropdownView.m */,
+				0ECE4B351AE3D56D0016A728 /* TTParallaxHeaderView.h */,
+				0ECE4B361AE3D56D0016A728 /* TTParallaxHeaderView.m */,
 			);
 			name = "Custom UI";
 			sourceTree = "<group>";
@@ -417,6 +494,10 @@
 				0ECE4AF81AE3D5060016A728 /* TTConstants.m */,
 				CD47483E1AB770DA00A4B8F6 /* TTExpirationDomain.h */,
 				CD47483F1AB770DA00A4B8F6 /* TTExpirationDomain.m */,
+				0E83718C1AF67CC00070EBEA /* UIImage+SquareImage.h */,
+				0E83718D1AF67CC00070EBEA /* UIImage+SquareImage.m */,
+				0E83718E1AF67CC00070EBEA /* UIView+Screenshot.h */,
+				0E83718F1AF67CC00070EBEA /* UIView+Screenshot.m */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -434,10 +515,10 @@
 		CD9F92831AB8F530006FFE67 /* ExpirationPicker */ = {
 			isa = PBXGroup;
 			children = (
-				CD2CD4FD1AB634D300CFC89F /* TTExpirationPickerController.h */,
-				CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */,
 				CD9F92841AB8F552006FFE67 /* TTExpirationPickerCell.h */,
 				CD9F92851AB8F552006FFE67 /* TTExpirationPickerCell.m */,
+				CD2CD4FD1AB634D300CFC89F /* TTExpirationPickerController.h */,
+				CD2CD4FE1AB634D300CFC89F /* TTExpirationPickerController.m */,
 			);
 			name = ExpirationPicker;
 			sourceTree = "<group>";
@@ -546,6 +627,7 @@
 			files = (
 				0EC584F61A7864AA00025D71 /* LaunchScreen.xib in Resources */,
 				0ECE4B4A1AE3D5890016A728 /* Images.xcassets in Resources */,
+				0E8371811AF67C200070EBEA /* InstalledToolbarItems.plist in Resources */,
 				0ECE4B281AE3D5490016A728 /* TTLogInViewController.xib in Resources */,
 				0ECE4B431AE3D56D0016A728 /* TTInAppNotificationDesign.json in Resources */,
 			);
@@ -632,25 +714,34 @@
 				0ECE4B451AE3D56D0016A728 /* TTMessagesBubbleImage.m in Sources */,
 				0E74EC531AF43A5E001E253F /* TTNewTicsDropdownButtonsView.m in Sources */,
 				0ECE4B261AE3D5490016A728 /* TTRootViewController.m in Sources */,
+				0E83719D1AF67DE10070EBEA /* TTImageToolbarItem.m in Sources */,
 				0ECE4B2A1AE3D5490016A728 /* TTConversationsViewController.m in Sources */,
 				0ECE4B2D1AE3D5490016A728 /* TTSettingsViewController.m in Sources */,
 				0E2039631AEE3075006E89E1 /* TTNewTicsDropdownSummaryView.m in Sources */,
+				0E8371871AF67C5E0070EBEA /* TTScrollingImagePickerCell.m in Sources */,
 				CD2CD4FF1AB634D300CFC89F /* TTExpirationPickerController.m in Sources */,
 				0ECE4AF91AE3D5060016A728 /* TTConstants.m in Sources */,
 				0ECE4B131AE3D5330016A728 /* TTUserPrivateData.m in Sources */,
+				0E83718B1AF67C7B0070EBEA /* TTContactsViewController.m in Sources */,
+				0E83719B1AF67DE10070EBEA /* TTAnonymousToolbarItem.m in Sources */,
 				0ECE4B441AE3D56D0016A728 /* TTFindFriendsTableViewCell.m in Sources */,
 				0E5F1B2A1AE495FC009DE60A /* TTSession.m in Sources */,
 				0ECE4B101AE3D5330016A728 /* TTActivity.m in Sources */,
+				0E83717E1AF67C0F0070EBEA /* TTMessagesToolbar.m in Sources */,
 				0ECE4B401AE3D56D0016A728 /* TTConversationTableViewCell.m in Sources */,
 				0ECE4B121AE3D5330016A728 /* TTUser.m in Sources */,
+				0E8371901AF67CC00070EBEA /* UIImage+SquareImage.m in Sources */,
 				0E49DDAB1AEB221A0034BCFE /* TTNewTicsDropdownTableViewCell.m in Sources */,
 				CD9F92861AB8F552006FFE67 /* TTExpirationPickerCell.m in Sources */,
 				0ECE4B491AE3D5890016A728 /* AppDelegate.m in Sources */,
+				0E8371911AF67CC00070EBEA /* UIView+Screenshot.m in Sources */,
 				0ECE4B141AE3D5330016A728 /* TTConversation.m in Sources */,
 				0ECE4B411AE3D56D0016A728 /* TTParallaxHeaderView.m in Sources */,
 				0ECE4B271AE3D5490016A728 /* TTLogInViewController.m in Sources */,
+				0E83717F1AF67C0F0070EBEA /* TTMessagesToolbarItem.m in Sources */,
+				0E83719E1AF67DE10070EBEA /* TTTextToolbarItem.m in Sources */,
 				0ECE4B421AE3D56D0016A728 /* TTComposeView.m in Sources */,
-				0ECE4B2B1AE3D5490016A728 /* TTContactsViewController.m in Sources */,
+				0E8371881AF67C5E0070EBEA /* TTScrollingImagePickerView.m in Sources */,
 				0ECE4B051AE3D5220016A728 /* TTSettings.m in Sources */,
 				0ECE4B3F1AE3D56D0016A728 /* TTNewTicsBannerView.m in Sources */,
 				0ECE4B291AE3D5490016A728 /* TTFindFriendsViewController.m in Sources */,
@@ -661,6 +752,7 @@
 				0E5F1B2D1AE49C05009DE60A /* TTErrorHandler.m in Sources */,
 				0ECE4B2C1AE3D5490016A728 /* TTProfileViewController.m in Sources */,
 				CD4748401AB770DA00A4B8F6 /* TTExpirationDomain.m in Sources */,
+				0E83719C1AF67DE10070EBEA /* TTExpirationToolbarItem.m in Sources */,
 				0ECE4B111AE3D5330016A728 /* TTTic.m in Sources */,
 				0EC584E81A7864AA00025D71 /* main.m in Sources */,
 			);
@@ -791,8 +883,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				GCC_PREFIX_HEADER = "TicText/TicText-Prefix.pch";
 				INFOPLIST_FILE = TicText/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
@@ -808,8 +900,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				GCC_PREFIX_HEADER = "TicText/TicText-Prefix.pch";
 				INFOPLIST_FILE = TicText/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
@@ -825,8 +917,8 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -851,8 +943,8 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kevin Yufei Chen (L26MMJT3VJ)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

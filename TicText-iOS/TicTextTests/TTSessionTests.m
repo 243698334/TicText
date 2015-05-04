@@ -10,9 +10,11 @@
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
 
+#import "TTConstants.h"
 #import "TTTestHelper.h"
 #import "TTSession.h"
 #import "TTUtility.h"
+#import "TTUser.h"
 
 @interface TTSessionTests : XCTestCase
 
@@ -65,7 +67,7 @@
     OCMExpect([mockUserDefaults setBool:NO forKey:kTTUserDefaultsSessionIsValidLastCheckedKey]);
     
     // Act
-    [[TTSession sharedSession] validateSessionInBackground];
+    [TTSession validateSessionInBackground];
     
     // Assert
     OCMVerifyAll(mockNotificationCenter);
@@ -81,7 +83,7 @@
     OCMExpect([mockNotificationCenter postNotificationName:kTTSessionDidBecomeInvalidNotification object:[OCMArg any] userInfo:[OCMArg checkWithBlock:^BOOL(id obj) {
         NSDictionary *userInfo = (NSDictionary *)obj;
         NSError *error = [userInfo objectForKey:kTTNotificationUserInfoErrorKey];
-        return [error.domain isEqualToString:kTTSessionErrorDomain] && error.code == kTTSessionErrorParseSessionFetchFailureCode;
+        return [error.domain isEqualToString:kTTSessionErrorDomain];
     }]]);
     OCMExpect([mockUserDefaults setBool:NO forKey:kTTUserDefaultsSessionIsValidLastCheckedKey]);
     
@@ -97,7 +99,7 @@
     });
     
     // Act
-    [[TTSession sharedSession] validateSessionInBackground];
+    [TTSession validateSessionInBackground];
     
     // Assert
     OCMVerifyAll(mockNotificationCenter);
@@ -129,7 +131,7 @@
     });
     
     // Act
-    [[TTSession sharedSession] validateSessionInBackground];
+    [TTSession validateSessionInBackground];
     
     // Assert
     OCMVerifyAll(mockNotificationCenter);
@@ -156,7 +158,7 @@
     });
     
     // Act
-    [[TTSession sharedSession] validateSessionInBackground];
+    [TTSession validateSessionInBackground];
     
     // Assert
     OCMVerifyAll(mockNotificationCenter);
@@ -165,10 +167,10 @@
 
 - (void)testLogIn {
     // Arrange
-    OCMExpect([self.mockSession logIn:[OCMArg any]]);
+    OCMExpect([self.mockSession logInWithBlock:[OCMArg any]]);
 
     // Act
-    [[TTSession sharedSession] logIn:nil];
+    [TTSession logInWithBlock:[OCMArg any]];
     
     // Assert
     OCMVerifyAll(self.mockSession);
@@ -176,10 +178,10 @@
 
 - (void)testLogOut {
     // Arrange
-    OCMExpect([self.mockSession logOut:[OCMArg any]]);
+    OCMExpect([self.mockSession logOutWithBlock:[OCMArg any]]);
     
     // Act
-    [[TTSession sharedSession] logOut:nil];
+    [TTSession logOutWithBlock:[OCMArg any]];
     
     // Assert
     OCMVerifyAll(self.mockSession);

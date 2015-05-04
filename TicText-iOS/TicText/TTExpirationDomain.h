@@ -39,6 +39,8 @@
 // Returns a formatted string for |interval|.
 + (NSString *)stringForTimeInterval:(NSTimeInterval)interval;
 
++ (NSString *)shortStringForTimeInterval:(NSTimeInterval)interval;
+
 // Calculates and modifies the default values for each element in |expirationUnits| using the |expirationTime|
 + (void)setUnits:(NSArray *)expirationUnits forExpirationTime:(NSTimeInterval)expirationTime;
 

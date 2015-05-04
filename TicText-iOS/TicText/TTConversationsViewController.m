@@ -351,6 +351,54 @@
 }
 
 
+#pragma mark - TTComposeViewDelegate
+
+- (void)composeViewDidSelectContact:(TTUser *)contact anonymous:(BOOL)anonymous {
+    [self hideComposeView];
+    
+    PFQuery *conversationQuery = [TTConversation query];
+    if (![TTUtility isParseReachable]) {
+        [conversationQuery fromLocalDatastore];
+    }
+    [conversationQuery fromPinWithName:kTTLocalDatastoreConversationsPinName];
+    [conversationQuery whereKey:kTTConversationUserIdKey equalTo:contact.objectId];
+    [conversationQuery whereKey:kTTConversationTypeKey notEqualTo:kTTConversationTypeAnonymous];
+    [conversationQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        if (error && error.code != kPFErrorObjectNotFound) {
+            [TTErrorHandler handleParseSessionError:error inViewController:self];
+        } else {
+            TTConversation *currentConversation = nil;
+            if (object == nil) {
+                TTTic *draftTic = [TTTic object];
+                draftTic.status = kTTTicStatusDrafting;
+                draftTic.type = kTTTicTypeDraft;
+                draftTic.sendTimestamp = draftTic.receiveTimestamp = [NSDate date];
+                draftTic.sender = [TTUser currentUser];
+                draftTic.recipient = contact;
+                draftTic.content = [@"[Empty]" dataUsingEncoding:NSUTF8StringEncoding];
+                draftTic.ACL = [PFACL ACLWithUser:[TTUser currentUser]];
+                TTConversation *newConversation = [TTConversation object];
+                newConversation.type = anonymous ? kTTConversationTypeAnonymous : kTTConversationTypeDefault;
+                newConversation.recipient = contact;
+                newConversation.lastTic = draftTic;
+                newConversation.userId = [TTUser currentUser].objectId;
+                [draftTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
+                [newConversation pinInBackgroundWithName:kTTLocalDatastoreConversationsPinName block:^(BOOL succeeded, NSError *error) {
+                    [newConversation saveEventually];
+                }];
+                currentConversation = newConversation;
+            } else {
+                currentConversation = (TTConversation *)object;
+            }
+            self.messagesViewController = [TTMessagesViewController messagesViewControllerWithConversation:currentConversation];
+            self.messagesViewController.hidesBottomBarWhenPushed = YES;
+            self.messagesViewController.isKeyboardFirstResponder = YES;
+            [self.navigationController pushViewController:self.messagesViewController animated:YES];
+        }
+    }];
+}
+
+
 #pragma mark - TTNewTicsBannerViewDelegate
 
 - (void)didTapNewTicsBanner {
@@ -538,6 +586,7 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         TTConversation *conversation = [self.conversations objectAtIndex:indexPath.row];
         [conversation deleteEventually];
+        [conversation unpinInBackground];
         [self.conversations removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
@@ -576,50 +625,6 @@
 
 
 
-- (void)composeViewDidSelectContact:(TTUser *)contact anonymous:(BOOL)anonymous {
-    [self hideComposeView];
-    
-    PFQuery *conversationQuery = [TTConversation query];
-    if (![TTUtility isParseReachable]) {
-        [conversationQuery fromLocalDatastore];
-    }
-    [conversationQuery fromPinWithName:kTTLocalDatastoreConversationsPinName];
-    [conversationQuery whereKey:kTTConversationUserIdKey equalTo:contact.objectId];
-    [conversationQuery whereKey:kTTConversationTypeKey notEqualTo:kTTConversationTypeAnonymous];
-    [conversationQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        if (error && error.code != kPFErrorObjectNotFound) {
-            [TTErrorHandler handleParseSessionError:error inViewController:self];
-        } else {
-            TTConversation *currentConversation = nil;
-            if (object == nil) {
-                TTTic *draftTic = [TTTic object];
-                draftTic.status = kTTTicStatusDrafting;
-                draftTic.type = kTTTicTypeDraft;
-                draftTic.sendTimestamp = draftTic.receiveTimestamp = [NSDate date];
-                draftTic.sender = [TTUser currentUser];
-                draftTic.recipient = contact;
-                draftTic.content = [@"" dataUsingEncoding:NSUTF8StringEncoding];
-                draftTic.ACL = [PFACL ACLWithUser:[TTUser currentUser]];
-                TTConversation *newConversation = [TTConversation object];
-                newConversation.type = anonymous ? kTTConversationTypeAnonymous : kTTConversationTypeDefault;
-                newConversation.recipient = contact;
-                newConversation.lastTic = draftTic;
-                newConversation.userId = [TTUser currentUser].objectId;
-                [draftTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
-                [newConversation pinInBackgroundWithName:kTTLocalDatastoreConversationsPinName block:^(BOOL succeeded, NSError *error) {
-                    [newConversation saveEventually];
-                }];
-                currentConversation = newConversation;
-            } else {
-                currentConversation = (TTConversation *)object;
-            }
-            self.messagesViewController = [TTMessagesViewController messagesViewControllerWithConversation:currentConversation];
-            self.messagesViewController.hidesBottomBarWhenPushed = YES;
-            self.messagesViewController.isKeyboardFirstResponder = YES;
-            [self.navigationController pushViewController:self.messagesViewController animated:YES];
-        }
-    }];
-}
 
 - (void)applicationDidReceiveNewTicWhileActive:(NSNotification *)notification {
     AudioServicesPlayAlertSound(1033);

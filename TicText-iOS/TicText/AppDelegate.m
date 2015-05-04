@@ -92,6 +92,7 @@
         [TTSession validateSessionInBackground];
     }
     [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTTApplicationDidBecomeActive object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

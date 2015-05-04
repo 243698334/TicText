@@ -13,7 +13,6 @@ target 'TicText' do
   pod 'JMStaticContentTableViewController'
   pod 'TSMessages'
   pod 'PureLayout'
-  pod 'INTUAnimationEngine'
 end
 
 target 'TicTextTests' do

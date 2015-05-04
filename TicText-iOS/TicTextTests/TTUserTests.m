@@ -42,17 +42,6 @@
     XCTAssertEqualObjects(displayName, [self.user displayName]);
 }
 
-- (void)testProfilePicture {
-    // Arrange
-    NSData *someData = UIImagePNGRepresentation([UIImage imageNamed:@"ProfilePicturePlaceholder"]);
-    
-    // Act
-    [self.user setProfilePictureData:someData];
-    
-    // Assert
-    XCTAssertEqualObjects(someData, [self.user profilePictureData]);
-}
-
 - (void)testFriendsSetter {
     // Arrange
     NSArray *friends = @[@"foo", @"bar"];

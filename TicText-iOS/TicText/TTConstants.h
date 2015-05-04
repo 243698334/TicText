@@ -8,16 +8,31 @@
 
 #import <Foundation/Foundation.h>
 
-#pragma mark - UI
+#define kTTDemoModeEnabled NO
+
+#pragma mark - UIColors
+
 extern float const kTTUIPurpleColorRed;
 extern float const kTTUIPurpleColorGreen;
 extern float const kTTUIPurpleColorBlue;
 extern float const kTTUIPurpleColorAlpha;
 
+extern float const kTTUILightPurpleColorRed;
+extern float const kTTUILightPurpleColorGreen;
+extern float const kTTUILightPurpleColorBlue;
+extern float const kTTUILightPurpleColorAlpha;
+
 #define kTTUIPurpleColor [UIColor colorWithRed:kTTUIPurpleColorRed/255.0 \
                                          green:kTTUIPurpleColorGreen/255.0 \
                                           blue:kTTUIPurpleColorBlue/255.0 \
                                          alpha:kTTUIPurpleColorAlpha/255.0]
+
+
+
+#define kTTUILightPurpleColor [UIColor colorWithRed:kTTUILightPurpleColorRed/255.0 \
+                                              green:kTTUILightPurpleColorGreen/255.0 \
+                                               blue:kTTUILightPurpleColorBlue/255.0 \
+                                              alpha:kTTUILightPurpleColorAlpha/255.0]
 
 extern NSString * const kTTUIDefaultFont;
 extern NSString * const kTTUIDefaultLightFont;
@@ -25,6 +40,7 @@ extern NSString * const kTTUIDefaultUltraLightFont;
 
 
 #pragma mark - NSUserDefaults
+
 extern NSString * const kTTUserDefaultsSessionIsValidLastCheckedKey;
 extern NSString * const kTTUserDefaultsConversationsViewControllerShouldRetrieveNewTicsKey;
 
@@ -53,6 +69,16 @@ extern NSString * const kTTNotificationUserInfoSenderUserIdKey;
 extern NSString * const kTTNotificationUserInfoSendTimestampKey;
 extern NSString * const kTTNotificationUserInfoTimeLimitKey;
 
+// UI Events
+extern NSString * const kTTScrollingImagePickerDidTapImagePickerButton;
+extern NSString * const kTTUIImagePickerDidDismissEvent;
+extern NSString * const kTTScrollingUIImagePickerDidChooseImage;
+
+// UI Events Keys
+extern NSString * const kTTScrollingUIImagePickerChosenImageKey;
+
+// App Events
+extern NSString * const kTTApplicationDidBecomeActive;
 
 #pragma mark - NSError
 extern NSString * const kTTSessionErrorDomain;

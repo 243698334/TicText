@@ -114,6 +114,44 @@
     return expirationTimeString;
 }
 
++ (NSString *)shortStringForTimeInterval:(NSTimeInterval)interval {
+    // Get the system calendar
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    // Create the NSDates
+    NSDate *firstDate = [[NSDate alloc] init];
+    NSDate *secondDate = [[NSDate alloc] initWithTimeInterval:interval sinceDate:firstDate];
+    
+    unsigned unitFlags = NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
+    
+    NSDateComponents *conversionInfo = [calendar components:unitFlags
+                                                   fromDate:firstDate
+                                                     toDate:secondDate
+                                                    options:0];
+    
+    NSString *expirationTimeString = nil;
+    NSString *headerString = @"Expires";
+    
+    NSMutableArray *expirationArray = [NSMutableArray array];
+    for (int i = 0; i < self.sharedDomain.expirationUnits.count; i++) {
+        TTExpirationUnit *unit = self.sharedDomain.expirationUnits[i];
+        NSInteger relevantValue = unit.relevantValueFromDateComponentsBlock(conversionInfo);
+        if (relevantValue != 0) {
+            NSString *unitTitle = (relevantValue == 1) ? unit.singularTitle : unit.pluralTitle;
+            unitTitle = [unitTitle substringToIndex:1];
+            [expirationArray addObject:[NSString stringWithFormat:@"%ld%@", (long)relevantValue, unitTitle]];
+        }
+    }
+    
+    if (expirationArray.count == 0) {
+        expirationTimeString = [NSString stringWithFormat:@"%@\n%@", headerString, @"instantly"];
+    } else {
+        expirationTimeString = [NSString stringWithFormat:@"%@ in\n%@", headerString, [expirationArray componentsJoinedByString:@" "]];
+    }
+    
+    return expirationTimeString;
+}
+
 + (void)setUnits:(NSArray *)expirationUnits forExpirationTime:(NSTimeInterval)expirationTime {
     NSInteger weight = 1;
     for (NSInteger i = (NSInteger)expirationUnits.count - 1; i >= 0; i--) {
