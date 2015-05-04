@@ -144,8 +144,24 @@
     [receivedNewTicsQuery whereKey:kTTNewTicRecipientUserIdKey equalTo:[TTUser currentUser].objectId];
     [receivedNewTicsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
-            for (TTNewTic *currentNewTic in objects) {
-                [self storeNewTic:currentNewTic];
+            for (TTNewTic *currentReceivedNewTic in objects) {
+                BOOL isReceivedNewTicDuplicate = NO;
+                for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
+                    if (isReceivedNewTicDuplicate) {
+                        break;
+                    }
+                    NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
+                    for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
+                        if ([currentNewTic.ticId isEqualToString:currentReceivedNewTic.ticId]) {
+                            isReceivedNewTicDuplicate = YES;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!isReceivedNewTicDuplicate) {
+                    [self storeNewTic:currentReceivedNewTic];
+                }
             }
         }
         
@@ -167,7 +183,7 @@
                         }
                         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
                         for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
-                            if (currentNewTic.objectId == currentReceivedNewTic.ticId) {
+                            if ([currentNewTic.ticId isEqualToString:currentReceivedNewTic.ticId]) {
                                 isReceivedNewTicDuplicate = YES;
                                 break;
                             }
@@ -411,7 +427,7 @@
     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
         for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
-            if (currentNewTic.status == kTTNewTicStatusExpired) {
+            if ([currentNewTic.status isEqualToString:kTTNewTicStatusExpired]) {
                 [receivedNewTicsFromCurrentSender removeObject:currentNewTic];
                 [currentNewTic unpinInBackground];
             }
@@ -445,8 +461,10 @@
     NSInteger numberOfUnreadTics = 0;
     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
+        NSLog(@"receivedNewTicsFromCurrentSender count %ld", [receivedNewTicsFromCurrentSender count]);
         for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
-            if (currentNewTic.status == kTTNewTicStatusUnread) {
+            NSLog(@"currentNewTic.status %@, compare with %@", currentNewTic.status, kTTNewTicStatusUnread);
+            if ([currentNewTic.status isEqualToString:kTTNewTicStatusUnread]) {
                 numberOfUnreadTics++;
             }
         }
@@ -459,7 +477,7 @@
     for (NSString *currentSenderId in self.receivedNewTicsSortedKeys) {
         NSMutableArray *receivedNewTicsFromCurrentSender = [self.receivedNewTicsDictionary objectForKey:currentSenderId];
         for (TTNewTic *currentNewTic in receivedNewTicsFromCurrentSender) {
-            if (currentNewTic.status == kTTNewTicStatusExpired) {
+            if ([currentNewTic.status isEqualToString:kTTNewTicStatusExpired]) {
                 numberOfExpiredTics++;
             }
         }
@@ -502,7 +520,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.isNewTicsDropdownViewVisible) {
         [self hideNewTicsDropdownView];
-
+        
     }
     //NSLog(@"scrollViewDidScroll");
 }
@@ -566,8 +584,8 @@
             [self.conversations sortUsingComparator:^NSComparisonResult(TTConversation *firstConversation, TTConversation *secondConversation) {
                 TTTic *firstTic = firstConversation.lastTic;
                 TTTic *secondTic = secondConversation.lastTic;
-                NSDate *firstLastActivityTimestamp = firstTic.status == kTTTicStatusRead ? firstTic.receiveTimestamp : firstTic.sendTimestamp;
-                NSDate *secondLastActivityTimestamp = secondTic.status == kTTTicStatusRead ? secondTic.receiveTimestamp : secondTic.sendTimestamp;
+                NSDate *firstLastActivityTimestamp = [firstTic.status isEqualToString:kTTTicStatusRead] ? firstTic.receiveTimestamp : firstTic.sendTimestamp;
+                NSDate *secondLastActivityTimestamp = [secondTic.status isEqualToString:kTTTicStatusRead] ? secondTic.receiveTimestamp : secondTic.sendTimestamp;
                 return [secondLastActivityTimestamp compare:firstLastActivityTimestamp];
             }];
             
