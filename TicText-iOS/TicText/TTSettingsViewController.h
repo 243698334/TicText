@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <JMStaticContentTableViewController/JMStaticContentTableViewController.h>
 #import <MessageUI/MessageUI.h>
+#import "HFStretchableTableHeaderView.h"
+#import "ProfileHeaderView.h"
 
 #import "TTSession.h"
 
-@interface TTSettingsViewController : JMStaticContentTableViewController <MFMailComposeViewControllerDelegate, UINavigationControllerDelegate>
+@interface TTSettingsViewController : JMStaticContentTableViewController <MFMailComposeViewControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @end

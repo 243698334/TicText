@@ -46,7 +46,6 @@
 		0ECE4B281AE3D5490016A728 /* TTLogInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0ECE4B191AE3D5490016A728 /* TTLogInViewController.xib */; };
 		0ECE4B291AE3D5490016A728 /* TTFindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B1B1AE3D5490016A728 /* TTFindFriendsViewController.m */; };
 		0ECE4B2A1AE3D5490016A728 /* TTConversationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B1D1AE3D5490016A728 /* TTConversationsViewController.m */; };
-		0ECE4B2C1AE3D5490016A728 /* TTProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B211AE3D5490016A728 /* TTProfileViewController.m */; };
 		0ECE4B2D1AE3D5490016A728 /* TTSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B231AE3D5490016A728 /* TTSettingsViewController.m */; };
 		0ECE4B2E1AE3D5490016A728 /* TTMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B251AE3D5490016A728 /* TTMessagesViewController.m */; };
 		0ECE4B3E1AE3D56D0016A728 /* TTNewTicsDropdownView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ECE4B301AE3D56D0016A728 /* TTNewTicsDropdownView.m */; };
@@ -62,6 +61,8 @@
 		2ED84A9C1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED84A9B1A9D630B008C0EA5 /* TTFindFriendsViewControllerTests.m */; };
 		2EEEC7991AA93CF300391486 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EEEC7981AA93CF300391486 /* MessageUI.framework */; };
 		4C0094CD1B6ED14DA0956A8F /* libPods-TicText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E62ADB5018418278F1D7F35F /* libPods-TicText.a */; };
+		8F54E6651AF742BE00E9E165 /* ProfileHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F54E6641AF742BE00E9E165 /* ProfileHeaderView.m */; };
+		8F54E6681AF742D500E9E165 /* HFStretchableTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F54E6671AF742D500E9E165 /* HFStretchableTableHeaderView.m */; };
 		8FD9B4AF1AF7362000DBF6EA /* TTCountDownView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FD9B4AE1AF7362000DBF6EA /* TTCountDownView.m */; };
 		9B6B74E026B95CE6BCD5D096 /* libPods-TicTextTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */; };
 		CD1330D81AB7AA4600F59523 /* TTExpirationDomainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1330D71AB7AA4600F59523 /* TTExpirationDomainTests.swift */; };
@@ -165,8 +166,6 @@
 		0ECE4B1D1AE3D5490016A728 /* TTConversationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTConversationsViewController.m; sourceTree = "<group>"; };
 		0ECE4B1E1AE3D5490016A728 /* TTContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTContactsViewController.h; sourceTree = "<group>"; };
 		0ECE4B1F1AE3D5490016A728 /* TTContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTContactsViewController.m; sourceTree = "<group>"; };
-		0ECE4B201AE3D5490016A728 /* TTProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTProfileViewController.h; sourceTree = "<group>"; };
-		0ECE4B211AE3D5490016A728 /* TTProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTProfileViewController.m; sourceTree = "<group>"; };
 		0ECE4B221AE3D5490016A728 /* TTSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTSettingsViewController.h; sourceTree = "<group>"; };
 		0ECE4B231AE3D5490016A728 /* TTSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTSettingsViewController.m; sourceTree = "<group>"; };
 		0ECE4B241AE3D5490016A728 /* TTMessagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMessagesViewController.h; sourceTree = "<group>"; };
@@ -196,6 +195,10 @@
 		62D5B3A2D5FD007BC1313C3B /* Pods-TicText.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicText.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TicText/Pods-TicText.debug.xcconfig"; sourceTree = "<group>"; };
 		65E0D8574E683EDF0172C6F3 /* Pods-TicTextTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TicTextTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TicTextTests/Pods-TicTextTests.release.xcconfig"; sourceTree = "<group>"; };
 		69277B8B304B0700036D8EE7 /* libPods-TicTextTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TicTextTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F54E6631AF742BE00E9E165 /* ProfileHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileHeaderView.h; sourceTree = "<group>"; };
+		8F54E6641AF742BE00E9E165 /* ProfileHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileHeaderView.m; sourceTree = "<group>"; };
+		8F54E6661AF742D500E9E165 /* HFStretchableTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFStretchableTableHeaderView.h; sourceTree = "<group>"; };
+		8F54E6671AF742D500E9E165 /* HFStretchableTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HFStretchableTableHeaderView.m; sourceTree = "<group>"; };
 		8FD9B4AD1AF7362000DBF6EA /* TTCountDownView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTCountDownView.h; sourceTree = "<group>"; };
 		8FD9B4AE1AF7362000DBF6EA /* TTCountDownView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTCountDownView.m; sourceTree = "<group>"; };
 		CD1330D61AB7AA4500F59523 /* TicTextTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TicTextTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -292,8 +295,6 @@
 				0ECE4B191AE3D5490016A728 /* TTLogInViewController.xib */,
 				0ECE4B241AE3D5490016A728 /* TTMessagesViewController.h */,
 				0ECE4B251AE3D5490016A728 /* TTMessagesViewController.m */,
-				0ECE4B201AE3D5490016A728 /* TTProfileViewController.h */,
-				0ECE4B211AE3D5490016A728 /* TTProfileViewController.m */,
 				0ECE4B151AE3D5490016A728 /* TTRootViewController.h */,
 				0ECE4B161AE3D5490016A728 /* TTRootViewController.m */,
 				0ECE4B221AE3D5490016A728 /* TTSettingsViewController.h */,
@@ -397,6 +398,10 @@
 				0ECE4B331AE3D56D0016A728 /* TTConversationTableViewCell.h */,
 				0ECE4B341AE3D56D0016A728 /* TTConversationTableViewCell.m */,
 				8FD9B4AD1AF7362000DBF6EA /* TTCountDownView.h */,
+				8F54E6661AF742D500E9E165 /* HFStretchableTableHeaderView.h */,
+				8F54E6671AF742D500E9E165 /* HFStretchableTableHeaderView.m */,
+				8F54E6631AF742BE00E9E165 /* ProfileHeaderView.h */,
+				8F54E6641AF742BE00E9E165 /* ProfileHeaderView.m */,
 				8FD9B4AE1AF7362000DBF6EA /* TTCountDownView.m */,
 				0ECE4B3A1AE3D56D0016A728 /* TTFindFriendsTableViewCell.h */,
 				0ECE4B3B1AE3D56D0016A728 /* TTFindFriendsTableViewCell.m */,
@@ -744,6 +749,7 @@
 				0ECE4B101AE3D5330016A728 /* TTActivity.m in Sources */,
 				0E83717E1AF67C0F0070EBEA /* TTMessagesToolbar.m in Sources */,
 				0ECE4B401AE3D56D0016A728 /* TTConversationTableViewCell.m in Sources */,
+				8F54E6651AF742BE00E9E165 /* ProfileHeaderView.m in Sources */,
 				0ECE4B121AE3D5330016A728 /* TTUser.m in Sources */,
 				0E8371901AF67CC00070EBEA /* UIImage+SquareImage.m in Sources */,
 				0E49DDAB1AEB221A0034BCFE /* TTNewTicsDropdownTableViewCell.m in Sources */,
@@ -767,10 +773,10 @@
 				0E5F1B301AE4E155009DE60A /* TTComposeTableViewCell.m in Sources */,
 				0ECE4B041AE3D5220016A728 /* TTUtility.m in Sources */,
 				0E5F1B2D1AE49C05009DE60A /* TTErrorHandler.m in Sources */,
-				0ECE4B2C1AE3D5490016A728 /* TTProfileViewController.m in Sources */,
 				CD4748401AB770DA00A4B8F6 /* TTExpirationDomain.m in Sources */,
 				0E83719C1AF67DE10070EBEA /* TTExpirationToolbarItem.m in Sources */,
 				0ECE4B111AE3D5330016A728 /* TTTic.m in Sources */,
+				8F54E6681AF742D500E9E165 /* HFStretchableTableHeaderView.m in Sources */,
 				0E8371A71AF70B0C0070EBEA /* TTNewTic.m in Sources */,
 				0EC584E81A7864AA00025D71 /* main.m in Sources */,
 			);
