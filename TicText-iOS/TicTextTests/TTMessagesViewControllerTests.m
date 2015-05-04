@@ -507,9 +507,9 @@
     XCTAssertNotNil(inputToolbar);
     XCTAssertNotNil(textView);
     
-    /*id mockTextView = OCMPartialMock(textView);
-    OCMExpect([mockTextView isFirstResponder]);
-    OCMExpect([mockTextView becomeFirstResponder]);*/
+    //id mockTextView = OCMPartialMock(textView);
+    //OCMExpect([mockTextView isFirstResponder]);
+    //OCMExpect([mockTextView becomeFirstResponder]);
     
     TTMessagesToolbar *toolbar = [[TTMessagesToolbar alloc] init];
     [self.mockMessagesViewController setMessagesToolbar:toolbar];
@@ -687,7 +687,7 @@
     // Assert
     OCMVerifyAll(mockMessagesToolbar);
     XCTAssertEqual([self.mockMessagesViewController messagesToolbar].selectedIndex, kTTMessagesToolbarSelectedItemNone);
-}
+}*/
 
 //    // Arrange
 //    OCMStub([self.mockMessagesViewController createTicWithMessegeText:[OCMArg any] mediaContent:[OCMArg any] senderId:[OCMArg any] senderDisplayName:[OCMArg any] date:[OCMArg any]]).andReturn([TTTic object]);
@@ -700,7 +700,6 @@
 //    
 //    // Assert
 //    OCMVerifyAll(self.mockMessagesViewController);
-}
 
 
 @end
