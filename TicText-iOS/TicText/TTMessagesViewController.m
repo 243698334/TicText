@@ -620,8 +620,8 @@
     CGRect viewRect = CGRectMake(-1, -1, w, h);
     NSLog(@"%d %d", w, h);
     TTTic *theTic = [self.tics objectAtIndex:indexPath.item];
-    if ([theTic.status isEqualToString:kTTTicStatusRead]) {
-        NSLog(@"The tic has been read before that's why it just should show the message.");
+    if ([theTic.status isEqualToString:kTTTicStatusRead] || [TTUser currentUser] == theTic.sender) {
+        NSLog(@"The tic has been read before that's why it just should show the message or the sender is the current user");
         return cell;
     }
     if (![cell.messageBubbleContainerView viewWithTag:1234]) {
