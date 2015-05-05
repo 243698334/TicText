@@ -414,58 +414,7 @@
                     [conversationQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                         if (error) {
                             [TTErrorHandler handleParseSessionError:error inViewController:self];
-                        } else {
-                            TTConversation *currentConversation = nil;
-                            if (object != nil) {
-                                currentConversation = (TTConversation *)object;
-                            } else {
-                                TTTic *draftTic = [TTTic object];
-                                draftTic.status = kTTTicStatusDrafting;
-                                draftTic.type = kTTTicTypeDraft;
-                                draftTic.sendTimestamp = draftTic.receiveTimestamp = [NSDate date];
-                                draftTic.sender = [TTUser currentUser];
-                                draftTic.recipient = recipient;
-                                draftTic.content = [@"[Empty]" dataUsingEncoding:NSUTF8StringEncoding];
-                                draftTic.ACL = [PFACL ACLWithUser:[TTUser currentUser]];
-                                TTConversation *newConversation = [TTConversation object];
-                                newConversation.type = kTTConversationTypeDefault;
-                                newConversation.recipient = recipient;
-                                newConversation.lastTic = draftTic;
-                                newConversation.userId = [TTUser currentUser].objectId;
-                                [draftTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
-                                [newConversation pinInBackgroundWithName:kTTLocalDatastoreConversationsPinName block:^(BOOL succeeded, NSError *error) {
-                                    [newConversation saveEventually];
-                                }];
-                                currentConversation = newConversation;
-                            }
-                            [self hideNewTicsDropdownView];
-                            self.messagesViewController = [TTMessagesViewController messagesViewControllerWithConversation:currentConversation];
-                            self.messagesViewController.hidesBottomBarWhenPushed = YES;
-                            self.messagesViewController.isKeyboardFirstResponder = YES;
-                            [self.navigationController pushViewController:self.messagesViewController animated:YES];
                         }
-                    }];
-                }
-            }];
-            return NO;
-        }
-    }
-    
-    if (tableView.tag == kTTNewTicsDropdownViewSameSenderNewTicsTableViewTag) {
-        NSMutableArray *receivedNewTicsFromSelectedSender = [self.receivedNewTicsDictionary objectForKey:self.receivedNewTicsDropdownViewSelectedSenderId];
-        TTNewTic *currentNewTic = [receivedNewTicsFromSelectedSender objectAtIndex:index];
-        [[TTUser query] getObjectInBackgroundWithId:currentNewTic.senderUserId block:^(PFObject *object, NSError *error) {
-            if (error) {
-                [TTErrorHandler handleParseSessionError:error inViewController:self];
-            } else {
-                TTUser *recipient = (TTUser *)object;
-                PFQuery *conversationQuery = [TTConversation query];
-                [conversationQuery includeKey:kTTConversationLastTicKey];
-                [conversationQuery whereKey:kTTConversationRecipientKey equalTo:recipient];
-                [conversationQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                    if (error) {
-                        [TTErrorHandler handleParseSessionError:error inViewController:self];
-                    } else {
                         TTConversation *currentConversation = nil;
                         if (object != nil) {
                             currentConversation = (TTConversation *)object;
@@ -494,9 +443,59 @@
                         self.messagesViewController.hidesBottomBarWhenPushed = YES;
                         self.messagesViewController.isKeyboardFirstResponder = YES;
                         [self.navigationController pushViewController:self.messagesViewController animated:YES];
-                    }
-                }];
+                    }];
+                }
+            }];
+            return NO;
+        }
+    }
+    
+    if (tableView.tag == kTTNewTicsDropdownViewSameSenderNewTicsTableViewTag) {
+        NSMutableArray *receivedNewTicsFromSelectedSender = [self.receivedNewTicsDictionary objectForKey:self.receivedNewTicsDropdownViewSelectedSenderId];
+        TTNewTic *currentNewTic = [receivedNewTicsFromSelectedSender objectAtIndex:index];
+        [[TTUser query] getObjectInBackgroundWithId:currentNewTic.senderUserId block:^(PFObject *object, NSError *error) {
+            if (error) {
+                [TTErrorHandler handleParseSessionError:error inViewController:self];
             }
+            TTUser *recipient = (TTUser *)object;
+            PFQuery *conversationQuery = [TTConversation query];
+            [conversationQuery includeKey:kTTConversationLastTicKey];
+            [conversationQuery whereKey:kTTConversationRecipientKey equalTo:recipient];
+            [conversationQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                if (error) {
+                    [TTErrorHandler handleParseSessionError:error inViewController:self];
+                } else {
+                    TTConversation *currentConversation = nil;
+                    if (object != nil) {
+                        currentConversation = (TTConversation *)object;
+                    } else {
+                        TTTic *draftTic = [TTTic object];
+                        draftTic.status = kTTTicStatusDrafting;
+                        draftTic.type = kTTTicTypeDraft;
+                        draftTic.sendTimestamp = draftTic.receiveTimestamp = [NSDate date];
+                        draftTic.sender = [TTUser currentUser];
+                        draftTic.recipient = recipient;
+                        draftTic.content = [@"[Empty]" dataUsingEncoding:NSUTF8StringEncoding];
+                        draftTic.ACL = [PFACL ACLWithUser:[TTUser currentUser]];
+                        TTConversation *newConversation = [TTConversation object];
+                        newConversation.type = kTTConversationTypeDefault;
+                        newConversation.recipient = recipient;
+                        newConversation.lastTic = draftTic;
+                        newConversation.userId = [TTUser currentUser].objectId;
+                        [draftTic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
+                        [newConversation pinInBackgroundWithName:kTTLocalDatastoreConversationsPinName block:^(BOOL succeeded, NSError *error) {
+                            [newConversation saveEventually];
+                        }];
+                        currentConversation = newConversation;
+                    }
+                    [self hideNewTicsDropdownView];
+                    self.messagesViewController = [TTMessagesViewController messagesViewControllerWithConversation:currentConversation];
+                    self.messagesViewController.hidesBottomBarWhenPushed = YES;
+                    self.messagesViewController.isKeyboardFirstResponder = YES;
+                    [self.navigationController pushViewController:self.messagesViewController animated:YES];
+                }
+            }];
+
         }];
         return NO;
     }
