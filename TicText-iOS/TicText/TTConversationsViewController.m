@@ -47,7 +47,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.receivedNewTicsDictionary = [[NSMutableDictionary alloc] init];
     [self loadInterface];
 }
@@ -406,6 +405,7 @@
             [[TTUser query] getObjectInBackgroundWithId:currentNewTic.senderUserId block:^(PFObject *object, NSError *error) {
                 if (error) {
                     [TTErrorHandler handleParseSessionError:error inViewController:self];
+                    [[[UIAlertView alloc] initWithTitle:@"User Query Error" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
                 } else {
                     TTUser *recipient = (TTUser *)object;
                     PFQuery *conversationQuery = [TTConversation query];

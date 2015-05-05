@@ -269,7 +269,7 @@
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *image =  (UIImage*) [info objectForKey:UIImagePickerControllerOriginalImage];
     TTUser * _user = [TTUser currentUser];
-    [_user setProfilePicture:UIImageJPEGRepresentation(image, 0.8)];
+    [_user setProfilePicture:[PFFile fileWithData:UIImageJPEGRepresentation(image, 0.8)]];
     [_user saveInBackgroundWithBlock:^(BOOL success, NSError *error) {
         if(success) {
             UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Save Successful!" message:nil preferredStyle:UIAlertControllerStyleAlert];
