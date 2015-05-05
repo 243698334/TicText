@@ -106,7 +106,7 @@
     __block NSData *data;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
     dispatch_async(queue, ^{
-        data = [user profilePicture];
+        data = [[user profilePicture] getData];
         dispatch_sync(dispatch_get_main_queue(), ^{
             if(data){
                 self.profileImageView.image = [UIImage imageWithData:data];
