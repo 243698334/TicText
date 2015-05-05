@@ -154,7 +154,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if (self.conversation.lastTic.type == kTTTicTypeDraft && self.messagesToolbar.selectedIndex == kTTMessagesToolbarSelectedItemNone) {
+    if ([self.conversation.lastTic.type isEqualToString:kTTTicTypeDraft] && self.messagesToolbar.selectedIndex == kTTMessagesToolbarSelectedItemNone) {
         [self.inputToolbar.contentView.textView becomeFirstResponder];
         [self.messagesToolbar selectItemAtIndex:0];
         NSString *draftTicContent = [NSString stringWithUTF8String:[self.conversation.lastTic.content bytes]];
