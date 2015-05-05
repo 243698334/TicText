@@ -37,6 +37,7 @@
     
     //Gets list of friends and sorts them by their first name
     NSArray *unsortedFriends = [TTUser currentUser].privateData.friends;
+    [TTUser fetchAll:unsortedFriends]; // Temp fix for contacts vc crashing
     self.friends= [unsortedFriends sortedArrayUsingComparator:^NSComparisonResult(TTUser *_u1, TTUser *_u2){
         return [_u1.displayName compare:_u2.displayName];
     }];
