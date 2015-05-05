@@ -32,8 +32,10 @@
 @property (nonatomic, assign) BOOL isKeyboardFirstResponder;
 
 + (TTMessagesViewController *)messagesViewControllerWithRecipient:(TTUser *)recipient;
-- (void)timerIsZero:(NSDate *)timestamp;
 + (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation;
++ (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation newTics:(NSArray *)receivedNewTics;
+
+- (void)timerIsZero:(NSDate *)timestamp;
 - (TTTic *)ticWithMessage:(JSQMessage *)message mediaFile:(PFFile *)mediaFile;
 - (void)deselectCurrentToolbarItem;
 

@@ -14,6 +14,7 @@
 #import <JSQMessagesViewController/JSQMessagesKeyboardController.h>
 
 #import "TTTic.h"
+#import "TTNewTic.h"
 #import "TTActivity.h"
 
 #import "TTExpirationDomain.h"
@@ -84,6 +85,7 @@
 
 @property (nonatomic, strong) TTConversation *conversation;
 @property (nonatomic, strong) TTUser *recipient;
+@property (nonatomic, strong) NSArray *receivedNewTics;
 @property (nonatomic, strong) NSMutableArray *tics;
 @property (nonatomic, strong) NSMutableArray *jsqMessages;
 
@@ -105,9 +107,14 @@
 }
 
 + (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation {
+    return [TTMessagesViewController messagesViewControllerWithConversation:conversation newTics:nil];
+}
+
++ (TTMessagesViewController *)messagesViewControllerWithConversation:(TTConversation *)conversation newTics:(NSArray *)receivedNewTics {
     TTMessagesViewController *messagesViewController = [TTMessagesViewController messagesViewController];
     messagesViewController.recipient = conversation.recipient;
     messagesViewController.conversation = conversation;
+    messagesViewController.receivedNewTics = receivedNewTics;
     return messagesViewController;
 }
 
@@ -256,7 +263,7 @@
     [loadTicHistoryQuery setLimit:50];
     [loadTicHistoryQuery includeKey:kTTTicSenderKey];
     [loadTicHistoryQuery orderByAscending:kTTTicSendTimestampKey];
-    //[loadTicHistoryQuery fromLocalDatastore];
+    [loadTicHistoryQuery fromLocalDatastore];
     [loadTicHistoryQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             [TSMessage showNotificationInViewController:self
@@ -276,12 +283,24 @@
             if (loadedTicsCount > 0) {
                 [self finishReceivingMessageAnimated:YES];
             }
+            
+            [self loadNewTics];
         }
     }];
 }
 
 - (void)loadNewTics {
-    
+    NSInteger loadedTicsCount = 0;
+    for (TTNewTic *currentNewTic in self.receivedNewTics) {
+        JSQMessage *unreadJSQMessage = [[JSQMessage alloc] initWithSenderId:currentNewTic.senderUserId senderDisplayName:self.recipient.displayName date:[NSDate date] text:@"Tap to read this Tic"];
+        TTTic *unreadTic = [TTTic unreadTicWithId:currentNewTic.ticId];
+        [self.jsqMessages addObject:unreadJSQMessage];
+        [self.tics addObject:unreadTic];
+        loadedTicsCount++;
+    }
+    if (loadedTicsCount > 0) {
+        [self finishReceivingMessageAnimated:YES];
+    }
 }
 
 - (void)setupMessagesToolbar {
@@ -845,11 +864,9 @@
                         if (index >= lo && index < hi) {
                             UIImage *image = [UIImage imageWithCGImage:[[result defaultRepresentation] fullScreenImage]];
                             [self.imagesFromCameraRoll addObject:[UIImage squareImageWithImage:image scaledToSize:300]];
-                            NSLog(@"------------Loading Images #%ld -------------", index);
                         }
                     } else {
                         *stop = YES;
-                        NSLog(@"------------Finished Loading Images-------------");
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [scrollingImagePickerView setImages:self.imagesFromCameraRoll];
                             [self.progressHUD removeFromSuperview];

@@ -439,7 +439,7 @@
                             currentConversation = newConversation;
                         }
                         [self hideNewTicsDropdownView];
-                        self.messagesViewController = [TTMessagesViewController messagesViewControllerWithConversation:currentConversation];
+                        self.messagesViewController = [TTMessagesViewController messagesViewControllerWithConversation:currentConversation newTics:@[currentNewTic]];
                         self.messagesViewController.hidesBottomBarWhenPushed = YES;
                         self.messagesViewController.isKeyboardFirstResponder = YES;
                         [self.navigationController pushViewController:self.messagesViewController animated:YES];
@@ -494,7 +494,7 @@
                         currentConversation = newConversation;
                     }
                     [self hideNewTicsDropdownView];
-                    self.messagesViewController = [TTMessagesViewController messagesViewControllerWithConversation:currentConversation];
+                    self.messagesViewController = [TTMessagesViewController messagesViewControllerWithConversation:currentConversation newTics:receivedNewTicsFromSelectedSender];
                     self.messagesViewController.hidesBottomBarWhenPushed = YES;
                     self.messagesViewController.isKeyboardFirstResponder = YES;
                     [self.navigationController pushViewController:self.messagesViewController animated:YES];
