@@ -29,6 +29,8 @@
         self.profileImageView = [[UIImageView alloc] init];
         self.nameLabel = [[UILabel alloc] init];
         self.createTicButtton = [[UIButton alloc] init];
+        self.nameLabel.font = [UIFont fontWithName:kTTUIDefaultFont size:self.nameLabel.font.pointSize];
+        self.nameLabel.textColor = kTTUIPurpleColor;
         
         self.createTicVisible = NO;
         
