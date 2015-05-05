@@ -446,6 +446,11 @@
                     }];
                 }
             }];
+            [currentNewTic deleteEventually];
+            [self.receivedNewTicsDictionary removeObjectForKey:[self.receivedNewTicsSortedKeys objectAtIndex:index]];
+            [self sortNewTicsDictionary];
+            [self.receivedNewTicsDropdownView reloadData];
+            [self.receivedNewTicsBannerView reloadData];
             return NO;
         }
     }
@@ -495,7 +500,13 @@
                     [self.navigationController pushViewController:self.messagesViewController animated:YES];
                 }
             }];
-
+            for (TTNewTic *currentNewTicFromSameSender in receivedNewTicsFromSelectedSender) {
+                [currentNewTicFromSameSender deleteEventually];
+            }
+            [self.receivedNewTicsDictionary removeObjectForKey:[self.receivedNewTicsSortedKeys objectAtIndex:index]];
+            [self sortNewTicsDictionary];
+            [self.receivedNewTicsDropdownView reloadData];
+            [self.receivedNewTicsBannerView reloadData];
         }];
         return NO;
     }
