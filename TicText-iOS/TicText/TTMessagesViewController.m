@@ -448,51 +448,6 @@
     }];
 }
 
-- (TTTic *)createTicWithMessegeText:(NSString *)text mediaContent:(id)mediaContent senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
-    // Play sound
-    [JSQSystemSoundPlayer jsq_playMessageSentSound];
-    
-    // New JSQMessage
-    JSQMessage *newJSQMessage = nil;
-    
-    // New Tic and anonymous status
-    NSString *ticType = kTTTicTypeDefault;
-    if (self.isAnonymous) {
-        ticType = kTTTicTypeAnonymous;
-    }
-    TTTic *newTic = nil;
-    
-    // Tic can't contain both text and media content
-    if (text) {
-        newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
-                                           senderDisplayName:senderDisplayName
-                                                        date:date
-                                                        text:text];
-        newTic = [self ticWithMessage:newJSQMessage mediaFile:nil];
-    } else {
-        // Media Item
-        JSQPhotoMediaItem *mediaItem = nil;
-        PFFile *file = nil;
-        
-        if ([mediaContent isKindOfClass:[UIImage class]]) {
-            mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:(UIImage *)mediaContent];
-            mediaItem.appliesMediaViewMaskAsOutgoing = YES;
-            file = [PFFile fileWithData:UIImageJPEGRepresentation((UIImage *)mediaContent, 0.6)];
-        }
-        newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
-                                           senderDisplayName:senderDisplayName
-                                                        date:date
-                                                       media:mediaItem];
-        newTic = [self ticWithMessage:newJSQMessage mediaFile:file];
-    }
-    
-    // Add to local array
-    [self.tics addObject:newTic];
-    [self.jsqMessages addObject:newJSQMessage];
-    
-    [self finishSendingMessageAnimated:YES];
-    return newTic;
-}
 
 - (void)sendTic:(TTTic *)tic {
     [tic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
@@ -738,6 +693,52 @@
     return newTic;
 }
 
+- (TTTic *)createTicWithMessegeText:(NSString *)text mediaContent:(id)mediaContent senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
+    // Play sound
+    [JSQSystemSoundPlayer jsq_playMessageSentSound];
+    
+    // New JSQMessage
+    JSQMessage *newJSQMessage = nil;
+    
+    // New Tic and anonymous status
+    NSString *ticType = kTTTicTypeDefault;
+    if (self.isAnonymous) {
+        ticType = kTTTicTypeAnonymous;
+    }
+    TTTic *newTic = nil;
+    
+    // Tic can't contain both text and media content
+    if (text) {
+        newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
+                                           senderDisplayName:senderDisplayName
+                                                        date:date
+                                                        text:text];
+        newTic = [self ticWithMessage:newJSQMessage mediaFile:nil];
+    } else {
+        // Media Item
+        JSQPhotoMediaItem *mediaItem = nil;
+        PFFile *file = nil;
+        
+        if ([mediaContent isKindOfClass:[UIImage class]]) {
+            mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:(UIImage *)mediaContent];
+            mediaItem.appliesMediaViewMaskAsOutgoing = YES;
+            file = [PFFile fileWithData:UIImageJPEGRepresentation((UIImage *)mediaContent, 0.6)];
+        }
+        newJSQMessage = [[JSQMessage alloc] initWithSenderId:senderId
+                                           senderDisplayName:senderDisplayName
+                                                        date:date
+                                                       media:mediaItem];
+        newTic = [self ticWithMessage:newJSQMessage mediaFile:file];
+    }
+    
+    // Add to local array
+    [self.tics addObject:newTic];
+    [self.jsqMessages addObject:newJSQMessage];
+    
+    [self finishSendingMessageAnimated:YES];
+    return newTic;
+}
+
 - (JSQMessage *)jsqMessageWithTic:(TTTic *)tic {
     TTUser *sender = tic.sender;
     PFFile *mediaContent = tic.mediaContent;
@@ -745,7 +746,7 @@
     if (mediaContent) {
         // TODO:classify more media types
         JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:nil];
-        mediaItem.appliesMediaViewMaskAsOutgoing = NO;
+        mediaItem.appliesMediaViewMaskAsOutgoing = [tic.sender.objectId isEqualToString:self.senderId];
         
         [mediaContent getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
             if (error) {
