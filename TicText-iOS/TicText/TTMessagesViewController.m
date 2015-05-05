@@ -495,6 +495,7 @@
 }
 
 - (void)sendTic:(TTTic *)tic {
+    [tic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
     [tic saveEventually:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             TTActivity *sendTicActivity = [TTActivity activityWithType:kTTActivityTypeSendTic tic:tic];
@@ -512,6 +513,7 @@
 }
 
 - (void)sendTicWithMediaContent:(TTTic *)tic {
+    [tic pinInBackgroundWithName:kTTLocalDatastoreTicsPinName];
     [tic saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             TTActivity *sendTicActivity = [TTActivity activityWithType:kTTActivityTypeSendTic tic:tic];
