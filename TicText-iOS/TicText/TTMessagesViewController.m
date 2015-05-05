@@ -625,7 +625,7 @@
             return 0.0f;
         }
     }
-    return kJSQMessagesCollectionViewCellLabelHeightDefault;
+    return kJSQMessagesCollectionViewCellLabelHeightDefault; 
 }
 
 - (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
