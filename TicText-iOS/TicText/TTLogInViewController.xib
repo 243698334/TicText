@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -21,8 +21,9 @@
             <subviews>
                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Wgq-49-Sdt" userLabel="(Icon OriginY Reference)">
                     <rect key="frame" x="8" y="0.0" width="32" height="110"/>
+                    <animations/>
                     <accessibility key="accessibilityConfiguration">
-                        <accessibilityTraits key="traits" none="YES" notEnabled="YES"/>
+                        <accessibilityTraits key="traits" notEnabled="YES"/>
                     </accessibility>
                     <constraints>
                         <constraint firstAttribute="width" constant="32" id="6p6-IJ-a8o"/>
@@ -30,6 +31,7 @@
                 </imageView>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TicTextTitleLight" translatesAutoresizingMaskIntoConstraints="NO" id="WG3-tQ-I4G">
                     <rect key="frame" x="83" y="358" width="248" height="68"/>
+                    <animations/>
                     <accessibility key="accessibilityConfiguration" label="tictext"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="WG3-tQ-I4G" secondAttribute="height" multiplier="84:23" id="jmQ-ZW-S7u"/>
@@ -37,8 +39,9 @@
                 </imageView>
                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="no3-nF-anr" userLabel="(FBLogin OriginY Reference)">
                     <rect key="frame" x="8" y="0.0" width="32" height="589"/>
+                    <animations/>
                     <accessibility key="accessibilityConfiguration">
-                        <accessibilityTraits key="traits" none="YES" notEnabled="YES"/>
+                        <accessibilityTraits key="traits" notEnabled="YES"/>
                     </accessibility>
                     <constraints>
                         <constraint firstAttribute="width" constant="32" id="W27-bm-gon"/>
@@ -46,6 +49,7 @@
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oms-Gi-bDK" userLabel="Facebook Login View" customClass="FBLoginView">
                     <rect key="frame" x="42" y="589" width="331" height="51"/>
+                    <animations/>
                     <color key="backgroundColor" red="0.23137254901960785" green="0.34901960784313724" blue="0.59607843137254901" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="T1l-e5-7Rm"/>
@@ -57,11 +61,13 @@
                 </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TicTextIconLight" translatesAutoresizingMaskIntoConstraints="NO" id="LAt-aG-3hz">
                     <rect key="frame" x="93" y="110" width="228" height="228"/>
+                    <animations/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="LAt-aG-3hz" secondAttribute="height" multiplier="1:1" id="m9a-F5-Q6z"/>
                     </constraints>
                 </imageView>
             </subviews>
+            <animations/>
             <color key="backgroundColor" red="0.50980392159999999" green="0.3921568627" blue="0.7843137255" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="Wgq-49-Sdt" firstAttribute="height" secondItem="X3o-er-CEw" secondAttribute="height" multiplier="0.15" id="16c-gT-0IR"/>
